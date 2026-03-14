@@ -1,0 +1,409 @@
+"""
+Transparent AI Digital Twin — Giao dien chinh.
+
+Chay: streamlit run app.py
+"""
+
+from __future__ import annotations
+
+import os
+import re
+from pathlib import Path
+from typing import Any, Dict, List, Tuple
+
+import streamlit as st
+
+# ---------------------------------------------------------------------------
+# Cau hinh trang (phai dat truoc moi lenh st khac)
+# ---------------------------------------------------------------------------
+st.set_page_config(
+    page_title="Transparent AI Digital Twin",
+    layout="wide",
+    initial_sidebar_state="expanded",
+)
+
+# ---------------------------------------------------------------------------
+# CSS — An menu mac dinh, footer, va thiet lap phong cach toi gian
+# ---------------------------------------------------------------------------
+_CUSTOM_CSS = """
+<style>
+    /* An menu mac dinh va footer Streamlit */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+
+    /* Chat message — loai bo avatar */
+    .stChatMessage [data-testid="chatAvatarIcon-user"],
+    .stChatMessage [data-testid="chatAvatarIcon-assistant"],
+    .stChatMessage .stAvatar {
+        display: none !important;
+    }
+
+    /* Sidebar */
+    [data-testid="stSidebar"] {
+        min-width: 280px;
+        max-width: 320px;
+    }
+
+    /* Expander — giao dien sach */
+    .streamlit-expanderHeader {
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+
+    /* Progress container */
+    .log-container {
+        max-height: 400px;
+        overflow-y: auto;
+        background-color: #f8f9fa;
+        padding: 12px;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        font-family: 'Consolas', 'Courier New', monospace;
+        font-size: 0.82rem;
+        line-height: 1.5;
+        white-space: pre-wrap;
+    }
+</style>
+"""
+
+st.markdown(_CUSTOM_CSS, unsafe_allow_html=True)
+
+
+# ============================================================================
+# MODULE 1: QUAN LY TRANG THAI VA PHAN QUYEN
+# ============================================================================
+
+_ROLES = ["Khách", "Quản trị viên", "Người dùng nội bộ"]
+_DOC_TYPE_MAP = {
+    "H\u1ed3 s\u01a1 nh\u00e2n s\u1ef1": "cv",
+    "Quy tr\u00ecnh v\u1eadn h\u00e0nh": "sop",
+    "D\u1ef1 \u00e1n": "project",
+}
+
+DATA_LAKE_RAW = Path("./data_lake/01_raw")
+NEO4J_READY_ROOT = Path("./neo4j_ready")
+
+
+def _init_session_state() -> None:
+    """Khoi tao session state neu chua co."""
+    if "role_select" not in st.session_state:
+        st.session_state.role_select = _ROLES[0]
+    if "messages" not in st.session_state:
+        st.session_state.messages = []
+
+
+def _render_sidebar() -> str:
+    """Render thanh ben va tra ve quyen hien tai."""
+    with st.sidebar:
+        st.markdown("### He thong Digital Twin")
+        st.markdown("---")
+
+        st.markdown("##### Phan quyen truy cap")
+        role = st.selectbox(
+            "Vai tro",
+            options=_ROLES,
+            key="role_select",
+            label_visibility="collapsed",
+        )
+
+        st.markdown("---")
+        st.caption("Transparent AI Digital Twin v1.0")
+
+    return role
+
+
+# ============================================================================
+# MODULE 2: GIAO DIEN QUAN TRI & NAP DU LIEU
+# ============================================================================
+
+def _save_uploaded_files(
+    uploaded_files: list,
+    doc_type_hint: str,
+) -> List[Path]:
+    """Luu cac file tai len vao thu muc data_lake/01_raw/{doc_type_hint}/."""
+    target_dir = DATA_LAKE_RAW / doc_type_hint
+    os.makedirs(target_dir, exist_ok=True)
+    saved: List[Path] = []
+    for uf in uploaded_files:
+        dest = target_dir / uf.name
+        dest.write_bytes(uf.getbuffer())
+        saved.append(dest)
+    return saved
+
+
+def render_admin_view() -> None:
+    """Render giao dien quan tri & nap du lieu (Module 2)."""
+    st.markdown("## Khu vuc Quan tri Du lieu")
+    st.markdown("---")
+
+    uploaded_files = st.file_uploader(
+        "Tai len tai lieu",
+        type=["pdf", "docx"],
+        accept_multiple_files=True,
+        key="admin_uploader",
+    )
+
+    doc_type_label = st.selectbox(
+        "Phan loai tai lieu",
+        options=list(_DOC_TYPE_MAP.keys()),
+        key="admin_doc_type",
+    )
+    doc_type_hint = _DOC_TYPE_MAP[doc_type_label]
+
+    st.markdown("---")
+
+    if st.button("Bat dau xu ly va nap vao Do thi", key="btn_ingest"):
+        if not uploaded_files:
+            st.warning("Vui long tai len it nhat mot tai lieu truoc khi xu ly.")
+            return
+
+        # Buoc 1 — Luu file vao data_lake
+        saved = _save_uploaded_files(uploaded_files, doc_type_hint)
+
+        # Buoc 2 + 3 — Goi backend voi tien do truc tiep
+        from pipeline.main import process_single_file, save_neo4j_ready
+        from pipeline.neo4j_ingestion import Neo4jIngestor
+
+        with st.status(
+            f"Dang xu ly {len(saved)} tai lieu...", expanded=True
+        ) as status:
+            all_results: List[Dict[str, Any]] = []
+
+            for i, fpath in enumerate(saved, start=1):
+                st.write(f"[{i}/{len(saved)}] Dang xu ly: {fpath.name}")
+
+                try:
+                    results = process_single_file(
+                        fpath,
+                        core_entity="",
+                        doc_hint=doc_type_hint,
+                    )
+                except Exception as exc:
+                    st.write(f"  Loi khi xu ly {fpath.name}: {exc}")
+                    continue
+
+                if results:
+                    st.write(
+                        f"  Da phan mang va trich xuat: {len(results)} doan"
+                    )
+                    save_neo4j_ready(results, fpath.name)
+                    st.write("  Da tao Vector Embedding va luu JSON")
+                    all_results.extend(results)
+                else:
+                    st.write("  Bo qua — tai lieu da duoc xu ly truoc do")
+
+            # Nap vao Neo4j
+            neo4j_dir = NEO4J_READY_ROOT / "phobert-v2"
+            if all_results and neo4j_dir.exists():
+                st.write("Dang nap du lieu vao Do thi Neo4j...")
+                with Neo4jIngestor() as ingestor:
+                    neo4j_stats = ingestor.ingest_directory(neo4j_dir)
+                st.write(
+                    f"  Neo4j: {neo4j_stats.get('files_processed', 0)} tap tin nap,"
+                    f" {neo4j_stats.get('files_skipped', 0)} bo qua,"
+                    f" {neo4j_stats.get('chunks_total', 0)} phan doan"
+                )
+
+            status.update(
+                label="Hoan tat xu ly va nap du lieu.", state="complete"
+            )
+
+        # Buoc 4 — Thong bao hoan tat
+        if all_results:
+            st.info(
+                f"Hoan tat nap du lieu: {len(all_results)} doan"
+                f" tu {len(saved)} tai lieu."
+            )
+        else:
+            st.info(
+                "Khong co du lieu moi. Cac tai lieu co the da duoc xu ly truoc do."
+            )
+
+
+# ============================================================================
+# MODULE 3 + 4: GIAO DIEN TRUY VAN VA MINH BACH SUY LUAN
+# ============================================================================
+
+# Regex bat cac the trich dan [VEC: ...] va [GRF: ...]
+_CITATION_RE = re.compile(r"\[(VEC|GRF):\s*([^\]]+?)\]")
+
+
+def _extract_citations(answer: str) -> Tuple[str, List[Dict[str, str]]]:
+    """Trich xuat cac the [VEC: ...] / [GRF: ...] tu cau tra loi LLM.
+
+    Thay the bang chu thich dang so thuong (superscript) va
+    tra ve danh sach footnotes.
+
+    Returns:
+        (clean_answer, footnotes) voi footnotes la list cua
+        {"idx": "1", "type": "VEC"|"GRF", "ref": "noi dung trich dan"}
+    """
+    footnotes: List[Dict[str, str]] = []
+    seen: Dict[str, int] = {}  # de-dup: "VEC|ref" -> footnote idx
+
+    def _replacer(match: re.Match) -> str:
+        cite_type = match.group(1)  # VEC hoac GRF
+        ref = match.group(2).strip()
+        key = f"{cite_type}|{ref}"
+        if key in seen:
+            idx = seen[key]
+        else:
+            idx = len(footnotes) + 1
+            seen[key] = idx
+            footnotes.append({"idx": str(idx), "type": cite_type, "ref": ref})
+        return f"<sup>[{idx}]</sup>"
+
+    clean = _CITATION_RE.sub(_replacer, answer)
+    return clean, footnotes
+
+
+def _render_footnotes(footnotes: List[Dict[str, str]]) -> None:
+    """Render danh sach chu thich trich dan trong expander."""
+    if not footnotes:
+        return
+
+    with st.expander("Trich dan nguon du lieu", expanded=False):
+        for fn in footnotes:
+            icon = "\U0001f4c4" if fn["type"] == "VEC" else "\U0001f517"  # 📄 / 🔗
+            label = "Van ban" if fn["type"] == "VEC" else "Do thi"
+            st.markdown(
+                f"**[{fn['idx']}]** {icon} *{label}:* {fn['ref']}"
+            )
+
+
+def _render_reasoning_expander(records: List[Dict[str, Any]]) -> None:
+    """Render expander chi tiet suy luan (Module 4)."""
+    if not records:
+        return
+
+    with st.expander("Chi tiet Mang luoi Suy luan"):
+        for idx, rec in enumerate(records, start=1):
+            source = rec.get("source_file", "Khong ro")
+            triplets = rec.get("triplets", [])
+
+            st.markdown(f"**Nguon: {source}**")
+
+            if triplets:
+                for t in triplets:
+                    subj = t.get("subject", "")
+                    action = t.get("action", "")
+                    obj = t.get("object", "")
+                    st.markdown(
+                        f"- Chu the: {subj} | Quan he: {action} | Doi tuong: {obj}"
+                    )
+            else:
+                st.markdown("- Khong co quan he tri thuc.")
+
+            if idx < len(records):
+                st.markdown("---")
+
+
+def render_query_view() -> None:
+    """Render giao dien truy van va tuong tac (Module 3 + 4)."""
+    st.markdown("## Tro ly Phan tich va Truy van Du lieu")
+    st.markdown("---")
+
+    # Hien thi lich su hoi thoai tu session_state.messages
+    for entry in st.session_state.messages:
+        role = entry["role"]
+        with st.chat_message(role):
+            if role == "assistant":
+                display_text, fns = _extract_citations(entry["content"])
+                st.markdown(display_text, unsafe_allow_html=True)
+                _render_footnotes(fns)
+                if entry.get("records"):
+                    _render_reasoning_expander(entry["records"])
+            else:
+                st.markdown(entry["content"])
+
+    # O nhap lieu
+    user_input = st.chat_input("Nhap noi dung truy van...")
+
+    if user_input:
+        # Buoc 1 — Luu cau hoi vao session va hien thi
+        st.session_state.messages.append({
+            "role": "user",
+            "content": user_input,
+        })
+        with st.chat_message("user"):
+            st.markdown(user_input)
+
+        # Buoc 2 — Goi backend
+        with st.chat_message("assistant"):
+            with st.spinner("Dang truy xuat Do thi Tri thuc..."):
+                from pipeline.hybrid_query_engine import ask
+
+                result = ask(user_input, top_k=5)
+
+            answer_raw = result.get("answer", "Khong the tao cau tra loi.")
+            records = result.get("records", [])
+            sources = result.get("sources", [])
+            elapsed = result.get("elapsed", 0)
+            num_chunks = result.get("num_chunks", 0)
+
+            # Buoc 3 — Tach trich dan ra khoi cau tra loi chinh
+            answer_clean, footnotes = _extract_citations(answer_raw)
+            st.markdown(answer_clean, unsafe_allow_html=True)
+
+            meta = (
+                f"Nguon: {', '.join(sources) if sources else 'Khong ro'}"
+                f"  |  So doan truy xuat: {num_chunks}"
+                f"  |  Thoi gian: {elapsed}s"
+            )
+            st.caption(meta)
+
+            # Buoc 4a — Render chu thich trich dan
+            _render_footnotes(footnotes)
+
+            # Buoc 4b — Render minh bach suy luan (Subgraph)
+            _render_reasoning_expander(records)
+
+        # Luu phan hoi vao session
+        st.session_state.messages.append({
+            "role": "assistant",
+            "content": answer_raw,
+            "records": records,
+            "meta": meta,
+        })
+
+
+# ============================================================================
+# GIAO DIEN KHA CH
+# ============================================================================
+
+def render_guest_view() -> None:
+    """Render giao dien cho khach (chua xac thuc)."""
+    st.markdown("## Transparent AI Digital Twin")
+    st.markdown("---")
+    st.markdown(
+        "Vui long chon vai tro truy cap o thanh ben trai "
+        "de bat dau su dung he thong."
+    )
+    st.markdown(
+        "- **Quan tri vien**: Quan ly va nap du lieu vao he thong Do thi Tri thuc."
+    )
+    st.markdown(
+        "- **Nguoi dung noi bo**: Truy van va phan tich du lieu thong qua Tro ly AI."
+    )
+
+
+# ============================================================================
+# DIEM VAO CHINH
+# ============================================================================
+
+def main() -> None:
+    """Ham chinh dieu phoi toan bo giao dien."""
+    _init_session_state()
+    role = _render_sidebar()
+
+    if role == "Quản trị viên":
+        render_admin_view()
+    elif role == "Người dùng nội bộ":
+        render_query_view()
+    else:
+        render_guest_view()
+
+
+if __name__ == "__main__":
+    main()
