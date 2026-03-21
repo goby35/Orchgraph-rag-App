@@ -1,272 +1,186 @@
-# 🚀 AI Digital Twin Recruitment Platform (SocialFi) - Backend 2.0
+# Digital Twin Recruitment Platform
 
-**Trạng thái:** ✅ Đã tái cấu trúc sang kiến trúc **Backend API-first (v2.0)**  
-**Cập nhật:** 2026-03-20
+GraphRAG-powered recruitment platform với AI Digital Twin cho phép
+tổ chức phỏng vấn ứng viên qua mô hình số trước khi gặp thực tế.
 
----
+## Kiến trúc tổng quan
 
-## 🎯 Tổng quan
+Hệ thống dùng mô hình dual-DB:
 
-Dự án xây dựng nền tảng tuyển dụng bằng **AI Digital Twin + GraphRAG**, tập trung vào:
+- Neo4j lưu public graph, public embeddings và relationship Organization-Personnel để phục vụ search và interview access control.
+- Supabase lưu private profile vault, chat/schedule/notification data, cùng chunk embeddings (pgvector) cho truy vấn ngữ nghĩa.
 
-- **Ingestion pipeline** chuẩn hóa dữ liệu hồ sơ/tài liệu vào Neo4j.
-- **Tìm kiếm ứng viên** dựa trên vector search (public profile).
-- **Phỏng vấn Digital Twin** có kiểm soát phân quyền public/private theo relationship.
-- **Xác thực người dùng** qua Supabase JWT + bảng bridge `vdme.users`.
+FastAPI backend ở api/main.py điều phối toàn bộ endpoint nghiệp vụ.
+Pipeline ingestion ở pipeline/main.py xử lý file đầu vào theo chuỗi parse -> clean -> extract -> merge -> vectorize -> ingest Neo4j, sau đó dual-write sang Supabase theo cơ chế best-effort.
 
-> Phiên bản hiện tại là backend service độc lập. UI Streamlit v1 đã được tách lưu trữ tại thư mục `archive_v1/`.
+## Tech Stack
 
----
+### Backend
+| Layer | Technology |
+|-------|-----------|
+| API | FastAPI |
+| Graph DB | Neo4j 5.x |
+| Vector DB | Supabase (pgvector) |
+| Embedding | PhoBERT-base-v2 (768d) |
+| LLM Extraction | OpenAI gpt-4o-mini / Cerebras (fallback) |
+| Parser | LlamaParse -> unstructured -> Nutrient API (fallback) |
 
-## 🧱 Kiến trúc hệ thống v2.0
+### Data Pipeline
+- 3-layer extraction: Regex anchors -> LLM structured output (JSON schema) -> Merge nhiều chunk + normalize schema.
+- Dual-write ingestion: Neo4j public graph + Supabase private chunks.
+- Hybrid search: Jaccard graph score (alpha=0.4) + Vector similarity (beta=0.6).
 
-```text
-[Client Apps / Frontend]
-          |
-          v
-   FastAPI Backend (api/main.py)
-          |
-          +--> Auth + Profile Bridge (Supabase)
-          +--> Ingestion Pipeline (pipeline/main.py)
-          +--> Search Engine (MasterAgentEngine)
-          +--> Interview Engine (DigitalTwinInterviewEngine)
-          +--> Chat History Service
-          |
-          v
-        Neo4j (Graph + Vector Index)
-```
-
-### Thành phần chính
-
-- **API Layer**: `api/`
-  - `auth.py` - đăng ký user qua Supabase Admin API.
-  - `ingest.py` - upload file và gọi pipeline ingest.
-  - `search.py` - tìm ứng viên (chỉ role Organization).
-  - `interview.py` - Q&A Digital Twin (HTTP + WebSocket).
-  - `graph.py` - trả graph nodes/edges cho client.
-  - `chat.py` - lưu/lấy lịch sử hội thoại.
-- **Domain Pipeline**: `pipeline/`
-  - Parse -> Clean -> Extract -> Vectorize -> Ingest Neo4j.
-  - Dual-ingest best-effort sang Supabase (không làm fail pipeline nếu lỗi).
-- **Data Stores**:
-  - Neo4j 5.26 (graph + vector index).
-  - Supabase (auth + bảng `vdme.users`).
-
----
-
-## 📁 Cấu trúc thư mục
+## Cấu trúc thư mục
 
 ```text
 graphRAG/
-├── api/
-│   ├── main.py
-│   ├── deps.py
-│   └── routers/
-├── pipeline/
-├── scripts/
-│   └── sql/
-├── fast_track/
-├── data_lake/
-├── neo4j/
-├── chromadb/
-├── archive_v1/                # Di sản v1 (Streamlit)
-│   ├── app.py
-│   ├── README copy.md
-│   └── README copy 2.md
-├── docker-compose.yml
-├── requirements.txt
-└── README.md
+|- api/
+|  |- deps.py
+|  |- main.py
+|  |- models/
+|  |- routers/
+|  |- services/
+|  `- utils/
+|- pipeline/
+|  |- main.py
+|  |- parser.py
+|  |- extractor.py
+|  |- vectorizer.py
+|  |- hybrid_query_engine.py
+|  |- neo4j_ingestion.py
+|  `- supabase_ingestion.py
+|- scripts/
+|  |- reextract_and_ingest.py
+|  |- clean_all_data.py
+|  |- reembed_supabase.py
+|  `- sql/
+|- fast_track/
+|- data_lake/
+|- neo4j/
+|- chromadb/
+|- archive_v1/
+|- docker-compose.yml
+|- requirements.txt
+`- README.md
 ```
 
----
+## Cài đặt
 
-## 🛠️ Công nghệ sử dụng
+### Yêu cầu
+- Python 3.10+
+- Neo4j 5.x (local hoặc AuraDB)
+- Supabase account
 
-- **Backend API**: FastAPI, Uvicorn
-- **Graph DB**: Neo4j 5.26 (+ APOC, GDS)
-- **Auth / User Profile Bridge**: Supabase
-- **LLM/AI**: Cerebras, OpenAI
-- **Embedding / NLP**: PhoBERT, Transformers, Sentence-Transformers
-- **Parsing / ETL**: python-docx, docling, unstructured flow trong pipeline
-
----
-
-## ✅ Yêu cầu hệ thống
-
-- Python **3.10+**
-- Docker + Docker Compose
-- Neo4j chạy local qua `docker-compose.yml`
-- Supabase project (để dùng auth + profile bridge)
-
----
-
-## ⚙️ Cài đặt nhanh
-
-### 1. Tạo môi trường và cài thư viện
-
-```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
+### Các bước
+```bash
+# 1. Clone và cài dependencies
+git clone <repo_url>
+cd graphRAG
 pip install -r requirements.txt
+
+# 2. Tạo và điền env
+# Repo hiện chưa có .env.example, tạo file .env thủ công theo mẫu ở phần "Biến môi trường"
+
+# 3. Setup Neo4j constraints/index
+# API sẽ tự tạo index cơ bản khi ingest; có thể chuẩn bị thêm script Cypher riêng nếu cần
+
+# 4. Setup Supabase schema
+# Chạy SQL migration trong scripts/sql/ (ví dụ: phase_0_25_vdme_bridge_upgrade.sql)
+
+# 5. Chạy ingestion
+python scripts/reextract_and_ingest.py --type personnel
+python scripts/reextract_and_ingest.py --type org
+
+# 6. Khởi động API
+uvicorn api.main:app --reload --port 8000
 ```
 
-### 2. Khởi động Neo4j
-
-```powershell
-docker compose up -d
-```
-
-### 3. Tạo file `.env`
-
+## Biến môi trường
 ```env
-# LLM
-CEREBRAS_API_KEY=
-CEREBRAS_MODEL=llama3.1-8b
-OPENAI_API_KEY=
-GROQ_API_KEY=
-
-# Parser (Phase 1)
-LLAMA_CLOUD_API_KEY=
-PARSER_MIN_TEXT_LEN=200
-
 # Neo4j
-NEO4J_URI=bolt://127.0.0.1:7687
+NEO4J_URI=bolt://localhost:7687
 NEO4J_USER=neo4j
-NEO4J_PASSWORD=password123
+NEO4J_PASSWORD=
 
 # Supabase
 SUPABASE_URL=
 SUPABASE_SERVICE_KEY=
 
-# Optional (legacy/utility)
-CHROMADB_HOST=localhost
-CHROMADB_PORT=8000
+# LLM
+OPENAI_API_KEY=           # primary extractor
+CEREBRAS_API_KEY=         # fallback extractor / interview
+CEREBRAS_MODEL=llama3.1-8b
+
+# Parser
+LLAMA_CLOUD_API_KEY=      # primary parser
+PARSER_MIN_TEXT_LEN=200
+
+# Email (demo)
+DEMO_SENDER_EMAIL=
+DEMO_SENDER_APP_PASSWORD=
+DEMO_CALENDAR_EMAIL=
+DEMO_RECIPIENT_EMAIL=
+
+# Optional utility
 NUTRIENT_API_KEY=
 NUTRIENT_BASE_URL=https://api.nutrient.io/build
-
-# Logging
 LOG_LEVEL=INFO
 ```
 
-### 4. Chạy API server
+## API Endpoints
 
-```powershell
-uvicorn api.main:app --reload --host 0.0.0.0 --port 8000
-```
+### Core
+| Method | Path | Mô tả |
+|--------|------|-------|
+| POST | /auth/register | Đăng ký tài khoản |
+| POST | /ingest | Upload file -> ingest pipeline |
+| POST | /search | Tìm ứng viên (hybrid search, chỉ Organization) |
+| POST | /interview | Digital Twin interview (HTTP) |
+| GET | /graph | Graph data cho visualization |
 
-Health check:
+### Scheduling (mới)
+| Method | Path | Mô tả |
+|--------|------|-------|
+| PUT | /availability | Personnel thiết lập lịch rảnh |
+| GET | /availability/{per_neo4j_id}/slots | Org xem slots available |
+| POST | /schedule | Org đặt lịch phỏng vấn thực |
+| PATCH | /schedule/{schedule_id}/status | Confirm / cancel lịch |
+| PATCH | /schedule/{schedule_id}/reschedule | Personnel đề xuất giờ khác |
+| GET | /notification | Lấy danh sách thông báo |
 
-```text
-GET http://localhost:8000/health
-```
+### Bổ sung đang có trong code
+| Method | Path | Mô tả |
+|--------|------|-------|
+| WS | /interview/ws | Streaming interview qua WebSocket |
+| POST | /chat/message | Lưu message chat |
+| GET, POST | /chat/history/{per_neo4j_id} | Lấy lịch sử chat |
+| GET | /schedule | Liệt kê lịch theo user |
+| PATCH | /notification/{notification_id}/read | Đánh dấu 1 thông báo đã đọc |
+| PATCH | /notification/read-all | Đánh dấu toàn bộ đã đọc |
+| GET | /notification/unread-count | Đếm thông báo chưa đọc |
+| GET | /health | Health check |
 
----
-
-## 🔐 Cơ chế xác thực
-
-- API dùng **Bearer JWT** từ Supabase.
-- Dependency `get_current_user()` sẽ:
-  - verify token với Supabase Auth,
-  - map user sang `vdme.users` để lấy `neo4j_id` và `role`.
-- Role hiện tại:
-  - `organization`
-  - `personnel`
-
----
-
-## 📡 API endpoints (v2.0)
-
-### Auth
-
-- `POST /auth/register`
-
-### Ingestion
-
-- `POST /ingest` (multipart file upload)
-
-### Search
-
-- `POST /search` (chỉ Organization)
-
-### Interview
-
-- `POST /interview`
-- `WS /interview/ws`
-
-### Graph
-
-- `GET /graph?show_all=false`
-
-### Chat
-
-- `POST /chat/message`
-- `GET /chat/history/{per_neo4j_id}`
-- `POST /chat/history/{per_neo4j_id}`
-
----
-
-## 🧠 Nghiệp vụ lõi
-
-### 1) Ingestion Pipeline
-
-- File hỗ trợ: `.pdf`, `.docx`, `.txt`, `.md`, `.json`
-- JSON sẽ đi luồng ingest trực tiếp (bypass extract LLM).
-- Document text đi qua:
-  - Parse -> Clean -> Chunk -> Extract -> Merge -> Vectorize -> Neo4j ingest.
-
-### 2) Candidate Search (MasterAgentEngine)
-
-- Tìm ứng viên theo JD/query trên public vector space.
-- Trả về danh sách score + summary + skills.
-
-### 3) Digital Twin Interview
-
-- Engine chỉ mở private context khi relationship:
-
-```text
-(:Organization)-[:CONNECTED_TO {status:'accepted'}]->(:Personnel)
-```
-
-- Nếu chưa accepted, câu trả lời ở **public mode**.
-
----
-
-## 🧪 Kiểm thử
-
-```powershell
-python test_settings.py
+## Chạy test
+```bash
 python test_engine.py
-python test_e2e_pipeline.py
+# Expected summary: Tong: 4  |  PASS 4  |  FAIL 0  |  WARN 0
 ```
 
----
+## Re-ingest toàn bộ data
+```bash
+# Xoa data cu Neo4j (Neo4j Browser)
+# MATCH (n) DETACH DELETE n
 
-## 🧰 Script tiện ích
+# Xoa Supabase
+python scripts/clean_all_data.py
 
-- `check_models.py` - kiểm tra model khả dụng.
-- `clear_neo4j.py` - xóa dữ liệu/constraints/index local Neo4j.
-- `migrate_auth.py` - hỗ trợ migration auth dữ liệu cũ.
-- `re_embedder.py` - re-embedding A/B test.
-- `batch_runner.py` - xử lý batch ingest theo folder.
+# Re-ingest
+python scripts/reextract_and_ingest.py --type personnel
+python scripts/reextract_and_ingest.py --type org
+```
 
----
+## Phát triển tiếp theo
 
-## 🧹 Cleanup v1 đã thực hiện
-
-- Đã tạo `archive_v1/` tại root.
-- Đã di chuyển UI cũ `app.py` vào `archive_v1/`.
-- Đã di chuyển tài liệu README cũ liên quan v1 vào `archive_v1/`.
-- Đã loại bỏ dependency Streamlit khỏi `requirements.txt`:
-  - `streamlit`
-  - `streamlit-shadcn-ui`
-  - `streamlit-agraph`
-
----
-
-## 📌 Ghi chú vận hành
-
-- Backend v2.0 không phụ thuộc Streamlit.
-- Frontend mới có thể tích hợp qua HTTP/WS API hiện tại.
-- Nên thêm reverse proxy + TLS + rate limit khi triển khai production.
-
-**Digital Twin Recruitment 2.0 đang ở trạng thái sẵn sàng để tích hợp Frontend mới và mở rộng production.** 🔥
+- [ ] Next.js frontend (scheduling UI, chat UI, notification)
+- [ ] Google Calendar integration
+- [ ] Multi-language support (EN/VI)
