@@ -1,0 +1,12 @@
+{
+  "venvPath": ".",
+  "venv": ".venv",
+  "include": [
+    "pipeline",
+    "api",
+    "scripts",
+    "test_engine.py",
+    "app.py",
+    "batch_runner.py"
+  ]
+}

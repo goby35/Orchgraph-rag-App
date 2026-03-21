@@ -6,6 +6,8 @@ import os
 import logging
 from pathlib import Path
 from dotenv import load_dotenv
+from cerebras.cloud.sdk import Cerebras
+from openai import OpenAI as _OpenAI
 
 # Load .env từ thư mục gốc của project
 _ENV_PATH = Path(__file__).resolve().parent.parent / ".env"
@@ -48,6 +50,35 @@ class Settings:
 
 
 settings = Settings()
+
+# ── Dual-path LLM routing ────────────────────────────────────────────────────
+# Nguyên tắc: dùng đúng model cho đúng việc.
+#   - Extraction (cần schema enforcement) → OpenAI gpt-4o-mini
+#     Lý do: response_format json_schema strict = constrained decoding tại API level,
+#     không phải instruction. LLM không thể generate token vi phạm schema.
+#   - Tất cả việc khác (summarize, embed context, chat) → Cerebras (nhanh ~20x, rẻ hơn)
+
+_openai_extraction_client = _OpenAI(
+    api_key=os.getenv("OPENAI_API_KEY")
+)
+OPENAI_EXTRACTION_MODEL = "gpt-4o-mini"   # đủ quality cho extraction, rẻ hơn gpt-4o 15x
+
+# Dùng client Cerebras hiện có làm fallback extraction path khi thiếu OpenAI key.
+cerebras_client = Cerebras(api_key=settings.CEREBRAS_API_KEY) if settings.CEREBRAS_API_KEY else None
+CEREBRAS_MODEL = settings.CEREBRAS_MODEL
+
+
+def get_extraction_client():
+    """
+    Trả về (client, model_name, provider) cho extraction task.
+    Fallback: nếu OPENAI_API_KEY không có → dùng Cerebras với json_object mode.
+    """
+    if os.getenv("OPENAI_API_KEY"):
+        return _openai_extraction_client, OPENAI_EXTRACTION_MODEL, "openai"
+    # Fallback về Cerebras nếu chưa có OpenAI key
+    if cerebras_client is None:
+        raise RuntimeError("Neither OPENAI_API_KEY nor CEREBRAS_API_KEY is configured")
+    return cerebras_client, CEREBRAS_MODEL, "cerebras"
 
 # --- Logger factory ---
 def get_logger(name: str) -> logging.Logger:

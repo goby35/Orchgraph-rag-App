@@ -1,0 +1,423 @@
+[
+  {
+    "personnel_id": "P_016",
+    "public_data": {
+      "full_name": "Nguyễn Anh Tuấn",
+      "professional_summary": "Senior Backend Engineer với 7 năm kinh nghiệm tập trung vào hệ thống tài chính phân tán và payment infrastructure. Đã làm tại ZaloPay (VNG) 3 năm với vai trò key engineer phụ trách distributed transaction management, sau đó chuyển sang GHTK với vai trò technical lead cho logistics payment reconciliation engine. Tại ZaloPay, trực tiếp xây dựng cơ chế đảm bảo tính nhất quán tài chính cho 200.000 giao dịch đồng thời trong ngày lễ – xử lý split-brain scenarios và partial failure trong microservices chain. Thành thạo Golang và Java ở mức production: tuning goroutine pools, JVM GC cho low-latency fintech. Hiểu sâu về database internals: PostgreSQL MVCC, advisory locks, và row-level locking patterns cho financial systems. Tại GHTK, xây dựng lại toàn bộ COD (Cash on Delivery) reconciliation pipeline xử lý 1 triệu đơn hàng/ngày với accuracy 99.9997%. Đang tìm kiếm vai trò Staff Engineer hoặc Engineering Lead tại fintech hoặc logistics tech.",
+      "education": [
+        {
+          "degree": "Kỹ sư",
+          "school": "Đại học Công nghệ – ĐHQG Hà Nội",
+          "major": "Công nghệ Thông tin",
+          "year": "2017"
+        }
+      ],
+      "certificates": [
+        "AWS Certified Solutions Architect – Associate",
+        "Certified Kubernetes Application Developer (CKAD)",
+        "PostgreSQL Associate Certification – EDB"
+      ],
+      "skills": [
+        "Go (advanced: runtime tuning, pprof, sync primitives)",
+        "Java 17 / Spring Boot / Spring Batch",
+        "Distributed transactions: Saga pattern / Orchestration vs Choreography",
+        "gRPC / Protobuf", "Apache Kafka (exactly-once semantics)",
+        "PostgreSQL (internals: MVCC, advisory locks, partitioning)",
+        "Redis (Lua scripting, SETNX, distributed lock patterns)",
+        "AWS (EKS, RDS Aurora, SQS, Step Functions)",
+        "Temporal (workflow orchestration for long-running transactions)",
+        "Docker / Kubernetes / Helm",
+        "OpenTelemetry (distributed tracing)", "Grafana / Prometheus"
+      ],
+      "experience": [
+        {
+          "project_name": "ZaloPay – Distributed Transaction Management & Consistency Engine",
+          "role": "Senior Backend Engineer",
+          "tech_stack": ["Go", "Java", "Kafka", "PostgreSQL", "Redis", "Temporal", "AWS EKS"]
+        },
+        {
+          "project_name": "GHTK – COD Reconciliation & Settlement Pipeline",
+          "role": "Backend Tech Lead",
+          "tech_stack": ["Go", "PostgreSQL", "Kafka", "Redis", "Spring Batch", "AWS RDS"]
+        },
+        {
+          "project_name": "ZaloPay – Merchant Payout Scheduling System",
+          "role": "Backend Engineer",
+          "tech_stack": ["Java", "Spring Boot", "Quartz Scheduler", "PostgreSQL", "gRPC", "Redis"]
+        }
+      ],
+      "availability": "1_month_notice",
+      "cultural_tags": ["Fintech / Payment", "Engineering excellence", "High-scale system", "Ownership mindset"]
+    },
+    "private_data": {
+      "contact": {
+        "email": "nguyenanhtuan.fintech@gmail.com",
+        "phone": "0936781234",
+        "github": "https://github.com/anhtuan-fintech"
+      },
+      "salary_expectation": "USD 3,800 – 4,200/tháng. Kỳ vọng phản ánh 3 năm kinh nghiệm payment systems tại ZaloPay và track record về financial accuracy. Không thương lượng xuống dưới USD 3,500.",
+      "project_technical_secrets": "Tại ZaloPay, đã tự thiết kế và xây dựng một Saga Orchestration Engine nội bộ bằng Go, thay thế hoàn toàn phụ thuộc vào Temporal cho các payment workflows ngắn (dưới 10 bước). Engine này dùng PostgreSQL outbox pattern kết hợp với advisory locks để đảm bảo at-least-once delivery mà không cần message broker, giảm latency trung bình 40ms so với Temporal-based workflows. Quan trọng hơn: engine có custom compensation tree – khi một step fail, tự động rollback theo đúng reverse topological order của dependency graph. Toàn bộ state machine implementation bằng Go generics (Go 1.21), chưa được open-source vì chứa ZaloPay-specific business logic. Đây là kỹ thuật hiếm gặp – hầu hết engineers VN biết về Saga theo lý thuyết nhưng chưa implement từ đầu.",
+      "interview_questions_history": [
+        {
+          "question": "Tại sao Saga pattern không đảm bảo isolation như ACID transactions? Cách bạn xử lý dirty reads trong Saga?",
+          "answer": "Saga đảm bảo ACD nhưng không có I (Isolation). Giữa các bước của Saga, các transaction khác có thể đọc intermediate state. Giải pháp: semantic lock – đặt status 'PROCESSING' vào entity, các transaction khác skip hoặc retry khi thấy status này. Countermeasures pattern: đặt compensating transaction idempotent và thiết kế business logic chấp nhận temporary inconsistency. Tại ZaloPay dùng 'pivot transaction' concept – xác định điểm không thể rollback và đảm bảo mọi bước trước đó fully compensatable.",
+          "org": "GHTK (Engineering Manager interview)"
+        },
+        {
+          "question": "Bạn xử lý double-charge trong payment system như thế nào khi consumer bị crash giữa chừng?",
+          "answer": "Idempotency key là giải pháp core – client generate UUID trước khi gửi, server store (idempotency_key, response) với TTL. Nếu request đến lần 2 với cùng key: trả về cached response, không process lại. Database side: unique constraint trên (idempotency_key, merchant_id). Với Kafka consumer crash: đảm bảo offset commit CHỈ sau khi DB write thành công. Thêm outbox pattern để guarantee at-least-once delivery mà consumer có thể idempotently handle.",
+          "org": "ZaloPay (internal tech review)"
+        },
+        {
+          "question": "So sánh Orchestration Saga và Choreography Saga. Khi nào dùng cái nào?",
+          "answer": "Orchestration: central coordinator biết toàn bộ flow, dễ debug và trace, single point of failure nhưng dễ monitor. Choreography: mỗi service lắng nghe event và react, loose coupling hơn nhưng flow khó trace. Với payment flows (linear, critical correctness): Orchestration. Với event-driven notifications hoặc analytics: Choreography. Tại ZaloPay dùng Orchestration cho payment core, Choreography cho downstream effects (notification, loyalty points).",
+          "org": "Grab Vietnam (System design interview, offer nhưng không match về vị trí)"
+        }
+      ],
+      "blacklist_orgs": ["Outsourcing company không có payment domain", "Nơi không care về financial data consistency"],
+      "evidence_links": [
+        "https://medium.com/@anhtuan-fintech/saga-orchestration-golang-zalopay-lessons",
+        "https://github.com/anhtuan-fintech/outbox-pattern-go"
+      ]
+    }
+  },
+
+  {
+    "personnel_id": "P_017",
+    "public_data": {
+      "full_name": "Trần Thị Bích Ngọc",
+      "professional_summary": "Senior Machine Learning Engineer chuyên về Recommendation Systems và Personalization, 5 năm kinh nghiệm tại Shopee Vietnam và ByteDance Vietnam. Tại Shopee, xây dựng và vận hành recommendation engine cho trang chủ và search results phục vụ hơn 10 triệu DAU tại thị trường Việt Nam. Thành thạo toàn bộ ML pipeline: từ feature engineering bằng Apache Spark, training với PyTorch và TensorFlow Recommenders, đến serving với Triton Inference Server và BentoML. Tại ByteDance Vietnam, làm việc trong team ranking cho TikTok content feed – hệ thống phức tạp nhất bản thân từng tiếp xúc với real-time scoring cho hàng trăm triệu user. Có nền tảng toán học tốt: hiểu sâu về matrix factorization, deep retrieval models (DSSM, Two-Tower), và sequential recommendation (BERT4Rec). Quan tâm đến causal inference trong recommendation: debiasing, counterfactual evaluation. Đang tìm Senior/Staff ML Engineer hoặc ML Lead tại công ty product có bài toán personalization thực sự.",
+      "education": [
+        {
+          "degree": "Kỹ sư",
+          "school": "Đại học Bách Khoa TP.HCM",
+          "major": "Khoa học Máy tính",
+          "year": "2019"
+        }
+      ],
+      "certificates": [
+        "AWS Certified Machine Learning – Specialty",
+        "TensorFlow Developer Certificate – Google",
+        "Recommender Systems Specialization – Coursera (University of Minnesota)"
+      ],
+      "skills": [
+        "Python (PyTorch, TensorFlow Recommenders, JAX)",
+        "Recommendation models: Two-Tower, BERT4Rec, DIN, DCN-v2",
+        "Apache Spark (PySpark – large-scale feature engineering)",
+        "Feature Store (Feast, Redis online, Hive offline)",
+        "Triton Inference Server / BentoML / TorchServe",
+        "Airflow / Kubeflow Pipelines",
+        "A/B testing design: holdout groups, interleaving, CUPED variance reduction",
+        "Causal inference: propensity scoring, doubly robust estimators",
+        "AWS (SageMaker, EMR, S3, ElastiCache)",
+        "MLflow / Weights & Biases",
+        "SQL (Hive, BigQuery, Spark SQL – advanced)",
+        "Kafka (real-time feature computation)"
+      ],
+      "experience": [
+        {
+          "project_name": "Shopee VN – Homepage & Search Recommendation Engine",
+          "role": "ML Engineer → Senior ML Engineer",
+          "tech_stack": ["PyTorch", "TensorFlow Recommenders", "PySpark", "Feast", "Triton", "Kafka", "Airflow"]
+        },
+        {
+          "project_name": "ByteDance Vietnam – TikTok Content Ranking Infrastructure",
+          "role": "Senior ML Engineer",
+          "tech_stack": ["PyTorch", "Kubeflow", "Spark", "Custom feature store", "Internal serving framework", "JAX"]
+        },
+        {
+          "project_name": "Shopee VN – Real-time Personalized Notification System",
+          "role": "ML Engineer",
+          "tech_stack": ["Python", "Kafka", "Redis", "Scikit-learn", "Airflow", "AWS SageMaker"]
+        }
+      ],
+      "availability": "Open_for_offers",
+      "cultural_tags": ["Data-driven culture", "R&D", "Product company", "Deep tech focus"]
+    },
+    "private_data": {
+      "contact": {
+        "email": "tranbichngoc.ml@gmail.com",
+        "phone": "0923456789",
+        "github": "https://github.com/bichngoc-recsys"
+      },
+      "salary_expectation": "90,000,000 – 110,000,000 VNĐ/tháng. Không thương lượng xuống dưới 85M. Có thể xem xét USD offer nếu remote cho công ty nước ngoài (tương đương USD 3,800–4,500).",
+      "project_technical_secrets": "Tại Shopee Vietnam, đã nghiên cứu và triển khai một Contextual Multi-Armed Bandit (cMAB) system cho real-time ad slot allocation trong search results, dùng Thompson Sampling với Bayesian updating. Đây là hệ thống song song với ranker chính, tự động explore/exploit mà không cần A/B test thủ công. Kết quả: CTR tăng 7.3% trên slot đầu tiên. Toàn bộ implementation dưới NDA với Shopee, không được publish. Ngoài ra, tại ByteDance, được biết về một kỹ thuật debiasing nội bộ (gọi là 'Unbiased Learning to Rank' variant của team) mà chưa được released ra bên ngoài – xử lý position bias và click noise một cách hiệu quả hơn IPS estimator tiêu chuẩn. Tên kỹ thuật này là internal code name, không public.",
+      "interview_questions_history": [
+        {
+          "question": "Làm thế nào bạn xử lý cold-start problem trong recommendation system?",
+          "answer": "Phân loại: user cold-start (user mới) và item cold-start (item mới). User mới: dùng demographic-based fallback, popularity-based, hoặc onboarding explicit preference collection. Item mới: content-based features (category, attributes, seller history), sau đó explore theo UCB1 để nhanh chóng build up interaction data. Tại Shopee có 'warm-up pool' riêng cho items mới được seller upload trong 7 ngày – guaranteed minimum impression để seed collaborative filtering.",
+          "org": "ByteDance Vietnam (technical deep-dive interview)"
+        },
+        {
+          "question": "Giải thích Two-Tower model architecture và ưu nhược điểm so với matrix factorization truyền thống.",
+          "answer": "Two-Tower: user tower và item tower encode riêng biệt thành embedding, score bằng dot product. Ưu điểm so với MF: (1) có thể incorporate rich features (not just ID), (2) item embeddings có thể pre-compute và index bằng FAISS/ScaNN cho ANN retrieval. Nhược điểm: cross-feature interaction giữa user và item bị mất (chỉ dot product cuối). DCN-v2 và DIN giải quyết nhược điểm này nhưng không thể pre-compute → chỉ dùng ở re-ranking stage.",
+          "org": "Shopee Vietnam (ML system design assessment)"
+        },
+        {
+          "question": "Bạn design A/B test cho một recommendation model mới như thế nào để tránh interference effect?",
+          "answer": "Interference xảy ra khi users trong treatment group và control group ảnh hưởng lẫn nhau (network effects). Giải pháp: cluster-based randomization (randomize theo user cluster hoặc geographic region thay vì individual user). Với recommendation: dùng holdout set – giữ X% users hoàn toàn không nhận bất kỳ model mới nào làm long-term holdout. CUPED technique để reduce variance với pre-experiment covariates. Tại Shopee dùng interleaving method để detect preference signal nhanh hơn traditional A/B.",
+          "org": "ByteDance Vietnam (ML platform onboarding assessment)"
+        }
+      ],
+      "blacklist_orgs": ["Công ty gọi là 'AI' nhưng recommendation = random shuffle với một vài business rules", "Môi trường không có proper A/B testing infrastructure"],
+      "evidence_links": [
+        "https://medium.com/@bichngoc-recsys/two-tower-retrieval-shopee-vietnam-lessons",
+        "https://github.com/bichngoc-recsys/contextual-bandit-recsys-tutorial"
+      ]
+    }
+  },
+
+  {
+    "personnel_id": "P_018",
+    "public_data": {
+      "full_name": "Vũ Minh Quân",
+      "professional_summary": "Security Platform Engineer và DevSecOps Specialist với 6 năm kinh nghiệm, chuyên sâu về cryptographic systems, PKI infrastructure và payment security trong môi trường PCI-DSS. Sau 2.5 năm tại ZaloPay phụ trách toàn bộ cryptographic key management và HSM (Hardware Security Module) infrastructure, hiện đang tại VinGroup Tech xây dựng internal PKI platform cho hệ sinh thái VinGroup. Tại ZaloPay, thiết kế và vận hành HSM cluster (Thales Luna Network HSM) đảm bảo key ceremony, key rotation tự động, và disaster recovery cho cryptographic material. Hiểu sâu về X.509 PKI, TLS mutual authentication, certificate lifecycle management. Thành thạo HashiCorp Vault ở mức operator: HA setup, auto-unseal, secret engines cho PKI, Transit (Encryption-as-a-Service), và Database dynamic secrets. Nắm vững DevSecOps: SAST/DAST tích hợp CI/CD, container image signing (cosign/Notary), supply chain security (SBOM, SLSA framework). Tìm kiếm vai trò Security Architect hoặc Platform Security Lead.",
+      "education": [
+        {
+          "degree": "Kỹ sư",
+          "school": "Đại học FPT",
+          "major": "An toàn Thông tin",
+          "year": "2018"
+        }
+      ],
+      "certificates": [
+        "Certified Information Systems Security Professional (CISSP)",
+        "HashiCorp Certified: Vault Operations Professional",
+        "AWS Certified Security – Specialty"
+      ],
+      "skills": [
+        "HSM (Thales Luna Network HSM, AWS CloudHSM)",
+        "HashiCorp Vault (PKI engine, Transit engine, Database secrets, HA cluster)",
+        "PKI / X.509 / TLS (mutual TLS, certificate lifecycle automation)",
+        "PKCS#11 / JCE / OpenSSL (cryptographic API programming)",
+        "Python / Go (security tooling và automation)",
+        "Container security: cosign, Notary v2, SLSA, SBOM (Syft)",
+        "Kubernetes security: OPA/Gatekeeper, Kyverno, Pod Security Standards",
+        "SAST (Semgrep, SonarQube) / DAST (OWASP ZAP, Nuclei)",
+        "AWS (IAM, KMS, CloudHSM, Secrets Manager, Security Hub)",
+        "PCI-DSS v4.0 compliance implementation",
+        "Trivy / Grype (vulnerability scanning)",
+        "Splunk / Elasticsearch (SIEM integration)"
+      ],
+      "experience": [
+        {
+          "project_name": "ZaloPay – HSM Infrastructure & Cryptographic Key Management",
+          "role": "Security Platform Engineer",
+          "tech_stack": ["Thales Luna HSM", "Vault", "PKCS#11", "Python", "Go", "AWS CloudHSM", "PostgreSQL"]
+        },
+        {
+          "project_name": "VinGroup Tech – Internal PKI Platform & Certificate Automation",
+          "role": "Senior Security Platform Engineer",
+          "tech_stack": ["Vault PKI engine", "cert-manager (Kubernetes)", "Let's Encrypt", "Go", "Terraform", "AWS KMS"]
+        },
+        {
+          "project_name": "ZaloPay – DevSecOps Pipeline & Supply Chain Security",
+          "role": "Security Platform Engineer",
+          "tech_stack": ["Semgrep", "cosign", "Syft", "SLSA", "GitHub Actions", "Trivy", "AWS ECR"]
+        }
+      ],
+      "availability": "Open_for_offers",
+      "cultural_tags": ["Security-first culture", "ISO process", "Compliance mindset", "Engineering excellence"]
+    },
+    "private_data": {
+      "contact": {
+        "email": "vuminhquan.security@gmail.com",
+        "phone": "0948765432",
+        "github": "https://github.com/quan-security-platform"
+      },
+      "salary_expectation": "65,000,000 – 80,000,000 VNĐ/tháng. Có thể cân nhắc USD offer tương đương. Mức lương phản ánh CISSP + Vault Operations Pro + HSM expertise – bộ kỹ năng hiếm tại thị trường Việt Nam.",
+      "project_technical_secrets": "Tại ZaloPay, đã thiết kế toàn bộ quy trình Key Ceremony cho Master Key của HSM cluster theo chuẩn PCI-DSS v3.2 và ISO TR 39-2: chia secret thành 5 shards (M-of-N secret sharing scheme, M=3), lưu giữ bởi 5 Key Custodians khác nhau trong két an toàn tại 2 địa điểm vật lý. Quy trình recovery và rotation được document chi tiết và test 2 lần/năm với auditor. Đây là tài liệu nội bộ mật, không được tiết lộ chi tiết nhưng có thể describe methodology. Ngoài ra, đã tìm ra và vá một lỗ hổng nghiêm trọng trong cách ZaloPay wrap/unwrap symmetric keys qua PKCS#11 interface – lỗ hổng cho phép attacker với quyền HSM partition user có thể extract key material dưới dạng ciphertext predictable. Được escalate lên Thales và fix ở firmware level. Report này được giữ confidential theo responsible disclosure agreement.",
+      "interview_questions_history": [
+        {
+          "question": "Giải thích sự khác biệt giữa HSM và AWS KMS. Khi nào cần HSM thực sự?",
+          "answer": "AWS KMS: managed service, key không bao giờ rời KMS, FIPS 140-2 Level 2, multi-tenant. HSM (CloudHSM hoặc on-prem): dedicated hardware, FIPS 140-2 Level 3, single-tenant, bạn kiểm soát key entirely – AWS không có cách nào access. HSM bắt buộc cho: PCI-DSS PIN processing (PCI PTS PHsm chuẩn), key ceremony với compliance requirement, jurisdictions yêu cầu key không được lưu tại cloud provider nước ngoài. Banking và payment tại VN thường yêu cầu HSM theo quy định SBV.",
+          "org": "VinGroup Tech (Security architecture review)"
+        },
+        {
+          "question": "Làm thế nào bạn implement zero-trust cho internal microservices mà không cần modify từng service?",
+          "answer": "Service mesh với mTLS: Istio tự động inject Envoy sidecar, quản lý certificate rotation qua cert-manager + Vault PKI engine. SPIFFE/SPIRE cho workload identity – mỗi pod có SVID (SPIFFE Verifiable Identity Document). Network policy tại Kubernetes layer restrict traffic theo identity. Không cần thay đổi application code, chỉ cần configure mesh policies. Quan trọng: audit log toàn bộ service-to-service calls qua Envoy access logs vào SIEM.",
+          "org": "ZaloPay (internal architecture review)"
+        },
+        {
+          "question": "Container image supply chain attack là gì? Bạn defend như thế nào?",
+          "answer": "Supply chain attack: compromise image tại build time (malicious dependency, compromised CI environment, registry tampering). Defense layers: (1) Pin base images bằng digest, không phải tag; (2) SBOM generation (Syft) cho mọi image; (3) Sign images bằng cosign với Sigstore keyless signing; (4) Admission webhook verify signature trước khi pod schedule; (5) SLSA framework level 2+: hermetic builds, provenance attestation. Tại ZaloPay đã implement full pipeline, detect 2 malicious npm packages trước khi reach production.",
+          "org": "VNPAY (security conference presentation, sau đó áp dụng tại VNPAY)"
+        }
+      ],
+      "blacklist_orgs": ["Công ty không có HSM cho payment operations và claim vẫn PCI-DSS compliant", "Môi trường security chỉ là annual pentest checkbox"],
+      "evidence_links": [
+        "https://blog.vuminhquan.sec/vault-pki-kubernetes-zero-trust-mTLS",
+        "https://github.com/quan-security-platform/vault-hsm-automation"
+      ]
+    }
+  },
+
+  {
+    "personnel_id": "P_019",
+    "public_data": {
+      "full_name": "Nguyễn Thị Ngọc Hà",
+      "professional_summary": "Senior SRE và Network Performance Engineer với 5 năm kinh nghiệm chuyên sâu về Linux kernel networking, high-performance packet processing, và reliability engineering tại scale. Tại Shopee Vietnam, phụ trách nhóm network performance với nhiệm vụ tối ưu bandwidth utilization và giảm latency cho traffic nội bộ giữa 500+ microservices. Sau đó join Cloudflare ở vị trí remote contractor, làm việc với global anycast network. Thành thạo Linux kernel networking stack từ lớp socket đến lớp NIC driver: TCP tuning, receive side scaling (RSS/RPS/RFS), interrupt coalescing. Có kinh nghiệm thực chiến với eBPF/XDP cho packet processing tốc độ cao, bypass kernel network stack hoàn toàn. Hiểu sâu về observability: distributed tracing với OpenTelemetry, custom metrics với Prometheus, tự viết eBPF-based network monitoring tools. Tìm kiếm vai trò Staff SRE hoặc Network Platform Engineer tại môi trường có infrastructure challenges tầng sâu.",
+      "education": [
+        {
+          "degree": "Cử nhân Công nghệ Thông tin",
+          "school": "RMIT University Vietnam",
+          "major": "Information Technology (Network & Systems)",
+          "year": "2019"
+        }
+      ],
+      "certificates": [
+        "Certified Kubernetes Administrator (CKA)",
+        "AWS Certified Advanced Networking – Specialty",
+        "Linux Foundation Certified System Administrator (LFCS)"
+      ],
+      "skills": [
+        "Linux kernel networking (TCP/IP internals, socket buffer tuning, NAPI)",
+        "eBPF (BCC toolkit, libbpf, CO-RE portable programs)",
+        "XDP (eXpress Data Path – kernel-bypass packet processing)",
+        "Cilium (eBPF-based CNI, NetworkPolicy, Hubble observability)",
+        "Kubernetes networking (CNI deep dive, kube-proxy vs eBPF dataplane)",
+        "Prometheus / Grafana / OpenTelemetry (distributed tracing)",
+        "Python / Go / C (systems programming và eBPF probe writing)",
+        "AWS (VPC networking, Direct Connect, Transit Gateway, Route53)",
+        "Istio / Envoy (service mesh, traffic management)",
+        "DPDK (Data Plane Development Kit – familiarity)",
+        "Wireshark / tcpdump / bpftrace (network debugging)",
+        "Terraform / Ansible (infra automation)"
+      ],
+      "experience": [
+        {
+          "project_name": "Shopee VN – Network Performance Engineering & Latency Optimization",
+          "role": "SRE / Network Performance Engineer",
+          "tech_stack": ["Linux kernel", "eBPF/XDP", "Cilium", "Prometheus", "Go", "Python", "AWS VPC"]
+        },
+        {
+          "project_name": "Cloudflare – Edge Network Reliability (Remote Contractor)",
+          "role": "Network Reliability Engineer",
+          "tech_stack": ["eBPF", "Go", "Prometheus", "Custom traffic analysis tooling", "Anycast BGP"]
+        },
+        {
+          "project_name": "Shopee VN – Kubernetes Networking Migration (kube-proxy → Cilium)",
+          "role": "SRE Engineer",
+          "tech_stack": ["Cilium", "Kubernetes", "eBPF", "Hubble", "Prometheus", "Terraform (EKS)"]
+        }
+      ],
+      "availability": "Immediate",
+      "cultural_tags": ["SRE culture", "Platform engineering", "Deep tech focus", "Blameless post-mortems"]
+    },
+    "private_data": {
+      "contact": {
+        "email": "nguyenngochat.sre@gmail.com",
+        "phone": "0957891234",
+        "github": "https://github.com/ngochat-ebpf"
+      },
+      "salary_expectation": "USD 2,800 – 3,400/tháng. Linh hoạt với mức lương nếu vai trò cho phép tiếp tục làm sâu về eBPF và kernel-level networking. Không chấp nhận vai trò thuần cloud ops không có systems depth.",
+      "project_technical_secrets": "Tại Shopee Vietnam, đã thiết kế và triển khai một custom XDP-based load balancer chạy trong kernel space để phân tải traffic giữa các backend pods trong Kubernetes cluster – bypass hoàn toàn iptables và kube-proxy. XDP program phân tích packet header trong vòng dưới 1 microsecond, lookup consistent hash ring trong eBPF map (BPF_MAP_TYPE_LRU_HASH), và redirect trực tiếp đến NIC queue của target pod. Kết quả: latency p99 cho internal service call giảm từ 8ms xuống 1.2ms, CPU overhead của kube-proxy giảm 70% trên nodes có >500 services. Solution này chưa được publish vì Shopee coi đây là competitive advantage về infra cost. Kỹ năng eBPF/XDP ở mức viết production-grade kernel programs là cực kỳ hiếm – trên toàn thị trường VN hiện tại ước tính chỉ có khoảng 5-8 engineers có thể làm được điều này.",
+      "interview_questions_history": [
+        {
+          "question": "Giải thích XDP và tại sao nó nhanh hơn kernel network stack truyền thống.",
+          "answer": "XDP (eXpress Data Path): eBPF hook point được attach trực tiếp vào NIC driver, trước khi kernel allocate socket buffer (SKB). Khi packet đến, XDP program chạy ngay trên CPU của NIC interrupt – không copy memory, không traverse network stack. Actions: XDP_DROP (discard sớm nhất), XDP_TX (gửi lại cùng interface), XDP_REDIRECT (chuyển đến interface khác hoặc userspace), XDP_PASS (tiếp tục stack thường). So với iptables: iptables cần SKB allocation + traverse nhiều hooks. XDP chạy sớm hơn 10-15 CPU cycles per packet với DTLB miss thấp hơn.",
+          "org": "Shopee Vietnam (SRE technical interview)"
+        },
+        {
+          "question": "Làm thế nào bạn debug network latency spike từ 2ms lên 50ms xảy ra random?",
+          "answer": "Approach có hệ thống: (1) Đo cả chiều – là sender delay, network, hay receiver processing? dùng tc-netem timestamps hoặc kernel timestamps với SO_TIMESTAMPING. (2) Check TCP retransmit: `ss -ti` hoặc bpftrace probe tcp_retransmit_skb. (3) CPU interrupts: nếu SoftIRQ backlog tăng → NIC receive queue overflow → tune netdev_max_backlog, ring buffer size. (4) TCP send buffer full: check wmem. (5) System-wide: sar -n DEV để xem packet drops theo interface. Tại Shopee đã tìm ra 1 case do numa topology mismatch – NIC IRQ và process affinitied vào khác NUMA node, gây cross-socket latency.",
+          "org": "Cloudflare (contractor technical assessment)"
+        },
+        {
+          "question": "Sự khác biệt giữa Cilium và Calico trong Kubernetes CNI. Khi nào chọn cái nào?",
+          "answer": "Cả hai đều support NetworkPolicy nhưng implementation khác nhau. Calico: dùng iptables hoặc eBPF (optional), BGP routing thực sự giữa nodes, phù hợp bare-metal, dataplane options linh hoạt. Cilium: eBPF-native từ đầu, không dùng iptables, rich Layer 7 policy (HTTP, DNS), Hubble observability built-in, WireGuard encryption. Hiệu năng: Cilium tốt hơn ở scale lớn do eBPF O(1) lookup vs iptables O(n) linear scan. Chọn Cilium khi: cần L7 policy, observability chi tiết, scale >1000 services. Chọn Calico khi: cần BGP integration với existing network, team chưa quen eBPF.",
+          "org": "Shopee Vietnam (architecture decision record)"
+        }
+      ],
+      "blacklist_orgs": ["Công ty Kubernetes chỉ click-ops không có infra-as-code", "Môi trường không có blameless incident culture"],
+      "evidence_links": [
+        "https://blog.ngochat-ebpf.dev/xdp-loadbalancer-kubernetes-shopee",
+        "https://github.com/ngochat-ebpf/ebpf-network-monitor-go"
+      ]
+    }
+  },
+
+  {
+    "personnel_id": "P_020",
+    "public_data": {
+      "full_name": "Đinh Quang Hưng",
+      "professional_summary": "Engineering Director và Principal Distributed Systems Engineer với 12 năm kinh nghiệm, trong đó 5 năm tại Google Vietnam và hiện tại là VP Engineering tại một startup Series B trong lĩnh vực logistics automation. Tại Google Vietnam (L5 → L6 Software Engineer), tham gia vào hai nhóm lớn: Ads Infrastructure for Southeast Asia và Google Maps routing optimization. Là người Việt Nam duy nhất trong team core của Google Maps SEA routing engine trong 2 năm liên tiếp – thiết kế thuật toán tối ưu contraction hierarchies cho graph với hơn 500 triệu nodes địa lý. Có nền tảng lý thuyết tính toán vững chắc: biết ứng dụng TLA+ và formal specification để verify correctness của distributed protocols trước khi implement. Tại startup hiện tại, lãnh đạo team 45 kỹ sư, thiết lập engineering processes từ đầu: RFC-based design culture, architecture decision records, quarterly technical debt review board. Thành thạo kỹ thuật phỏng vấn Google và mức chuẩn kỹ thuật L4–L6. Tìm kiếm vai trò CTO, VP Engineering, hoặc Principal Engineer tại tổ chức phù hợp.",
+      "education": [
+        {
+          "degree": "Kỹ sư (xếp loại Xuất sắc)",
+          "school": "Đại học Bách Khoa Hà Nội",
+          "major": "Khoa học Máy tính",
+          "year": "2012"
+        }
+      ],
+      "certificates": [
+        "Google Cloud Professional Cloud Architect",
+        "AWS Certified Solutions Architect – Professional",
+        "Certified Scrum Master (CSM) – Scrum Alliance"
+      ],
+      "skills": [
+        "Go / Java / C++ (production-grade, Google codebase scale)",
+        "Distributed systems: Raft/Paxos implementation, CRDTs, vector clocks",
+        "TLA+ / PlusCal (formal specification and model checking)",
+        "Graph algorithms: contraction hierarchies, A*, bidirectional Dijkstra",
+        "System design (Google L6 level: design docs, RFC, trade-off analysis)",
+        "Kubernetes (GKE, EKS – architecture level)",
+        "Google internal: Spanner, Bigtable, Pub/Sub (deep operational knowledge)",
+        "Engineering management: technical roadmap, hiring, performance review",
+        "Data structures & algorithms (competitive programming background)",
+        "Terraform / Pulumi", "PostgreSQL / Spanner / Bigtable",
+        "Apache Beam / Dataflow", "OpenTelemetry (full stack observability)"
+      ],
+      "experience": [
+        {
+          "project_name": "Google Vietnam – Maps SEA Routing Engine Optimization",
+          "role": "Senior Software Engineer (L5 → L6)",
+          "tech_stack": ["C++", "Go", "Spanner", "Bigtable", "Google internal infra", "Protocol Buffers"]
+        },
+        {
+          "project_name": "Google Vietnam – Ads Infrastructure SEA Serving Latency",
+          "role": "Software Engineer",
+          "tech_stack": ["Java", "C++", "Bigtable", "Pub/Sub", "Google Borg (Kubernetes predecessor)", "Go"]
+        },
+        {
+          "project_name": "Startup Series B – VP Engineering (Logistics Automation)",
+          "role": "VP Engineering",
+          "tech_stack": ["Go", "Kubernetes (GKE)", "PostgreSQL", "Kafka", "Terraform", "GitHub Actions"]
+        }
+      ],
+      "availability": "Open_for_offers",
+      "cultural_tags": ["Engineering excellence", "RFC culture", "Technical depth", "Blameless post-mortems"]
+    },
+    "private_data": {
+      "contact": {
+        "email": "dinhquanghung.eng@gmail.com",
+        "phone": "0913579246",
+        "github": "https://github.com/quanghung-principal"
+      },
+      "salary_expectation": "USD 6,000 – 7,500/tháng cho IC role (Principal/Staff Engineer). USD 5,500 – 7,000 cho VP Engineering với equity component từ 0.5%. Đây là range phản ánh Google L6 benchmark và 5 năm kinh nghiệm tại Google. Không thương lượng xuống dưới USD 5,500 cho bất kỳ offer nào.",
+      "project_technical_secrets": "Trong giai đoạn tại Google Vietnam, đã sử dụng TLA+ (Leslie Lamport's formal specification language) để model và verify một distributed consensus variant nội bộ của Google Maps routing cache – một dạng multi-paxos với dynamic membership changes. Spec TLA+ tìm ra 3 edge cases trong protocol trước khi implementation bắt đầu, tránh được ít nhất 1 potential data loss scenario khi node failure xảy ra đúng lúc leader re-election. Đây là ứng dụng TLA+ production-grade cực kỳ hiếm, hầu hết engineers biết TLA+ ở mức academic chứ không apply thực tế. Ngoài ra, trong thời gian tại Google, đã được review bởi Jeff Dean team cho một optimization proposal về hierarchical cache eviction – proposal được adopt một phần vào internal codebase nhưng không public. Biết rõ kiến trúc internal của Google Ads serving pipeline cho SEA region (Google confidential, không được tiết lộ chi tiết).",
+      "interview_questions_history": [
+        {
+          "question": "Thiết kế một distributed key-value store consistent và available (chọn C và A trong CAP) cho 100TB data.",
+          "answer": "Chọn CP: consistency > availability cho financial/critical data. Architecture: consistent hashing với virtual nodes phân tán data. Replication: Raft consensus với 3 replicas minimum, synchronous replication với quorum write. Storage layer: LSM-tree (RocksDB) cho write throughput. Read path: leaderless với quorum read (R + W > N). Compaction strategy cho 100TB: tiered compaction. Hot-cold separation: frequently accessed keys → cache layer (Redis Cluster). Monitoring: replication lag, compaction metrics. Tại Google, Spanner giải quyết bài toán này bằng TrueTime API + 2PC qua Paxos groups.",
+          "org": "Google Vietnam (L6 loop design interview)"
+        },
+        {
+          "question": "Làm thế nào bạn build và duy trì engineering culture trong team 40+ engineers?",
+          "answer": "Culture không phải tuyên ngôn – là hành vi lặp đi lặp lại. Cụ thể: (1) Design review RFC bắt buộc cho mọi thay đổi significant – tạo ra psychological safety để question design. (2) Blameless post-mortem với action items assigned và tracked. (3) 'Tech debt board' hàng quý để prioritize engineering work không phải feature. (4) 'On-call rotation cho mọi engineer kể cả lead' – không để ops team gánh một mình. (5) Hire for cultural add, not cultural fit – diverse backgrounds create better solutions. Tại startup hiện tại: monthly architecture office hours, mọi engineer đều có thể đề xuất RFC.",
+          "org": "Startup Series B (Board-level presentation về engineering culture)"
+        },
+        {
+          "question": "Bạn dùng TLA+ như thế nào trong thực tế? Có thực sự đáng không?",
+          "answer": "TLA+ đáng giá cho distributed protocols, không phải toàn bộ codebase. ROI cao khi: protocol có nhiều concurrent actors, failure modes khó reason about, protocol sẽ run years không thay đổi. Workflow thực tế: viết spec TLA+ cho happy path trước → thêm failure injections (process crash, message loss, message reordering) → chạy TLC model checker exhaustively → fix invariant violations → implement code. Tại Google đã tìm ra race condition trong distributed cache invalidation mà code review và unit test đã miss. Chi phí: 2-3 ngày học TLA+, 1-2 ngày để write spec cho một protocol trung bình – tương đương với 1 production incident.",
+          "org": "Google Vietnam (internal tech talk, recording available internally)"
+        }
+      ],
+      "blacklist_orgs": ["Tổ chức có Engineering Manager không code và không có technical credibility", "Startup giai đoạn seed muốn thuê VP Engineering nhưng budget dưới market rate 50%"],
+      "evidence_links": [
+        "https://medium.com/@quanghung-principal/tlaplus-distributed-systems-production-usecase",
+        "https://github.com/quanghung-principal/tla-distributed-cache-spec"
+      ]
+    }
+  }
+]

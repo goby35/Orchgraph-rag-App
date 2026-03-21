@@ -3,6 +3,8 @@ chromadb>=0.4.0
 pyvi>=0.1.1
 python-docx>=1.0.0
 docling>=2.0.0
+unstructured[pdf,docx]>=0.15.0
+llama-parse>=0.5.0
 easyocr>=1.7.0
 transformers>=4.30.0
 torch>=2.0.0
@@ -18,7 +20,12 @@ cerebras-cloud-sdk>=0.1.0
 pydantic>=2.5.0
 llama-index-core>=0.10.0
 sentence-transformers>=2.2.0
-streamlit>=1.35.0
+bcrypt>=4.1.0
+supabase>=2.0.0
+fastapi>=0.115.0
+uvicorn>=0.30.0
+python-jose>=3.3.0
+python-multipart>=0.0.9
 
 # Dependencies for re_embedder.py (separate from main requirements.txt)
 
@@ -30,3 +37,6 @@ torch>=2.1.0
 numpy>=1.26
 tqdm>=4.66
 psutil>=5.9
+
+icalendar>=7.0.3
+pytz>=2024.1

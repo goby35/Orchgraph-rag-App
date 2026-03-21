@@ -1,137 +1,139 @@
-"""
-Bước 5 – Vectorization & Chuẩn bị dữ liệu cho Neo4j.
-
-Luồng:
-  1. Tách từ tiếng Việt bằng ``pyvi.ViTokenizer``.
-  2. Tạo vector embedding bằng PhoBERT (``vinai/phobert-base-v2``).
-  3. Đóng gói thành dict sẵn sàng nạp vào Neo4j / ChromaDB.
+﻿"""
+Bước 5 – Vectorization (Multi-Embedding)
+Sinh ra 2 vector embedding: public_embeddings và private_embeddings dựa trên nội dung gộp của từng mảng.
 """
 
 from __future__ import annotations
 
-import uuid
-from typing import Any, Dict, List, Optional
-
+import json
+from typing import Any, Dict, List
 import torch
 from pyvi import ViTokenizer
 from transformers import AutoModel, AutoTokenizer
 
 from pipeline.config import settings, get_logger
-from pipeline.extractor import KnowledgeGraphExtraction
 
 logger = get_logger(__name__)
 
-
-# ============================================================================
-# PhoBERT Embedder (Singleton)
-# ============================================================================
-
 class _PhoBERTEmbedder:
-    """Tải và cache model PhoBERT, tạo embedding cho text tiếng Việt."""
-
+    """Tải và cache model PhoBERT"""
     def __init__(self) -> None:
-        self._tokenizer: Optional[AutoTokenizer] = None
-        self._model: Optional[AutoModel] = None
-        self._device: Optional[torch.device] = None
+        self._tokenizer, self._model, self._device = None, None, None
 
     def _ensure_loaded(self) -> None:
-        """Lazy-load model lần đầu sử dụng."""
-        if self._model is not None:
-            return
-
-        model_name = settings.PHOBERT_MODEL
-        logger.info("Đang tải PhoBERT: %s …", model_name)
-        self._tokenizer = AutoTokenizer.from_pretrained(model_name)
-        self._model = AutoModel.from_pretrained(model_name)
+        if self._model is not None: return
+        logger.info("Đang tải PhoBERT...")
+        self._tokenizer = AutoTokenizer.from_pretrained(settings.PHOBERT_MODEL)
+        self._model = AutoModel.from_pretrained(settings.PHOBERT_MODEL)
         self._model.eval()
         self._device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self._model.to(self._device)
-        logger.info("PhoBERT loaded trên %s.", self._device)
 
-    def embed(self, segmented_text: str) -> List[float]:
-        """Tạo embedding vector (768-d) từ text đã tách từ.
-
-        Args:
-            segmented_text: Chuỗi đã qua ``ViTokenizer.tokenize()``.
-
-        Returns:
-            List[float] – vector 768 chiều.
-        """
+    def embed(self, text: str) -> List[float]:
         self._ensure_loaded()
+        tokenizer = self._tokenizer
+        model = self._model
+        device = self._device
+        if tokenizer is None or model is None or device is None:
+            raise RuntimeError("PhoBERT model/tokenizer/device chưa được khởi tạo")
 
-        if not segmented_text or not segmented_text.strip():
+        if not text or not text.strip():
             return [0.0] * 768
-
-        inputs = self._tokenizer(
-            segmented_text,
-            return_tensors="pt",
-            max_length=settings.PHOBERT_MAX_TOKENS,
-            truncation=True,
-            padding=True,
+        segmented = ViTokenizer.tokenize(text)
+        inputs = tokenizer(
+            segmented, return_tensors="pt", max_length=settings.PHOBERT_MAX_TOKENS,
+            truncation=True, padding=True
         )
-        inputs = {k: v.to(self._device) for k, v in inputs.items()}
-
+        inputs = {k: v.to(device) for k, v in inputs.items()}
         with torch.no_grad():
-            outputs = self._model(**inputs)
-            # CLS token embedding
+            outputs = model(**inputs)
             cls_embedding = outputs.last_hidden_state[:, 0, :].cpu().numpy()
-
         return cls_embedding.flatten().tolist()
 
-
-# Module-level singleton
 _embedder = _PhoBERTEmbedder()
 
 
-# ============================================================================
-# Public API
-# ============================================================================
+def vectorize_text(text: str) -> List[float]:
+    """Public helper for text embedding to avoid leaking embedder internals."""
+    return _embedder.embed(text)
 
-def prepare_for_neo4j(
-    chunk_text: str,
-    extracted_json: KnowledgeGraphExtraction,
-) -> Dict[str, Any]:
-    """Chuẩn bị dữ liệu cho một chunk để nạp vào Neo4j / ChromaDB.
+def _stringify_value(val: Any) -> str:
+    """Ép chuỗi đệ quy an toàn cho dict / list."""
+    if isinstance(val, (dict, list)):
+        return json.dumps(val, ensure_ascii=False)
+    return str(val) if val else ""
 
-    Pipeline bên trong:
-      1. Word Segmentation bằng ``pyvi``.
-      2. PhoBERT embedding.
-      3. Đóng gói kết quả.
 
-    Args:
-        chunk_text: Đoạn text gốc đã clean.
-        extracted_json: Kết quả extraction từ bước 4.
+def _safe_join_list(values: Any, sep: str = ", ") -> str:
+    """Join list an toàn, bỏ qua None/chuỗi rỗng và ép kiểu về str."""
+    if not isinstance(values, list):
+        return ""
+    normalized = [str(v).strip() for v in values if v is not None and str(v).strip()]
+    return sep.join(normalized)
 
-    Returns:
-        Dict chứa:
-          - ``chunk_id``            : UUID duy nhất.
-          - ``original_clean_text`` : Text gốc đã clean.
-          - ``segmented_text``      : Text đã tách từ bằng pyvi.
-          - ``embedding``           : List[float] 768-d.
-          - ``extracted_knowledge`` : Dict (serializable) từ Pydantic model.
+
+def _infer_record_type(node_data: Dict[str, Any], data: Dict[str, Any]) -> str:
+    """Suy luận record_type cho JSON direct nếu đầu vào không có field record_type."""
+    record_type = str(node_data.get("record_type", "")).upper().strip()
+    if record_type in {"PERSONNEL", "ORGANIZATION"}:
+        return record_type
+    if "org_id" in data:
+        return "ORGANIZATION"
+    return "PERSONNEL"
+
+def prepare_for_neo4j(node_data: Dict[str, Any]) -> Dict[str, Any]:
     """
-    # 1. Word Segmentation
-    segmented = ViTokenizer.tokenize(chunk_text) if chunk_text else ""
-    logger.debug("Segmented: %s…", segmented[:80])
+    Nhận record data từ bước Extract (hoặc JSON direct), sinh 2 embedding và trả về dict gộp chuẩn bị nạp Neo4j.
+    Kiện toàn mảng public và private.
+    """
+    logger.debug("Bắt đầu sinh Multi-Embeddings")
+    data = node_data.get("data", node_data)  # Support direct json
+    record_type = _infer_record_type(node_data, data)
+    
+    public_data = data.get("public_data", {})
+    private_data = data.get("private_data", {})
+    
+    # Gom chuỗi text để nhúng public
+    public_text_parts = []
+    if record_type == "PERSONNEL":
+        public_text_parts = [
+            public_data.get("full_name", ""),
+            public_data.get("professional_summary", ""),
+            _safe_join_list(public_data.get("skills", []))
+        ]
+    else: # ORGANIZATION
+        public_text_parts = [
+            public_data.get("org_name", ""),
+            public_data.get("brief_description", ""),
+            _stringify_value(public_data.get("active_jds", []))
+        ]
+    public_text = " ".join([str(t).strip() for t in public_text_parts if t is not None and str(t).strip()])
+    
+    # Gom chuỗi text để nhúng private
+    private_text_parts = []
+    if record_type == "PERSONNEL":
+        private_text_parts = [
+            private_data.get("project_technical_secrets", ""),
+            _stringify_value(private_data.get("interview_questions_history", []))
+        ]
+    else:
+        private_text_parts = [
+            private_data.get("internal_project_pain_points", ""),
+            private_data.get("target_candidate_dna", "")
+        ]
+    private_text = " ".join([str(t).strip() for t in private_text_parts if t is not None and str(t).strip()])
 
-    # 2. PhoBERT Embedding
-    embedding = _embedder.embed(segmented)
-    logger.debug("Embedding dim: %d", len(embedding))
-
-    # 3. Đóng gói
-    result: Dict[str, Any] = {
-        "chunk_id": str(uuid.uuid4()),
-        "original_clean_text": chunk_text,
-        "segmented_text": segmented,
-        "embedding": embedding,
-        "extracted_knowledge": extracted_json.model_dump(),
+    # Embeddings
+    node_id = data.get("personnel_id") or data.get("org_id") or "UNKNOWN"
+    res = {
+        "node_id": node_id,
+        "record_type": record_type,
+        "public_data": public_data,
+        "private_data": private_data,
+        "public_embeddings_phobert": _embedder.embed(public_text),
+        "private_embeddings_phobert": _embedder.embed(private_text),
+        "source_file": node_data.get("source_file", "unknown")
     }
-
-    logger.info(
-        "Chunk %s sẵn sàng (topic=%s, entities=%d, triplets=%d).",
-        result["chunk_id"][:8],
-        extracted_json.topic_category.value,
-        len(extracted_json.entities),
-        len(extracted_json.triplets),
-    )
-    return result
+    
+    logger.info(f"Hoàn tất vectorize Split-Compartment cho node {node_id}")
+    return res

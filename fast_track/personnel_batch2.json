@@ -1,0 +1,424 @@
+[
+  {
+    "personnel_id": "P_006",
+    "public_data": {
+      "full_name": "Nguyễn Thị Hồng Nhung",
+      "professional_summary": "ML Engineer với 5 năm kinh nghiệm, đi theo hướng MLOps và Applied AI, từng làm việc tại VNG Corporation và Grab Vietnam. Tại VNG, tham gia trực tiếp vào nhóm kỹ thuật ZaloPay – phụ trách xây dựng pipeline phát hiện gian lận (fraud detection) realtime cho hàng chục nghìn giao dịch mỗi phút. Tại Grab Vietnam, thiết kế và vận hành Feature Store phục vụ hơn 30 ML models đang chạy production. Thành thạo Python ML stack: PyTorch, scikit-learn, XGBoost, HuggingFace Transformers. Có kinh nghiệm triển khai model serving bằng Triton Inference Server và TorchServe với SLA p99 dưới 50ms. Nắm vững MLflow, DVC, Weights & Biases cho experiment tracking và model versioning. Hiểu biết vững chắc về distributed training trên multi-GPU. Có bằng thạc sĩ về Khoa học Dữ liệu, đang tìm kiếm vị trí Senior ML Engineer hoặc ML Tech Lead tại product company có bài toán AI thực sự phức tạp.",
+      "education": [
+        {
+          "degree": "Thạc sĩ",
+          "school": "Trường ĐH Công nghệ – ĐHQG Hà Nội",
+          "major": "Khoa học Dữ liệu & Trí tuệ Nhân tạo",
+          "year": "2021"
+        },
+        {
+          "degree": "Kỹ sư",
+          "school": "Trường ĐH Công nghệ – ĐHQG Hà Nội",
+          "major": "Công nghệ Thông tin",
+          "year": "2019"
+        }
+      ],
+      "certificates": [
+        "AWS Certified Machine Learning – Specialty",
+        "Google Professional Machine Learning Engineer",
+        "Deep Learning Specialization – Coursera (Andrew Ng)"
+      ],
+      "skills": [
+        "Python (PyTorch, scikit-learn, XGBoost, LightGBM)",
+        "HuggingFace Transformers / PEFT / LoRA fine-tuning",
+        "Triton Inference Server / TorchServe",
+        "MLflow / DVC / Weights & Biases",
+        "Apache Spark (PySpark – feature engineering)",
+        "Feast (Feature Store)", "Redis (online feature serving)",
+        "Airflow (ML pipeline orchestration)",
+        "Docker / Kubernetes (model deployment)",
+        "AWS SageMaker / GCP Vertex AI",
+        "SQL / BigQuery", "Terraform (infra cho ML platform)"
+      ],
+      "experience": [
+        {
+          "project_name": "ZaloPay Fraud Detection – Realtime Scoring Pipeline",
+          "role": "ML Engineer",
+          "tech_stack": ["Python", "XGBoost", "Kafka", "Redis", "Triton", "Airflow", "AWS"]
+        },
+        {
+          "project_name": "Grab Vietnam – Feature Store & ML Platform",
+          "role": "ML Engineer (ML Platform team)",
+          "tech_stack": ["Python", "Feast", "Apache Spark", "MLflow", "Kubernetes", "GCP Vertex AI"]
+        },
+        {
+          "project_name": "ZaloPay – Transaction Risk Scoring (LLM-based NER)",
+          "role": "ML Engineer",
+          "tech_stack": ["HuggingFace", "PyTorch", "PEFT/LoRA", "FastAPI", "TorchServe"]
+        }
+      ],
+      "availability": "1_month_notice",
+      "cultural_tags": ["R&D", "Academic mindset", "Data-driven", "Deep tech focus"]
+    },
+    "private_data": {
+      "contact": {
+        "email": "nhung.nguyenml@gmail.com",
+        "phone": "0966112233",
+        "github": "https://github.com/nhung-ml-vn"
+      },
+      "salary_expectation": "USD 2,800 – 3,200/tháng, ưu tiên môi trường có research budget và thời gian tự học. Không xem xét offer thiếu technical challenge.",
+      "project_technical_secrets": "Tại ZaloPay, đã nghiên cứu và triển khai một hệ thống fraud detection sử dụng Apache Flink stateful streaming với custom CEP (Complex Event Processing) rules, kết hợp online ML model inference. Đây là kiến trúc lai giữa rule-engine và ML mà hầu hết các đội tại Việt Nam chưa làm được theo cách này. Toàn bộ state management của Flink được lưu trên RocksDB backend với custom serializer. Kỹ năng Flink ở mức sâu này không được đề cập trên LinkedIn vì thuộc NDA với VNG. Ngoài ra, tại Grab, đã tự implement một thuật toán 'Staleness-Aware Feature Freshness' để tự động retire feature khi drift vượt ngưỡng – chưa được published.",
+      "interview_questions_history": [
+        {
+          "question": "Giải thích sự khác biệt giữa online learning và offline batch training. Khi nào bạn dùng cái nào trong fraud detection?",
+          "answer": "Offline batch training phù hợp khi pattern thay đổi chậm và cần model ổn định. Online learning cần thiết khi fraud pattern thay đổi nhanh (concept drift). Tại ZaloPay dùng hybrid: batch retrain hàng ngày + online feature với short TTL để capture daily patterns. Giải thích kỹ về catastrophic forgetting trong online learning.",
+          "org": "Grab Vietnam (vòng ML system design)"
+        },
+        {
+          "question": "Làm thế nào bạn xử lý class imbalance trong fraud detection khi tỷ lệ fraud chỉ 0.01%?",
+          "answer": "Ensemble các kỹ thuật: SMOTE cho training data augmentation, class_weight trong model, focal loss thay cross-entropy, và quan trọng nhất là chọn threshold dựa trên business cost matrix (false negative tốn kém hơn false positive bao nhiêu). Evaluation dùng PR-AUC thay ROC-AUC vì imbalanced.",
+          "org": "VNG Corporation (internal ML review)"
+        },
+        {
+          "question": "Design một Feature Store cho hệ thống recommendation realtime phục vụ 10 triệu user.",
+          "answer": "Two-tier architecture: offline store (S3 + Spark) cho batch features, online store (Redis Cluster) cho realtime features. Feature computation dùng Flink cho streaming features với TTL. Feast làm metadata registry. Đặc biệt quan trọng: point-in-time correct join để tránh feature leakage khi training.",
+          "org": "Sea Group Singapore (remote interview, không match về relocation)"
+        }
+      ],
+      "blacklist_orgs": ["Công ty chỉ làm AI/ML theo kiểu gọi API OpenAI mà không có data pipeline thực sự", "Môi trường không có GPU budget"],
+      "evidence_links": [
+        "https://arxiv.org/abs/placeholder-fraud-cep-flink-zalopay",
+        "https://github.com/nhung-ml-vn/feature-freshness-monitor"
+      ]
+    }
+  },
+
+  {
+    "personnel_id": "P_007",
+    "public_data": {
+      "full_name": "Trần Văn Bình",
+      "professional_summary": "Senior Android Engineer với 6 năm kinh nghiệm phát triển ứng dụng di động trong ngành Fintech và Superapp. Đã làm việc tại MoMo và sau đó là KMS Technology. Tại MoMo, cùng team phát triển các tính năng core của ứng dụng Android: luồng thanh toán QR, tích hợp NFC tap-to-pay, và module chuyển tiền có xử lý biometrics. Từng là người duy nhất trong team phụ trách toàn bộ performance optimization cho Android app với 25 triệu DAU – giảm ANR rate từ 1.2% xuống 0.18%, cold start từ 4.1s xuống 1.8s. Tại KMS Technology, mentor 3 Android junior engineers và phụ trách technical interview. Thành thạo Kotlin và Jetpack Compose, quen thuộc với kiến trúc MVI/MVVM, Coroutines, Hilt dependency injection. Đang tìm kiếm vai trò Android Lead hoặc Mobile Platform Engineer tại công ty có bài toán Android scale thực sự.",
+      "education": [
+        {
+          "degree": "Kỹ sư",
+          "school": "Đại học Bách Khoa Hà Nội",
+          "major": "Điện tử – Viễn thông",
+          "year": "2018"
+        }
+      ],
+      "certificates": [
+        "Associate Android Developer – Google",
+        "Kotlin Coroutines & Flow – JetBrains Academy",
+        "Professional Scrum Developer I (PSD I)"
+      ],
+      "skills": [
+        "Kotlin / Java (Android)", "Jetpack Compose / XML View System",
+        "Coroutines / Flow / RxJava", "Hilt / Dagger2 (DI)",
+        "Room / SQLite / DataStore", "Retrofit / OkHttp / gRPC-Android",
+        "MVI / MVVM / Clean Architecture",
+        "WorkManager / Foreground Service", "NFC / Bluetooth LE",
+        "Biometric API (Fingerprint, Face)", "Android Profiler / Systrace (performance)",
+        "Firebase (FCM, Crashlytics, Remote Config, A/B Testing)",
+        "Fastlane / Bitrise / GitHub Actions", "Espresso / Mockito / Turbine"
+      ],
+      "experience": [
+        {
+          "project_name": "MoMo Android – QR Payment & NFC Tap-to-Pay",
+          "role": "Android Engineer → Senior Android Engineer",
+          "tech_stack": ["Kotlin", "Jetpack Compose", "Coroutines", "Hilt", "NFC API", "Biometric API", "Firebase"]
+        },
+        {
+          "project_name": "MoMo Android – App Performance Overhaul",
+          "role": "Senior Android Engineer (Tech Owner)",
+          "tech_stack": ["Android Profiler", "Systrace", "Baseline Profiles", "R8/ProGuard", "App Startup"]
+        },
+        {
+          "project_name": "KMS Technology – InsurTech Android SDK (White-label)",
+          "role": "Senior Android Engineer / Tech Lead",
+          "tech_stack": ["Kotlin", "MVI", "Retrofit", "Room", "Hilt", "JUnit", "Espresso"]
+        }
+      ],
+      "availability": "Open_for_offers",
+      "cultural_tags": ["Fintech / Superapp", "Performance obsessed", "Mentoring culture", "Ownership mindset"]
+    },
+    "private_data": {
+      "contact": {
+        "email": "tranvanbinh.android@gmail.com",
+        "phone": "0945678901",
+        "github": "https://github.com/binh-android-vn"
+      },
+      "salary_expectation": "45,000,000 – 55,000,000 VNĐ/tháng. Có thể cân nhắc USD nếu remote full-time cho công ty nước ngoài.",
+      "project_technical_secrets": "Tại MoMo, đã reverse-engineer và tìm ra root cause của một memory leak nghiêm trọng trong thư viện camera QR scan của bên thứ ba – leak xảy ra trong edge case khi user flip camera trong khi decoding frame. Fix bằng cách wrap lifecycle-aware với WeakReference chain. Không thể public vì liên quan đến vendor NDA. Ngoài ra, đã implement một cơ chế 'Speculative Network Prefetch' cho Android: khi user mở màn hình chuyển tiền, app ngầm pre-warm HTTP connection pool và pre-fetch tỷ giá/fee structure trước khi user bấm Xác nhận – giảm perceived latency xuống 300ms.",
+      "interview_questions_history": [
+        {
+          "question": "Giải thích sự khác biệt giữa `suspend fun` và `fun` trong Coroutines. Tại sao không nên block main thread?",
+          "answer": "Suspend function có thể suspend execution mà không block thread, cho phép coroutine yield và thread pool tái sử dụng thread. Block main thread gây ANR sau 5 giây. Giải thích Dispatcher.IO vs Main vs Default và cơ chế continuation passing style bên dưới.",
+          "org": "Grab Vietnam (Mobile team interview)"
+        },
+        {
+          "question": "Làm thế nào bạn implement deep link handling an toàn trong ứng dụng fintech?",
+          "answer": "Validate scheme và host trong AndroidManifest. Verify digital asset links để prevent URI hijacking. Không truyền sensitive data qua deep link URL. Dùng App Links (HTTPS) thay Custom Scheme. Trong MoMo, thêm layer re-authentication khi deep link trigger flow thanh toán.",
+          "org": "MoMo (internal senior promotion review)"
+        },
+        {
+          "question": "Describe your approach to testing a payment flow end-to-end on Android.",
+          "answer": "Unit test business logic với JUnit + Mockito + Turbine (Flow testing). Integration test với Room in-memory DB. UI test với Espresso hoặc Compose Testing. Contract test với WireMock cho API layer. Quan trọng nhất: idempotency test – gửi cùng request 2 lần phải không tạo 2 giao dịch.",
+          "org": "Shopee Vietnam (Android team, rejected offer vì stack cũ hơn)"
+        }
+      ],
+      "blacklist_orgs": ["Công ty vẫn dùng Java thuần cho Android mới", "Nơi không có automated testing culture"],
+      "evidence_links": [
+        "https://medium.com/@binh-android/momo-android-cold-start-optimization",
+        "https://github.com/binh-android-vn/compose-mvi-clean-template"
+      ]
+    }
+  },
+
+  {
+    "personnel_id": "P_008",
+    "public_data": {
+      "full_name": "Nguyễn Thị Phương Linh",
+      "professional_summary": "Analytics Engineer với 4 năm kinh nghiệm, đứng ở giao điểm giữa Data Engineering và Business Intelligence. Từng làm việc tại Tiki và hiện tại tại Got It Vietnam. Tại Tiki, xây dựng toàn bộ reporting infrastructure cho team Marketing và Growth từ đầu: thiết kế dimensional model cho user behavior data, viết 200+ dbt models, thiết lập Looker semantic layer cho 50+ BA và PM. Thành thạo SQL nâng cao (window functions, recursive CTEs, pivot), dbt (macros, tests, documentation), và orchestration bằng Airflow. Có kinh nghiệm làm việc trực tiếp với product và business stakeholders để translate yêu cầu thành data model. Hiểu sâu về A/B testing methodology, funnel analysis, và cohort retention analysis. Đang tìm kiếm vai trò Senior Analytics Engineer hoặc Data Lead tại công ty product có data culture trưởng thành.",
+      "education": [
+        {
+          "degree": "Cử nhân",
+          "school": "Đại học Ngoại Thương Hà Nội",
+          "major": "Kinh tế Quốc tế (chuyên sâu Phân tích Dữ liệu)",
+          "year": "2020"
+        }
+      ],
+      "certificates": [
+        "dbt Certified Developer",
+        "Looker Business Intelligence Analyst – Google Cloud",
+        "SQL for Data Science – UC Davis (Coursera)"
+      ],
+      "skills": [
+        "SQL (BigQuery, Snowflake, PostgreSQL – advanced)",
+        "dbt Core / dbt Cloud", "Apache Airflow",
+        "Looker / Looker Studio / Metabase",
+        "Python (pandas, matplotlib – ad hoc analysis)",
+        "A/B testing design & analysis (statsmodels)",
+        "Dimensional modeling (Kimball methodology)",
+        "Data documentation (dbt docs, Data Catalog)",
+        "Segment / Amplitude (event tracking schema design)",
+        "Google Analytics 4 / Firebase Analytics",
+        "Spreadsheet automation (Google Apps Script)"
+      ],
+      "experience": [
+        {
+          "project_name": "Tiki – Marketing & Growth Analytics Data Warehouse",
+          "role": "Analytics Engineer",
+          "tech_stack": ["BigQuery", "dbt", "Airflow", "Looker", "Segment", "Python"]
+        },
+        {
+          "project_name": "Tiki – A/B Testing Infrastructure & Experimentation Platform",
+          "role": "Analytics Engineer",
+          "tech_stack": ["BigQuery", "Python", "dbt", "Looker", "Statsmodels"]
+        },
+        {
+          "project_name": "Got It Vietnam – Self-serve BI Platform",
+          "role": "Senior Analytics Engineer",
+          "tech_stack": ["Snowflake", "dbt", "Airflow", "Metabase", "Python"]
+        }
+      ],
+      "availability": "1_month_notice",
+      "cultural_tags": ["Data-driven culture", "Cross-functional collaboration", "Product company", "Business impact focus"]
+    },
+    "private_data": {
+      "contact": {
+        "email": "phuonglinh.analytics@gmail.com",
+        "phone": "0912876543",
+        "github": "https://github.com/plinh-analytics"
+      },
+      "salary_expectation": "55,000,000 – 65,000,000 VNĐ/tháng. Đặc biệt quan tâm đến lộ trình thăng tiến lên Data Lead / Head of Analytics.",
+      "project_technical_secrets": "Tại Tiki, phát hiện và document một lỗi nghiêm trọng trong cách Tiki đang tính conversion rate: hệ thống đang double-count session khi user chuyển đổi giữa app và mobile web trong cùng một purchase journey. Fix dẫn đến revision toàn bộ Q3 2022 marketing report – con số conversion thực tế thấp hơn 23% so với báo cáo cũ. Đây là internal incident không được public. Ngoài ra, biết rõ toàn bộ schema thiết kế event tracking của Tiki và logic tính GMV nội bộ – thông tin cạnh tranh nhạy cảm.",
+      "interview_questions_history": [
+        {
+          "question": "Tại sao bạn nên dùng `ref()` thay vì hard-code tên bảng trong dbt model?",
+          "answer": "ref() tạo ra DAG dependency graph tự động, cho phép dbt compile đúng thứ tự và chạy model theo đúng lineage. Nó cũng handle environment (dev/prod schema) tự động. Hard-code tên bảng phá vỡ lineage và gây lỗi khi deploy sang environment khác.",
+          "org": "Got It Vietnam (technical interview)"
+        },
+        {
+          "question": "Describe how you would design an A/B test to measure the impact of a new checkout flow on conversion rate.",
+          "answer": "Xác định primary metric (checkout conversion), guardrail metrics (revenue per user, refund rate). Tính sample size cần thiết bằng power analysis (alpha=0.05, power=0.8, MDE=2%). Đảm bảo randomization unit đúng (user-level, không phải session). Check SRM (Sample Ratio Mismatch) trước khi đọc kết quả. Cẩn thận với novelty effect – chạy tối thiểu 2 tuần.",
+          "org": "Tiki (internal business case presentation)"
+        },
+        {
+          "question": "Bạn sẽ làm gì nếu business stakeholder yêu cầu một metric mà bạn cho là được định nghĩa sai?",
+          "answer": "Không im lặng và build theo yêu cầu. Document rõ cách hiểu hiện tại của stakeholder, giải thích tại sao định nghĩa đó có thể misleading bằng ví dụ cụ thể. Đề xuất alternative definition và trình bày trade-off. Nếu stakeholder vẫn muốn metric cũ, build cả hai và label rõ 'legacy metric' vs 'corrected metric'.",
+          "org": "Tiki (behavioral interview với Head of Data)"
+        }
+      ],
+      "blacklist_orgs": ["Công ty không có dedicated data team", "Môi trường mà analyst chỉ làm dashboard theo yêu cầu mà không được tham gia vào product decision"],
+      "evidence_links": [
+        "https://www.linkedin.com/pulse/ab-testing-ecommerce-vietnam-phuonglinh",
+        "https://github.com/plinh-analytics/dbt-ecommerce-starter"
+      ]
+    }
+  },
+
+  {
+    "personnel_id": "P_009",
+    "public_data": {
+      "full_name": "Lê Minh Dũng",
+      "professional_summary": "Application Security Engineer với 7 năm kinh nghiệm, chuyên sâu về bảo mật trong môi trường cloud-native và fintech. Từng làm việc tại Shopee Vietnam và hiện là Security Engineer tại VNPAY. Tại Shopee, xây dựng và vận hành AppSec program từ đầu: threat modeling cho 120+ microservices, tích hợp SAST/DAST vào CI/CD pipeline, vận hành Bug Bounty program với Hackerone. Có kinh nghiệm pentest thực chiến: web application, mobile (iOS/Android), API security. Hiểu sâu về OWASP Top 10, CWE/CVE analysis, và secure SDLC. Tại VNPAY, phụ trách tuân thủ PCI-DSS v4.0 và thiết kế security architecture cho hệ thống xử lý 2 tỷ VNĐ/ngày. Quen thuộc với Kubernetes security hardening (Pod Security Standards, NetworkPolicy, OPA/Gatekeeper). Đang tìm kiếm vai trò Senior AppSec hoặc Security Architect tại môi trường phức tạp.",
+      "education": [
+        {
+          "degree": "Kỹ sư",
+          "school": "Đại học Bách Khoa TP.HCM",
+          "major": "Khoa học Máy tính",
+          "year": "2017"
+        }
+      ],
+      "certificates": [
+        "Offensive Security Certified Professional (OSCP)",
+        "Certified Cloud Security Professional (CCSP)",
+        "AWS Security Specialty",
+        "PCI-DSS Qualified Security Assessor (QSA) – in progress"
+      ],
+      "skills": [
+        "Penetration testing (Burp Suite Pro, OWASP ZAP, Metasploit)",
+        "SAST (SonarQube, Semgrep, Checkmarx)",
+        "DAST / API security testing",
+        "Kubernetes security (OPA/Gatekeeper, Kyverno, Falco, Trivy)",
+        "Secrets management (HashiCorp Vault, AWS KMS)",
+        "SIEM (Splunk, ELK Stack)",
+        "Threat modeling (STRIDE, PASTA framework)",
+        "PCI-DSS / ISO 27001 compliance",
+        "Cloud security (AWS GuardDuty, Security Hub, CloudTrail)",
+        "Python / Go (security tooling)",
+        "Bug bounty triage & program management"
+      ],
+      "experience": [
+        {
+          "project_name": "Shopee VN – AppSec Program Build-out",
+          "role": "Application Security Engineer",
+          "tech_stack": ["Semgrep", "Burp Suite", "HackerOne", "AWS Security Hub", "Python", "Falco"]
+        },
+        {
+          "project_name": "VNPAY – PCI-DSS v4.0 Compliance & Security Architecture",
+          "role": "Senior Security Engineer",
+          "tech_stack": ["AWS KMS", "HashiCorp Vault", "Splunk", "OPA/Gatekeeper", "Trivy", "Kubernetes"]
+        },
+        {
+          "project_name": "Shopee VN – Supply Chain Security (SBOM & Dependency Audit)",
+          "role": "Application Security Engineer",
+          "tech_stack": ["Syft (SBOM)", "Grype", "Dependabot", "GitHub Advanced Security", "Python"]
+        }
+      ],
+      "availability": "Immediate",
+      "cultural_tags": ["ISO process", "Security-first culture", "Compliance mindset", "Zero-trust architecture"]
+    },
+    "private_data": {
+      "contact": {
+        "email": "leminhdung.sec@gmail.com",
+        "phone": "0971234567",
+        "github": "https://github.com/dung-appsec"
+      },
+      "salary_expectation": "USD 3,500 – 4,200/tháng. Mức lương phản ánh chứng chỉ OSCP và kinh nghiệm PCI-DSS thực tế – không thương lượng xuống dưới 3,500.",
+      "project_technical_secrets": "Tại Shopee, đã phát hiện và exploit thành công một lỗ hổng IDOR (Insecure Direct Object Reference) trên internal admin API cho phép leo thang đặc quyền từ seller account lên internal ops account. Lỗ hổng này tồn tại hơn 8 tháng trước khi được phát hiện. Report nội bộ bị gắn CONFIDENTIAL, không được public. Ngoài ra, trong một proof-of-concept nội bộ, đã xây dựng một anomaly detection engine cho transaction logs sử dụng Apache Flink stateful CEP kết hợp ClickHouse làm OLAP backend – latency phát hiện pattern bất thường dưới 2 giây trên luồng 100k events/phút. Đây là kiến trúc được đánh giá cao nhưng chưa deploy production do ưu tiên ngân sách. Kỹ năng Flink + ClickHouse combination này rất hiếm trong thị trường security engineers.",
+      "interview_questions_history": [
+        {
+          "question": "Giải thích SQL Injection và cách phòng chống ở nhiều lớp.",
+          "answer": "SQLi xảy ra khi user input được concatenate trực tiếp vào SQL query. Defense in depth: (1) Parameterized queries / prepared statements là lớp quan trọng nhất; (2) Input validation; (3) Least privilege cho DB account; (4) WAF như AWS WAF; (5) Error message không expose DB schema. SAST tools có thể detect pattern này ở code review stage.",
+          "org": "Shopee Vietnam (technical screening)"
+        },
+        {
+          "question": "Bạn được yêu cầu review security cho một microservice mới trong 2 giờ. Bạn sẽ làm gì?",
+          "answer": "Threat modeling nhanh theo STRIDE: identify entry points, data flows, trust boundaries. Review authentication/authorization (JWT validation, RBAC). Check secret handling (env vars, không hardcode). Kiểm tra dependency vulnerabilities (npm audit / OWASP dependency check). Review logging – đảm bảo không log PII hoặc credentials. Test với Burp Suite tập trung vào auth bypass và IDOR.",
+          "org": "VNPAY (internal security review process)"
+        },
+        {
+          "question": "Làm thế nào bạn prioritize vulnerability remediation khi có 200 findings từ SAST?",
+          "answer": "Không dựa thuần vào CVSS score vì thiếu context. Áp dụng risk-based prioritization: (1) Exploitability trong môi trường thực tế; (2) Exposure – internet-facing hay internal; (3) Data sensitivity của service; (4) Compensating controls hiện có. Phân loại false positives trước. Tạo SLA: Critical (in-scope CVE) = 24h, High = 7 ngày, Medium = 30 ngày.",
+          "org": "Grab Vietnam (Security team interview, nhận offer nhưng VNPAY counter-offer về mức lương)"
+        }
+      ],
+      "blacklist_orgs": ["Công ty coi security chỉ là checkbox compliance", "Môi trường không có bug bounty hoặc responsible disclosure policy"],
+      "evidence_links": [
+        "https://blog.leminhdung.sec/shopee-supply-chain-security-sbom",
+        "https://github.com/dung-appsec/k8s-security-policies-library"
+      ]
+    }
+  },
+
+  {
+    "personnel_id": "P_010",
+    "public_data": {
+      "full_name": "Phạm Thanh Tùng",
+      "professional_summary": "Platform Engineer / Cloud Infrastructure Engineer với 5 năm kinh nghiệm, chuyên xây dựng Internal Developer Platform (IDP) giúp dev teams tự phục vụ hạ tầng mà không cần phụ thuộc DevOps team. Từng làm việc tại Lazada Vietnam (Alibaba Group) và hiện tại tại Nashtech Vietnam. Tại Lazada, đã tham gia xây dựng self-service infrastructure portal trên nền Backstage (CNCF) phục vụ 200+ developers, tích hợp với Terraform Cloud và ArgoCD. Thành thạo Go trong việc viết custom Kubernetes controllers và operators. Có kinh nghiệm thiết kế và vận hành service mesh với Istio: traffic management, mTLS, circuit breaking. Nắm vững networking tầng sâu: BGP routing, eBPF-based networking với Cilium. Đam mê Platform Engineering và Backstage ecosystem. Tìm kiếm vai trò Platform Engineer hoặc Infrastructure Lead tại công ty có developer experience là ưu tiên chiến lược.",
+      "education": [
+        {
+          "degree": "Kỹ sư",
+          "school": "Đại học Bách Khoa Hà Nội",
+          "major": "Khoa học Máy tính",
+          "year": "2019"
+        }
+      ],
+      "certificates": [
+        "Certified Kubernetes Administrator (CKA)",
+        "Istio Certified Associate (ICA)",
+        "AWS Certified Solutions Architect – Professional"
+      ],
+      "skills": [
+        "Go (Kubernetes controllers / operators)",
+        "Kubernetes (EKS, GKE) / Helm / Kustomize",
+        "Backstage (Internal Developer Portal)",
+        "Terraform / Pulumi / Crossplane",
+        "ArgoCD / Flux (GitOps)",
+        "Istio / Linkerd (Service Mesh)",
+        "Cilium / eBPF (networking)",
+        "Prometheus / Grafana / OpenTelemetry",
+        "AWS (EKS, EC2, VPC, IAM, Route53)",
+        "Python / Bash scripting",
+        "GitHub Actions / Tekton",
+        "Vault (secrets)", "PostgreSQL / MySQL (operational)"
+      ],
+      "experience": [
+        {
+          "project_name": "Lazada Vietnam – Internal Developer Platform (Backstage-based)",
+          "role": "Platform Engineer",
+          "tech_stack": ["Backstage", "Kubernetes", "ArgoCD", "Terraform Cloud", "Go", "AWS EKS"]
+        },
+        {
+          "project_name": "Lazada Vietnam – Service Mesh Migration (Istio)",
+          "role": "Platform Engineer",
+          "tech_stack": ["Istio", "Kubernetes", "Envoy Proxy", "Prometheus", "Kiali", "Jaeger"]
+        },
+        {
+          "project_name": "Nashtech Vietnam – Cloud Landing Zone Accelerator",
+          "role": "Cloud Platform Engineer",
+          "tech_stack": ["Terraform", "AWS", "Crossplane", "Backstage", "GitHub Actions", "Go"]
+        }
+      ],
+      "availability": "Open_for_offers",
+      "cultural_tags": ["Platform engineering", "Developer experience", "Agile / Scrum", "Startup energy in big corp"]
+    },
+    "private_data": {
+      "contact": {
+        "email": "phamthanhtung.platform@gmail.com",
+        "phone": "0988765432",
+        "github": "https://github.com/tung-platform-eng"
+      },
+      "salary_expectation": "USD 2,500 – 3,200/tháng. Mức lương có thể linh hoạt nếu role có cơ hội học thêm về eBPF và kernel-level networking.",
+      "project_technical_secrets": "Tại Lazada, đã viết một custom Kubernetes operator bằng Go để tự động provision isolated dev environments (namespace + resource quotas + network policies + secrets injection) trong vòng 30 giây khi developer tạo pull request. Operator này integrate với Backstage API và GitHub webhooks. Giải quyết hoàn toàn vấn đề 'environment contention' trong team 200+ dev. Operator chưa được open-source vì phụ thuộc vào Lazada internal LDAP và IAM system. Ngoài ra, trong quá trình setup Cilium tại Lazada, đã đào sâu vào eBPF bytecode để debug một race condition trong network policy enforcement – kinh nghiệm này rất hiếm.",
+      "interview_questions_history": [
+        {
+          "question": "Giải thích Kubernetes Operator pattern. Tại sao không dùng CronJob hoặc Job thay thế?",
+          "answer": "Operator = Custom Controller + CRD, cho phép encode domain knowledge vào Kubernetes control loop. CronJob/Job phù hợp cho stateless, one-shot tasks. Operator phù hợp khi cần manage lifecycle phức tạp của stateful application – ví dụ: database failover, scale-down với drain, backup scheduling. Giải thích reconcile loop, informer cache, và work queue pattern.",
+          "org": "Lazada Vietnam (Platform team interview)"
+        },
+        {
+          "question": "Service mesh mang lại gì mà không thể làm bằng SDK trong application code?",
+          "answer": "Service mesh xử lý cross-cutting concerns ở infra layer: mTLS transparent (không cần code thay đổi), traffic shifting cho canary/A-B, circuit breaking, retry với jitter. SDK approach tạo ra language coupling và yêu cầu mọi team upgrade cùng lúc. Nhược điểm service mesh: thêm latency overhead (thường 1-5ms), phức tạp hóa troubleshooting.",
+          "org": "Nashtech Vietnam (client-facing architecture review)"
+        },
+        {
+          "question": "Bạn làm gì khi một team developer phàn nàn rằng platform của bạn quá phức tạp để sử dụng?",
+          "answer": "Đây là failure của platform, không phải của developer. Thu thập feedback cụ thể: pain point ở bước nào, mất bao nhiêu thời gian. Đo developer experience metrics: time-to-first-deploy, số lần cần liên hệ platform team để unblock. Ưu tiên simplification hơn feature addition. Thiết kế 'golden path' với happy path documentation. Áp dụng 'dogfooding' – platform team cũng phải tự dùng platform của mình.",
+          "org": "Lazada Vietnam (team retrospective, được dùng làm ví dụ trong training)"
+        }
+      ],
+      "blacklist_orgs": ["Công ty coi Platform Engineering chỉ là 'DevOps team đổi tên'", "Nơi developer không được self-service và mọi infra request đều phải ticket"],
+      "evidence_links": [
+        "https://medium.com/@tung-platform/backstage-lazada-idp-journey",
+        "https://github.com/tung-platform-eng/k8s-ephemeral-env-operator"
+      ]
+    }
+  }
+]

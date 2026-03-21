@@ -1,0 +1,424 @@
+[
+  {
+    "personnel_id": "P_026",
+    "public_data": {
+      "full_name": "Ngô Hữu Lộc",
+      "professional_summary": "Senior SRE và Chaos Engineering Specialist với 5 năm kinh nghiệm, chuyên sâu về reliability engineering và failure injection testing tại MoMo. Là thành viên lâu năm của MoMo SRE team, phụ trách on-call rotation cho hệ thống thanh toán phục vụ 30 triệu người dùng. Điểm khác biệt so với SRE truyền thống: không chỉ phản ứng với incidents mà chủ động tạo ra failures có kiểm soát để tìm điểm yếu trước khi production bị ảnh hưởng. Đã xây dựng từ đầu internal Chaos Engineering platform cho MoMo – hệ thống tự động inject CPU throttling, network partition, disk I/O latency, và pod termination vào staging environment theo schedule. Thành thạo Prometheus, Grafana, Loki trong cả vận hành lẫn tự viết exporters. Có kinh nghiệm toàn diện về Linux systems: cgroup v2, namespace, seccomp profiles. Tìm kiếm vai trò Staff SRE, Principal Reliability Engineer, hoặc Head of Platform Engineering.",
+      "education": [
+        {
+          "degree": "Kỹ sư",
+          "school": "Đại học Công nghệ – ĐHQG Hà Nội",
+          "major": "Kỹ thuật Máy tính",
+          "year": "2019"
+        }
+      ],
+      "certificates": [
+        "Certified Kubernetes Administrator (CKA)",
+        "AWS Certified SysOps Administrator – Associate",
+        "Site Reliability Engineering Foundations – Linux Foundation"
+      ],
+      "skills": [
+        "Kubernetes (EKS, GKE – deep operations: autoscaler, scheduler, node lifecycle)",
+        "Prometheus / Grafana / Loki / Tempo (full observability stack)",
+        "Chaos Engineering: Chaos Monkey, LitmusChaos, custom fault injection tools",
+        "Linux internals: cgroup v2, namespace, eBPF (observability use cases)",
+        "Python / Go / Bash (SRE tooling, automation, exporters)",
+        "Terraform / Ansible (infra automation)",
+        "PagerDuty / OpsGenie / Incident.io (on-call management)",
+        "AWS (EC2, EKS, RDS, ElastiCache, SQS, Lambda, CloudWatch)",
+        "Docker / containerd / OCI image spec",
+        "Redis Cluster (operations: failover, memory management, slow log)",
+        "PostgreSQL (operations: replication lag, autovacuum, connection pooling với pgBouncer)",
+        "Incident management: blameless post-mortem, runbook writing, GameDay facilitation"
+      ],
+      "experience": [
+        {
+          "project_name": "MoMo – SRE On-call & Reliability Operations",
+          "role": "SRE Engineer → Senior SRE",
+          "tech_stack": ["Kubernetes", "Prometheus", "Grafana", "Loki", "PagerDuty", "AWS EKS", "PostgreSQL"]
+        },
+        {
+          "project_name": "MoMo – Internal Chaos Engineering Platform (GameDay Infrastructure)",
+          "role": "Senior SRE (Tech Owner)",
+          "tech_stack": ["Go (fault injection service)", "LitmusChaos", "Kubernetes", "Prometheus", "Python", "Terraform"]
+        },
+        {
+          "project_name": "MoMo – Observability Platform Consolidation",
+          "role": "SRE Engineer",
+          "tech_stack": ["Prometheus", "Grafana", "Loki", "Tempo", "OpenTelemetry collector", "Go (custom exporters)"]
+        }
+      ],
+      "availability": "1_month_notice",
+      "cultural_tags": ["SRE culture", "Blameless post-mortems", "On-call maturity", "Ownership mindset"]
+    },
+    "private_data": {
+      "contact": {
+        "email": "ngohululoc.sre@gmail.com",
+        "phone": "0944321098",
+        "github": "https://github.com/loc-sre-chaos"
+      },
+      "salary_expectation": "55,000,000 – 65,000,000 VNĐ/tháng. Ưu tiên role có ownership rõ ràng về reliability roadmap, không chỉ toil reduction.",
+      "project_technical_secrets": "Tại MoMo, đã thiết kế và xây dựng một 'Chaos Orchestration Platform' nội bộ hoàn toàn từ đầu bằng Go. Platform này không chỉ inject failures đơn giản mà implement 'Hypothesis-based Chaos': engineer định nghĩa hypothesis ('hệ thống sẽ giữ SLA khi một availability zone drop'), platform tự động design experiment, execute, và collect evidence để accept/reject hypothesis. Integration với Prometheus để auto-abort experiment nếu SLO bị vi phạm quá ngưỡng. Quan trọng: platform có 'blast radius controller' – tự động scale down failure injection khi real user traffic bị ảnh hưởng, ngăn staged experiment biến thành real incident. Sau 18 tháng vận hành, platform đã phát hiện và góp phần fix 23 latent reliability issues trước khi chúng thành production incidents. Codebase chưa được open-source vì chứa MoMo-specific SLO definitions và service topology maps.",
+      "interview_questions_history": [
+        {
+          "question": "Giải thích sự khác biệt giữa error budget và SLA. Bạn sử dụng error budget như thế nào để ra quyết định engineering?",
+          "answer": "SLA: external commitment với customers về availability, thường 99.9% hoặc 99.99%. SLO: internal target, thường cao hơn SLA một chút làm buffer. Error budget = 100% - SLO: lượng downtime 'được phép' trong window (thường 30 ngày). Cách dùng: nếu error budget còn nhiều → team có thể ship features nhanh và deploy thường xuyên. Nếu error budget gần cạn → freeze non-critical deploys, tập trung reliability work. Tại MoMo: payment service SLO 99.95% → error budget 21.9 phút/tháng. Khi budget còn dưới 20% → mandatory reliability review trước mỗi deploy.",
+          "org": "MoMo (SRE team quarterly review)"
+        },
+        {
+          "question": "Làm thế nào bạn conduct một blameless post-mortem hiệu quả?",
+          "answer": "Blameless không có nghĩa là không có accountability – là tập trung vào system failures, không phải human failures. Timeline construction trước: facts only, không phán xét. 5-Whys technique nhưng dừng khi reach systemic cause, không phải người. Contributing factors, không root cause đơn lẻ (hầu hết incidents có nhiều nguyên nhân). Action items SMART: Specific, Measurable, Assigned, time-bounded. Review 30 ngày sau: check if actions were completed. Sai lầm phổ biến: action item là 'be more careful' – không measurable, không systemic fix.",
+          "org": "MoMo (internal SRE training session)"
+        },
+        {
+          "question": "Kubernetes pod bị OOMKilled liên tục. Debug và fix như thế nào?",
+          "answer": "Bước 1: `kubectl describe pod` xem Last State, Exit Code 137 = OOMKilled. Bước 2: check memory usage thực tế qua Prometheus `container_memory_working_set_bytes` vs `resources.limits.memory`. Bước 3: phân biệt application memory leak vs limit quá thấp – xem trend memory usage theo thời gian. Bước 4: nếu leak thực sự → dùng language-specific heap profiler (pprof cho Go, jmap cho JVM, memory_profiler cho Python). Bước 5: ngắn hạn tăng limit nếu justified. Tại MoMo gặp case: Python ML inference service leak gradual do object reference cycle trong numpy arrays – fix bằng explicit gc.collect() sau mỗi batch.",
+          "org": "MoMo (on-call incident resolution)"
+        }
+      ],
+      "blacklist_orgs": ["Công ty không có SLO/SLA formally defined", "Nơi SRE = Ops team với fancy title"],
+      "evidence_links": [
+        "https://medium.com/@loc-sre-chaos/hypothesis-driven-chaos-engineering-momo",
+        "https://github.com/loc-sre-chaos/blast-radius-controller"
+      ]
+    }
+  },
+
+  {
+    "personnel_id": "P_027",
+    "public_data": {
+      "full_name": "Phạm Thị Thu Uyên",
+      "professional_summary": "Game Backend Engineer và Distributed Systems Engineer với 5 năm kinh nghiệm trong hệ sinh thái Sea Group, chuyên sâu về game server architecture cho real-time multiplayer games ở quy mô toàn cầu. Bắt đầu tại Garena Singapore (remote) với vai trò Game Backend Engineer cho các tựa game mobile, sau đó chuyển về team Việt Nam. Tại Garena, tham gia nhóm làm việc cùng P023 (Nguyễn Xuân Trường) trong infrastructure cho Free Fire tại thị trường SEA – đã trực tiếp xử lý các sự kiện đặc biệt có hơn 4 triệu concurrent players. Thành thạo thiết kế authoritative game servers với ECS (Entity Component System) architecture để đảm bảo determinism. Nắm vững protocol tầng sâu: UDP với QUIC, WebSocket với binary framing tùy chỉnh, delta compression cho state synchronization. Sau Garena, join Sea Money trong 1.5 năm để trải nghiệm fintech backend, sau đó quay lại game domain tại VNG Game Studio. Tìm kiếm vai trò Game Server Lead hoặc Backend Architect trong game/interactive entertainment.",
+      "education": [
+        {
+          "degree": "Kỹ sư",
+          "school": "Đại học Bách Khoa TP.HCM",
+          "major": "Khoa học Máy tính",
+          "year": "2019"
+        }
+      ],
+      "certificates": [
+        "AWS Certified Developer – Associate",
+        "Unity Certified Associate Programmer",
+        "Game Server Architecture – Coursera (Michigan State University)"
+      ],
+      "skills": [
+        "Go / C++ (game server backends)",
+        "Entity Component System (ECS) architecture: deterministic simulation",
+        "UDP networking: QUIC / KCP / custom reliable-UDP implementations",
+        "WebSocket / binary protocol design (custom framing, delta compression)",
+        "State synchronization: snapshot interpolation, client-side prediction, rollback netcode",
+        "Redis (pub/sub, sorted sets cho leaderboard, session management)",
+        "Apache Kafka (game event streaming, replay systems)",
+        "Kubernetes / AWS EKS (game server fleet management)",
+        "AWS GameLift (managed game server hosting)",
+        "PostgreSQL / DynamoDB (player data, match history)",
+        "Prometheus / Grafana (game metrics: tick rate, latency distribution)",
+        "Python (game analytics pipeline)"
+      ],
+      "experience": [
+        {
+          "project_name": "Garena – Free Fire Real-time Game Server Infrastructure (SEA)",
+          "role": "Game Backend Engineer",
+          "tech_stack": ["Go", "C++", "KCP/UDP", "Redis", "Kafka", "Kubernetes", "AWS"]
+        },
+        {
+          "project_name": "SeaMoney – Wallet Transaction Backend",
+          "role": "Backend Engineer",
+          "tech_stack": ["Go", "PostgreSQL", "Kafka", "Redis", "gRPC", "Kubernetes"]
+        },
+        {
+          "project_name": "VNG Game Studio – Mobile MMORPG Server Architecture",
+          "role": "Senior Game Backend Engineer",
+          "tech_stack": ["Go", "C++", "WebSocket", "ECS framework", "Redis Cluster", "DynamoDB", "AWS GameLift"]
+        }
+      ],
+      "availability": "Open_for_offers",
+      "cultural_tags": ["Startup energy in big corp", "High-scale system", "Deep tech focus", "Remote-friendly"]
+    },
+    "private_data": {
+      "contact": {
+        "email": "phamthuuyen.gamebackend@gmail.com",
+        "phone": "0962345678",
+        "github": "https://github.com/thuuyen-gameserver"
+      },
+      "salary_expectation": "USD 2,800 – 3,400/tháng. Ưu tiên môi trường cho phép làm sâu về game server netcode và real-time systems. Không phù hợp với pure fintech backend nếu không có real-time component.",
+      "project_technical_secrets": "Tại Garena, trong sự kiện đặc biệt Tết Nguyên Đán 2022, đã phải xử lý tình huống server fleet cần scale từ 2 triệu lên 4.2 triệu concurrent players trong vòng 45 phút – nhanh hơn dự báo 3 lần. Giải pháp khẩn cấp: custom pre-warming script kết hợp với AWS GameLift spot fleet bidding strategy tùy chỉnh (không dùng auto-scaling mặc định vì quá chậm). Toàn bộ runbook của incident này là Garena confidential. Ngoài ra, đã tự nghiên cứu và implement 'rollback netcode' (Rollback Netcode / GGPO-style) bằng Go cho một prototype game fighting – kỹ thuật này thường được implement bằng C++ và rất hiếm engineer Việt Nam nào hiểu đủ sâu để implement từ đầu. Prototype code ở github private repo, chưa public. Kỹ thuật này là yêu cầu bắt buộc cho fighting games và bất kỳ game cần input responsiveness tuyệt đối.",
+      "interview_questions_history": [
+        {
+          "question": "Giải thích sự khác biệt giữa client-side prediction và rollback netcode.",
+          "answer": "Client-side prediction: client predict kết quả action của mình ngay lập tức (không chờ server confirm), server là authority – nếu server disagree thì reconciliation xảy ra (có thể gây visual rubber-banding). Rollback netcode: mỗi peer lưu game state snapshot tại mỗi tick. Khi nhận input delayed của peer khác, rollback về snapshot trước đó, apply missing inputs, re-simulate lên present. Vô hình với player. Yêu cầu deterministic simulation tuyệt đối (bitwise identical trên mọi client). Client-side prediction phổ biến cho FPS (player moves mượt). Rollback netcode phổ biến cho fighting games (frame-perfect inputs). Thách thức rollback: game simulation phải hoàn toàn deterministic – float arithmetic phải identical.",
+          "org": "Garena (game tech talk)"
+        },
+        {
+          "question": "Tại sao UDP thay vì TCP cho game real-time? Khi nào vẫn dùng TCP?",
+          "answer": "TCP head-of-line blocking: một packet lost → toàn bộ stream dừng chờ retransmit – catastrophic cho 60Hz game loop cần fresh state liên tục. UDP: fire-and-forget, mỗi packet độc lập. Với game state updates: nếu packet cũ lost, discard luôn – state mới sẽ đến ngay sau. Custom reliable layer trên UDP (KCP, QUIC) chỉ reliable cho data thực sự cần ordered delivery (chat, item pickup, kill feed). TCP vẫn dùng cho: initial connection handshake, matchmaking API, non-latency-sensitive game events.",
+          "org": "VNG Game Studio (architecture review)"
+        },
+        {
+          "question": "Design leaderboard system cho 100 triệu players update real-time.",
+          "answer": "Redis Sorted Set: ZADD O(log N), ZRANK O(log N) – phù hợp cho global top-K. Nhưng 100M entries trong một sorted set gây memory pressure. Sharding strategy: partition bằng score range (top 10K players trong dedicated shard, long tail trong partitioned shards). Approximate leaderboard cho long tail: chỉ cần biết 'bạn trong top 15%' không cần exact rank. Hybrid: exact rank cho top 10K (Redis primary shard), approximate percentile cho phần còn lại (pre-computed batch, refresh mỗi giờ). Write path: Kafka buffer → batch Redis updates để tránh hot key. Read path: cache rank response với short TTL (30s) vì leaderboard không cần real-time tuyệt đối.",
+          "org": "Garena (system design assessment)"
+        }
+      ],
+      "blacklist_orgs": ["Backend thuần CRUD không có real-time hoặc game domain", "Công ty không hiểu sự khác biệt giữa game backend và web backend"],
+      "evidence_links": [
+        "https://medium.com/@thuuyen-gameserver/rollback-netcode-golang-implementation",
+        "https://github.com/thuuyen-gameserver/ecs-deterministic-simulation"
+      ]
+    }
+  },
+
+  {
+    "personnel_id": "P_028",
+    "public_data": {
+      "full_name": "Lê Anh Tuấn",
+      "professional_summary": "ML Engineer với background PM, 5 năm kinh nghiệm hybrid ở giao điểm giữa product thinking và machine learning engineering. Sự nghiệp bắt đầu khác thường: 2 năm đầu là Product Manager tại Got It Vietnam rồi chuyển sang ML Engineering sau khi tự học intensive bootcamp và nhận offer tại VinAI Research – nơi làm việc cùng team của P014 (Phạm Hoàng Việt) trong nhóm NLP. Background PM tạo ra điểm mạnh độc đáo: có thể bridge giữa business stakeholders và ML team, định nghĩa đúng problem trước khi model hoá, và evaluate tradeoff giữa model complexity và time-to-market. Tại VinAI, tập trung vào Information Extraction và Conversational AI cho tiếng Việt. Sau VinAI, join Cốc Cốc (trình duyệt và search engine Việt Nam) làm ML Engineer phụ trách ranking và query understanding. Thành thạo NLP full stack: từ data annotation, fine-tuning LLM, đến deploying production inference. Tìm kiếm vai trò Senior ML Engineer hoặc AI Product Lead.",
+      "education": [
+        {
+          "degree": "Cử nhân",
+          "school": "RMIT University Vietnam",
+          "major": "Business Information Systems",
+          "year": "2019"
+        }
+      ],
+      "certificates": [
+        "Natural Language Processing Specialization – Coursera (deeplearning.ai)",
+        "AWS Certified Machine Learning – Specialty",
+        "Product Management Certificate – Product School"
+      ],
+      "skills": [
+        "Python (PyTorch, HuggingFace Transformers, spaCy, NLTK)",
+        "NLP: Named Entity Recognition, Relation Extraction, Question Answering, Intent Classification",
+        "LLM fine-tuning: LoRA/QLoRA, instruction tuning, RLHF (basic)",
+        "Vietnamese NLP: PhoBERT, VinAI Translate, underthesea toolkit",
+        "MLflow / Weights & Biases (experiment tracking)",
+        "FastAPI / Triton Inference Server (model serving)",
+        "Airflow (ML pipeline orchestration)",
+        "Docker / Kubernetes (ML workload deployment)",
+        "SQL / PostgreSQL (data analysis, annotation pipeline)",
+        "Label Studio / Prodigy (data annotation tooling)",
+        "Elasticsearch (semantic search integration)",
+        "Product management: PRD writing, user story mapping, OKR alignment"
+      ],
+      "experience": [
+        {
+          "project_name": "VinAI Research – Vietnamese Information Extraction & Conversational AI",
+          "role": "ML Engineer",
+          "tech_stack": ["PyTorch", "HuggingFace", "PhoBERT", "FastAPI", "Label Studio", "MLflow", "Docker"]
+        },
+        {
+          "project_name": "Cốc Cốc – Search Ranking & Vietnamese Query Understanding",
+          "role": "Senior ML Engineer",
+          "tech_stack": ["Python", "PyTorch", "Elasticsearch", "Airflow", "FastAPI", "Triton", "Kubernetes"]
+        },
+        {
+          "project_name": "Got It Vietnam – Product Management (pre-ML career)",
+          "role": "Product Manager",
+          "tech_stack": ["Jira", "Amplitude", "SQL", "Figma", "Customer interviews"]
+        }
+      ],
+      "availability": "Immediate",
+      "cultural_tags": ["Product-first", "Data-driven culture", "Startup", "Cross-functional collaboration"]
+    },
+    "private_data": {
+      "contact": {
+        "email": "leanhtuan.ml.pm@gmail.com",
+        "phone": "0905432109",
+        "github": "https://github.com/anhtuan-nlp-pm"
+      },
+      "salary_expectation": "USD 2,200 – 2,700/tháng. Thấp hơn peers do career pivot muộn. Bù lại bằng product-ML hybrid skillset cực kỳ hiếm – có thể nhận role tương đương ML Product Manager hoặc AI Product Lead với mức 70–85M VNĐ nếu role đúng.",
+      "project_technical_secrets": "Tại Cốc Cốc, đã xây dựng một 'Vietnamese Search Intent Classifier' sử dụng fine-tuned PhoBERT kết hợp với explicit linguistic rules cho các ambiguous queries đặc thù của tiếng Việt: câu hỏi không dấu, viết tắt địa phương, và hybrid Việt-Anh queries. Classifier phân loại query vào 47 intent categories với accuracy 89.3% trên test set thực tế. Quan trọng hơn: đã document bộ 1,200 annotation guidelines cho tiếng Việt search intent – công trình này chưa được publish và là internal IP của Cốc Cốc. Ngoài ra, tại VinAI, được làm việc cùng team của P014 (Phạm Hoàng Việt) trong quá trình develop ViNLP benchmark – có kiến thức về methodology và hidden test set của benchmark, thông tin này chưa được public vì benchmark đang được maintain.",
+      "interview_questions_history": [
+        {
+          "question": "Bạn chuyển từ PM sang ML Engineer như thế nào? Cái gì khó nhất?",
+          "answer": "Khó nhất không phải kỹ thuật – mà là accepting uncertainty. PM thường muốn definitive answers. ML không có: 'model này tốt hơn bao nhiêu?' phụ thuộc vào dataset, metric, deployment context. Phải học cách communicate uncertainty cho stakeholders (PMs và business). Điểm mạnh mang từ PM: tôi luôn hỏi 'problem này có thực sự cần ML không?' và 'nếu model accuracy giảm 5%, business impact là bao nhiêu?' – những câu hỏi nhiều ML engineers không hỏi vì chỉ focus vào metric optimization.",
+          "org": "VinAI Research (onboarding interview với research director)"
+        },
+        {
+          "question": "Khi nào bạn KHÔNG dùng LLM để giải quyết một NLP problem?",
+          "answer": "LLM không phải silver bullet: (1) Latency constraint nghiêm ngặt (<10ms) – LLM quá chậm, dùng lightweight classifier; (2) Labeled data nhiều và distribution ổn định – supervised fine-tune BERT nhỏ hơn perform tốt với cost thấp hơn 100x; (3) Privacy requirements nghiêm ngặt – không gửi data lên external LLM API; (4) Deterministic output bắt buộc – LLM là probabilistic, không phù hợp cho compliance use cases; (5) Budget: GPT-4 inference tốn tiền, chỉ justified nếu task thực sự cần general reasoning. Tại Cốc Cốc: intent classification dùng fine-tuned PhoBERT (30ms, $0.001/1000 queries) thay vì GPT-4 (1000ms, $0.1/1000 queries).",
+          "org": "Cốc Cốc (internal ML architecture review)"
+        },
+        {
+          "question": "Làm thế nào bạn prioritize ML features khi resources hạn chế?",
+          "answer": "Áp dụng PM framework vào ML: ICE score (Impact × Confidence / Effort). Impact: estimate business metric movement nếu model improve X%. Confidence: có data không? problem đã được solved tương tự không? Effort: data collection, labeling, training, deployment, monitoring overhead. Một insight từ PM background: 'model tốt nhất không được deploy là model vô dụng'. Ưu tiên ML features có clear deployment path và measurable business metric hơn là technically interesting nhưng hard to productionize.",
+          "org": "Got It Vietnam (transition interview khi pivot sang ML)"
+        }
+      ],
+      "blacklist_orgs": ["Môi trường không cho phép contribute vào product definition – chỉ execute ticket", "Công ty không có business metric cho ML models"],
+      "evidence_links": [
+        "https://medium.com/@anhtuan-nlp-pm/pm-to-ml-engineer-transition-lessons-vietnam",
+        "https://github.com/anhtuan-nlp-pm/vietnamese-intent-classifier"
+      ]
+    }
+  },
+
+  {
+    "personnel_id": "P_029",
+    "public_data": {
+      "full_name": "Trần Minh Hiếu",
+      "professional_summary": "Database và Storage Engineer với 6 năm kinh nghiệm chuyên sâu về distributed database systems, từ operational DBA đến distributed storage architecture. Bắt đầu tại Lazada Vietnam (làm cùng team với P010 Phạm Thanh Tùng trong giai đoạn platform building) với vai trò Database Reliability Engineer, sau đó join Shopee Vietnam ở vị trí Senior Database Engineer phụ trách database infrastructure cho Vietnam market. Thành thạo PostgreSQL ở mức advanced: viết custom extensions, optimize query planner, design sharding strategies. Có kinh nghiệm thực chiến với MySQL (InnoDB internals, replication topologies), TiDB, và Vitess cho horizontal sharding. Quan tâm sâu đến distributed consensus và storage engine internals: đã đọc toàn bộ papers của Raft, Percolator (TiKV's transaction model), và F1 (Google's distributed SQL). Tại Shopee, vận hành 400+ PostgreSQL instances và thiết kế migration strategy từ MySQL sharded sang TiDB cho 2 services có 500M rows. Tìm kiếm vai trò Staff Database Engineer, Distributed Systems Engineer, hoặc Database Platform Lead.",
+      "education": [
+        {
+          "degree": "Kỹ sư",
+          "school": "Đại học Công nghệ Thông tin – ĐHQG TP.HCM",
+          "major": "Hệ thống Thông tin",
+          "year": "2018"
+        }
+      ],
+      "certificates": [
+        "PostgreSQL 16 Associate Certification – EDB",
+        "AWS Certified Database – Specialty",
+        "MongoDB Certified Developer Associate"
+      ],
+      "skills": [
+        "PostgreSQL (advanced: custom extensions C, query planner hints, partitioning, logical replication)",
+        "TiDB / TiKV (distributed SQL: Raft groups, Region splits, PD scheduling)",
+        "MySQL (InnoDB internals, GTID replication, Percona XtraBackup)",
+        "Vitess (horizontal sharding, VSchema design, vtgate)",
+        "Redis (clustering, eviction policies, persistence tuning)",
+        "ClickHouse (column store internals, MergeTree engine, materialized views)",
+        "AWS (RDS Aurora, DynamoDB, ElastiCache – deep operations)",
+        "Debezium / Maxwell (Change Data Capture)",
+        "pgBouncer / ProxySQL (connection pooling)",
+        "Python / Go (database tooling, migration scripts)",
+        "Ansible / Terraform (database infrastructure automation)",
+        "Prometheus / Grafana (database-specific dashboards, alerting)"
+      ],
+      "experience": [
+        {
+          "project_name": "Lazada Vietnam – Database Reliability Engineering",
+          "role": "Database Reliability Engineer",
+          "tech_stack": ["MySQL", "PostgreSQL", "Redis", "Vitess", "AWS RDS", "Debezium", "Python"]
+        },
+        {
+          "project_name": "Shopee VN – Database Infrastructure & TiDB Migration",
+          "role": "Senior Database Engineer",
+          "tech_stack": ["PostgreSQL", "TiDB/TiKV", "MySQL", "ClickHouse", "pgBouncer", "AWS Aurora", "Go"]
+        },
+        {
+          "project_name": "Shopee VN – Real-time CDC Pipeline for Analytics",
+          "role": "Senior Database Engineer",
+          "tech_stack": ["Debezium", "Kafka", "PostgreSQL", "ClickHouse", "Airflow", "Python"]
+        }
+      ],
+      "availability": "Open_for_offers",
+      "cultural_tags": ["Engineering excellence", "Deep tech focus", "Platform engineering", "High-scale system"]
+    },
+    "private_data": {
+      "contact": {
+        "email": "tranminhhieu.db@gmail.com",
+        "phone": "0988123456",
+        "github": "https://github.com/hieu-db-engineer"
+      },
+      "salary_expectation": "USD 3,200 – 3,800/tháng. Phản ánh specialization sâu về distributed database systems – kỹ năng TiKV production operations rất hiếm tại VN. Không xem xét vai trò chỉ là DBA truyền thống (backup, restore, basic tuning).",
+      "project_technical_secrets": "Tại Shopee Vietnam, trong quá trình migrate 2 services lớn từ MySQL sharded sang TiDB, đã đào sâu vào TiKV internals để debug một vấn đề hiệu năng nghiêm trọng: write hotspot trên một Region cụ thể do business logic tạo ra monotonically increasing primary keys. Giải pháp: implement 'shard key hashing' ở application layer kết hợp với TiDB SHARD_ROW_ID_BITS để force Region splits đều hơn. Quá trình này đòi hỏi hiểu rõ Percolator transaction model của TiKV (optimistic 2PC với MVCC), Raft group configuration, và PD (Placement Driver) scheduling policies. Không có ai tại Shopee VN trước đó hiểu TiKV ở mức này – phải tự nghiên cứu từ source code và papers. Ngoài ra, đã viết một custom PostgreSQL extension bằng C implement partial index với predicate pushdown cho một query pattern đặc thù của Shopee inventory system – extension này tăng query performance 12x nhưng chưa được generalize vì quá domain-specific.",
+      "interview_questions_history": [
+        {
+          "question": "Giải thích MVCC trong PostgreSQL hoạt động như thế nào. Tại sao VACUUM cần thiết?",
+          "answer": "MVCC: mỗi row update không overwrite, thay vào đó tạo row version mới với xmin/xmax transaction IDs. Transaction chỉ thấy versions phù hợp với snapshot của nó. Ưu điểm: readers không block writers. Hệ quả: dead row versions (tuples) tích lũy theo thời gian – table bloat. VACUUM: thu hồi dead tuples, update visibility map cho index-only scans, advance oldest XID để tránh XID wraparound catastrophe. VACUUM FULL: rewrite toàn bộ table – lock table, compact storage. Autovacuum: chạy background, cần tuning cho tables có write rate cao. Table bloat nghiêm trọng → index scans chậm vì phải skip nhiều dead tuples.",
+          "org": "Shopee Vietnam (database team technical review)"
+        },
+        {
+          "question": "Khi nào bạn chọn TiDB thay vì PostgreSQL sharded với Citus?",
+          "answer": "TiDB phù hợp: (1) Không muốn manage sharding logic ở application layer; (2) Schema thay đổi thường xuyên (ALTER TABLE không lock trong TiDB); (3) Cross-shard transactions là common pattern; (4) Cần HTAP: vừa OLTP vừa OLAP với TiFlash columnar replica. Citus/sharded PG phù hợp: (1) Team đã proficient với PostgreSQL ecosystem; (2) Extensions của PG cần thiết (PostGIS, timescaledb); (3) Single-shard queries chiếm đa số; (4) Cost sensitivity cao (Citus open-source vs TiDB cloud cost). Tại Shopee chọn TiDB cho inventory service vì cross-shard transaction rate cao và team chấp nhận learning curve.",
+          "org": "Shopee Vietnam (architecture decision record)"
+        },
+        {
+          "question": "Làm thế nào bạn design database schema cho một high-write financial ledger system?",
+          "answer": "Immutable append-only ledger: không UPDATE/DELETE entries, chỉ INSERT. Primary key là sequential ID hoặc UUID v7 (time-ordered để tránh B-tree index fragmentation). Partitioning theo time range (monthly) để old partitions become read-only → compress/archive. Balance computation: không store running balance (prone to inconsistency), compute on-demand từ ledger entries với materialized view hoặc event sourcing pattern. Write throughput: partition key để avoid hotspot, UNLOGGED tables cho staging entries với async durability flush. Archival: cold partition → S3-backed foreign data wrapper (pg_s3fdw). Index strategy: minimal indices on write path, read indices on separate replica.",
+          "org": "Lazada Vietnam (merchant payment system design)"
+        }
+      ],
+      "blacklist_orgs": ["Công ty chỉ cần DBA cơ bản: backup, restore, basic monitoring", "Môi trường không cho phép explore new database technologies"],
+      "evidence_links": [
+        "https://medium.com/@hieu-db-engineer/tikv-write-hotspot-shopee-production",
+        "https://github.com/hieu-db-engineer/pg-partial-index-extension"
+      ]
+    }
+  },
+
+  {
+    "personnel_id": "P_030",
+    "public_data": {
+      "full_name": "Vũ Tuấn Kiệt",
+      "professional_summary": "Graphics Engineer và Game Developer với 3 năm kinh nghiệm, chuyên sâu về real-time rendering và GPU programming. Bắt đầu tại Sky Mavis (Axie Infinity) trong giai đoạn mở rộng sau Ronin Bridge recovery, làm việc cùng P012 (Hoàng Minh Khải) và P024 (Hoàng Thị Lan Chi) trong môi trường engineering post-incident được hardening nghiêm ngặt. Tại Sky Mavis, phụ trách client-side rendering performance cho web3 game Axie Infinity: Origins – optimize shader pipelines, implement custom sprite batching, và tích hợp WebGL-based renderer. Hiện tại đang tự phát triển một indie game engine nhỏ bằng Rust + Vulkan như side project nghiêm túc. Có nền tảng toán học tốt: linear algebra, quaternion math, và computer graphics theory. Thành thạo Unity với DOTS/Burst Compiler cho high-performance game objects. Hiểu sâu về GPU pipeline từ vertex processing đến fragment shading, cả trong game context lẫn compute shaders. Đây là profile trẻ nhất trong bộ dữ liệu – đang trong giai đoạn tăng tốc nhanh về kỹ thuật. Tìm kiếm vai trò Graphics Engineer, Game Client Engineer, hoặc Rendering Engineer.",
+      "education": [
+        {
+          "degree": "Kỹ sư",
+          "school": "Đại học Khoa học Tự nhiên – ĐHQG TP.HCM",
+          "major": "Công nghệ Thông tin",
+          "year": "2021"
+        }
+      ],
+      "certificates": [
+        "Unity Certified Professional Programmer",
+        "NVIDIA Deep Learning Institute – Fundamentals of Accelerated Computing with CUDA C/C++"
+      ],
+      "skills": [
+        "Vulkan API (render pass, descriptor sets, pipeline barriers, synchronization)",
+        "OpenGL / WebGL / WebGPU (cross-platform rendering)",
+        "Unity (DOTS, Burst Compiler, Job System, URP/HDRP shader graphs)",
+        "HLSL / GLSL / WGSL (shader languages)",
+        "Rust (intermediate: wgpu crate, winit, glam math library)",
+        "C++ (graphics programming, SIMD intrinsics basics)",
+        "Computer graphics: PBR (Physically Based Rendering), shadow mapping, deferred rendering",
+        "GPU profiling: RenderDoc, NVIDIA Nsight Graphics, AMD Radeon GPU Profiler",
+        "Python (asset pipeline automation, texture processing scripts)",
+        "Git / Perforce (game asset version control)",
+        "Linux / Windows (cross-platform build systems với CMake)"
+      ],
+      "experience": [
+        {
+          "project_name": "Sky Mavis – Axie Infinity: Origins Client Rendering Optimization",
+          "role": "Graphics Engineer",
+          "tech_stack": ["Unity", "HLSL", "WebGL", "URP", "Burst Compiler", "RenderDoc"]
+        },
+        {
+          "project_name": "Sky Mavis – NFT Asset Rendering Pipeline",
+          "role": "Game Client Engineer",
+          "tech_stack": ["Unity", "C#", "Python (asset processing)", "WebGL", "Three.js", "Shader Graph"]
+        },
+        {
+          "project_name": "Indie – Rust/Vulkan Mini Game Engine (side project)",
+          "role": "Solo Developer",
+          "tech_stack": ["Rust", "Vulkan (via ash crate)", "wgpu", "GLSL", "CMake", "GitHub Actions"]
+        }
+      ],
+      "availability": "Immediate",
+      "cultural_tags": ["Startup", "Deep tech focus", "Engineering excellence", "Remote-friendly"]
+    },
+    "private_data": {
+      "contact": {
+        "email": "vutuankiet.graphics@gmail.com",
+        "phone": "0973456789",
+        "github": "https://github.com/kiet-vulkan-rust"
+      },
+      "salary_expectation": "28,000,000 – 38,000,000 VNĐ/tháng. Thấp nhất trong dataset do mới 3 năm kinh nghiệm và lĩnh vực game dev thường thấp hơn enterprise software tại VN. Sẵn sàng trade lương lấy cơ hội làm việc với Vulkan hoặc custom render engine trong production.",
+      "project_technical_secrets": "Trong side project Rust/Vulkan mini engine, đã implement một custom Render Graph system tương tự Frostbite engine của EA – tự động phân tích data dependencies giữa các render passes và tự động insert Vulkan pipeline barriers đúng chỗ để đảm bảo GPU synchronization mà không over-synchronize. Đây là kỹ thuật được dùng trong AAA game engines nhưng hiếm khi được implement từ đầu bởi individual developers. Code sử dụng Rust type system để encode barrier states tại compile time, đảm bảo không thể đọc resource chưa được written. Tại Sky Mavis, đã phát hiện và fix một bug subtle trong Unity URP shadow rendering trên WebGL: shadow cascade boundaries bị artifact trên một số GPU do precision issue trong depth comparison – fix bằng custom shadow shader với manual bias calculation thay vì Unity's automatic. Bug report được submit lên Unity Technologies.",
+      "interview_questions_history": [
+        {
+          "question": "Tại sao Vulkan phức tạp hơn OpenGL nhiều? Trade-off là gì?",
+          "answer": "OpenGL: driver làm tất cả mọi thứ implicit – state management, synchronization, memory management. Driver phải guess intent của application → over-synchronize để safe → CPU overhead cao. Vulkan: explicit control hoàn toàn. Developer tự manage: command buffer recording, render pass begin/end, pipeline barriers cho GPU synchronization, memory allocation (VkDeviceMemory). Trade-off: verbosity tăng 10x nhưng performance tăng significant cho CPU-bound rendering, và behavior predictable. Vulkan cho phép multi-threaded command recording natively – OpenGL là single-threaded by design. Khi nào không dùng Vulkan: prototype nhanh, team nhỏ không có graphics specialist.",
+          "org": "Sky Mavis (engineering onboarding)"
+        },
+        {
+          "question": "Giải thích pipeline barrier trong Vulkan. Tại sao cần thiết?",
+          "answer": "GPU execute commands asynchronously và có thể reorder. Pipeline barrier: explicit synchronization point nói với GPU 'đừng bắt đầu stage B cho đến khi stage A hoàn thành với resource X'. Gồm: srcStageMask (stage đang write), dstStageMask (stage muốn read), srcAccessMask (write access type), dstAccessMask (read access type). Thiếu barrier: read-after-write hazard, undefined behavior – có thể chạy fine trên một GPU nhưng crash trên GPU khác. Ví dụ điển hình: render vào texture (COLOR_ATTACHMENT_OUTPUT stage) → sample texture trong shader (FRAGMENT_SHADER stage): cần barrier với image layout transition từ COLOR_ATTACHMENT_OPTIMAL sang SHADER_READ_ONLY_OPTIMAL.",
+          "org": "Indie project self-study + Sky Mavis tech review"
+        },
+        {
+          "question": "Unity DOTS (Data-Oriented Technology Stack) giải quyết vấn đề gì của OOP truyền thống trong game?",
+          "answer": "OOP game objects: data scatter theo từng MonoBehaviour instance trên heap → cache miss khi iterate 10k entities. DOTS/ECS: data packed theo component type trong arrays liên tục (Archetype chunks) → cache-friendly iteration. Job System: DOTS jobs chạy trên worker threads, Burst Compiler compile sang SIMD instructions. Kết quả thực tế: 10k entities với physics calculation: OOP ~16ms, DOTS ~1.2ms (13x speedup). Complexity: DOTS có learning curve, không phù hợp cho small games. Phù hợp nhất cho: open-world với nhiều entities (grass, crowds, particles), strategy games, simulation.",
+          "org": "Sky Mavis (Unity performance workshop)"
+        }
+      ],
+      "blacklist_orgs": ["Công ty game chỉ dùng Unity default settings không care về rendering performance", "Môi trường không cho phép contribute vào engine-level code"],
+      "evidence_links": [
+        "https://blog.kiet-vulkan-rust.dev/render-graph-vulkan-rust-implementation",
+        "https://github.com/kiet-vulkan-rust/mini-engine-vulkan"
+      ]
+    }
+  }
+]

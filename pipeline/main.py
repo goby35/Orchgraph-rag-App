@@ -1,370 +1,491 @@
-"""
-Pipeline Orchestrator — Transparent AI Digital Twin.
-
-Chạy tuần tự 5 bước cho một hoặc nhiều file đầu vào:
-  Parse → Clean → Chunk → Extract → Vectorize
-
-Hỗ trợ 3 loại tài liệu: CV, SOP, PROJECT.
-Tự detect core_entity và doc_type từ nội dung + đường dẫn.
-
-Usage:
-    python -m pipeline.main <file_or_folder> [--output results.json]
-"""
-
-from __future__ import annotations
-
-import argparse
-import json
-import re
-import sys
-import time
+﻿import json
 from pathlib import Path
 from typing import Any, Dict, List
+from tqdm import tqdm
 
 from pipeline.config import settings, get_logger
-from pipeline.parser import parse_document
+from pipeline.parser import parse_to_markdown
 from pipeline.cleaner import clean_vietnamese_text
-from pipeline.chunker import chunk_cleaned_text
 from pipeline.extractor import extract_knowledge
 from pipeline.vectorizer import prepare_for_neo4j
+from pipeline.neo4j_ingestion import neo4j_service
 
-logger = get_logger("pipeline.main")
-
-# Các đuôi file được hỗ trợ
-_SUPPORTED_EXTS = {".pdf", ".docx", ".doc", ".md"}
+logger = get_logger(__name__)
 
 
-def _detect_core_entity(cleaned_text: str, doc_hint: str = "") -> str:
-    """Phát hiện chủ thể lõi từ nội dung văn bản đã clean.
+def _dual_ingest_supabase_non_fatal(payload: Dict[str, Any]) -> None:
+    """Best-effort Supabase dual-ingestion after Neo4j ingest succeeds."""
+    try:
+        from pipeline.schemas import RecruitmentNode
+        from pipeline.supabase_ingestion import ingest_to_supabase
 
-    Tuỳ loại tài liệu:
-      - CV:      Tên người ở dòng đầu (2–5 từ viết hoa).
-      - SOP:     Tên quy trình (dòng chứa "SOP", "Quy trình", "Quy chuẩn", …).
-      - PROJECT: Tên dự án (dòng chứa "Dự án", "Project", hoặc dòng đầu tiên).
-
-    Args:
-        cleaned_text: Văn bản đã clean.
-        doc_hint: Gợi ý loại tài liệu từ đường dẫn ("cv", "sop", "project").
-    """
-    hint = doc_hint.lower()
-
-    # --- SOP detection ---
-    if hint == "sop":
-        for line in cleaned_text.split("\n"):
-            line = line.strip().strip("*#_")
-            if not line or len(line) < 3:
-                continue
-            # Dòng chứa từ khóa quy trình
-            if re.search(r"(?i)(SOP|quy trình|quy chuẩn|hướng dẫn|vận hành)", line):
-                return line
-        # Fallback: dòng đầu tiên có ý nghĩa
-        for line in cleaned_text.split("\n"):
-            line = line.strip().strip("*#_")
-            if line and len(line) >= 5:
-                return line
-        return ""
-
-    # --- PROJECT detection ---
-    if hint == "project":
-        for line in cleaned_text.split("\n"):
-            line = line.strip().strip("*#_")
-            if not line or len(line) < 3:
-                continue
-            if re.search(r"(?i)(dự án|project|kế hoạch|chương trình)", line):
-                return line
-        # Fallback: dòng đầu tiên
-        for line in cleaned_text.split("\n"):
-            line = line.strip().strip("*#_")
-            if line and len(line) >= 5:
-                return line
-        return ""
-
-    # --- CV detection (default) ---
-    for line in cleaned_text.split("\n"):
-        line = line.strip().strip("*#_")
-        if not line or len(line) < 3:
-            continue
-        if any(c in line for c in ("@", "http", "://", "+84", "**")):
-            continue
-        words = line.split()
-        if 2 <= len(words) <= 5 and all(w[0].isupper() for w in words):
-            return line
-        break
-    return ""
+        node = RecruitmentNode.from_pipeline_payload(payload)
+        ingest_to_supabase(node)
+    except Exception as sb_err:
+        logger.warning("[Supabase] Dual-ingest warning (non-fatal): %s", sb_err)
 
 
-def _infer_doc_hint(file_path: Path) -> str:
-    """Suy luận doc_hint từ đường dẫn thư mục cha.
-
-    Ví dụ: storage/cv/file.docx → "cv", storage/sop/file.docx → "sop".
-    """
-    parent = file_path.parent.name.lower()
-    if parent in ("cv", "sop", "project"):
-        return parent
-    return ""
-
-
-def _neo4j_ready_path(source_file: str, model_name: str | None = None) -> Path:
-    """Trả về đường dẫn neo4j_ready JSON dự kiến cho một source file."""
-    if model_name is None:
-        model_name = settings.PHOBERT_MODEL
-    model_dir = _model_to_dirname(model_name)
-    return (Path("./neo4j_ready").resolve() / model_dir
-            / (Path(source_file).stem + ".json"))
-
-
-def process_single_file(
-    file_path: Path,
-    core_entity: str = "",
-    doc_hint: str = "",
-) -> List[Dict[str, Any]]:
-    """Chạy toàn bộ pipeline cho một file.
-
-    Args:
-        file_path: Đường dẫn tới file tài liệu.
-        core_entity: Tên chủ thể lõi (tự detect nếu rỗng).
-        doc_hint: Gợi ý loại tài liệu ("cv", "sop", "project").
-
-    Returns:
-        Danh sách dict (mỗi chunk đã qua 5 bước), sẵn sàng nạp Neo4j/ChromaDB.
-    """
-    # --- Skip nếu output đã tồn tại ---
-    neo4j_out = _neo4j_ready_path(file_path.name)
-    if neo4j_out.exists():
-        logger.info("Skipping %s — Already processed (%s)", file_path.name, neo4j_out)
+def _chunk_text_for_extraction(text: str, max_chars: int = 7000, overlap: int = 400) -> List[str]:
+    """Chia text lớn thành nhiều chunk để tránh vượt giới hạn context của LLM."""
+    if not text or not text.strip():
         return []
-    logger.info("=" * 60)
-    logger.info("BẮT ĐẦU XỬ LÝ: %s", file_path.name)
-    logger.info("=" * 60)
-    t0 = time.perf_counter()
 
-    # Bước 1: Parse
-    logger.info("[1/5] Parse document → Markdown")
-    markdown_text = parse_document(file_path)
-    logger.info("  → %d ký tự Markdown.", len(markdown_text))
+    if len(text) <= max_chars:
+        return [text]
 
-    # Bước 2: Clean
-    logger.info("[2/5] Clean & chuẩn hóa tiếng Việt")
-    cleaned_text = clean_vietnamese_text(markdown_text)
-    logger.info("  → %d ký tự sau clean.", len(cleaned_text))
+    chunks: List[str] = []
+    start = 0
+    text_len = len(text)
+    while start < text_len:
+        end = min(start + max_chars, text_len)
+        if end < text_len:
+            # Ưu tiên ngắt theo xuống dòng để giữ nghĩa đoạn văn.
+            split_at = text.rfind("\n", start, end)
+            if split_at > start + int(max_chars * 0.6):
+                end = split_at
 
-    # Bước 3: Chunk
-    logger.info("[3/5] Semantic Chunking (≤256 tokens)")
-    chunks = chunk_cleaned_text(cleaned_text)
-    logger.info("  → %d chunk.", len(chunks))
+        chunk = text[start:end].strip()
+        if chunk:
+            chunks.append(chunk)
 
-    # Phát hiện core_entity nếu chưa có
-    if not doc_hint:
-        doc_hint = _infer_doc_hint(file_path)
-    if not core_entity:
-        core_entity = _detect_core_entity(cleaned_text, doc_hint=doc_hint)
-    if core_entity:
-        logger.info("Core entity: %s (hint=%s)", core_entity, doc_hint or "auto")
-    else:
-        logger.warning("Không phát hiện được core entity — coreference sẽ bị hạn chế.")
+        if end >= text_len:
+            break
+        start = max(0, end - overlap)
 
-    # Bước 4 + 5: Extract & Vectorize cho từng chunk
-    results: List[Dict[str, Any]] = []
-    for idx, chunk in enumerate(chunks, start=1):
-        logger.info("[4-5/5] Chunk %d/%d — Extract + Vectorize", idx, len(chunks))
-        try:
-            extraction = extract_knowledge(chunk, core_entity=core_entity)
-        except RuntimeError as exc:
-            logger.error("  ✗ Bỏ qua chunk %d: %s", idx, exc)
+    return chunks
+
+
+def _has_value(value: Any) -> bool:
+    if value is None:
+        return False
+    if isinstance(value, str):
+        return bool(value.strip())
+    if isinstance(value, (list, dict)):
+        return len(value) > 0
+    return True
+
+
+def _normalize_list_item(item: Any) -> str:
+    if isinstance(item, (dict, list)):
+        return json.dumps(item, ensure_ascii=False, sort_keys=True)
+    return str(item)
+
+
+def _merge_list_values(target_list: List[Any], incoming: Any) -> None:
+    if not isinstance(incoming, list):
+        return
+
+    seen = {_normalize_list_item(v) for v in target_list}
+    for item in incoming:
+        key = _normalize_list_item(item)
+        if key in seen:
+            continue
+        target_list.append(item)
+        seen.add(key)
+
+
+def _merge_nested_dict(target: Dict[str, Any], incoming: Dict[str, Any]) -> None:
+    for key, value in incoming.items():
+        if isinstance(value, list):
+            if not isinstance(target.get(key), list):
+                target[key] = []
+            _merge_list_values(target[key], value)
+        elif isinstance(value, dict):
+            if not isinstance(target.get(key), dict):
+                target[key] = {}
+            _merge_nested_dict(target[key], value)
+        else:
+            if not _has_value(target.get(key)) and _has_value(value):
+                target[key] = value
+
+
+def _empty_extraction_template(record_type: str) -> Dict[str, Any]:
+    if record_type == "ORGANIZATION":
+        return {
+            "record_type": "ORGANIZATION",
+            "data": {
+                "org_id": None,
+                "public_data": {
+                    "org_name": None,
+                    "industry": None,
+                    "brief_description": None,
+                    "active_jds": [],
+                },
+                "private_data": {
+                    "core_techstack_detail": {},
+                    "internal_project_pain_points": None,
+                    "target_candidate_dna": None,
+                    "client_list": [],
+                },
+            },
+        }
+
+    return {
+        "record_type": "PERSONNEL",
+        "data": {
+            "personnel_id": None,
+            "public_data": {
+                "full_name": None,
+                "professional_summary": None,
+                "education": [],
+                "certificates": [],
+                "skills": [],
+                "experience": [],
+                "availability": None,
+                "cultural_tags": [],
+            },
+            "private_data": {
+                "contact": {},
+                "salary_expectation": None,
+                "project_technical_secrets": None,
+                "interview_questions_history": [],
+                "blacklist_orgs": [],
+                "evidence_links": [],
+                "additional_information": {},
+            },
+        },
+    }
+
+
+def _merge_extracted_chunks(chunks_data: List[Dict[str, Any]], default_record_type: str) -> Dict[str, Any]:
+    """Map-Reduce merge cho extraction nhiều chunk để tránh mất dữ liệu."""
+    merged = _empty_extraction_template(default_record_type)
+
+    for chunk_dict in chunks_data:
+        if not isinstance(chunk_dict, dict) or not chunk_dict:
             continue
 
-        prepared = prepare_for_neo4j(chunk, extraction)
-        prepared["source_file"] = file_path.name
-        prepared["chunk_index"] = idx
-        results.append(prepared)
+        chunk_record_type = str(chunk_dict.get("record_type", "")).upper().strip()
+        if chunk_record_type in {"PERSONNEL", "ORGANIZATION"}:
+            merged["record_type"] = chunk_record_type
 
-    elapsed = time.perf_counter() - t0
-    logger.info(
-        "HOÀN TẤT %s — %d/%d chunk thành công (%.1fs).",
-        file_path.name,
-        len(results),
-        len(chunks),
-        elapsed,
-    )
-    return results
+        data = chunk_dict.get("data")
+        if not isinstance(data, dict):
+            continue
 
+        merged_data = merged.setdefault("data", {})
 
-def run_pipeline(
-    input_path: str | Path,
-    output_path: str | Path | None = None,
-    core_entity: str = "",
-) -> List[Dict[str, Any]]:
-    """Chạy pipeline cho file hoặc thư mục.
+        # Merge định danh đơn trị: điền nếu chưa có
+        for id_key in ("personnel_id", "org_id"):
+            if not _has_value(merged_data.get(id_key)) and _has_value(data.get(id_key)):
+                merged_data[id_key] = data.get(id_key)
 
-    Args:
-        input_path: Đường dẫn tới file hoặc folder chứa tài liệu.
-        output_path: (Tùy chọn) Nơi ghi kết quả JSON.
-        core_entity: Tên chủ thể lõi (tự detect nếu rỗng).
+        # Merge public/private data
+        public_in = data.get("public_data")
+        if isinstance(public_in, dict):
+            if not isinstance(merged_data.get("public_data"), dict):
+                merged_data["public_data"] = {}
+            _merge_nested_dict(merged_data["public_data"], public_in)
 
-    Returns:
-        Tổng hợp kết quả từ tất cả file.
+        private_in = data.get("private_data")
+        if isinstance(private_in, dict):
+            if not isinstance(merged_data.get("private_data"), dict):
+                merged_data["private_data"] = {}
+            _merge_nested_dict(merged_data["private_data"], private_in)
+
+    return merged
+
+def process_file(file_path: Path, target_node_id: str | None = None, target_role: str | None = None):
     """
-    input_path = Path(input_path).resolve()
-    all_results: List[Dict[str, Any]] = []
-
-    if input_path.is_file():
-        files = [input_path]
-    elif input_path.is_dir():
-        # Tìm file trong thư mục hiện tại VÀ các thư mục con (cv, sop, project)
-        files = sorted(
-            f for f in input_path.rglob("*") if f.suffix.lower() in _SUPPORTED_EXTS
-        )
-        logger.info("Tìm thấy %d file trong %s.", len(files), input_path)
-    else:
-        raise FileNotFoundError(f"Không tồn tại: {input_path}")
-
-    skipped = 0
-    for file in files:
+    Xử lý 1 file duy nhất. 
+    Nếu là JSON thì xử lý direct ingestion.
+    Nếu ko thì chạy parse, clean, extract như thường.
+    """
+    file_ext = file_path.suffix.lower()
+    
+    # 1. Bypass LLM cho file JSON để tiết kiệm chi phí
+    if file_ext == '.json':
+        logger.info(f"Phát hiện file JSON, bypass LLM cho file: {file_path.name}")
         try:
-            results = process_single_file(file, core_entity=core_entity)
-            if not results:
-                skipped += 1
+            with open(file_path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                
+            # data can be list or dict
+            nodes = data if isinstance(data, list) else [data]
+            for node in nodes:
+                node["source_file"] = file_path.name
+                if target_node_id:
+                    node["node_id"] = target_node_id
+                if target_role:
+                    node["record_type"] = target_role
+                
+                # 2. Vectorization
+                vectorized_data = prepare_for_neo4j(node)
+                
+                # 3. Neo4j Ingestion
+                neo4j_service.ingest_node(
+                    vectorized_data,
+                    target_node_id=target_node_id,
+                    target_role=target_role,
+                )
+                _dual_ingest_supabase_non_fatal(node)
+                
+            logger.info(f"✅ Đã phân tách Public/Private thành công cho file: {file_path.name}")    
+            return
+            
+        except Exception as e:
+            logger.error(f"Lỗi khi xử lý file JSON {file_path.name}: {e}")
+            return
+            
+    # 2. Các file tài liệu (.docx, .pdf, .md, .txt) dùng Pydantic & Llama
+    logger.info(f"Bắt đầu pipeline chuẩn cho file: {file_path.name}")
+    try:
+        # A. Parse
+        raw_text = parse_to_markdown(file_path)
+
+        # B. Clean
+        clean_text = clean_vietnamese_text(raw_text)
+
+        # C. Chunking + LLM Extraction
+        # default là PERSONNEL, có thể cải tiến auto detect dựa trên keywords
+        record_type = "PERSONNEL" if "JD" not in str(file_path.name).upper() else "ORGANIZATION"
+        chunks = _chunk_text_for_extraction(clean_text)
+        if not chunks:
+            raise RuntimeError("Nội dung sau khi clean rỗng, không thể extract")
+
+        logger.info("Tách %d chunk trước extract cho file: %s", len(chunks), file_path.name)
+        extraction_candidates: List[Dict[str, Any]] = []
+        for idx, chunk in enumerate(chunks):
+            logger.info("Extract chunk %d/%d cho file: %s", idx + 1, len(chunks), file_path.name)
+            extraction_candidates.append(
+                extract_knowledge(
+                    chunk,
+                    file_hint=f"{file_path.name}#chunk{idx + 1}",
+                    target_role=record_type,
+                )
+            )
+        extraction_result = _merge_extracted_chunks(extraction_candidates, record_type)
+        
+        import uuid as _uuid
+
+        # extraction_result đã là dict
+        node_data = extraction_result
+        node_data["source_file"] = file_path.name
+        node_data["record_type"] = extraction_result.get("record_type", record_type)
+
+        # Sinh ID tự động nếu LLM không tìm thấy
+        data_block = node_data.get("data", {})
+        if target_node_id:
+            # User đã login và upload → dùng ID của họ
+            if record_type == "ORGANIZATION":
+                data_block["org_id"] = target_node_id
+            else:
+                data_block["personnel_id"] = target_node_id
+        else:
+            # PDF không có ID → sinh ngẫu nhiên
+            if not data_block.get("personnel_id") and not data_block.get("org_id"):
+                prefix = "ORG" if record_type == "ORGANIZATION" else "P"
+                data_block[
+                    "org_id" if record_type == "ORGANIZATION" else "personnel_id"
+                ] = f"{prefix}_{_uuid.uuid4().hex[:8].upper()}"
+                logger.info(
+                    "[main] Sinh ID tự động: %s",
+                    data_block.get("personnel_id") or data_block.get("org_id"),
+                )
+        
+        # D. Vectorize
+        vectorized_data = prepare_for_neo4j(node_data)
+        
+        # E. Neo4j Ingest 
+        neo4j_service.ingest_node(
+            vectorized_data,
+            target_node_id=target_node_id,
+            target_role=target_role,
+        )
+        _dual_ingest_supabase_non_fatal(node_data)
+        
+        logger.info(f"✅ Đã phân tách Public/Private thành công cho file: {file_path.name}")
+        
+    except Exception as e:
+        logger.error(f"Lỗi quy trình cho file {file_path.name}: {e}")
+
+
+def _resolve_record_type(role: str) -> str:
+    role_norm = str(role or "").strip().lower()
+    return "ORGANIZATION" if role_norm in {"organization", "org"} else "PERSONNEL"
+
+
+def update_partial_info(node_id: str, role: str, compartment: str, field_name: str, new_value: Any):
+    """Read -> Modify -> ReEmbed -> Write cho cập nhật partial field."""
+    record_type = _resolve_record_type(role)
+    label = "Organization" if record_type == "ORGANIZATION" else "Personnel"
+    compartment_norm = str(compartment or "").strip().lower()
+    if compartment_norm not in {"public", "public_data", "private", "private_data"}:
+        raise ValueError("compartment phải là public_data hoặc private_data")
+
+    try:
+        with neo4j_service._driver.session() as session:
+            node = session.run(
+                """
+                MATCH (n {id: $node_id})
+                WHERE $label IN labels(n)
+                RETURN properties(n) AS props
+                LIMIT 1
+                """,
+                node_id=node_id,
+                label=label,
+            ).single()
+
+        if not node:
+            raise ValueError(f"Không tìm thấy node {label} với id={node_id}")
+
+        props = dict(node.get("props") or {})
+
+        public_data: Dict[str, Any] = {}
+        for key, value in props.items():
+            if not str(key).startswith("public_"):
                 continue
-            all_results.extend(results)
-        except Exception as exc:
-            logger.error("Lỗi khi xử lý %s: %s", file.name, exc)
+            clean_key = str(key)[7:]
+            parsed_value = value
+            if isinstance(value, str):
+                text = value.strip()
+                if (text.startswith("{") and text.endswith("}")) or (text.startswith("[") and text.endswith("]")):
+                    try:
+                        parsed_value = json.loads(text)
+                    except Exception:
+                        parsed_value = value
+            public_data[clean_key] = parsed_value
 
-    logger.info(
-        "TỔNG KẾT: %d chunk từ %d file (%d skipped).",
-        len(all_results), len(files), skipped,
-    )
+        private_blob = props.get("private_data_blob") or "{}"
+        private_data = {}
+        if isinstance(private_blob, str):
+            try:
+                private_data = json.loads(private_blob)
+            except Exception:
+                private_data = {}
+        elif isinstance(private_blob, dict):
+            private_data = dict(private_blob)
 
-    # Ghi output nếu được yêu cầu
-    if output_path:
-        out = Path(output_path)
-        # Embedding quá dài → lưu riêng flag
-        serializable = _make_serializable(all_results)
-        out.write_text(json.dumps(serializable, ensure_ascii=False, indent=2), encoding="utf-8")
-        logger.info("Đã ghi kết quả vào %s.", out)
+        if compartment_norm in {"public", "public_data"}:
+            target_map = public_data
+        else:
+            target_map = private_data
 
-    # Lưu Neo4j-ready JSON phân loại theo embedding model
-    saved_paths: List[Path] = []
-    groups: Dict[str, List[Dict[str, Any]]] = {}
-    for r in all_results:
-        src = r.get("source_file", "unknown")
-        groups.setdefault(src, []).append(r)
-    for src_name, group_results in groups.items():
-        saved = save_neo4j_ready(group_results, src_name)
-        saved_paths.append(saved)
-    if saved_paths:
-        logger.info("Neo4j-ready files: %s", [str(p) for p in saved_paths])
+        if new_value is None or (isinstance(new_value, str) and not new_value.strip()):
+            target_map.pop(field_name, None)
+        else:
+            target_map[field_name] = new_value
 
-    return all_results
+        data: Dict[str, Any] = {
+            "public_data": public_data,
+            "private_data": private_data,
+        }
+        if record_type == "ORGANIZATION":
+            data["org_id"] = node_id
+        else:
+            data["personnel_id"] = node_id
 
+        node_data = {
+            "record_type": record_type,
+            "data": data,
+            "source_file": props.get("source_file", "manual_update"),
+        }
 
-# ============================================================================
-# Neo4j-ready JSON Saver
-# ============================================================================
-
-_MODEL_SLUG_MAP = {
-    "vinai/phobert-base-v2": "phobert-v2",
-    "vinai/phobert-base": "phobert-v1",
-    "BAAI/bge-m3": "bge-m3",
-    "intfloat/multilingual-e5-large": "e5-large-v2",
-}
-
-
-def _model_to_dirname(model_name: str) -> str:
-    """Chuyển tên model thành tên thư mục thân thiện.
-
-    Ví dụ: 'vinai/phobert-base-v2' → 'phobert-v2'
-    """
-    if model_name in _MODEL_SLUG_MAP:
-        return _MODEL_SLUG_MAP[model_name]
-    # Fallback: lấy phần sau '/', thay ký tự không hợp lệ
-    slug = model_name.split("/")[-1].lower()
-    slug = slug.replace(" ", "-")
-    return slug
-
-
-def save_neo4j_ready(
-    results: List[Dict[str, Any]],
-    source_file: str | Path,
-    base_dir: str | Path = "./neo4j_ready",
-    model_name: str | None = None,
-) -> Path:
-    """Lưu kết quả pipeline thành JSON phân loại theo embedding model.
-
-    Cấu trúc::
-
-        neo4j_ready/
-        ├── phobert-v2/
-        │   └── {base_filename}.json
-        └── ...
-
-    Args:
-        results: Danh sách dict đầu ra từ pipeline (có embedding đầy đủ).
-        source_file: Tên hoặc path file nguồn (để tạo tên file JSON).
-        base_dir: Thư mục gốc (mặc định ``./neo4j_ready``).
-        model_name: Tên embedding model. Mặc định lấy từ ``settings.PHOBERT_MODEL``.
-
-    Returns:
-        ``Path`` tuyệt đối tới file JSON đã lưu.
-    """
-    if model_name is None:
-        model_name = settings.PHOBERT_MODEL
-
-    model_dir = _model_to_dirname(model_name)
-    out_dir = Path(base_dir).resolve() / model_dir
-    out_dir.mkdir(parents=True, exist_ok=True)
-
-    base_filename = Path(source_file).stem + ".json"
-    out_file = out_dir / base_filename
-
-    out_file.write_text(
-        json.dumps(results, ensure_ascii=False, indent=2),
-        encoding="utf-8",
-    )
-    logger.info("Đã lưu Neo4j-ready JSON → %s", out_file)
-    return out_file
+        vectorized_data = prepare_for_neo4j(node_data)
+        neo4j_service.ingest_node(
+            vectorized_data,
+            target_node_id=node_id,
+            target_role=record_type,
+        )
+    except Exception as e:
+        logger.error("Lỗi update_partial_info cho %s (%s): %s", node_id, role, e, exc_info=True)
+        raise
 
 
-def _make_serializable(results: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-    """Rút gọn embedding để JSON output không quá lớn."""
-    out = []
-    for r in results:
-        item = {**r}
-        emb = item.get("embedding", [])
-        # Chỉ giữ 5 phần tử đầu + dim count để tiết kiệm dung lượng
-        item["embedding_preview"] = emb[:5] if emb else []
-        item["embedding_dim"] = len(emb)
-        del item["embedding"]
-        out.append(item)
-    return out
+def delete_account(node_id: str, role: str, hard_delete: bool = False):
+    """Xóa tài khoản: mặc định soft delete để bảo toàn quan hệ đồ thị."""
+    record_type = _resolve_record_type(role)
+    label = "Organization" if record_type == "ORGANIZATION" else "Personnel"
 
+    try:
+        with neo4j_service._driver.session() as session:
+            if hard_delete:
+                session.run(
+                    """
+                    MATCH (n {id: $node_id})
+                    WHERE $label IN labels(n)
+                    DETACH DELETE n
+                    """,
+                    node_id=node_id,
+                    label=label,
+                )
+                return
 
-# ============================================================================
-# CLI
-# ============================================================================
+            row = session.run(
+                """
+                MATCH (n {id: $node_id})
+                WHERE $label IN labels(n)
+                RETURN keys(n) AS keys
+                LIMIT 1
+                """,
+                node_id=node_id,
+                label=label,
+            ).single()
+            if not row:
+                raise ValueError(f"Không tìm thấy node {label} với id={node_id}")
 
-def main() -> None:
-    """Entry-point khi chạy ``python -m pipeline.main``."""
-    parser = argparse.ArgumentParser(
-        description="Transparent AI Digital Twin — Data Processing Pipeline",
-    )
-    parser.add_argument(
-        "input",
-        help="Đường dẫn tới file (.pdf/.docx/.md) hoặc folder chứa tài liệu.",
-    )
-    parser.add_argument(
-        "--output", "-o",
-        default=None,
-        help="File JSON để ghi kết quả (mặc định: không ghi).",
-    )
-    parser.add_argument(
-        "--core-entity",
-        default="",
-        help="Tên chủ thể lõi (vd: 'Nguyễn Hoài Tưởng' / 'SOP-02 ...' / 'NovaFlow ERP'). Mặc định: tự detect.",
-    )
-    args = parser.parse_args()
+            prop_keys = [k for k in (row.get("keys") or []) if isinstance(k, str) and k.startswith("public_")]
+            zero_vector = [0.0] * 768
 
-    run_pipeline(args.input, args.output, core_entity=args.core_entity)
+            session.run(
+                """
+                MATCH (n {id: $node_id})
+                WHERE $label IN labels(n)
+                SET n.is_deleted = true,
+                    n.private_data_blob = '{}',
+                    n.public_name = 'Tài khoản đã bị xóa',
+                    n.public_full_name = 'Tài khoản đã bị xóa',
+                    n.public_embeddings_phobert = $zero_vector,
+                    n.private_embeddings_phobert = $zero_vector,
+                    n.last_updated = timestamp()
+                FOREACH (k IN $public_keys | SET n[k] = null)
+                """,
+                node_id=node_id,
+                label=label,
+                zero_vector=zero_vector,
+                public_keys=prop_keys,
+            )
+    except Exception as e:
+        logger.error("Lỗi delete_account cho %s (%s): %s", node_id, role, e, exc_info=True)
+        raise
 
+def main():
+    logger.info("Khởi động Digital Twin Recruitment GraphRAG Pipeline...")
+    
+    if not neo4j_service.verify_connection():
+         return
+    neo4j_service.setup_indices()
+
+    input_folders = ["storage/cv", "storage/project", "storage/sop", "storage", "data_lake"]
+    
+    all_files = []
+    # Test batch ready dir 
+    ready_dir = Path("neo4j_ready/bge-m3")
+    if ready_dir.exists():
+        all_files.extend(list(ready_dir.glob("*.json")))
+
+    # Fast-track JSON batch (raw public/private, chưa có embedding)
+    fast_track_dir = Path("fast_track")
+    if fast_track_dir.exists():
+        all_files.extend(list(fast_track_dir.glob("*.json")))
+
+    for folder in input_folders:
+        folder_path = Path(folder)
+        if folder_path.exists():
+             for ext in ('*.pdf', '*.docx', '*.txt', '*.md', '*.json'):
+                all_files.extend(list(folder_path.rglob(ext)))
+
+    if not all_files:
+        logger.info("Không tìm thấy file nào để xử lý.")
+        return
+
+    logger.info(f"Tìm thấy {len(all_files)} files. Bắt đầu ingest...")
+    for idx, f in enumerate(tqdm(all_files, desc="Đang phân tích Node")):
+         logger.info(f"[{idx+1}/{len(all_files)}] Xử lý: {f.name}")
+         process_file(f)
+
+    logger.info("Đã hoàn tất toàn bộ pipeline!")
+    neo4j_service.close()
 
 if __name__ == "__main__":
     main()

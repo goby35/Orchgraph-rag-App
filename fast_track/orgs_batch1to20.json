@@ -1,0 +1,650 @@
+[
+  {
+    "org_id": "ORG_001",
+    "public_data": {
+      "org_name": "NexPay Financial Technology",
+      "industry": "Fintech – Payment Infrastructure",
+      "brief_description": "Startup Series B xây dựng hạ tầng thanh toán thế hệ mới cho thị trường Đông Nam Á. Sứ mệnh: làm cho cross-border payment nhanh như gửi tin nhắn. Đang vận hành payment rails tại 6 quốc gia với $2 tỷ USD tổng giá trị giao dịch/tháng.",
+      "active_jds": [
+        {
+          "position": "Senior Data/Streaming Engineer",
+          "description": "Xây dựng và vận hành real-time fraud detection pipeline xử lý 500k transactions/phút với latency phát hiện dưới 2 giây. Đây là vị trí kỹ thuật cốt lõi nhất của công ty.",
+          "requirements": ["3+ năm kinh nghiệm stream processing (Flink hoặc Spark Streaming)", "Kinh nghiệm thực tế với OLAP database hiệu năng cao (ClickHouse, Druid, hoặc tương đương)", "Hiểu biết về fraud detection hoặc anomaly detection systems", "Go hoặc Python thành thạo"],
+          "benefits": ["USD 3,000 – 4,500/tháng tùy kinh nghiệm", "ESOP 0.1–0.2%", "100% remote hoặc hybrid Hà Nội/HCM"],
+          "location": "Remote-first (HN / HCM office available)"
+        },
+        {
+          "position": "Backend Engineer – Transaction Core",
+          "description": "Phát triển transaction engine đảm bảo exactly-once semantics cho cross-border payment flows.",
+          "requirements": ["Go hoặc Java senior level", "Distributed transactions, Saga pattern", "Kafka/messaging queues"],
+          "benefits": ["USD 2,500 – 3,800/tháng", "ESOP", "Fully remote"],
+          "location": "Remote"
+        }
+      ]
+    },
+    "private_data": {
+      "core_techstack_detail": {
+        "language": "Go 1.22 (primary), Python 3.11 (ML pipeline)",
+        "streaming": "Apache Flink 1.18 (stateful CEP), Apache Kafka 3.6",
+        "db": "PostgreSQL 16 (transactional), ClickHouse 23.8 (analytics/fraud scoring)",
+        "infra": "AWS EKS, Terraform, ArgoCD",
+        "ml": "XGBoost + custom online feature store trên Redis"
+      },
+      "internal_project_pain_points": "Pain point cực kỳ đặc thù: team đang dùng Spark Structured Streaming cho fraud scoring nhưng gặp bottleneck nghiêm trọng – stateful aggregation window của Spark không đủ flexible cho custom CEP rules. Cần người đã thực tế viết Flink stateful operators với RocksDB state backend, đặc biệt là custom ProcessFunction với keyed state để implement complex event patterns (ví dụ: detect sequence A→B→C trong 60 giây across millions of concurrent users). Ngoài ra, ClickHouse materialized views đang bị refresh lag 8 giây vì query pattern không optimize – cần người hiểu ClickHouse MergeTree internals và có thể redesign schema.",
+      "target_candidate_dna": "Không cần người biết Flink theo lý thuyết – cần người đã debug Flink job failure trong production, hiểu checkpoint mechanism, và có thể estimate state size. Điểm khác biệt tuyệt đối: candidate phải có kinh nghiệm kết hợp Flink streaming với OLAP query layer (ClickHouse hoặc tương đương) cho fraud/anomaly use case. Đây là intersection rất hiếm. Personality: không ngại đọc source code của Flink để debug edge cases.",
+      "client_list": ["Đang deploy tại: Vietnam, Thailand, Philippines, Indonesia (pilot)", "Đối tác ngân hàng: VPBank, Kbank Thailand, BPI Philippines"]
+    }
+  },
+
+  {
+    "org_id": "ORG_002",
+    "public_data": {
+      "org_name": "PixelForge Interactive",
+      "industry": "Game Development – AAA Mobile & PC",
+      "brief_description": "Studio game độc lập Việt Nam đang phát triển tựa game action-RPG cho PC và console với ambition release trên Steam toàn cầu. Backed bởi một publisher Hàn Quốc. Engineering team 15 người, coi kỹ thuật rendering là competitive advantage.",
+      "active_jds": [
+        {
+          "position": "Senior Graphics / Rendering Engineer",
+          "description": "Thiết kế và implement rendering pipeline cho game PC/console target 4K 60fps. Ownership toàn bộ graphics subsystem.",
+          "requirements": ["3+ năm Vulkan API hoặc DirectX 12 thực chiến", "Kinh nghiệm với PBR rendering, shadow systems, post-processing", "C++ hoặc Rust cho graphics programming", "Hiểu biết về GPU pipeline optimization"],
+          "benefits": ["USD 2,500 – 4,000/tháng", "ESOP 0.05%", "Flexible work, game dev perks"],
+          "location": "HCM (hybrid)"
+        },
+        {
+          "position": "Backend Game Systems Engineer",
+          "description": "Xây dựng live service backend: matchmaking, leaderboard, inventory, anti-cheat cho 1M+ concurrent players.",
+          "requirements": ["Go hoặc Rust senior level", "Distributed systems, low-latency architecture", "Kinh nghiệm game backend là plus"],
+          "benefits": ["USD 2,800 – 3,800/tháng", "ESOP"],
+          "location": "HCM / Remote"
+        }
+      ]
+    },
+    "private_data": {
+      "core_techstack_detail": {
+        "engine": "Custom C++ engine (không dùng Unity/Unreal), Vulkan backend",
+        "language": "C++ 20 (engine), Rust 1.75 (game server backend), Python (pipeline tools)",
+        "db": "PostgreSQL 15 (player data), Redis 7 (session, leaderboard)",
+        "infra": "AWS GameLift + custom dedicated servers, Kubernetes"
+      },
+      "internal_project_pain_points": "Pain point rất đặc thù về rendering: đang implement Render Graph system nhưng gặp vấn đề với Vulkan pipeline barrier insertion – tự động insert barriers đang gây over-synchronization (GPU idle 30% thời gian). Cần engineer hiểu sâu Vulkan synchronization model đủ để implement dependency analysis giữa render passes và chỉ insert barriers thực sự cần thiết. Đây là kỹ thuật mà hầu hết Vulkan developers chưa implement từ đầu. Về backend: Rust game server cần được tối ưu memory allocation – đang dùng default allocator nhưng cần custom allocator strategy cho hot paths trong game loop.",
+      "target_candidate_dna": "Graphics role: cần người đã tự implement một Render Graph hoặc tương đương – không phải dùng engine có sẵn. Nếu có Rust game backend experience thì là cực kỳ lý tưởng. Backend role: cần Rust production experience, đặc biệt async networking. Game domain knowledge là plus nhưng không bắt buộc nếu distributed systems background vững. Tính cách: thích tự implement từ đầu hơn là dùng library có sẵn.",
+      "client_list": ["Publisher: Gravity Interactive Korea (investor)", "Distributor: Steam (planned Q4 2025)", "Platform: PC + PlayStation 5 (roadmap)"]
+    }
+  },
+
+  {
+    "org_id": "ORG_003",
+    "public_data": {
+      "org_name": "VinAI Semiconductor Lab",
+      "industry": "AI Hardware – Custom AI Chip R&D",
+      "brief_description": "Spin-off từ VinAI Research, tập trung vào thiết kế và tối ưu software stack cho AI inference chips tùy chỉnh. Mục tiêu: xây dựng chip AI 'Made in Vietnam' cạnh tranh trực tiếp với Qualcomm AI Engine và Apple Neural Engine trong 5 năm tới.",
+      "active_jds": [
+        {
+          "position": "GPU/NPU Software Engineer – Kernel Optimization",
+          "description": "Viết và tối ưu các low-level compute kernels cho custom AI accelerator. Bridging khoảng cách giữa hardware team và software framework (PyTorch/ONNX).",
+          "requirements": ["CUDA programming – custom kernel development (không chỉ cuDNN)", "Kinh nghiệm với quantization-aware kernel optimization", "C++ và Python thành thạo", "Hiểu biết về transformer attention mechanisms là strong plus"],
+          "benefits": ["USD 4,000 – 6,000/tháng", "Research bonus cho patents", "Access to cutting-edge hardware"],
+          "location": "Hà Nội (on-site, lab environment)"
+        }
+      ]
+    },
+    "private_data": {
+      "core_techstack_detail": {
+        "language": "CUDA C++ (primary), Python (framework integration), C (driver layer)",
+        "framework": "PyTorch 2.x, ONNX Runtime, custom compiler MLIR-based",
+        "hardware": "Custom NPU prototype (confidential), NVIDIA H100 (validation)",
+        "infra": "On-premise HPC cluster, không dùng cloud"
+      },
+      "internal_project_pain_points": "Pain point cực kỳ đặc thù: đang implement fused attention kernel cho int4/int8 quantized transformer inference trên custom NPU. Challenge: cần kết hợp flash attention tiling pattern với dequantization operation trong cùng một kernel để tránh memory roundtrip. Đây là kỹ thuật mà rất ít engineers trên thế giới đã làm được – chủ yếu là team nội bộ của Apple (ANE), Qualcomm (Hexagon), và một số ít nhà nghiên cứu tại DeepMind/Google Brain. Cần engineer đã tự viết CUDA kernels cho quantized attention (không phải chỉ dùng bitsandbytes hoặc GPTQ), hiểu memory bandwidth limitations, và có thể measure occupancy với Nsight.",
+      "target_candidate_dna": "Candidate phải có bằng chứng cụ thể đã viết custom CUDA kernels – không phải chỉ fine-tune LLMs hoặc dùng frameworks. Lý tưởng nhất: đã implement fused kernel cho transformer operation (attention, FFN, hoặc normalization) trên real hardware. Samsung, NVIDIA, Apple, hoặc research lab background là strong signal. PhD hoặc paper publication không bắt buộc nhưng được đánh giá cao. Personality: obsessive về performance numbers, nghĩ theo đơn vị FLOPS và memory bandwidth.",
+      "client_list": ["Vingroup (parent company + primary funder)", "VinFast AI Division (target hardware customer)", "Đang đàm phán: Vietnam Ministry of Science & Technology grant"]
+    }
+  },
+
+  {
+    "org_id": "ORG_004",
+    "public_data": {
+      "org_name": "CloudEdge Networks",
+      "industry": "Cloud Infrastructure – Network Platform",
+      "brief_description": "Startup cung cấp high-performance cloud networking platform cho enterprise và telco, định vị như 'Cloudflare của Đông Nam Á'. Đang xây dựng anycast network với 12 PoP tại SEA và đặt cược lớn vào kernel-bypass networking technology.",
+      "active_jds": [
+        {
+          "position": "Network Platform Engineer – Kernel & eBPF",
+          "description": "Xây dựng core data plane của CloudEdge network platform. Công việc bao gồm viết eBPF programs và XDP packet processing pipelines chạy trực tiếp tại kernel space.",
+          "requirements": ["Kinh nghiệm thực chiến với eBPF/XDP (không chỉ BCC tools)", "Linux kernel networking internals (TCP/IP stack, socket buffers, NAPI)", "Go hoặc C cho systems programming", "Kubernetes networking (CNI plugins là plus)"],
+          "benefits": ["USD 3,000 – 4,500/tháng", "ESOP 0.1–0.3%", "Remote-first, async culture"],
+          "location": "Remote (Southeast Asia timezone)"
+        }
+      ]
+    },
+    "private_data": {
+      "core_techstack_detail": {
+        "language": "Go 1.22 (control plane), C (eBPF programs), Rust (experimental)",
+        "networking": "XDP (eXpress Data Path), AF_XDP sockets, Cilium CNI",
+        "infra": "Bare-metal servers tại 12 PoP, không dùng managed cloud",
+        "observability": "Hubble (Cilium), custom eBPF-based metrics, Prometheus"
+      },
+      "internal_project_pain_points": "Pain point cực kỳ đặc thù: đang implement một custom XDP-based load balancer (tương tự Katran của Facebook hoặc Maglev của Google) nhưng cần adaptation cho SEA network topology đặc thù (latency asymmetry giữa các quốc gia, nhiều mobile users với varying MTU). Challenge kỹ thuật cụ thể: consistent hashing trong BPF map với dynamic membership changes (backend add/remove không làm rehash toàn bộ existing connections). Cần engineer đã viết XDP program production-grade, không chỉ tutorial-level 'drop packets'. Ngoài ra, đang gặp vấn đề với NUMA topology mismatch giữa NIC interrupt affinity và application thread pinning – cần Linux networking internals expertise.",
+      "target_candidate_dna": "Tuyệt đối cần bằng chứng đã viết eBPF/XDP programs cho production use case – không phải chỉ đọc Brendan Gregg's book. Signal mạnh nhất: đã implement một complete packet processing pipeline bằng XDP (parse header → lookup → forward/drop/redirect). Kinh nghiệm Cilium ở mức contribute code hoặc debug internals là perfect match. Personality: thích debugger hơn là logging, đọc kernel source code khi stuck.",
+      "client_list": ["Viettel (pilot partner – edge networking)", "VNPT (enterprise customer)", "Đang đàm phán: Lazada Vietnam (CDN offload)"]
+    }
+  },
+
+  {
+    "org_id": "ORG_005",
+    "public_data": {
+      "org_name": "TrustLayer Privacy Technology",
+      "industry": "Privacy Tech – Privacy-Preserving Computation",
+      "brief_description": "Công ty tiên phong về Privacy-Enhancing Technologies (PETs) tại Đông Nam Á. Sản phẩm: platform cho phép các tổ chức tài chính và y tế collaborate trên data mà không expose raw data cho nhau. Backed bởi Sequoia Southeast Asia.",
+      "active_jds": [
+        {
+          "position": "Principal Privacy Engineer",
+          "description": "Thiết kế và implement cryptographic protocols cho multi-party computation platform. Vị trí IC senior nhất của công ty về technical depth.",
+          "requirements": ["Kinh nghiệm thực tế với Differential Privacy (không chỉ lý thuyết)", "Hiểu biết về Homomorphic Encryption hoặc Zero-Knowledge Proofs", "Python/Rust/C++ cho cryptographic implementation", "Kinh nghiệm với federated learning là strong plus"],
+          "benefits": ["USD 5,000 – 7,000/tháng", "ESOP 0.3–0.5%", "Research time allocation (20% free research)"],
+          "location": "HCM hoặc Remote (SEA timezone)"
+        },
+        {
+          "position": "Backend Engineer – Cryptographic Systems",
+          "description": "Implement backend services tích hợp với cryptographic protocols, xây dựng APIs cho enterprise clients.",
+          "requirements": ["Go hoặc Rust backend", "Blockchain/smart contract hoặc cryptography application background", "gRPC, distributed systems"],
+          "benefits": ["USD 3,000 – 4,500/tháng", "ESOP"],
+          "location": "Remote"
+        }
+      ]
+    },
+    "private_data": {
+      "core_techstack_detail": {
+        "language": "Python (DP/HE research), Rust (production cryptographic services), Go (backend APIs)",
+        "crypto": "Microsoft SEAL (CKKS/BFV), Circom + snarkjs (ZK circuits), Opacus (DP-SGD)",
+        "infra": "Azure Confidential Computing (Intel TDX), Kubernetes",
+        "ml": "PyTorch với Opacus wrapper, TensorFlow Federated (experimental)"
+      },
+      "internal_project_pain_points": "Pain points rất đặc thù về PETs: (1) Đang implement 'privacy budget accounting' cho Differential Privacy pipeline – cần engineer hiểu epsilon-delta DP at application level, không chỉ academic definition. Đặc biệt: cần người đã dùng Opacus hoặc Google DP library cho training thực tế và biết calibrate noise level cho specific utility target. (2) Đang thử nghiệm kết hợp ZK-SNARK với DP analytics để cho phép 'prove statistics without revealing data' – cần engineer hiểu cả Circom circuit writing lẫn DP sensitivity analysis. Intersection này cực kỳ hiếm toàn cầu.",
+      "target_candidate_dna": "Principal role: phải có bằng chứng implement DP trong production (không phải chỉ academic paper). Microsoft Research, Apple (DP in iOS), hoặc Google background là ideal. Backend role: blockchain/cryptography application background là strong signal – người đã làm ZKP implementation dù nhỏ cũng được đánh giá rất cao. Tính cách chung: comfortable với uncertainty và 'good enough privacy' tradeoffs trong business context – academic purists sẽ không comfortable.",
+      "client_list": ["Bank of Thailand (pilot: credit scoring collaboration)", "Vietnam Social Security (đang đàm phán: fraud detection across agencies)", "NTU Singapore (academic research partner)"]
+    }
+  },
+
+  {
+    "org_id": "ORG_006",
+    "public_data": {
+      "org_name": "LogiNext Vietnam",
+      "industry": "Logistics Technology – Last-mile Delivery",
+      "brief_description": "Nền tảng logistics as-a-service phục vụ 50+ doanh nghiệp FMCG và e-commerce tại Việt Nam. Đang xử lý 2 triệu đơn hàng/ngày với hệ thống routing optimization realtime. Series C, vừa nhận đầu tư từ Logistics giant Singapore.",
+      "active_jds": [
+        {
+          "position": "Staff Backend Engineer – Core Platform",
+          "description": "Dẫn dắt kỹ thuật cho Order Management và Routing Engine – hai hệ thống quan trọng nhất của platform.",
+          "requirements": ["Go hoặc Java 7+ năm", "Distributed transactions, high-throughput system design", "Kinh nghiệm logistics hoặc e-commerce domain là plus"],
+          "benefits": ["USD 3,500 – 4,500/tháng", "ESOP", "Hybrid HCM"],
+          "location": "HCM (hybrid 3 ngày/tuần)"
+        },
+        {
+          "position": "Site Reliability Engineer",
+          "description": "Ownership toàn bộ reliability và observability cho production system 2M orders/ngày.",
+          "requirements": ["Kubernetes, Terraform, monitoring stack", "SLO/SLI design", "On-call experience với high-traffic systems"],
+          "benefits": ["USD 3,000 – 4,000/tháng", "Blameless post-mortem culture"],
+          "location": "HCM / Remote"
+        }
+      ]
+    },
+    "private_data": {
+      "core_techstack_detail": {
+        "language": "Go 1.21 (primary), Java 17 (legacy services đang migrate)",
+        "db": "PostgreSQL 15 với Citus sharding, Redis 7 Cluster",
+        "infra": "AWS EKS, Terraform, ArgoCD, Prometheus/Grafana stack",
+        "messaging": "Apache Kafka 3.5"
+      },
+      "internal_project_pain_points": "Tech debt lớn nhất: Payment reconciliation service viết bằng Java 8 monolith, xử lý COD settlements cho toàn bộ 2M đơn/ngày – accuracy 99.97% nhưng cần 99.9997%. Team đang migrate sang event-sourced architecture nhưng gặp khó khăn với compensation logic khi partial failures xảy ra. Cần người đã làm payment reconciliation ở scale tương đương. SRE side: chưa có SLO được formally defined, on-call chưa có blameless culture – cần SRE experienced với transformation không chỉ operations.",
+      "target_candidate_dna": "Backend: người có payment domain knowledge + distributed systems chops. Fintech background (ZaloPay, MoMo, VNPay) được đánh giá rất cao. SRE: người có kinh nghiệm build SRE practice từ đầu, không chỉ maintain existing – phải comfortable với organizational change management.",
+      "client_list": ["Masan Consumer (logistics partner)", "Vingroup (VinMart delivery)", "Lazada Vietnam (last-mile integration)", "Shopee Express (SLA-based routing)"]
+    }
+  },
+
+  {
+    "org_id": "ORG_007",
+    "public_data": {
+      "org_name": "PocketApp Vietnam",
+      "industry": "Super-app – Consumer Finance & Lifestyle",
+      "brief_description": "Super-app mới nổi định vị là 'MoMo thế hệ tiếp theo' với focus vào Gen Z. 5 triệu users sau 18 tháng. Backing từ một tập đoàn viễn thông khu vực. Engineering-first culture, mọi quyết định product đều có data backing.",
+      "active_jds": [
+        {
+          "position": "Senior iOS Engineer",
+          "description": "Lead iOS development cho PocketApp. Ownership toàn bộ payment và wallet module.",
+          "requirements": ["Swift, SwiftUI/UIKit thành thạo", "Fintech iOS experience (payment SDK, biometrics)", "RxSwift hoặc Combine", "App Store submission experience"],
+          "benefits": ["60,000,000 – 80,000,000 VNĐ/tháng", "ESOP", "Hybrid HCM"],
+          "location": "HCM (hybrid)"
+        },
+        {
+          "position": "Senior Android Engineer",
+          "description": "Ownership Android app với 3M+ DAU. Performance optimization là ưu tiên hàng đầu.",
+          "requirements": ["Kotlin, Jetpack Compose thành thạo", "Android performance profiling (ANR, startup time)", "Fintech payment flows"],
+          "benefits": ["55,000,000 – 70,000,000 VNĐ/tháng", "ESOP"],
+          "location": "HCM (hybrid)"
+        },
+        {
+          "position": "React Native Engineer (Mini App Platform)",
+          "description": "Xây dựng Mini App Platform tương tự WeChat Mini Program cho PocketApp ecosystem.",
+          "requirements": ["React Native New Architecture (JSI/Fabric)", "TypeScript", "Native module writing (Kotlin/Swift)"],
+          "benefits": ["50,000,000 – 65,000,000 VNĐ/tháng"],
+          "location": "HCM hoặc Remote"
+        }
+      ]
+    },
+    "private_data": {
+      "core_techstack_detail": {
+        "mobile": "React Native (New Architecture), iOS Swift/SwiftUI, Android Kotlin/Jetpack Compose",
+        "backend": "Go 1.22, gRPC, PostgreSQL, Redis",
+        "infra": "AWS EKS, Firebase, Bitrise CI/CD",
+        "analytics": "Amplitude, custom event tracking"
+      },
+      "internal_project_pain_points": "iOS cold start time là 3.8 giây trên iPhone 12 – unacceptable so với MoMo (1.4s). Startup profiling chỉ ra 3 SDK nặng được initialize synchronously. Cần iOS engineer có track record tối ưu startup time cụ thể. Android: ANR rate 0.8%, cần về 0.2%. React Native: chưa có ai trong team hiểu JSI/TurboModules đủ sâu để build Mini App Platform isolation sandbox – đây là technical challenge lớn nhất.",
+      "target_candidate_dna": "Cả 3 roles đều cần fintech mobile experience thực chiến. iOS role: cần người đã làm startup optimization cụ thể, số liệu rõ ràng. React Native role: người đã build mini-app sandbox hoặc JS isolation mechanism là perfect match – đây là kỹ thuật rất hiếm. Không phù hợp với: engineers thích stability, không muốn đối mặt với scale challenges.",
+      "client_list": ["B2C consumers (5M users)", "Merchant network: 50,000 merchants (QR payment)", "Insurance partner: Bảo Việt (embedded insurance)"]
+    }
+  },
+
+  {
+    "org_id": "ORG_008",
+    "public_data": {
+      "org_name": "DataBridge Analytics",
+      "industry": "Data Platform – B2B Analytics SaaS",
+      "brief_description": "Startup B2B cung cấp data platform as-a-service cho các doanh nghiệp vừa và lớn tại Việt Nam không đủ nguồn lực build data team riêng. Think 'Fivetran + dbt Cloud tự host tại VN'. 80+ khách hàng doanh nghiệp, ARR $2M.",
+      "active_jds": [
+        {
+          "position": "Senior Data Engineer – Platform Core",
+          "description": "Xây dựng và maintain core data pipeline infrastructure phục vụ 80+ khách hàng. Thiết kế multi-tenant data processing architecture.",
+          "requirements": ["Apache Spark hoặc Flink production experience", "dbt Core/Cloud thành thạo", "Airflow orchestration", "Data quality frameworks (Great Expectations)"],
+          "benefits": ["USD 2,800 – 3,500/tháng", "Remote-first"],
+          "location": "Remote Vietnam"
+        },
+        {
+          "position": "Analytics Engineer",
+          "description": "Làm việc trực tiếp với khách hàng để thiết kế data models và analytics solutions.",
+          "requirements": ["dbt certified hoặc equivalent", "SQL advanced", "Business acumen, stakeholder communication"],
+          "benefits": ["50,000,000 – 62,000,000 VNĐ/tháng"],
+          "location": "HCM / Hybrid"
+        }
+      ]
+    },
+    "private_data": {
+      "core_techstack_detail": {
+        "language": "Python 3.11, SQL",
+        "pipeline": "Apache Airflow 2.8, dbt 1.7, Apache Spark 3.5",
+        "db": "BigQuery (primary), Snowflake (US clients), ClickHouse (high-performance tier)",
+        "infra": "GCP GKE, Terraform, GitHub Actions"
+      },
+      "internal_project_pain_points": "Multi-tenant isolation trong Airflow là challenge lớn nhất: hiện tại mọi customer DAGs chạy trên shared Airflow instance, một customer có DAG buggy có thể impact toàn bộ platform. Cần migrate sang isolated execution model (dynamic DAGs với per-customer resource limits). Ngoài ra, data quality monitoring chưa có proper SLA – cần xây dựng từ Great Expectations sang dbt tests migration với alerting workflow. Business context: 15 khách hàng dùng ClickHouse tier chưa được tận dụng đúng – query patterns không match với MergeTree optimization.",
+      "target_candidate_dna": "Data Engineer: người có multi-tenant platform experience – không chỉ single-tenant pipelines. Sea Group, Tiki data platform backgrounds là strong signal vì đã deal với data-at-scale. Analytics Engineer: người có business stakeholder experience, translate ambiguous requests thành clean data models. Background consulting (FPT Software, Nashtech) hoặc BA → DE career path đặc biệt phù hợp.",
+      "client_list": ["VPBank (financial analytics)", "VinCommerce (retail analytics)", "Masan Consumer (demand sensing)", "30+ SME clients (SaaS tier)"]
+    }
+  },
+
+  {
+    "org_id": "ORG_009",
+    "public_data": {
+      "org_name": "VoiceConnect Vietnam",
+      "industry": "Communications Platform as a Service (CPaaS)",
+      "brief_description": "Công ty tiên phong về CPaaS tại Việt Nam, cung cấp Voice API, Video API, và Messaging API cho 500+ doanh nghiệp. Đang xử lý 5 triệu phút gọi và 200,000 phút video/ngày. Cạnh tranh trực tiếp với Twilio và Vonage tại thị trường Đông Nam Á.",
+      "active_jds": [
+        {
+          "position": "Senior WebRTC Infrastructure Engineer",
+          "description": "Mở rộng và tối ưu video conferencing infrastructure. Ownership SFU media server cluster và recording pipeline.",
+          "requirements": ["WebRTC production experience – cụ thể là server-side, không chỉ client SDK", "Go hoặc C++ cho media server development", "RTP/RTCP protocol understanding", "Kinh nghiệm với Pion, mediasoup, Janus, hoặc tương đương"],
+          "benefits": ["USD 2,800 – 3,600/tháng", "Remote-friendly"],
+          "location": "HN hoặc HCM (hybrid)"
+        }
+      ]
+    },
+    "private_data": {
+      "core_techstack_detail": {
+        "language": "Go 1.22 (SFU server, signaling), C++ (media processing, FFmpeg integration)",
+        "webrtc": "Pion WebRTC (Go), custom SFU với cascade architecture",
+        "recording": "FFmpeg 6.x với NVENC hardware encoding, S3 storage",
+        "infra": "Kubernetes, AWS EKS, coturn TURN cluster"
+      },
+      "internal_project_pain_points": "Hai pain points kỹ thuật cụ thể: (1) SFU cascade hiện tại không handle network jitter tốt khi link giữa 2 SFU nodes fluctuate – cần implement jitter buffer compensation ở inter-SFU level, không chỉ client level. Engineer phải hiểu RTCP receiver reports và có thể implement adaptive forwarding dựa trên packet loss metrics. (2) Recording pipeline gặp audio quality issue cho mobile callers (Vietnam mobile networks đặc thù) – cần engineer hiểu FFmpeg filter chains cho audio normalization và có thể tune cho Vietnamese telecom environment cụ thể.",
+      "target_candidate_dna": "Tuyệt đối cần người đã làm server-side WebRTC – không phải chỉ client SDK integration. Bằng chứng cụ thể: đã debug RTP packet loss issues, đã implement NACK/PLI/FIR handling, đã đo call quality bằng MOS scores. Kinh nghiệm tại Stringee, Agora (Vietnam team), hoặc tương đương là strongest signal. Người chỉ biết WebRTC từ browser/React Native perspective sẽ không fit role này.",
+      "client_list": ["Viettel (voice API integration)", "Techcombank (video KYC)", "VNPay (customer support video)", "200+ SME clients (API tier)"]
+    }
+  },
+
+  {
+    "org_id": "ORG_010",
+    "public_data": {
+      "org_name": "HealthAI Technologies",
+      "industry": "Healthcare AI – Clinical Decision Support",
+      "brief_description": "Startup ứng dụng AI vào chẩn đoán hỗ trợ lâm sàng tại Việt Nam. Sản phẩm flagship: AI-assisted chest X-ray reading đang triển khai tại 47 bệnh viện. FDA 510(k) clearance process đang tiến hành. Series B từ Temasek và B.Capital.",
+      "active_jds": [
+        {
+          "position": "Senior ML Engineer – Medical Imaging",
+          "description": "Develop và optimize AI models cho medical imaging. Chịu trách nhiệm về model quality, bias evaluation, và clinical validation pipeline.",
+          "requirements": ["Computer Vision thành thạo (object detection, segmentation)", "Model optimization: quantization, distillation cho edge deployment", "Responsible AI / bias evaluation experience được đánh giá cao", "Python, PyTorch"],
+          "benefits": ["USD 3,500 – 4,500/tháng", "Research time 20%", "Clinical collaboration experience"],
+          "location": "HN (on-site, lab environment)"
+        }
+      ]
+    },
+    "private_data": {
+      "core_techstack_detail": {
+        "language": "Python 3.11 (ML), C++ (ONNX Runtime integration), TypeScript (frontend)",
+        "ml": "PyTorch 2.x, MONAI (medical imaging), ONNX Runtime, TensorRT",
+        "infra": "AWS SageMaker, Kubernetes, S3 (DICOM storage)",
+        "compliance": "HIPAA-compliant infra, FDA 510(k) validation pipeline"
+      },
+      "internal_project_pain_points": "Challenge kỹ thuật-business đặc thù: FDA 510(k) submission yêu cầu 'bias evaluation across demographic subgroups' – cần demonstrate model performance equivalent across patient demographics (age, sex, underlying conditions). Đây là fairness/bias evaluation nhưng trong medical regulatory context, khắt khe hơn nhiều so với typical ML fairness. Cần engineer đã làm clinical AI validation hoặc ít nhất fairness evaluation nghiêm túc trong regulated environment. Thứ hai: model cần chạy trên edge hardware tại bệnh viện (không có internet) – TensorRT optimization cho medical imaging models với strict accuracy preservation.",
+      "target_candidate_dna": "VinAI Research background là strong signal vì đã deal với medical/high-stakes AI. Bias evaluation experience (Fairlearn, AIF360) trong production context được đánh giá rất cao. Không phù hợp với: engineers chỉ quan tâm benchmark metrics mà không care về clinical implications. Lý tưởng: người có vừa deep learning skills vừa understand regulatory compliance framework.",
+      "client_list": ["47 bệnh viện công và tư tại Việt Nam", "Vinmec International Hospital (anchor client)", "Đang đàm phán: WHO Western Pacific Regional Office"]
+    }
+  },
+
+  {
+    "org_id": "ORG_011",
+    "public_data": {
+      "org_name": "AxonDB Systems",
+      "industry": "Database Infrastructure – Distributed SQL",
+      "brief_description": "Startup cung cấp managed TiDB/TiKV service tại Đông Nam Á, định vị như 'PlanetScale của SEA'. Giúp doanh nghiệp scale database mà không cần expertise sâu về distributed databases. 30 enterprise clients, $3M ARR.",
+      "active_jds": [
+        {
+          "position": "Distributed Database Engineer",
+          "description": "Xây dựng và maintain managed TiDB service. Ownership database reliability, performance tuning, và customer migration support.",
+          "requirements": ["TiDB hoặc TiKV production operations experience", "PostgreSQL hoặc MySQL deep internals", "Go cho database tooling", "Distributed systems understanding"],
+          "benefits": ["USD 3,000 – 4,000/tháng", "Remote-friendly"],
+          "location": "Remote Vietnam"
+        }
+      ]
+    },
+    "private_data": {
+      "core_techstack_detail": {
+        "database": "TiDB 7.x, TiKV 7.x, TiFlash (HTAP), PD (Placement Driver)",
+        "language": "Go 1.22 (tooling, automation), Python (customer-facing scripts)",
+        "infra": "AWS EKS, Terraform, custom Kubernetes operators for TiDB",
+        "monitoring": "Prometheus + Grafana với TiDB-specific dashboards"
+      },
+      "internal_project_pain_points": "Pain point rất đặc thù: 3 enterprise clients đang gặp TiKV write hotspot do monotonically increasing primary keys – cần engineer hiểu sâu Region split mechanics của TiKV và Raft group configuration để fix mà không impact production. Ngoài ra, một migration project từ MySQL sharded sang TiDB của client retail lớn đang bị stuck do foreign key constraint differences – cần người đã làm TiDB migration production thực sự. PD scheduling policy cũng cần tuning cho mixed OLTP/OLAP workloads.",
+      "target_candidate_dna": "Tuyệt đối cần TiDB/TiKV production experience – không phải chỉ tutorial. Engineer đã debug TiKV Raft issues hoặc PD scheduling problems là perfect match. Shopee, Grab, hoặc bất kỳ company lớn nào đã production TiDB là strong signal. Người chỉ biết MySQL/PostgreSQL mà không có distributed DB experience sẽ không fit.",
+      "client_list": ["Tiki (database migration client)", "VPBank (HTAP workloads)", "Vincommerce (inventory management DB)", "10+ SME clients (managed tier)"]
+    }
+  },
+
+  {
+    "org_id": "ORG_012",
+    "public_data": {
+      "org_name": "CodeCraft Developer Tools",
+      "industry": "Developer Tooling – Compiler & Static Analysis",
+      "brief_description": "Startup xây dựng next-generation developer tools sử dụng compiler technology: AI-assisted code review, automated refactoring, và security static analysis. Think 'SonarQube meets Copilot, built on LLVM'. Backed bởi Y Combinator W24.",
+      "active_jds": [
+        {
+          "position": "Compiler / Static Analysis Engineer",
+          "description": "Core engineering cho LLVM-based analysis platform. Ownership custom analysis passes và developer-facing tooling.",
+          "requirements": ["LLVM hoặc Clang internals experience", "Static analysis: data flow, points-to, taint tracking", "C++ advanced", "Rust là strong plus"],
+          "benefits": ["USD 3,000 – 4,500/tháng", "ESOP 0.2–0.5%", "Remote-first"],
+          "location": "Remote (global)"
+        }
+      ]
+    },
+    "private_data": {
+      "core_techstack_detail": {
+        "language": "C++ 20 (LLVM passes), Rust 1.75 (developer CLI tools), Python (ML integration)",
+        "compiler": "LLVM 17, Clang (LibTooling, LibASTMatchers), MLIR (experimental)",
+        "analysis": "Clang Static Analyzer, custom interprocedural analysis",
+        "infra": "GitHub Actions, Bazel, Docker"
+      },
+      "internal_project_pain_points": "Core technical challenge: đang build interprocedural taint analysis trên LLVM IR cho C++ codebase với complex template instantiation. Challenge: template instantiation explosion làm analysis thời gian tăng O(N²) với codebase size. Cần engineer hiểu LLVM IR transformation pipeline và có thể implement demand-driven analysis (chỉ analyze code paths reachable từ security-sensitive sinks). Thứ hai: đang integrate Z3 SMT solver cho path condition simplification nhưng gặp performance issue với deeply nested conditions.",
+      "target_candidate_dna": "LLVM contributor hoặc người đã viết LLVM pass production-grade là perfect match. Automotive, embedded, hoặc security company background (Coverity, SonarQube, Klocwork) đặc biệt phù hợp. Academic background (compiler research, formal methods) được cộng điểm. Không phù hợp với: engineers chỉ biết high-level static analysis tools mà không hiểu how they work internally.",
+      "client_list": ["KMS Technology (enterprise license)", "FPT Software (pilot)", "Mục tiêu: Fortune 500 companies automotive và finance sector"]
+    }
+  },
+
+  {
+    "org_id": "ORG_013",
+    "public_data": {
+      "org_name": "GlobalDev Outsourcing Vietnam",
+      "industry": "IT Outsourcing – Software Development Services",
+      "brief_description": "Một trong những công ty outsourcing lớn nhất Việt Nam với 1,200 developers. Cung cấp dịch vụ cho clients tại Nhật Bản, Úc, và Mỹ. Process-driven, ISO 27001 certified, CMMI Level 5.",
+      "active_jds": [
+        {
+          "position": "Senior Backend Developer (Java/Spring)",
+          "description": "Phát triển backend cho enterprise application của client Nhật Bản trong lĩnh vực bảo hiểm.",
+          "requirements": ["Java Spring Boot 5+ năm", "Oracle DB hoặc PostgreSQL", "Japanese business communication là lợi thế lớn"],
+          "benefits": ["30,000,000 – 45,000,000 VNĐ/tháng", "13th month salary", "Annual Japan trip"],
+          "location": "HN (on-site, required)"
+        },
+        {
+          "position": "QA Engineer (Manual + Automation)",
+          "description": "Kiểm thử phần mềm cho dự án insurance client Úc.",
+          "requirements": ["Selenium/TestNG", "Manual testing skills", "English communication"],
+          "benefits": ["20,000,000 – 30,000,000 VNĐ/tháng"],
+          "location": "HCM (on-site)"
+        }
+      ]
+    },
+    "private_data": {
+      "core_techstack_detail": {
+        "language": "Java 11 (primary – clients không muốn upgrade)", "db": "Oracle 19c, SQL Server 2019",
+        "process": "JIRA, Confluence, Redmine (tùy client)", "infra": "On-premise servers + Azure (limited)"
+      },
+      "internal_project_pain_points": "Churn rate engineer cao (35%/năm) do engineers cảm thấy không học được technology mới. Management đang tìm cách retain senior engineers bằng cách offer tech lead roles nhưng thiếu technical leadership pipeline. Client satisfaction cao (NPS 72) nhưng technical debt trong codebase đang tăng – một số project vẫn dùng Java 8 và Spring 4.",
+      "target_candidate_dna": "Cần engineer có khả năng làm việc trong môi trường process-heavy, ISO-compliant, với client requirements thay đổi chậm. Process follower hơn là process challenger. Không phù hợp với: engineers có startup mentality, muốn ownership sản phẩm riêng, hoặc coi outsourcing là stepping stone ngắn hạn. Lý tưởng: người ổn định, loyal, communication tốt với offshore clients.",
+      "client_list": ["Meiji Yasuda Life Insurance (Japan)", "IAG Insurance (Australia)", "State Street Corporation (USA – pilot)"]
+    }
+  },
+
+  {
+    "org_id": "ORG_014",
+    "public_data": {
+      "org_name": "VinaCorp Digital Transformation",
+      "industry": "Enterprise Technology – Banking & Insurance Core Systems",
+      "brief_description": "Tập đoàn phần mềm cung cấp core banking và insurance management systems cho 15 ngân hàng và công ty bảo hiểm tại Việt Nam. Môi trường enterprise với quy trình nghiêm ngặt và stability là ưu tiên số 1.",
+      "active_jds": [
+        {
+          "position": "Senior Backend Engineer – Core Banking",
+          "description": "Phát triển và maintain core banking system phục vụ 5 ngân hàng thương mại cổ phần.",
+          "requirements": ["Java EE / Spring 5+ năm", "Banking domain knowledge", "On-site required, overtime accepted"],
+          "benefits": ["35,000,000 – 50,000,000 VNĐ/tháng", "Thưởng dự án", "Môi trường ổn định, chế độ chính sách tốt"],
+          "location": "HN (on-site, full-time)"
+        }
+      ]
+    },
+    "private_data": {
+      "core_techstack_detail": {
+        "language": "Java EE 8, Spring 5.3 (không upgrade do stability requirements của banking clients)",
+        "db": "Oracle 19c RAC, DB2 (legacy 2 clients)",
+        "process": "Waterfall với formal UAT, change request board required cho every change",
+        "deployment": "Manual deployment với change advisory board approval (2 tuần notice)"
+      },
+      "internal_project_pain_points": "Không phải tech debt mà là organizational challenge: muốn modernize nhưng banking clients không cho phép thay đổi nhanh. Deployment windows chỉ được phép vào cuối tuần, mỗi change cần CAB approval 2 tuần trước. Engineer frustration cao với pace. Đang tìm engineers hiểu và chấp nhận enterprise banking constraints.",
+      "target_candidate_dna": "Cần engineers có patience với slow-moving environments và hiểu rằng stability quan trọng hơn speed trong banking context. Process-oriented, documentation-focused, không ngại paperwork. KHÔNG phù hợp với: startup mentality, CI/CD advocates, engineers muốn deploy multiple times per day. Lý tưởng: người từng làm outsourcing cho clients Nhật hoặc engineers banking domain có kinh nghiệm.",
+      "client_list": ["VPBank (core loan management)", "MB Bank (payment processing)", "Bảo Việt (insurance policy system)", "12 clients khác (SME banking)"]
+    }
+  },
+
+  {
+    "org_id": "ORG_015",
+    "public_data": {
+      "org_name": "NanoTech Budget Solutions",
+      "industry": "B2B SaaS – Affordable Tech for SMEs",
+      "brief_description": "Cung cấp affordable SaaS solutions cho SMEs Việt Nam. Bootstrap company, profitabe từ năm 2. Engineering team nhỏ (8 người), budget eo hẹp nhưng cần senior talent để scale.",
+      "active_jds": [
+        {
+          "position": "Senior Full-stack Engineer",
+          "description": "Phát triển toàn bộ product từ frontend đến backend. Ownership end-to-end.",
+          "requirements": ["React và Node.js", "PostgreSQL", "Thứ 6 thì làm, thứ 7 thì cần meeting thỉnh thoảng"],
+          "benefits": ["28,000,000 – 35,000,000 VNĐ/tháng", "Flexible working hours", "Small but stable company"],
+          "location": "HN (on-site preferred)"
+        }
+      ]
+    },
+    "private_data": {
+      "core_techstack_detail": {
+        "language": "JavaScript/TypeScript, Node.js, React",
+        "db": "PostgreSQL 14 (self-hosted, single instance)",
+        "infra": "DigitalOcean droplets (không phải Kubernetes – budget constraint)",
+        "payment": "Stripe integration, manual reconciliation spreadsheet"
+      },
+      "internal_project_pain_points": "Cần senior engineer nhưng chỉ có budget 35M VNĐ. Thực tế là bài toán salary mismatch rõ ràng – khó thu hút senior engineers vì budget dưới market rate 40-50%. Hy vọng tìm được engineer chấp nhận đánh đổi salary lấy work-life balance và không phải on-call.",
+      "target_candidate_dna": "Cần engineer chấp nhận below-market salary vì lý do cá nhân (gần nhà, work-life balance, không muốn stress). Không phù hợp với: bất kỳ engineer nào có salary expectation trên 40M VNĐ. Thực tế: role này sẽ FAIL để match với hầu hết senior profiles trong dataset – đây là intentional để test salary filter logic của Org Agent.",
+      "client_list": ["200+ SME clients (SaaS tier)", "Chủ yếu: nhà hàng, salon, tiệm tạp hóa"]
+    }
+  },
+
+  {
+    "org_id": "ORG_016",
+    "public_data": {
+      "org_name": "Vietcombank Digital Division",
+      "industry": "Banking – Digital Transformation",
+      "brief_description": "Bộ phận Digital Transformation của một trong những ngân hàng lớn nhất Việt Nam. Đang xây dựng nền tảng digital banking mới hoàn toàn trên cloud-native architecture trong khi vận hành core banking system legacy.",
+      "active_jds": [
+        {
+          "position": "Cloud Solutions Architect",
+          "description": "Thiết kế cloud architecture cho digital banking platform mới trên AWS, đảm bảo compliance với quy định SBV.",
+          "requirements": ["AWS SA-Pro hoặc equivalent", "FinOps, multi-account governance", "Banking compliance (SBV, PCI-DSS)", "Enterprise architecture experience"],
+          "benefits": ["USD 3,500 – 5,000/tháng (competitive với banking sector)", "Ổn định, benefits tốt"],
+          "location": "HN (hybrid)"
+        },
+        {
+          "position": "Site Reliability Engineer",
+          "description": "Vận hành và cải thiện reliability cho digital banking platform.",
+          "requirements": ["Kubernetes, Terraform, AWS", "Banking SLA understanding", "Compliance-aware operations"],
+          "benefits": ["70,000,000 – 85,000,000 VNĐ/tháng"],
+          "location": "HN (hybrid, on-call rotation)"
+        }
+      ]
+    },
+    "private_data": {
+      "core_techstack_detail": {
+        "language": "Java 17, Go 1.21 (new services)",
+        "infra": "AWS (multi-account Organizations), Kubernetes (EKS), Terraform",
+        "compliance": "PCI-DSS SAQ-D, SBV Circular 09/2020, ISO 27001",
+        "legacy": "IBM Z mainframe (core banking, không migrate – running parallel)"
+      },
+      "internal_project_pain_points": "Multi-cloud governance nightmare: 23 AWS accounts chưa có proper Organizations strategy, SCPs chưa được define rõ, cost allocation theo department chưa accurate. Cloud spend $400k/month nhưng không biết chính xác $1 đi đâu. Cần Cloud Architect với FinOps depth để build governance framework từ đầu. SRE side: chưa có proper SLO definitions phù hợp với banking regulatory requirements – cần balance between SRE best practices và banking compliance constraints.",
+      "target_candidate_dna": "Cloud Architect: phải có banking hoặc regulated industry experience – generic cloud architect sẽ miss compliance nuances. FinOps depth (47-query approach hoặc tương đương) được đánh giá rất cao. SRE: phải comfortable với slow change management (change advisory board) nhưng vẫn drive reliability improvements. Không phù hợp với: startup SREs muốn deploy 10 lần/ngày.",
+      "client_list": ["Vietcombank 12M retail customers", "100,000+ corporate banking clients", "International correspondent banking network (60 banks)"]
+    }
+  },
+
+  {
+    "org_id": "ORG_017",
+    "public_data": {
+      "org_name": "CertaProof Distributed Systems",
+      "industry": "Infrastructure Software – Formal Verification",
+      "brief_description": "Startup xây dựng tools cho 'correctness-as-a-service': formal specification và model checking cho distributed protocols trong financial infrastructure. Think 'TLA+ consulting và tooling' cho enterprise clients cần prove their protocols correct before deploying.",
+      "active_jds": [
+        {
+          "position": "Distributed Systems Engineer – Formal Methods",
+          "description": "Vừa implement distributed protocols vừa verify correctness bằng formal methods. Extremely niche role.",
+          "requirements": ["TLA+ hoặc Alloy hoặc tương đương (production use, không chỉ academic)", "Distributed consensus: Raft, Paxos implementation experience", "Go hoặc Java cho protocol implementation"],
+          "benefits": ["USD 5,000 – 7,000/tháng", "Research time", "Remote-first, async"],
+          "location": "Remote (global)"
+        }
+      ]
+    },
+    "private_data": {
+      "core_techstack_detail": {
+        "formal_methods": "TLA+ / PlusCal (TLC model checker), Alloy 6 (experimental)",
+        "language": "Go 1.22 (reference implementations), Java 17 (client integrations)",
+        "tooling": "TLAPS (TLA+ Proof System), custom visualization tools for counterexamples",
+        "infra": "HPC cluster cho model checking (state space explosion requires compute)"
+      },
+      "internal_project_pain_points": "Vấn đề không phải về technology mà là talent scarcity: toàn thế giới có rất ít engineers đã dùng TLA+ hoặc formal methods trong production context. Cần tìm người đã viết TLA+ specs thực tế (không chỉ tutorials) VÀ có distributed systems implementation experience. Cụ thể cần: engineer đã dùng TLC model checker để find bugs trong distributed protocol, đã có experience với liveness properties (not just safety), và có thể explain formal verification value to non-academic audience.",
+      "target_candidate_dna": "Extremely specific profile: distributed systems engineer với formal methods background – intersection hiếm nhất trong toàn bộ SE field. Google, Amazon Research, Microsoft Research background là strongest signals vì đây là nơi duy nhất formal methods được apply production. Personality: perfectionist về correctness, uncomfortable với 'probably works' level of confidence cho critical protocols.",
+      "client_list": ["Goldman Sachs (distributed ledger verification)", "JPMorgan (payment protocol audit)", "Đang pitch: central banks của 3 quốc gia SEA"]
+    }
+  },
+
+  {
+    "org_id": "ORG_018",
+    "public_data": {
+      "org_name": "WASMEdge Platform",
+      "industry": "Edge Computing – WebAssembly Runtime",
+      "brief_description": "Startup tiên phong về WebAssembly-based edge computing platform cho Đông Nam Á. Sản phẩm: serverless platform cho phép deploy bất kỳ language nào (compiled to WASM) tại network edge với cold start < 5ms. Think 'Cloudflare Workers for SEA, open-source'.",
+      "active_jds": [
+        {
+          "position": "WebAssembly Runtime Engineer",
+          "description": "Core engineering cho WASM runtime và sandbox environment. Extremely niche technical role.",
+          "requirements": ["WebAssembly (WASM/WASI) deep knowledge – beyond 'just using it'", "Rust hoặc C++ cho systems programming", "Hiểu biết về sandbox isolation, memory models", "Browser runtime hoặc server-side WASM experience"],
+          "benefits": ["USD 2,500 – 3,500/tháng", "ESOP 0.3%", "Remote-first, async"],
+          "location": "Remote"
+        }
+      ]
+    },
+    "private_data": {
+      "core_techstack_detail": {
+        "runtime": "WasmEdge (primary), Wasmtime (benchmark comparison), WASI preview2",
+        "language": "Rust 1.75 (runtime components), C (host API bindings), Go (control plane)",
+        "sandbox": "Custom capability-based security model on top of WASI",
+        "infra": "Kubernetes, custom CRI integration, eBPF cho observability"
+      },
+      "internal_project_pain_points": "Kỹ thuật cụ thể: đang implement WASI filesystem virtualization cho tenant isolation nhưng gặp performance issue với syscall overhead – mỗi file operation trong WASM phải cross boundary vào host, causing 10-15x overhead vs native. Cần engineer đã implement hoặc contributed to WASI spec implementation. Ngoài ra, memory model của multi-linear-memory WASM proposals đang được evaluate – cần engineer hiểu đủ sâu về WASM memory model để evaluate security implications.",
+      "target_candidate_dna": "Cực kỳ đặc thù: cần engineer đã implement WASM runtime component thực sự, không chỉ 'dùng WASM'. Contributed to Wasmtime, WasmEdge, WABT, hoặc emscripten là perfect signal. Đã implement WASI filesystem hoặc networking interface là home run. Browser-native WASM implementation experience (như CPython-in-browser) cũng được tính vì shows deep WASM understanding.",
+      "client_list": ["VNPT (edge compute pilot)", "Lazada (edge serverless functions)", "Mục tiêu: Telco edge compute providers toàn SEA"]
+    }
+  },
+
+  {
+    "org_id": "ORG_019",
+    "public_data": {
+      "org_name": "ResilienceOps Platform",
+      "industry": "Platform Engineering – Reliability Automation",
+      "brief_description": "Startup cung cấp Chaos Engineering as a Service cho enterprise clients tại Việt Nam và SEA. Sản phẩm: SaaS platform cho phép companies define, schedule, và automate chaos experiments với built-in blast radius control. Think 'Gremlin cho SEA market'.",
+      "active_jds": [
+        {
+          "position": "Principal Platform Engineer – Chaos Engineering",
+          "description": "Core engineer cho chaos experiment platform. Ownership toàn bộ fault injection engine và blast radius control system.",
+          "requirements": ["Chaos Engineering experience (Chaos Monkey, LitmusChaos, Gremlin, hoặc custom tools)", "Kubernetes deep knowledge (admission webhooks, operator pattern)", "Go hoặc Python cho platform tooling", "SRE background với production incident experience"],
+          "benefits": ["USD 3,200 – 4,200/tháng", "ESOP 0.2%", "Remote-friendly"],
+          "location": "Remote Vietnam"
+        }
+      ]
+    },
+    "private_data": {
+      "core_techstack_detail": {
+        "language": "Go 1.22 (chaos engine), Python (experiment DSL, customer-facing)",
+        "k8s": "Custom Kubernetes operators, admission webhooks, CRDs",
+        "fault_injection": "LitmusChaos (extended), custom fault injectors via ptrace/eBPF",
+        "infra": "AWS EKS (multi-tenant), Terraform"
+      },
+      "internal_project_pain_points": "Core product challenge: blast radius control bằng SLO-based automatic abort là differentiator của chúng tôi, nhưng implementation hiện tại có false positive rate 12% (experiment bị abort khi SLO thực ra không bị vi phạm do metric collection lag). Cần engineer hiểu cả Prometheus metric collection pipeline lẫn chaos experiment execution để fix timing issue. Thứ hai: đang build 'Hypothesis-based Chaos' feature – engineer cần hiểu test hypothesis framework không chỉ là 'inject failure và xem có die không'.",
+      "target_candidate_dna": "Cần người đã build chaos engineering infrastructure từ đầu – không chỉ run existing chaos tools. Đã thiết kế blast radius control mechanism là perfect match. MoMo, Grab, Shopee SRE background với chaos engineering experience là strong signal. Personality: người coi production incidents là learning opportunities, thích proactively tìm failure modes hơn là chờ chúng xảy ra.",
+      "client_list": ["Viettel Digital (anchor client)", "Masan Consumer (supply chain resilience)", "Đang onboard: VPBank, Techcombank"]
+    }
+  },
+
+  {
+    "org_id": "ORG_020",
+    "public_data": {
+      "org_name": "AgileTech Series B Vietnam",
+      "industry": "B2B SaaS – HR & Workforce Management",
+      "brief_description": "Series B startup ($15M raised) xây dựng HR management platform cho doanh nghiệp 500-5000 nhân viên tại Đông Nam Á. 180 enterprise clients, growing 3x year-over-year. Đang ở inflection point cần CTO để scale engineering từ 25 lên 80 người trong 18 tháng.",
+      "active_jds": [
+        {
+          "position": "Chief Technology Officer (CTO)",
+          "description": "Đây là hire quan trọng nhất của công ty trong 2024. CTO sẽ define engineering vision, build team, và đảm bảo technical foundation để scale 10x trong 3 năm tới.",
+          "requirements": ["10+ năm engineering kinh nghiệm, 3+ năm engineering leadership", "Đã build hoặc scale engineering team 30+ người", "B2B SaaS hoặc enterprise software background", "Strong technical depth (không chỉ management)"],
+          "benefits": ["USD 6,000 – 8,000/tháng (tùy equity negotiation)", "ESOP 1.5–2.5% (nghiêm túc, vested 4 năm)", "Board observer seat option", "Relocation support nếu cần"],
+          "location": "HCM (on-site required, critical hire)"
+        },
+        {
+          "position": "VP Engineering",
+          "description": "Nếu CTO search không close trong Q1, VP Engineering làm bridge role.",
+          "requirements": ["8+ năm kinh nghiệm, đã manage team 20+ người", "Strong technical background"],
+          "benefits": ["USD 5,500 – 7,000/tháng", "ESOP 0.8–1.2%"],
+          "location": "HCM / Remote"
+        }
+      ]
+    },
+    "private_data": {
+      "core_techstack_detail": {
+        "language": "Java 17 + Spring Boot (primary – 70% của codebase), React TypeScript (frontend), Python (analytics)",
+        "db": "PostgreSQL 15, Redis 7, Elasticsearch 8",
+        "infra": "AWS EKS, Terraform (partial – cần CTO để finish IaC transition)",
+        "pain": "Monolith đang cần decompose – 4 năm tech debt accumulated"
+      },
+      "internal_project_pain_points": "Monolith Java Spring Boot 800k LOC – cần CTO có kinh nghiệm thực tế strangler fig pattern cho enterprise Java. Chưa có engineering culture thực sự: không có ADRs, không có RFC process, không có proper post-mortems. Technical debt quantification chưa được done – board không hiểu tại sao feature velocity chậm. CTO phải deal với cả technical và organizational debt đồng thời. Đây là challenge cần leader đã làm transformation tương tự.",
+      "target_candidate_dna": "CTO không phải tech lead senior – phải là người đã lãnh đạo engineering transformation thực sự: monolith decompose, team culture building, board communication. Engineering Director hoặc VP Engineering background tại telco, fintech, hoặc enterprise software là perfect. Điểm quan trọng: phải comfortable với imperfect existing codebase và có patience để transform gradually. Không phù hợp với: engineers chỉ muốn greenfield projects hoặc research environments.",
+      "client_list": ["Masan Group (anchor enterprise client)", "Vingroup HR division", "Techcombank (workforce management)", "150+ SME-to-enterprise clients tại VN, TH, PH"]
+    }
+  }
+]

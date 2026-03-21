@@ -1,20 +1,14 @@
-"""
-Bước 4 – Context-Aware One-Pass Knowledge Extraction (LLM Routing & Fallback).
-
-Hỗ trợ 3 loại tài liệu: CV, SOP, PROJECT.
-Chiến lược:
-  1. Gọi **Cerebras API** (llama3.1-8b) làm chính — tốc độ nhanh, chi phí thấp.
-  2. Nếu Cerebras timeout / lỗi → fallback sang **OpenAI API** (gpt-4o).
-
-Kết quả trả về tuân theo Pydantic schema ``KnowledgeGraphExtraction``.
+﻿"""
+Bước 4 – Data Architect One-Pass Classification (LLM Routing & Fallback).
+Kiến trúc: "Một Node - Hai Ngăn" (Split-Ingestion).
 """
 
 from __future__ import annotations
 
 import json
 import re
-from enum import Enum
-from typing import Dict, List, Optional, Union
+import uuid
+from typing import Dict, List, Optional, Union, Any, cast
 
 from cerebras.cloud.sdk import Cerebras
 from openai import OpenAI
@@ -25,443 +19,744 @@ from pipeline.config import settings, get_logger
 logger = get_logger(__name__)
 
 # ============================================================================
-# Pydantic Schema
+# Pydantic Schema: Personnel
 # ============================================================================
+class PersonnelPublicData(BaseModel):
+    full_name: Optional[str] = Field(default=None)
+    professional_summary: Optional[str] = Field(default=None)
+    education: List[Dict[str, Any]] = Field(default_factory=list)
+    certificates: List[str] = Field(default_factory=list)
+    skills: List[str] = Field(default_factory=list)
+    experience: List[Dict[str, Any]] = Field(default_factory=list)
+    availability: Optional[str] = Field(default=None)
+    cultural_tags: List[str] = Field(default_factory=list)
 
-class DocType(str, Enum):
-    """Loại tài liệu."""
-    CV = "CV"
-    SOP = "SOP"
-    PROJECT = "PROJECT"
+class PersonnelPrivateData(BaseModel):
+    contact: Optional[Dict[str, str]] = Field(default=None)
+    salary_expectation: Optional[Union[str, int]] = Field(default=None)
+    project_technical_secrets: Optional[str] = Field(default=None)
+    interview_questions_history: List[Dict[str, Any]] = Field(default_factory=list)
+    blacklist_orgs: List[str] = Field(default_factory=list)
+    evidence_links: List[str] = Field(default_factory=list)
+    additional_information: Optional[Dict[str, Any]] = Field(default_factory=dict)
 
-
-class TopicCategory(str, Enum):
-    """Phân loại chủ đề chính của chunk."""
-    # CV
-    PERSONNEL = "PERSONNEL"
-    EXPERIENCE = "EXPERIENCE"
-    EDUCATION = "EDUCATION"
-    SKILL = "SKILL"
-    ACHIEVEMENT = "ACHIEVEMENT"
-    # SOP
-    PROCESS_FLOW = "PROCESS_FLOW"
-    APPROVAL = "APPROVAL"
-    CONDITION = "CONDITION"
-    TOOL_USAGE = "TOOL_USAGE"
-    COMPLIANCE = "COMPLIANCE"
-    # PROJECT
-    OBJECTIVE = "OBJECTIVE"
-    PLANNING = "PLANNING"
-    EXECUTION = "EXECUTION"
-    RISK = "RISK"
-    REPORTING = "REPORTING"
-    # Legacy
-    POLICY = "POLICY"
-    PROJECT = "PROJECT"
-
-
-class Entity(BaseModel):
-    """Một thực thể được nhận diện."""
-    name: str = Field(..., description="Tên thực thể")
-    type: str = Field(
-        ...,
-        description=(
-            "Loại thực thể — xem taxonomy chung + đặc thù theo doc_type"
-        ),
-    )
-
-
-class Triplet(BaseModel):
-    """Một quan hệ ba ngôi (subject – relation – object)."""
-    subject: str = Field(..., description="Chủ thể — phải nằm trong entities")
-    relation: str = Field(..., description="Quan hệ / hành động")
-    object: str = Field(..., description="Đối tượng — phải nằm trong entities")
-
-
-class KnowledgeGraphExtraction(BaseModel):
-    """Schema đầu ra cho bước trích xuất tri thức."""
-    doc_type: DocType = Field(default=DocType.CV)
-    topic_category: TopicCategory
-    entities: List[Entity] = Field(default_factory=list)
-    triplets: List[Triplet] = Field(default_factory=list)
-
+class PersonnelSchema(BaseModel):
+    personnel_id: Optional[str] = Field(default=None)
+    public_data: Optional[PersonnelPublicData] = Field(default_factory=PersonnelPublicData)
+    private_data: Optional[PersonnelPrivateData] = Field(default_factory=PersonnelPrivateData)
 
 # ============================================================================
-# System Prompt — Context-Aware (CV / SOP / PROJECT)
+# Pydantic Schema: Organization
 # ============================================================================
+class OrgPublicData(BaseModel):
+    org_name: str = Field(default="")
+    industry: str = Field(default="")
+    brief_description: str = Field(default="")
+    active_jds: List[Dict[str, Any]] = Field(default_factory=list)
 
+class OrgPrivateData(BaseModel):
+    core_techstack_detail: Dict[str, str] = Field(default_factory=dict)
+    internal_project_pain_points: str = Field(default="")
+    target_candidate_dna: str = Field(default="")
+    client_list: List[str] = Field(default_factory=list)
+
+class OrganizationSchema(BaseModel):
+    org_id: str = Field(default_factory=lambda: f"ORG_{uuid.uuid4().hex[:8]}")
+    public_data: OrgPublicData = Field(default_factory=OrgPublicData)
+    private_data: OrgPrivateData = Field(default_factory=OrgPrivateData)
+
+# ============================================================================
+# System Prompt - Data Architect
+# ============================================================================
 _SYSTEM_PROMPT = """\
-Bạn là chuyên gia trích xuất Đồ thị Tri thức (Knowledge Graph) tiếng Việt, \
-có khả năng xử lý 3 loại tài liệu doanh nghiệp: CV nhân sự, SOP quy trình, \
-và Kế hoạch dự án.
+CRITICAL: YOUR ENTIRE RESPONSE MUST BE A SINGLE RAW JSON OBJECT.
+START WITH {{ AND END WITH }}. NO TEXT BEFORE OR AFTER. NO MARKDOWN.
 
-Nhiệm vụ: Đọc đoạn văn bản → tự nhận diện loại tài liệu → áp dụng luật \
-trích xuất tương ứng → trả về DUY NHẤT một JSON object hợp lệ.
+Bạn là một Data Architect & Senior HR Mapping Expert trong hệ thống Digital Twin Recruitment.
+Nhiệm vụ của bạn là đọc dữ liệu thô từ một file (CV hoặc tài liệu công ty) rồi trích xuất
+thành DUY NHẤT một JSON object phẳng theo cấu trúc MỘT NODE - HAI NGĂN:
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-BƯỚC 1 — NHẬN DIỆN LOẠI TÀI LIỆU (doc_type)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Nhìn vào CORE_ENTITY và nội dung đoạn văn để xác định:
+1. NGĂN CÔNG KHAI (public_data): Tên, kỹ năng, kinh nghiệm chung, JD...
+2. NGĂN BÍ MẬT (private_data): Email, SĐT, mức lương, secret code, IP dự án,
+     lịch sử phỏng vấn thực tế, blacklist.
 
-  CV       — Tài liệu hồ sơ cá nhân. Dấu hiệu: tên người, kinh nghiệm
-             làm việc, học vấn, kỹ năng, chứng chỉ cá nhân.
-             CORE_ENTITY = Tên người (VD: "Nguyễn Hoài Tưởng")
+Quy trình:
+Bước 1: Nhận diện nội dung là Personnel (CV) hay Organization (SOP/JD).
+Bước 2: Trích xuất vào JSON tương ứng.
+    - Personnel -> root fields: personnel_id (nếu có), public_data, private_data.
+    - Organization -> root fields: org_id (nếu có), public_data, private_data.
 
-  SOP      — Quy trình / Hướng dẫn vận hành. Dấu hiệu: bước thực hiện,
-             điều kiện kích hoạt, người thực hiện, công cụ sử dụng,
-             từ khoá "quy trình", "bước", "thực hiện", "phê duyệt".
-             CORE_ENTITY = Tên quy trình (VD: "SOP-02 Phê duyệt Ngân sách")
+Quy tắc bắt buộc:
+- Email, SĐT, mức lương cụ thể, secret kỹ thuật -> PHẢI vào private_data.
+- Thông tin không khớp schema có sẵn -> nhóm vào private_data.additional_information.
+- Trường thiếu dữ liệu -> chuỗi rỗng "", mảng rỗng [], hoặc object rỗng {}.
+- Tên công nghệ/kỹ năng PHẢI chuẩn hóa lowercase và nhất quán:
+        "react" (không phải "ReactJS"), "python" (không phải "Python"),
+        "node.js" (không phải "NodeJS"), "kubernetes" (không phải "K8s").
+- is_available: TRUE nếu có tín hiệu như "Open for Offers", "Đang tìm việc", "Available".
+    FALSE nếu không có tín hiệu rõ ràng.
+- year trong education: chỉ lấy số nguyên 4 chữ số, null nếu không xác định.
+- Tên các trường trong private_data PHẢI CHÍNH XÁC là:
+    interview_questions_history, blacklist_orgs, salary_expectation,
+    contact, evidence_links, project_technical_secrets, additional_information.
+    Không được đặt tên khác hay viết tắt.
 
-  PROJECT  — Kế hoạch / Báo cáo dự án. Dấu hiệu: mục tiêu, milestone,
-             ngân sách, rủi ro, KPI, từ khoá "dự án", "giai đoạn", "sprint".
-             CORE_ENTITY = Tên dự án (VD: "NovaFlow ERP")
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-BƯỚC 2A — ENTITY TAXONOMY CHUNG (áp dụng cho cả 3 loại)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  PERSON    — Tên người thật (Nguyễn Hoài Tưởng, Lê Văn Tám)
-  ORG       — Công ty, phòng ban, trường học (TechVision JSC, Phòng Tài chính)
-  ROLE      — Chức danh, vị trí (CEO, Project Manager, Trưởng phòng)
-  TOOL      — Phần mềm, công nghệ, hệ thống (Odoo, Jira, Docker, Python)
-  METRIC    — Chỉ số, con số đo lường (45%, $2M, 120 nhân sự, 30 ngày)
-  TIME      — Mốc hoặc khoảng thời gian (Q1/2025, Tháng 03/2025, Sprint 2)
-  CONCEPT   — Khái niệm trừu tượng (chuyển đổi số, văn hoá doanh nghiệp)
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-BƯỚC 2B — ENTITY TAXONOMY ĐẶC THÙ THEO LOẠI TÀI LIỆU
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  [Chỉ dùng cho CV]
-    SKILL     — Kỹ năng, năng lực cá nhân (Lãnh đạo chiến lược, System Design)
-    CERT      — Chứng chỉ, bằng cấp (AWS Certified, MBA, PMP)
-    LANGUAGE  — Ngôn ngữ giao tiếp (Tiếng Anh, Tiếng Nhật)
-    EVENT     — Sự kiện cá nhân hoặc nghề nghiệp (VietAI Summit, Series A)
-    PRODUCT   — Sản phẩm/hệ thống đã xây dựng (SaaS platform, hệ thống ERP)
-
-  [Chỉ dùng cho SOP]
-    PROCESS   — Tên quy trình hoặc bước (Bước 1: Tiếp nhận yêu cầu, SOP-01)
-    CONDITION — Điều kiện kích hoạt/phân nhánh (Nếu > 50 triệu, Nếu từ chối)
-    DOCUMENT  — Biểu mẫu, hồ sơ (Form-01, Phiếu đề xuất, Hợp đồng)
-    STANDARD  — Tiêu chuẩn, quy định (ISO 9001, Nghị định 47/2021)
-
-  [Chỉ dùng cho PROJECT]
-    MILESTONE — Cột mốc dự án (Go-live, UAT hoàn thành, Kick-off)
-    RISK      — Rủi ro đã nhận diện (Rủi ro thiếu nhân lực, Rủi ro ngân sách)
-    KPI       — Chỉ tiêu thành công (Uptime 99.9%, NPS > 70, MAU 10,000)
-    PHASE     — Giai đoạn dự án (Giai đoạn 1: Phân tích, Sprint 3)
-    BUDGET    — Ngân sách (Ngân sách Q1: 500 triệu, Dự phòng 10%)
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-BƯỚC 2C — RELATION VOCABULARY THEO LOẠI TÀI LIỆU
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  Ưu tiên dùng đúng từ trong danh sách — KHÔNG tự đặt quan hệ tuỳ tiện.
-
-  [CV — quan hệ về con người]
-    làm việc tại | giữ chức vụ | làm việc từ | tốt nghiệp | học tại
-    có kỹ năng | sử dụng | có chứng chỉ | nói được | đạt điểm
-    phát triển | lãnh đạo | đạt thành tích | tham gia sự kiện
-
-  [SOP — quan hệ về quy trình]
-    bắt đầu bằng | tiếp theo là | kết thúc bằng | thực hiện bởi
-    sử dụng công cụ | tạo ra tài liệu | yêu cầu phê duyệt từ
-    kích hoạt khi | rẽ nhánh nếu | chuyển sang bước | áp dụng tiêu chuẩn
-    có thời hạn | lưu trữ tại
-
-  [PROJECT — quan hệ về dự án]
-    có mục tiêu | bao gồm giai đoạn | đạt milestone | phân công cho
-    sử dụng công nghệ | có ngân sách | có rủi ro | đo bằng KPI
-    bắt đầu vào | kết thúc vào | phụ thuộc vào | báo cáo lên
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-BƯỚC 3 — OUTPUT SCHEMA BẮT BUỘC
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-{
-  "doc_type": "CV" | "SOP" | "PROJECT",
-  "topic_category": "<xem danh sách bên dưới>",
-  "entities": [
-    {"name": "<tên thực thể>", "type": "<từ taxonomy tương ứng doc_type>"}
-  ],
-  "triplets": [
-    {"subject": "<name>", "relation": "<từ relation vocabulary>", "object": "<name>"}
-  ]
-}
-
-  topic_category hợp lệ theo doc_type:
-    CV      → PERSONNEL | EXPERIENCE | EDUCATION | SKILL | ACHIEVEMENT
-    SOP     → PROCESS_FLOW | APPROVAL | CONDITION | TOOL_USAGE | COMPLIANCE
-    PROJECT → OBJECTIVE | PLANNING | EXECUTION | RISK | REPORTING
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-QUY TẮC THÉP (áp dụng cho CẢ 3 LOẠI — vi phạm = output không hợp lệ)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-R1 — ĐỒNG NHẤT CHỦ THỂ LÕI:
-  • CV:      Mọi đại từ (ông, bà, anh, hắn, người này, vị CEO) → thay bằng
-             tên đầy đủ của CORE_ENTITY.
-  • SOP:     Mọi "bước này", "quy trình trên" → thay bằng tên PROCESS/STEP cụ thể.
-  • PROJECT: Mọi "dự án", "chương trình này" → thay bằng tên PROJECT cụ thể.
-  • TUYỆT ĐỐI KHÔNG dùng đại từ hoặc động từ làm Subject trong triplet.
-
-R2 — ENTITY TRƯỚC TRIPLET:
-  • Mọi Subject và Object trong triplets PHẢI là .name của một entity
-    trong danh sách entities của cùng chunk.
-  • CORE_ENTITY phải được khai báo trong entities nếu xuất hiện trong triplet.
-
-R3 — KHÔNG BỎ SÓT DANH SÁCH LIỆT KÊ:
-  • CV:  kỹ năng / chứng chỉ / ngôn ngữ / công cụ → tạo triplet nối
-         CORE_ENTITY với từng mục.
-  • SOP: danh sách bước → tạo triplet "tiếp theo là" nối các bước tuần tự.
-  • PROJECT: danh sách milestone / KPI / rủi ro → nối với CORE_ENTITY.
-
-R4 — DÙNG ĐÚNG ENTITY TYPE THEO DOC_TYPE:
-  • Không dùng SKILL/CERT/LANGUAGE cho SOP hoặc PROJECT.
-  • Không dùng PROCESS/CONDITION/DOCUMENT cho CV hoặc PROJECT.
-  • Không dùng MILESTONE/RISK/KPI/PHASE/BUDGET cho CV hoặc SOP.
-
-R5 — FORMAT OUTPUT:
-  • Trả về JSON thuần tuý — KHÔNG markdown ```json```, KHÔNG giải thích.
-  • Empty fallback: {"doc_type":"CV","topic_category":"PERSONNEL","entities":[],"triplets":[]}
+CRITICAL: YOUR ENTIRE RESPONSE MUST BE A SINGLE RAW JSON OBJECT.
+START WITH {{ AND END WITH }}. NO TEXT BEFORE OR AFTER. NO MARKDOWN. NO EXPLANATIONS.
 """
 
-_USER_PROMPT_TEMPLATE = """\
-CORE_ENTITY: {core_entity}
-(Đây là chủ thể lõi của đoạn văn — người/quy trình/dự án được nhắc đến nhiều nhất)
+# ── Tầng 1: Anchor patterns ──────────────────────────────────────────────────
+# Các field này có pattern regex rõ ràng → không cần LLM, không hallucinate.
 
-ĐOẠN VĂN CẦN PHÂN TÍCH:
+_ANCHOR_PATTERNS: dict[str, list[str]] = {
+    "_id": [
+        r"(?:^|\n)\s*(?:ID|personnel_id|org_id|Mã số)\s*[:\-]\s*([A-Z_0-9]{3,20})",
+    ],
+    "email": [
+        r"[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}",
+    ],
+    "phone": [
+        r"(?:^|\s|:)(\+?84[-\s]?|0)([3-9]\d{8})\b",
+    ],
+    "github": [
+        r"https?://(?:github|gitlab)\.com/[A-Za-z0-9\-_./]+",
+    ],
+    "linkedin": [
+        r"https?://(?:www\.)?linkedin\.com/in/[A-Za-z0-9\-_/]+",
+    ],
+    "availability": [
+        r"(?:^|\n)[✔✓☑]\s*(Open for Offers|Immediate|[0-9]_month_notice)",
+        r"(?:availability|trạng thái)\s*[:\-]\s*([^\n]{3,40})",
+    ],
+    "evidence_links": [
+        r"https?://(?!(?:github|gitlab|linkedin)\.com)[A-Za-z0-9\-_./?=&#%+]+",
+    ],
+    "salary_raw": [
+        r"(?:USD|VND|VNĐ|đồng)?\s*[\d,\.]+\s*(?:USD|VND|VNĐ|đồng|tháng|/month)?",
+    ],
+}
+
+
+def _extract_anchors(text: str) -> dict[str, Any]:
+    """
+    Tầng 1: regex-based extraction.
+    Không bao giờ raise. Không gọi LLM.
+    """
+    anchors: dict[str, Any] = {}
+
+    # ID
+    for pattern in _ANCHOR_PATTERNS["_id"]:
+        m = re.search(pattern, text, re.IGNORECASE | re.MULTILINE)
+        if m:
+            anchors["_id"] = m.group(1).strip()
+            break
+
+    # Email
+    emails = re.findall(_ANCHOR_PATTERNS["email"][0], text, re.IGNORECASE)
+    if emails:
+        anchors["email"] = emails[0]
+
+    # Phone — normalize về 0xxxxxxxxx
+    for pattern in _ANCHOR_PATTERNS["phone"]:
+        m = re.search(pattern, text)
+        if m:
+            digits = re.sub(r"\D", "", m.group(0))
+            if digits.startswith("84"):
+                digits = "0" + digits[2:]
+            if len(digits) == 10:          # chỉ lấy số hợp lệ
+                anchors["phone"] = digits
+            break
+
+    # GitHub / GitLab
+    gh = re.findall(_ANCHOR_PATTERNS["github"][0], text, re.IGNORECASE)
+    if gh:
+        anchors["github"] = gh[0].rstrip("/.,")
+
+    # LinkedIn
+    li = re.findall(_ANCHOR_PATTERNS["linkedin"][0], text, re.IGNORECASE)
+    if li:
+        anchors["linkedin"] = li[0].rstrip("/.,")
+
+    # Availability
+    for pattern in _ANCHOR_PATTERNS["availability"]:
+        m = re.search(pattern, text, re.IGNORECASE | re.MULTILINE)
+        if m:
+            anchors["availability"] = m.group(1).strip()
+            break
+
+    # Evidence links — loại trừ github/linkedin đã capture
+    known = {anchors.get("github", ""), anchors.get("linkedin", "")}
+    all_links = re.findall(_ANCHOR_PATTERNS["evidence_links"][0], text, re.IGNORECASE)
+    evidence = [l.rstrip("/.,") for l in all_links
+                if l not in known and len(l) > 15]
+    if evidence:
+        anchors["evidence_links"] = list(dict.fromkeys(evidence))
+
+    logger.debug(f"[Tầng 1] Anchors: {list(anchors.keys())}")
+    return anchors
+
+
+# ── Tầng 2: JSON Schema cho OpenAI Structured Outputs ───────────────────────
+# strict=True → constrained decoding tại API level.
+# QUAN TRỌNG: Với strict=True, "additionalProperties" BẮT BUỘC phải là False ở mọi nơi!
+# Để chứa dữ liệu động (additional_information), ta dùng mảng các object {"key": ..., "value": ...}
+
+_OPENAI_RESPONSE_FORMAT: dict = {
+    "type": "json_schema",
+    "json_schema": {
+        "name": "recruitment_node",
+        "strict": True,
+        "schema": {
+            "type": "object",
+            "properties": {
+                "personnel_id": {"type": ["string", "null"]},
+                "org_id":       {"type": ["string", "null"]},
+                "public_data": {
+                    "type": "object",
+                    "properties": {
+                        "full_name":            {"type": "string"},
+                        "professional_summary": {"type": "string"},
+                        "is_available":         {"type": "boolean"},
+                        "skills":         {"type": "array", "items": {"type": "string"}},
+                        "certificates":   {"type": "array", "items": {"type": "string"}},
+                        "cultural_tags":  {"type": "array", "items": {"type": "string"}},
+                        "education": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "degree": {
+                                        "type": "string",
+                                        "enum": ["BACHELOR", "MASTER", "PHD", "OTHER"],
+                                    },
+                                    "major":  {"type": "string"},
+                                    "school": {"type": "string"},
+                                    "year":   {"type": ["integer", "null"]},
+                                },
+                                "required": ["degree", "major", "school", "year"],
+                                "additionalProperties": False,
+                            },
+                        },
+                        "experience": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "organization_name": {"type": ["string", "null"]},
+                                    "project_name": {"type": "string"},
+                                    "role":         {"type": "string"},
+                                    "tech_stack": {
+                                        "type": "array",
+                                        "items": {"type": "string"},
+                                    },
+                                },
+                                "required": ["organization_name", "project_name", "role", "tech_stack"],
+                                "additionalProperties": False,
+                            },
+                        },
+                    },
+                    # Ép False để tuân thủ strict=True của OpenAI
+                    "additionalProperties": False,
+                    "required": [
+                        "full_name", "professional_summary", "is_available",
+                        "skills", "certificates", "cultural_tags",
+                        "education", "experience",
+                    ],
+                },
+                "private_data": {
+                    "type": "object",
+                    "properties": {
+                        "contact": {
+                            "type": "object",
+                            "properties": {
+                                "email":    {"type": "string"},
+                                "phone":    {"type": "string"},
+                                "github":   {"type": "string"},
+                                "linkedin": {"type": "string"},
+                            },
+                            "required": ["email", "phone", "github", "linkedin"],
+                            "additionalProperties": False,
+                        },
+                        "salary_expectation":        {"type": "string"},
+                        "project_technical_secrets": {"type": "string"},
+                        "interview_questions_history": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "question": {"type": "string"},
+                                    "answer":   {"type": "string"},
+                                    "org":      {"type": "string"},
+                                },
+                                "required": ["question", "answer", "org"],
+                                "additionalProperties": False,
+                            },
+                        },
+                        "blacklist_orgs":  {"type": "array", "items": {"type": "string"}},
+                        "evidence_links":  {"type": "array", "items": {"type": "string"}},
+
+                        # TÚI BA GANG DẠNG KEY-VALUE (Chuẩn OpenAI Strict)
+                        "additional_information": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "key": {"type": "string", "description": "Tên trường thông tin (VD: Sở thích, Tôn giáo, Nhóm máu)"},
+                                    "value": {"type": "string", "description": "Giá trị tương ứng"}
+                                },
+                                "required": ["key", "value"],
+                                "additionalProperties": False
+                            }
+                        },
+                    },
+                    "required": [
+                        "contact", "salary_expectation", "project_technical_secrets",
+                        "interview_questions_history", "blacklist_orgs",
+                        "evidence_links", "additional_information",
+                    ],
+                    "additionalProperties": False,
+                },
+            },
+            "required": ["personnel_id", "org_id", "public_data", "private_data"],
+            "additionalProperties": False,
+        },
+    },
+}
+# Fallback cho Cerebras (chưa support json_schema, chỉ support json_object)
+_CEREBRAS_RESPONSE_FORMAT: dict = {"type": "json_object"}
+
+_USER_PROMPT_TEMPLATE = """\
+ĐOẠN VĂN BẢN (từ file: {file_hint}):
 \"\"\"
 {chunk_text}
 \"\"\"
 
-Thực hiện theo 3 bước:
-1. Xác định doc_type (CV / SOP / PROJECT) dựa vào CORE_ENTITY và nội dung.
-2. Chọn Entity Taxonomy và Relation Vocabulary tương ứng.
-3. Trả về JSON theo schema — tuân thủ 5 Quy tắc Thép.\
+Yêu cầu: {role_instruction}
+
+Phân tích theo tư duy Data Architect, tách rõ ràng Public & Private theo Schema.
+Chỉ xuất ra JSON phẳng ở root với các trường liên quan (public_data, private_data,
+personnel_id/org_id nếu có).
 """
 
-
-# ============================================================================
-# LLM Clients (lazy init)
-# ============================================================================
-
 def _cerebras_client() -> Cerebras:
-    """Tạo Cerebras SDK client từ API key trong .env."""
     return Cerebras(api_key=settings.CEREBRAS_API_KEY)
 
-
 def _openai_client() -> OpenAI:
-    """Tạo OpenAI client."""
     return OpenAI(api_key=settings.OPENAI_API_KEY)
 
+def _normalize_target_role(target_role: Optional[str]) -> str:
+    role = str(target_role or "").strip().upper()
+    return "ORGANIZATION" if role == "ORGANIZATION" else "PERSONNEL"
 
-# ============================================================================
-# Core extraction logic
-# ============================================================================
 
-def _build_user_prompt(chunk_text: str, core_entity: str) -> str:
-    """Tạo User Prompt với core_entity và chunk_text."""
+def _build_role_instruction(target_role: Optional[str]) -> str:
+    role = str(target_role or "").strip().upper()
+    if role == "ORGANIZATION":
+        return (
+            "BẮT BUỘC: Trả về dữ liệu theo role ORGANIZATION. "
+            "Không đổi role, không tự chuyển sang PERSONNEL."
+        )
+    if role == "PERSONNEL":
+        return (
+            "BẮT BUỘC: Trả về dữ liệu theo role PERSONNEL. "
+            "Không đổi role, không tự chuyển sang ORGANIZATION."
+        )
+    return "Ưu tiên tự nhận diện role phù hợp từ nội dung tài liệu."
+
+
+def _build_user_prompt(chunk_text: str, file_hint: str, target_role: Optional[str]) -> str:
     return _USER_PROMPT_TEMPLATE.format(
-        core_entity=core_entity,
+        file_hint=file_hint,
         chunk_text=chunk_text,
+        role_instruction=_build_role_instruction(target_role),
     )
 
 
-def _call_cerebras(
-    chunk_text: str,
-    core_entity: str,
-    timeout: float = 30.0,
-) -> str:
-    """Gọi Cerebras API qua SDK và trả về raw content string."""
-    client = _cerebras_client()
-    response = client.chat.completions.create(
-        model=settings.CEREBRAS_MODEL,
-        messages=[
-            {"role": "system", "content": _SYSTEM_PROMPT},
-            {"role": "user", "content": _build_user_prompt(chunk_text, core_entity)},
-        ],
-        temperature=0,
-        timeout=timeout,
-    )
-    return response.choices[0].message.content if response.choices else ""
+def _extract_content_from_response(response: Any) -> str:
+    """Read first message content from ChatCompletion-like responses safely."""
+    if response is None:
+        return ""
 
+    choices = cast(Any, getattr(response, "choices", None))
+    if not choices:
+        return ""
 
-def _call_openai(
-    chunk_text: str,
-    core_entity: str,
-    timeout: float = 60.0,
-) -> str:
-    """Gọi OpenAI API và trả về raw content string."""
-    client = _openai_client()
-    response = client.chat.completions.create(
-        model=settings.OPENAI_MODEL,
-        messages=[
-            {"role": "system", "content": _SYSTEM_PROMPT},
-            {"role": "user", "content": _build_user_prompt(chunk_text, core_entity)},
-        ],
-        temperature=0,
-        timeout=timeout,
-    )
-    return response.choices[0].message.content or ""
+    first_choice = choices[0]
+    message = cast(Any, getattr(first_choice, "message", None))
+    if message is None:
+        return ""
 
+    content = cast(Any, getattr(message, "content", None))
+    return str(content) if content is not None else ""
 
-def _parse_extraction_with_retry(
-    raw: str,
-    max_retries: int = 2,
-) -> KnowledgeGraphExtraction:
-    """Parse raw JSON string thành Pydantic model với retry logic.
-
-    Args:
-        raw: Raw response string từ LLM.
-        max_retries: Số lần thử lại tối đa nếu JSON không hợp lệ.
-
-    Returns:
-        Parsed KnowledgeGraphExtraction object.
-
-    Raises:
-        ValueError: Nếu sau max_retries lần vẫn không parse được JSON hợp lệ.
+def _call_llm(text: str, file_hint: str = "") -> str:
     """
-    for attempt in range(max_retries + 1):
-        try:
-            # Loại bỏ markdown code fences nếu LLM trả kèm
-            cleaned = re.sub(r"^```(?:json)?\s*", "", raw.strip())
-            cleaned = re.sub(r"\s*```$", "", cleaned).strip()
-
-            # Tìm JSON object đầu tiên
-            match = re.search(r"\{[\s\S]*\}", cleaned)
-            if not match:
-                raise ValueError(
-                    f"Không tìm thấy JSON object trong response: {raw[:300]}"
-                )
-
-            data = json.loads(match.group())
-            result = KnowledgeGraphExtraction(**data)
-            logger.info("Parse JSON thành công ở lần thứ %d.", attempt + 1)
-            return result
-
-        except (json.JSONDecodeError, ValueError, ValidationError) as exc:
-            if attempt < max_retries:
-                logger.warning(
-                    "Lần thứ %d thất bại (%s). Thử lại…",
-                    attempt + 1,
-                    exc,
-                )
-            else:
-                logger.error(
-                    "Đã thử %d lần vẫn không parse được JSON: %s",
-                    max_retries + 1,
-                    exc,
-                )
-                raise ValueError(
-                    f"Không thể parse JSON sau {max_retries + 1} lần: {exc}"
-                ) from exc
-
-
-# ============================================================================
-# Post-processing: đảm bảo triplet subjects/objects tồn tại trong entities
-# ============================================================================
-
-def _validate_and_fix(
-    result: KnowledgeGraphExtraction,
-    core_entity: str,
-) -> KnowledgeGraphExtraction:
-    """Hậu xử lý đảm bảo chất lượng đồ thị:
-
-    1. Thay thế literal "CORE_ENTITY" và đại từ bằng tên thật.
-    2. Đảm bảo core_entity nằm trong entities.
-    3. Đảm bảo mọi subject/object trong triplets đều có trong entities.
-    4. Loại bỏ triplet rác (subject/object là cụm vô nghĩa).
+    Tầng 2: Gọi LLM với JSON Schema enforcement.
+    - OpenAI (nếu có key): dùng response_format json_schema strict
+      → không cần completion prefix, không cần parse phức tạp
+    - Cerebras (fallback): dùng json_object + completion prefix {
     """
-    # Các pattern LLM có thể trả về thay vì tên thật
-    _PLACEHOLDER_PATTERNS = {
-        "CORE_ENTITY", "core_entity",
-        "ĐOẠN VĂN CẦN PHÂN TÍCH", "Đoạn văn cần phân tích",
-    }
+    from pipeline.config import get_extraction_client  # import lazy để tránh circular
 
-    # 1. Thay thế placeholder trong entities
-    if core_entity:
-        for entity in result.entities:
-            if entity.name in _PLACEHOLDER_PATTERNS:
-                entity.name = core_entity
+    client, model, provider = get_extraction_client()
 
-    # 2. Thay thế placeholder trong triplets
-    if core_entity:
-        for triplet in result.triplets:
-            if triplet.subject in _PLACEHOLDER_PATTERNS:
-                triplet.subject = core_entity
-            if triplet.object in _PLACEHOLDER_PATTERNS:
-                triplet.object = core_entity
-
-    # 3. Loại bỏ triplet rác (subject == object, hoặc quá ngắn)
-    result.triplets = [
-        t for t in result.triplets
-        if t.subject != t.object and len(t.subject) > 1 and len(t.object) > 1
+    messages: list[dict[str, Any]] = [
+        {"role": "system", "content": _SYSTEM_PROMPT},
+        {"role": "user",   "content": _USER_PROMPT_TEMPLATE.format(
+            file_hint=file_hint,
+            chunk_text=text,
+            role_instruction=(
+                "Nhận diện loại tài liệu (Personnel/Organization) "
+                "và trích xuất toàn bộ thông tin theo schema."
+            ),
+        )},
     ]
 
-    # 4. Đảm bảo core_entity luôn có trong entities (type phụ thuộc doc_type)
-    entity_names = {e.name for e in result.entities}
-    if core_entity and core_entity not in entity_names:
-        core_type = {
-            DocType.CV: "PERSON",
-            DocType.SOP: "PROCESS",
-            DocType.PROJECT: "CONCEPT",
-        }.get(result.doc_type, "CONCEPT")
-        result.entities.insert(0, Entity(name=core_entity, type=core_type))
-        entity_names.add(core_entity)
+    if provider == "openai":
+        # ── OpenAI: Structured Outputs ──────────────────────────────────
+        # Không dùng completion prefix { — API enforce schema trước khi decode
+        response: Any = client.chat.completions.create(
+            model=model,
+            messages=cast(Any, messages),
+            response_format=cast(Any, _OPENAI_RESPONSE_FORMAT),
+            temperature=0,          # extraction cần deterministic
+            max_tokens=4096,
+        )
+        raw = _extract_content_from_response(response)
+        usage = getattr(response, "usage", None)
+        total_tokens = getattr(usage, "total_tokens", None)
+        logger.debug(f"[Tầng 2 / OpenAI] tokens_used={total_tokens}")
 
-    # 5. Đảm bảo mọi subject/object trong triplets có trong entities
-    for triplet in result.triplets:
-        if triplet.subject not in entity_names:
-            result.entities.append(Entity(name=triplet.subject, type="CONCEPT"))
-            entity_names.add(triplet.subject)
-            logger.debug("Auto-add entity từ subject: %s", triplet.subject)
-        if triplet.object not in entity_names:
-            result.entities.append(Entity(name=triplet.object, type="CONCEPT"))
-            entity_names.add(triplet.object)
-            logger.debug("Auto-add entity từ object: %s", triplet.object)
+    else:
+        # ── Cerebras fallback: json_object + completion prefix ───────────
+        # Thêm { vào cuối user message để force JSON start (completion prefix technique)
+        messages[-1]["content"] += "\n\nJSON OUTPUT:\n{"
 
+        response: Any = client.chat.completions.create(
+            model=model,
+            messages=cast(Any, messages),
+            response_format=cast(Any, _CEREBRAS_RESPONSE_FORMAT),
+            temperature=0,
+            max_tokens=4096,
+        )
+        raw = _extract_content_from_response(response)
+        # Prepend lại { đã dùng làm prefix (chỉ khi chưa bắt đầu bằng {)
+        raw = raw if raw.lstrip().startswith("{") else "{" + raw
+        logger.debug(f"[Tầng 2 / Cerebras] raw_preview={raw[:120]!r}")
+
+    logger.debug(f"[Tầng 2] provider={provider}, model={model}, "
+                 f"response_len={len(raw)}")
+    return raw
+
+
+def _extract_pipeline(text: str, file_hint: str = "", raw_response: Optional[str] = None) -> dict:
+    logger.debug(f"[extract] file={file_hint!r}, text_len={len(text)}")
+
+    # ── Tầng 1 ──────────────────────────────────────────────────────────
+    anchors = _extract_anchors(text)
+
+    # ── Tầng 2 ──────────────────────────────────────────────────────────
+    raw = raw_response if raw_response is not None else _call_llm(text, file_hint)
+
+    # _clean_and_parse_json là safety net — với OpenAI structured output,
+    # raw_response đã là valid JSON. Với Cerebras, cần parser 5 tầng.
+    llm_result = _clean_and_parse_json(raw)
+
+    # ── Tầng 3 ──────────────────────────────────────────────────────────
+    final = _merge_and_validate(llm_result, anchors)
+
+    logger.info(
+        f"[extract] ✅ id={final.get('personnel_id') or final.get('org_id')!r}, "
+        f"provider={'openai' if 'gpt' in str(final) else 'cerebras'}"
+    )
+    return final
+
+
+def _clean_and_parse_json(text: str) -> Dict[str, Any]:
+    """
+    Bộ lọc JSON 5 tầng — bất bại trước LLM chatty output.
+    Thứ tự: fast-path → markdown strip → bracket slice → stack scan → python-quirk fix.
+    """
+    import re
+
+    # ── Tầng 1: fast path ─────────────────────────────────────────────────────
+    # Phần lớn các lần gọi LLM tốt sẽ trả về JSON thuần, xử lý ngay tại đây.
+    stripped = text.strip()
+    try:
+        return json.loads(stripped)
+    except json.JSONDecodeError:
+        pass
+
+    # ── Tầng 2: strip markdown fences ─────────────────────────────────────────
+    # LLM hay bọc JSON trong ```json ... ``` hoặc ``` ... ```
+    fence_match = re.search(r"```(?:json)?\s*(\{.*?\})\s*```", stripped, re.DOTALL)
+    if fence_match:
+        try:
+            return json.loads(fence_match.group(1))
+        except json.JSONDecodeError:
+            pass
+
+    # ── Tầng 3: first-{  last-} slice ─────────────────────────────────────────
+    # Cắt từ { đầu tiên đến } cuối cùng — nhanh, đủ cho 90% trường hợp.
+    first = stripped.find("{")
+    last  = stripped.rfind("}")
+    if first != -1 and last > first:
+        try:
+            return json.loads(stripped[first : last + 1])
+        except json.JSONDecodeError:
+            pass
+
+    # ── Tầng 4: stack-based bracket scan — O(n), an toàn với chuỗi dài ────────
+    # Đếm ngoặc chính xác, bỏ qua { } nằm bên trong string literals.
+    # Không dùng "shrink from right" (O(n²) — có thể treo nếu text dài).
+    if first != -1:
+        depth    = 0
+        in_str   = False
+        escaped  = False
+
+        for i, ch in enumerate(stripped[first:], start=first):
+            if escaped:
+                escaped = False
+                continue
+            if ch == "\\" and in_str:
+                escaped = True
+                continue
+            if ch == '"':
+                in_str = not in_str
+                continue
+            if in_str:
+                continue
+            if ch == "{":
+                depth += 1
+            elif ch == "}":
+                depth -= 1
+                if depth == 0:
+                    candidate = stripped[first : i + 1]
+                    try:
+                        return json.loads(candidate)
+                    except json.JSONDecodeError:
+                        break   # ngoặc cân nhưng JSON vẫn lỗi → thử tầng 5
+
+    # ── Tầng 5: Python-quirk repair ───────────────────────────────────────────
+    # LLM đôi khi trả ra Python dict syntax thay vì JSON:
+    # single quotes, trailing commas, True/False/None.
+    if first != -1 and last > first:
+        candidate = stripped[first : last + 1]
+        try:
+            import ast
+            node = ast.literal_eval(candidate)
+            if isinstance(node, dict):
+                # Re-serialize qua json để chuẩn hóa, rồi parse lại
+                return json.loads(json.dumps(node, ensure_ascii=False))
+        except Exception:
+            pass
+
+    # ── Hết tầng — raise với context để log dễ debug ──────────────────────────
+    preview = text[:200].replace("\n", " ")
+    raise json.JSONDecodeError(
+        f"Không tìm được JSON hợp lệ sau 5 tầng filter. Preview: {preview!r}",
+        text, 0
+    )
+
+
+def _coerce_string_arrays(obj: Any, _depth: int = 0) -> Any:
+    """
+    Đệ quy qua dict/list, parse bất kỳ string nào trông giống JSON array/object.
+    Giới hạn độ sâu 10 để tránh stack overflow với input bất thường.
+    """
+    if _depth > 10:
+        return obj
+    if isinstance(obj, dict):
+        return {k: _coerce_string_arrays(v, _depth + 1) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [_coerce_string_arrays(item, _depth + 1) for item in obj]
+    if isinstance(obj, str):
+        stripped = obj.strip()
+        if stripped.startswith(("[", "{")):
+            try:
+                parsed = json.loads(stripped)
+                # Chỉ promote nếu kết quả là list hoặc dict — không promote scalar
+                if isinstance(parsed, (list, dict)):
+                    return parsed
+            except json.JSONDecodeError:
+                pass
+    return obj
+
+
+# Map: tên LLM hay đặt sai → tên chuẩn trong schema
+_PRIVATE_DATA_FIELD_ALIASES: dict[str, str] = {
+    # interview history variants
+    "interview_history":          "interview_questions_history",
+    "history_interview":          "interview_questions_history",
+    "interviews_history":         "interview_questions_history",
+    "interview_question_history": "interview_questions_history",
+    # blacklist variants
+    "blacklist":                  "blacklist_orgs",
+    "blacklisted_orgs":           "blacklist_orgs",
+    "blacklisted":                "blacklist_orgs",
+    "black_list":                 "blacklist_orgs",
+    # salary variants
+    "salary":                     "salary_expectation",
+    "expected_salary":            "salary_expectation",
+    "salary_expect":              "salary_expectation",
+    # contact variants
+    "contacts":                   "contact",
+    "contact_info":               "contact",
+    # evidence variants
+    "evidence":                   "evidence_links",
+    "links":                      "evidence_links",
+    "portfolio_links":            "evidence_links",
+}
+
+
+def _normalize_private_data(data: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Rename các field alias trong private_data về tên chuẩn của schema.
+    Nếu field chuẩn đã tồn tại: merge (list) hoặc giữ nguyên (scalar), KHÔNG overwrite.
+    Nếu chưa tồn tại: rename key.
+    """
+    private = data.get("private_data")
+    if not isinstance(private, dict):
+        return data
+
+    normalized = dict(private)  # shallow copy để không mutate input
+
+    for alias, canonical in _PRIVATE_DATA_FIELD_ALIASES.items():
+        if alias not in normalized:
+            continue
+        alias_val = normalized.pop(alias)
+
+        if canonical not in normalized:
+            # Field chuẩn chưa có → đổi tên
+            normalized[canonical] = alias_val
+        else:
+            # Field chuẩn đã có → merge nếu là list, giữ nguyên nếu scalar
+            existing = normalized[canonical]
+            if isinstance(existing, list) and isinstance(alias_val, list):
+                # Dedup khi merge list of dicts (dùng str representation)
+                seen = {str(item) for item in existing}
+                merged = existing + [item for item in alias_val
+                                     if str(item) not in seen]
+                normalized[canonical] = merged
+            # Nếu scalar: giữ nguyên existing, bỏ alias (đã pop ở trên)
+
+    data["private_data"] = normalized
+    return data
+
+
+def _merge_and_validate(llm_result: dict, anchors: dict) -> dict:
+    """
+    Tầng 3: Anchor fields OVERRIDE LLM output.
+    Regex không hallucinate → kết quả tầng 1 luôn đúng hơn LLM.
+    """
+    # ── ID ──────────────────────────────────────────────────────────────
+    node_id = anchors.get("_id")
+    if node_id:
+        # Ưu tiên personnel_id nếu document là CV
+        if llm_result.get("personnel_id") is not None:
+            llm_result["personnel_id"] = node_id
+        elif llm_result.get("org_id") is not None:
+            llm_result["org_id"] = node_id
+        else:
+            # LLM không set cả hai → heuristic: nếu có public_data.experience → personnel
+            if llm_result.get("public_data", {}).get("experience"):
+                llm_result["personnel_id"] = node_id
+            else:
+                llm_result["org_id"] = node_id
+
+    # ── Contact fields ───────────────────────────────────────────────────
+    private = llm_result.setdefault("private_data", {})
+    contact = private.setdefault("contact", {})
+
+    for field in ("email", "phone", "github", "linkedin"):
+        if field in anchors:
+            contact[field] = anchors[field]
+
+    # ── Availability ────────────────────────────────────────────────────
+    if "availability" in anchors:
+        llm_result.setdefault("public_data", {})["availability"] = \
+            anchors["availability"]
+
+    # ── Evidence links — union, dedup, anchor thêm vào không override ───
+    if "evidence_links" in anchors:
+        existing  = private.get("evidence_links", [])
+        existing  = existing if isinstance(existing, list) else []
+        merged    = list(dict.fromkeys(existing + anchors["evidence_links"]))
+        private["evidence_links"] = merged
+
+    # ── Coerce + normalize (từ patch 2) ─────────────────────────────────
+    result = _coerce_string_arrays(llm_result)
+    result = _normalize_private_data(result)
+
+    logger.debug(
+        f"[Tầng 3] id={result.get('personnel_id') or result.get('org_id')}, "
+        f"anchors_applied={list(anchors.keys())}"
+    )
     return result
 
 
-def extract_knowledge(
-    chunk_text: str,
-    core_entity: str = "",
-) -> KnowledgeGraphExtraction:
-    """Trích xuất tri thức từ một chunk văn bản.
-
-    Args:
-        chunk_text: Đoạn text đã chunk (≤ 256 tokens).
-        core_entity: Tên chủ thể lõi của CV (vd: "Nguyễn Hoài Tưởng").
-            Dùng để giải quyết đại từ và đảm bảo đồ thị kết nối.
-
-    Returns:
-        ``KnowledgeGraphExtraction`` chứa topic_category, entities, triplets.
-
-    Raises:
-        RuntimeError: Khi cả Cerebras và OpenAI đều thất bại.
+def extract(text: str, file_hint: str = "") -> dict:
     """
-    # --- Thử Cerebras trước ---
-    if settings.CEREBRAS_API_KEY:
-        try:
-            logger.debug("Gọi Cerebras (%s)…", settings.CEREBRAS_MODEL)
-            raw = _call_cerebras(chunk_text, core_entity, timeout=30.0)
-            result = _parse_extraction_with_retry(raw, max_retries=2)
-            result = _validate_and_fix(result, core_entity)
-            logger.info("Cerebras trích xuất OK: %s", result.topic_category.value)
-            return result
-        except Exception as exc:
-            logger.warning("Cerebras thất bại (%s). Chuyển sang OpenAI.", exc)
+    Pipeline 3 tầng:
+      1. Deterministic regex  → anchor fields (id, email, phone, github, ...)
+      2. LLM + JSON Schema    → structured extraction (experience, secrets, ...)
+      3. Merge + validate     → anchor override, coerce, normalize
+    """
+    return _extract_pipeline(text, file_hint=file_hint)
 
-    # --- Fallback: OpenAI ---
-    if settings.OPENAI_API_KEY:
-        try:
-            logger.debug("Gọi OpenAI (%s)…", settings.OPENAI_MODEL)
-            raw = _call_openai(chunk_text, core_entity, timeout=60.0)
-            result = _parse_extraction_with_retry(raw, max_retries=2)
-            result = _validate_and_fix(result, core_entity)
-            logger.info("OpenAI trích xuất OK: %s", result.topic_category.value)
-            return result
-        except Exception as exc:
-            logger.error("OpenAI cũng thất bại: %s", exc)
+def extract_knowledge(
+    doc_text: str,
+    file_hint: str = "CV_hoac_SOP",
+    target_role: Optional[str] = None,
+) -> Dict[str, Any]:
+    """LLM trích xuất text ra payload phẳng rồi re-wrap theo schema nội bộ."""
+    if len(doc_text.strip()) < 50:
+        logger.warning(f"[DEBUG] Text đầu vào quá ngắn hoặc rỗng cho {file_hint}!")
 
-    raise RuntimeError(
-        "Không thể trích xuất tri thức: cả Cerebras và OpenAI đều thất bại. "
-        "Kiểm tra API key trong .env."
+    raw = _call_llm(doc_text, file_hint)
+    logger.info(
+        f"\n--- [DEBUG] RAW LLM OUTPUT FOR {file_hint} ---\n{raw}\n-----------------------------------------"
     )
+
+    role = _normalize_target_role(target_role)
+    parsed: Dict[str, Any] = {}
+    try:
+        parsed = _extract_pipeline(doc_text, file_hint=file_hint, raw_response=raw)
+
+        parsed_role = str(parsed.get("record_type", "")).strip().upper()
+        if target_role is None and parsed_role in {"PERSONNEL", "ORGANIZATION"}:
+            role = parsed_role
+
+        payload = parsed.get("data") if isinstance(parsed.get("data"), dict) else parsed
+        if not isinstance(payload, dict):
+            payload = {}
+
+        if role == "ORGANIZATION":
+            validated = OrganizationSchema(**payload)
+        else:
+            validated = PersonnelSchema(**payload)
+
+        logger.info("Extract thành công: %s", role)
+        return {"record_type": role, "data": validated.model_dump()}
+    except json.JSONDecodeError as exc:
+        logger.warning("JSONDecodeError khi parse output LLM (%s): %s", file_hint, exc)
+        return {
+            "record_type": role,
+            "data": {
+                "public_data": {},
+                "private_data": {},
+            },
+        }
+    except ValidationError as exc:
+        logger.warning(f"ValidationError: {exc}")
+        data = parsed if isinstance(parsed, dict) else {}
+        return {"record_type": (target_role or role).upper(), "data": data}
+    except Exception as exc:
+        logger.warning("Parse error không xác định (%s): %s", file_hint, exc)
+        return {
+            "record_type": role,
+            "data": {
+                "public_data": {},
+                "private_data": {},
+            },
+        }

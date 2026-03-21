@@ -1,0 +1,432 @@
+[
+  {
+    "personnel_id": "P_021",
+    "public_data": {
+      "full_name": "Đặng Thị Minh Châu",
+      "professional_summary": "Product Engineer / Growth Engineer với 4 năm kinh nghiệm tại giao điểm giữa engineering và product, chuyên sâu về experimentation platforms và growth infrastructure. Tại MoMo, không chỉ code mà còn tham gia trực tiếp vào product discovery: thiết kế A/B testing framework, xây dựng growth loop cho referral program từ 500k lên 3 triệu người dùng mới trong 6 tháng, và ownership toàn bộ analytics pipeline cho Growth team. Thành thạo cả frontend (React, Next.js) lẫn backend (Node.js, Python) nhưng định danh bản thân là 'engineer who thinks in products'. Có kinh nghiệm thực chiến với feature flagging systems (LaunchDarkly, tự build), cohort analysis, funnel analytics, và viral coefficient optimization. Hiểu sâu về behavioral psychology trong product design. Sau MoMo, join Amanotes (startup âm nhạc Việt Nam hàng đầu thế giới về casual game music) làm Growth Engineer, tập trung vào mobile acquisition và retention. Tìm kiếm vai trò Senior Growth Engineer hoặc Product Engineer tại product company B2C với ambition scale toàn cầu.",
+      "education": [
+        {
+          "degree": "Kỹ sư",
+          "school": "Đại học Bách Khoa TP.HCM",
+          "major": "Kỹ thuật Máy tính",
+          "year": "2020"
+        }
+      ],
+      "certificates": [
+        "Growth Marketing Certificate – Reforge (Andrew Chen program)",
+        "AWS Certified Developer – Associate",
+        "Google Analytics 4 Individual Qualification"
+      ],
+      "skills": [
+        "React / Next.js / TypeScript (frontend)",
+        "Node.js / Python (backend, data scripts)",
+        "Feature flagging: LaunchDarkly, custom flag systems",
+        "A/B testing: design, implementation, statistical analysis (statsmodels)",
+        "Amplitude / Mixpanel / PostHog (product analytics)",
+        "SQL / BigQuery / dbt (growth analytics)",
+        "Apache Airflow (pipeline automation)",
+        "Firebase Remote Config / Dynamic Links",
+        "Growth frameworks: AARRR, Jobs-to-be-Done, viral loops",
+        "Docker / AWS (Lambda, S3, CloudFront)",
+        "Python (pandas, scipy – statistical testing)",
+        "Mobile attribution: AppsFlyer / Adjust"
+      ],
+      "experience": [
+        {
+          "project_name": "MoMo – Growth Infrastructure & Referral Program Engine",
+          "role": "Growth Engineer",
+          "tech_stack": ["React", "Node.js", "PostgreSQL", "Redis", "Airflow", "Amplitude", "Firebase"]
+        },
+        {
+          "project_name": "MoMo – A/B Testing Platform (Internal)",
+          "role": "Product Engineer",
+          "tech_stack": ["Go (flag evaluation service)", "React", "PostgreSQL", "BigQuery", "Python/statsmodels"]
+        },
+        {
+          "project_name": "Amanotes – Mobile Growth & Retention Engineering",
+          "role": "Senior Growth Engineer",
+          "tech_stack": ["React Native", "Node.js", "BigQuery", "AppsFlyer", "Firebase", "Python"]
+        }
+      ],
+      "availability": "Open_for_offers",
+      "cultural_tags": ["Startup", "Product-first", "Data-driven culture", "Agile / Kanban"]
+    },
+    "private_data": {
+      "contact": {
+        "email": "dangminhchau.growth@gmail.com",
+        "phone": "0902345678",
+        "github": "https://github.com/minhchau-growth"
+      },
+      "salary_expectation": "42,000,000 – 52,000,000 VNĐ/tháng. Quan tâm đặc biệt đến equity nếu startup early-stage với strong product-market fit. Không xem xét vai trò thuần frontend hoặc thuần backend không có product ownership.",
+      "project_technical_secrets": "Tại MoMo, đã tự thiết kế và xây dựng một 'Holdout Experimentation Framework' nội bộ: thay vì chỉ A/B test từng feature riêng lẻ, framework này cho phép track long-term cumulative impact của toàn bộ các experiments đang chạy song song bằng cách maintain một permanent 10% holdout group không nhận bất kỳ feature mới nào. Phát hiện quan trọng: tổng cumulative impact của tất cả experiments trong 6 tháng thực ra cao hơn 31% so với tổng các individual A/B test results – do interaction effects. Insight này thay đổi hoàn toàn cách MoMo prioritize experiments. Framework chưa được public vì chứa proprietary MoMo business metrics. Ngoài ra, tại Amanotes, biết rõ UA (User Acquisition) unit economics và LTV models cho top 5 games – thông tin chiến lược nhạy cảm.",
+      "interview_questions_history": [
+        {
+          "question": "Bạn đo lường success của một growth experiment như thế nào ngoài primary metric?",
+          "answer": "Primary metric là mục tiêu nhưng guardrail metrics mới là thứ ngăn 'gaming the metric'. Ví dụ: referral program primary = new user registration. Guardrail metrics: referral abuse rate (một user tạo nhiều accounts), D7 retention của referred users (chất lượng user), revenue per referred user. Thêm north star metric check: experiment có move DAU/MAU không? Và long-term holdout để xem impact sau 30/60/90 ngày – vì novelty effect có thể inflate short-term metrics.",
+          "org": "MoMo (Growth team OKR review)"
+        },
+        {
+          "question": "Thiết kế một feature flagging system có thể serve 50 triệu users với latency dưới 5ms.",
+          "answer": "Evaluation phải client-side hoặc edge-side, không phải round-trip server. Architecture: flag configs được push xuống dưới dạng JSON snapshot (cập nhật mỗi 30 giây qua SSE hoặc polling), evaluate locally trong SDK. Targeting rules: user attributes hash → segment → flag value, O(1) lookup. Server-side: Go service lưu flag configs trong Redis, serve snapshots qua CloudFront edge. Consistency: deterministic hashing (murmurhash3 trên user_id) để cùng user luôn nhận cùng variant. Tại MoMo đã build tương tự, serve 200k flags evaluations/giây mà không impact API latency.",
+          "org": "Amanotes (Growth platform design review)"
+        },
+        {
+          "question": "Viral coefficient là gì và bạn engineer growth loop như thế nào?",
+          "answer": "Viral coefficient K = (users sharing) × (conversion rate of invites). K > 1: viral growth, K < 1: tăng trưởng tuyến tính. Engineer viral loop: (1) Identify natural sharing moments (post-payment success screen, achievement unlock); (2) Reduce friction trong invite flow (pre-fill message, deep link tracking); (3) Incentive structure phải valuable cho cả referrer và referee; (4) Measure K weekly không phải monthly – decay nhanh. Tại MoMo referral program: K ban đầu = 0.3, sau 3 vòng iteration lên K = 0.78, đủ để amplify paid acquisition 2.2x.",
+          "org": "MoMo (internal growth review với C-suite)"
+        }
+      ],
+      "blacklist_orgs": ["Công ty B2B SaaS không có consumer product – không match về growth mechanics", "Nơi 'growth' chỉ là marketing campaigns không có engineering component"],
+      "evidence_links": [
+        "https://medium.com/@minhchau-growth/holdout-experiments-momo-lessons",
+        "https://github.com/minhchau-growth/feature-flag-sdk-js"
+      ]
+    }
+  },
+
+  {
+    "personnel_id": "P_022",
+    "public_data": {
+      "full_name": "Lý Thành Đạt",
+      "professional_summary": "Embedded Systems và IoT Engineer với 5 năm kinh nghiệm chuyên sâu về firmware development, RTOS, và edge computing. Tốt nghiệp ĐH Bách Khoa TP.HCM ngành Kỹ thuật Điện tử, bắt đầu sự nghiệp tại FPT Semiconductor với vai trò firmware engineer cho các SoC automotive và IoT. Tại FPT Semiconductor, phát triển BSP (Board Support Package) cho RISC-V based MCU, bao gồm HAL drivers, real-time scheduler, và bootloader. Có kinh nghiệm thực chiến với FreeRTOS, Zephyr RTOS, và bare-metal programming cho ARM Cortex-M series. Thành thạo C/C++ embedded, profiling với hardware trace (ITM, SWV, ETM), và debugging với JTAG/SWD. Sau FPT, join Lazada Vietnam ở vị trí Platform Engineer – đây là bước pivot thú vị: áp dụng systems programming mindset vào cloud-native infrastructure. Tại Lazada, làm việc chung với P010 (Phạm Thanh Tùng) trong team Platform. Hiện đang tập trung vào Rust cho embedded systems như là hướng đi tương lai. Tìm kiếm vai trò Embedded Systems Lead, IoT Platform Engineer, hoặc Systems Software Engineer.",
+      "education": [
+        {
+          "degree": "Kỹ sư",
+          "school": "Đại học Bách Khoa TP.HCM",
+          "major": "Kỹ thuật Điện tử – Viễn thông",
+          "year": "2019"
+        }
+      ],
+      "certificates": [
+        "ARM Accredited Engineer (AAE) – Cortex-M",
+        "Zephyr RTOS Fundamentals – Linux Foundation",
+        "AWS Certified Developer – Associate"
+      ],
+      "skills": [
+        "C / C++ (embedded, bare-metal, MISRA C guidelines)",
+        "Rust (embedded: no_std, embassy async framework, embedded-hal traits)",
+        "FreeRTOS / Zephyr RTOS / ThreadX",
+        "ARM Cortex-M (M0/M3/M4/M33) / RISC-V",
+        "Peripheral protocols: I2C, SPI, UART, CAN, USB",
+        "Hardware debugging: JTAG/SWD, oscilloscope, logic analyzer",
+        "Bootloader design (custom bootloader, MCUboot, OTA update)",
+        "MQTT / CoAP / LwM2M (IoT protocols)",
+        "AWS IoT Core / Greengrass (edge compute)",
+        "Python (test automation, hardware-in-the-loop testing)",
+        "Linux device drivers (basic: character device, platform driver)",
+        "Kubernetes / Docker (từ Lazada – application-level)"
+      ],
+      "experience": [
+        {
+          "project_name": "FPT Semiconductor – RISC-V IoT SoC BSP Development",
+          "role": "Firmware Engineer → Senior Firmware Engineer",
+          "tech_stack": ["C", "RISC-V Assembly", "FreeRTOS", "Custom HAL", "JTAG", "Python (HIL testing)"]
+        },
+        {
+          "project_name": "FPT Semiconductor – Automotive MCU Bootloader & OTA System",
+          "role": "Firmware Engineer",
+          "tech_stack": ["C", "ARM Cortex-M", "MCUboot", "CAN bus", "AES-GCM encryption", "Python"]
+        },
+        {
+          "project_name": "Lazada Vietnam – Platform Engineering (Edge Compute Infrastructure)",
+          "role": "Platform Engineer",
+          "tech_stack": ["Go", "Kubernetes", "Terraform", "AWS Greengrass", "Docker", "Python"]
+        }
+      ],
+      "availability": "1_month_notice",
+      "cultural_tags": ["Deep tech focus", "Engineering excellence", "R&D", "Startup energy in big corp"]
+    },
+    "private_data": {
+      "contact": {
+        "email": "lythanhdat.embedded@gmail.com",
+        "phone": "0961234567",
+        "github": "https://github.com/dat-embedded-rust"
+      },
+      "salary_expectation": "USD 2,200 – 2,800/tháng. Mức lương phản ánh niche skill set (embedded + Rust). Sẵn sàng nhận mức thấp hơn đáng kể nếu công ty cho phép tập trung phát triển Rust embedded ecosystem và có hardware lab access.",
+      "project_technical_secrets": "Đang tự nghiên cứu và build (side project có thể chuyển thành production-ready) một async embedded runtime bằng Rust sử dụng embassy framework trên STM32H7 series. Đặc biệt: đã implement một custom DMA-driven SPI driver bằng Rust với zero-copy buffer management, throughput đạt 54 Mbps – cao hơn 28% so với reference C implementation của STMicroelectronics. Code sử dụng Rust ownership model để đảm bảo statically không có DMA buffer aliasing tại compile time – một class of bug cực kỳ nguy hiểm trong embedded C. Đây là kỹ năng Rust embedded production-grade mà trên toàn thị trường Đông Nam Á chỉ có một số ít engineers thực sự hiểu sâu. Ngoài ra, tại FPT Semiconductor, biết rõ thiết kế internal của FPT-branded RISC-V SoC chưa được công bố ra thị trường (NDA).",
+      "interview_questions_history": [
+        {
+          "question": "Giải thích tại sao Rust có thể prevent buffer overflow và use-after-free ở compile time mà C không làm được.",
+          "answer": "Rust ownership system: mỗi giá trị có một owner duy nhất. Khi owner ra khỏi scope, memory tự động freed (Drop trait) – không cần manual free, không double-free. Borrow checker đảm bảo: (1) không thể có mutable reference khi có bất kỳ reference nào khác (prevents data race), (2) reference không thể sống lâu hơn value nó trỏ đến (prevents use-after-free). Với embedded: unsafe blocks chỉ cho phép raw pointer access trong scope rõ ràng, dễ audit hơn C toàn bộ là unsafe. Trong DMA context: Rust force bạn làm rõ ownership của DMA buffer – không thể vô tình alias buffer trong khi DMA đang transfer.",
+          "org": "FPT Semiconductor (internal Rust adoption proposal)"
+        },
+        {
+          "question": "Tại sao FreeRTOS task lại bị stack overflow và bạn debug như thế nào?",
+          "answer": "FreeRTOS allocate fixed stack per task tại creation time. Stack overflow xảy ra khi: deep function call chains, large local arrays, hoặc recursive functions. Detection: FreeRTOS stack overflow hook (configCHECK_FOR_STACK_OVERFLOW = 2 để check canary pattern). Debug: uxTaskGetStackHighWaterMark() để measure actual usage. Tại FPT gặp case: interrupt handler gọi printf() – printf allocate large internal buffer trên stack, overflow task stack. Fix: tăng stack size hoặc dùng non-blocking logging. Best practice: không gọi blocking functions trong ISR context.",
+          "org": "FPT Semiconductor (junior engineer mentoring)"
+        },
+        {
+          "question": "Làm thế nào bạn thiết kế OTA (Over-the-Air) update system an toàn cho embedded device?",
+          "answer": "Security requirements: (1) Authenticity – firmware phải được ký bằng private key của manufacturer, device verify bằng public key lưu trong secure storage; (2) Integrity – hash check (SHA-256) toàn bộ firmware image; (3) Rollback protection – version counter trong fuse bits, không allow downgrade. Architecture: dual-bank flash (A/B banks), download vào bank inactive, verify trước khi swap. Atomic boot: nếu new firmware fail khởi động X lần → tự rollback về bank cũ. MCUboot implement tất cả điều này và là best practice cho Zephyr ecosystem.",
+          "org": "FPT Semiconductor (automotive client technical review)"
+        }
+      ],
+      "blacklist_orgs": ["Công ty embedded chỉ làm Arduino-level projects không có real-time constraints", "Nơi không có hardware lab và oscilloscope cho engineers"],
+      "evidence_links": [
+        "https://blog.dat-embedded-rust.dev/rust-embassy-dma-stm32h7",
+        "https://github.com/dat-embedded-rust/embassy-stm32-dma-spi"
+      ]
+    }
+  },
+
+  {
+    "personnel_id": "P_023",
+    "public_data": {
+      "full_name": "Nguyễn Xuân Trường",
+      "professional_summary": "ML Infrastructure Engineer với 5 năm kinh nghiệm xây dựng các nền tảng ML serving và training tại quy mô lớn. Toàn bộ sự nghiệp gắn liền với hệ sinh thái Sea Group: bắt đầu tại Garena (game publisher lớn nhất Đông Nam Á) rồi chuyển sang SeaMoney (fintech arm của Sea) và hiện tại tại Shopee AI Lab. Tại Garena, xây dựng real-time matchmaking system dùng ML (ELO-based kết hợp với contextual bandits) cho Free Fire – game có 100 triệu MAU vào giai đoạn peak. Tại SeaMoney, thiết kế credit scoring pipeline cho 15 triệu users vay vốn tại SEA. Tại Shopee AI Lab, phụ trách ML platform: model registry, experiment tracking, và automated model deployment với canary rollout. Thành thạo Kubernetes cho ML workloads: GPU node management, Volcano batch scheduler, DCGM monitoring. Có kinh nghiệm thiết kế và vận hành distributed training cluster với InfiniBand networking. Tìm kiếm vai trò Staff ML Platform Engineer hoặc Head of ML Infrastructure.",
+      "education": [
+        {
+          "degree": "Kỹ sư",
+          "school": "Đại học Công nghệ – ĐHQG Hà Nội",
+          "major": "Điện tử và Tin học",
+          "year": "2019"
+        }
+      ],
+      "certificates": [
+        "NVIDIA Deep Learning Institute – Accelerating Data Engineering Pipelines",
+        "AWS Certified Machine Learning – Specialty",
+        "Certified Kubernetes Administrator (CKA)"
+      ],
+      "skills": [
+        "Python (PyTorch, JAX, HuggingFace, Ray)",
+        "Kubernetes (GPU scheduling: Volcano, kube-scheduler extender, DCGM)",
+        "Kubeflow / MLflow / DVC (ML lifecycle)",
+        "Triton Inference Server (multi-model, ensemble, dynamic batching)",
+        "Ray (distributed training, Ray Serve, Ray Tune)",
+        "Apache Spark (feature engineering at scale)",
+        "Redis / Feast (feature store)",
+        "gRPC / REST (model serving APIs)",
+        "AWS (SageMaker, EKS, EC2 P-instances, S3, ECR)",
+        "Argo Workflows / Airflow (ML pipeline orchestration)",
+        "Prometheus / Grafana (GPU utilization, model latency monitoring)",
+        "InfiniBand networking (distributed training fabric)"
+      ],
+      "experience": [
+        {
+          "project_name": "Garena – Free Fire Real-time ML Matchmaking System",
+          "role": "ML Engineer",
+          "tech_stack": ["Python", "Triton", "Redis", "Kafka", "PyTorch", "Kubernetes", "AWS"]
+        },
+        {
+          "project_name": "SeaMoney – Credit Scoring Pipeline (15M users, SEA)",
+          "role": "Senior ML Engineer",
+          "tech_stack": ["PySpark", "MLflow", "Kubeflow", "XGBoost", "Feast", "Airflow", "AWS SageMaker"]
+        },
+        {
+          "project_name": "Shopee AI Lab – ML Platform (Model Registry + Serving + Training)",
+          "role": "Staff ML Platform Engineer",
+          "tech_stack": ["Kubernetes", "Volcano", "Ray", "Triton", "MLflow", "Argo Workflows", "GPU cluster (A100)"]
+        }
+      ],
+      "availability": "Open_for_offers",
+      "cultural_tags": ["Deep tech focus", "R&D", "Data-driven culture", "High-scale system"]
+    },
+    "private_data": {
+      "contact": {
+        "email": "nguyenxuantruong.ml@gmail.com",
+        "phone": "0972345678",
+        "github": "https://github.com/truong-ml-infra"
+      },
+      "salary_expectation": "USD 3,500 – 4,200/tháng. Phản ánh 5 năm kinh nghiệm Sea Group ecosystem và GPU cluster management expertise. Đặc biệt quan tâm đến role có ownership về ML platform architecture, không phải chỉ maintain existing tools.",
+      "project_technical_secrets": "Tại Shopee AI Lab, đã thiết kế và implement một hệ thống 'GPU Fractional Sharing' nội bộ bằng cách kết hợp NVIDIA MPS (Multi-Process Service) với custom Kubernetes device plugin, cho phép nhiều Triton inference servers chia sẻ cùng một A100 GPU theo spatial partitioning tùy chỉnh (không phải MIG cứng nhắc của NVIDIA). Kết quả: GPU utilization tăng từ 34% lên 71%, cost per inference giảm 52%. Toàn bộ implementation là Shopee internal IP. Ngoài ra, tại Garena trong thời kỳ COVID peak (2020-2021), phải xử lý matchmaking cho 12 triệu concurrent players tại SEA – đã phát triển một approximate nearest neighbor algorithm tùy chỉnh cho skill-based matching với latency constraint nghiêm ngặt 800ms, dùng locality-sensitive hashing kết hợp với geography-aware partitioning. Solution này không được public vì là core competitive advantage của Garena matchmaking.",
+      "interview_questions_history": [
+        {
+          "question": "Làm thế nào bạn optimize GPU utilization trong Kubernetes cluster cho ML inference workloads?",
+          "answer": "Multiple tiers: (1) Request/limit sizing đúng – dùng DCGM metrics để measure actual SM utilization, đừng over-provision. (2) Dynamic batching trong Triton – group requests trong time window để maximize batch size per forward pass. (3) Multi-model serving – pack nhiều small models lên cùng GPU với careful memory management. (4) Model parallelism cho very large models – tensor parallel cho inference. (5) Spot/preemptible instances cho batch inference, on-demand cho latency-sensitive. Tại Shopee: custom scheduler extender prioritize packing models với similar memory footprint lên cùng GPU trước khi dùng GPU mới.",
+          "org": "Shopee AI Lab (infrastructure review)"
+        },
+        {
+          "question": "Giải thích sự khác biệt giữa data parallelism và model parallelism trong distributed training.",
+          "answer": "Data parallelism: mỗi worker có full copy của model, xử lý different mini-batches, sync gradients qua all-reduce (NCCL). Scale tốt khi model fit trong single GPU memory. Model parallelism: model được chia across GPUs – tensor parallel (chia layers theo width, cần frequent all-reduce), pipeline parallel (chia theo depth, micro-batching để hide bubble). Trong practice: Megatron-LM kết hợp cả hai (3D parallelism = DP + TP + PP). Tại Shopee dùng DeepSpeed ZeRO-3 cho large model training – ZeRO shards optimizer states, gradients, và parameters across workers.",
+          "org": "Sea Group internal ML summit"
+        },
+        {
+          "question": "Bạn design credit scoring model deployment với strict latency SLA (p99 < 100ms) như thế nào?",
+          "answer": "Latency budget: model inference phải < 40ms để leave room cho network + data retrieval. Optimization stack: (1) Model quantization INT8 với calibration trên production data distribution; (2) ONNX export + TensorRT optimization cho inference; (3) Pre-compute và cache tất cả features có thể offline, chỉ compute realtime features tại serve time; (4) Warm model cache – không cold start; (5) Circuit breaker pattern: nếu ML service > 80ms, fallback về lightweight rule-based model. Monitor p50/p95/p99 latency separately – outliers ở p99 thường do GC pause hoặc cold feature cache miss.",
+          "org": "SeaMoney (credit product launch review)"
+        }
+      ],
+      "blacklist_orgs": ["Công ty không có GPU budget cho ML training", "Môi trường ML = chỉ fine-tune existing models không có platform engineering"],
+      "evidence_links": [
+        "https://medium.com/@truong-ml-infra/gpu-fractional-sharing-kubernetes-ml-serving",
+        "https://github.com/truong-ml-infra/volcano-gpu-scheduler-extension"
+      ]
+    }
+  },
+
+  {
+    "personnel_id": "P_024",
+    "public_data": {
+      "full_name": "Hoàng Thị Lan Chi",
+      "professional_summary": "Frontend và Edge Computing Engineer với 4 năm kinh nghiệm, đặc biệt quan tâm đến hiệu năng web và các nền tảng runtime mới. Bắt đầu sự nghiệp tại KMS Technology, sau đó join Sky Mavis (Axie Infinity) đúng giai đoạn Web3 gaming bùng nổ – cơ hội tiếp xúc với các yêu cầu hiệu năng cực đoan khi game có 2.5 triệu DAU và 8 triệu transactions/ngày. Tại Sky Mavis, làm việc chung với P012 (Hoàng Minh Khải) trong giai đoạn infrastructure hardening sau Ronin Bridge incident. Hiện tại làm remote contractor cho một startup EdTech Singapore, xây dựng browser-based interactive coding environment chạy các ngôn ngữ khác nhau hoàn toàn trong trình duyệt. Thành thạo React, TypeScript, và Web Performance APIs. Có kinh nghiệm thực chiến với WebAssembly: compile C/C++/Rust sang WASM với Emscripten và wasm-pack, optimize WASM module size và startup time. Hiểu sâu về browser rendering pipeline, V8 internals cơ bản, và Web Workers. Tìm kiếm vai trò Senior Frontend Engineer hoặc Platform Engineer tại công ty có performance culture thực sự.",
+      "education": [
+        {
+          "degree": "Cử nhân",
+          "school": "RMIT University Vietnam",
+          "major": "Software Engineering",
+          "year": "2020"
+        }
+      ],
+      "certificates": [
+        "Google Chrome DevRel Web Performance Badge",
+        "WebAssembly – The Definitive Guide (O'Reilly Learning Path)",
+        "AWS Certified Cloud Practitioner"
+      ],
+      "skills": [
+        "React 18 / Next.js 14 / TypeScript",
+        "WebAssembly (WASM): Emscripten, wasm-pack, WASI",
+        "Web Workers / SharedArrayBuffer / Atomics",
+        "Web Performance: Core Web Vitals, Performance Observer API, User Timing",
+        "V8 internals (basic): hidden classes, inline caching, JIT optimization hints",
+        "Rust (intermediate – cho WASM compilation target)",
+        "C/C++ (basic – đọc và compile sang WASM)",
+        "WebRTC / WebSocket / WebTransport",
+        "Canvas API / WebGL (basic 2D rendering)",
+        "Node.js / Deno / Bun (JS runtimes comparison)",
+        "Vite / Webpack / Rollup (bundler deep knowledge)",
+        "Docker / AWS (Lambda@Edge, CloudFront, S3)"
+      ],
+      "experience": [
+        {
+          "project_name": "Sky Mavis – Marketplace Frontend & Web3 Wallet Integration",
+          "role": "Frontend Engineer",
+          "tech_stack": ["React", "TypeScript", "ethers.js", "Web3.js", "WebSocket", "Next.js", "Redux Toolkit"]
+        },
+        {
+          "project_name": "Sky Mavis – NFT Rendering Performance Optimization",
+          "role": "Frontend Engineer",
+          "tech_stack": ["React", "WebGL", "Canvas API", "Web Workers", "TypeScript", "WebAssembly (Rust/wasm-pack)"]
+        },
+        {
+          "project_name": "EdTech Singapore – Browser-native Code Execution Engine",
+          "role": "Senior Frontend Engineer (Remote Contractor)",
+          "tech_stack": ["WebAssembly (WASI)", "Emscripten", "TypeScript", "Web Workers", "SharedArrayBuffer", "Vite"]
+        }
+      ],
+      "availability": "Immediate",
+      "cultural_tags": ["Startup", "Engineering excellence", "Remote-friendly", "Deep tech focus"]
+    },
+    "private_data": {
+      "contact": {
+        "email": "hoanglanchi.frontend@gmail.com",
+        "phone": "0983456789",
+        "github": "https://github.com/lanchi-wasm"
+      },
+      "salary_expectation": "USD 2,200 – 2,800/tháng. Thấp hơn market rate vì ưu tiên môi trường cho phép làm sâu về WASM và WebRuntime. Sẵn sàng trade lương để làm full-time trên browser runtime problems.",
+      "project_technical_secrets": "Tại dự án EdTech Singapore, đã xây dựng một 'sandboxed WASM runtime' hoàn toàn trong browser: compile Python interpreter (CPython 3.11) sang WebAssembly bằng Emscripten, chạy trong isolated Web Worker với custom memory allocator. WASM module được stream-loaded và cached trong IndexedDB, startup time từ cold = 1.8 giây, warm = 180ms. Quan trọng nhất: implement một virtualized filesystem trong WASM memory bằng cách port WASI filesystem interface, cho phép student code đọc/ghi files ảo mà không cần server round-trip. Codebase này hoàn toàn novel – không tìm thấy bất kỳ open-source implementation nào equivalent tại thời điểm xây dựng (2023). Một phần đã được contribute lên Pyodide project. Ngoài ra, tại Sky Mavis sau Ronin incident, được làm việc cùng P012 (Hoàng Minh Khải) trong quá trình migration sang Rust-based indexer – hiểu rõ security lessons từ incident đó.",
+      "interview_questions_history": [
+        {
+          "question": "Giải thích WebAssembly và tại sao nó quan trọng cho web performance.",
+          "answer": "WASM là binary instruction format cho stack-based virtual machine, chạy trong browser sandbox với near-native speed. Quan trọng vì: (1) Predictable performance – không có JIT deoptimization như JavaScript; (2) Language agnostic – compile từ C/C++/Rust/Go; (3) Memory model rõ ràng – linear memory, easier to reason about; (4) SIMD instructions support cho numerical workloads. Use cases: video codecs (libavcodec → WASM), physics engines, code interpreters, CAD tools trong browser. Không phải replacement cho JS – JS vẫn tốt hơn cho DOM manipulation và general app logic. WASM wins khi có heavy computation.",
+          "org": "Sky Mavis (tech talk)"
+        },
+        {
+          "question": "Bạn debug memory leak trong React app như thế nào khi Chrome DevTools chỉ show vague 'Detached nodes'?",
+          "answer": "Detached nodes = DOM nodes đã bị remove khỏi DOM nhưng vẫn được referenced trong JS. Debug: (1) Take heap snapshot trước và sau user action gây leak; (2) Chọn 'Objects allocated between snapshots'; (3) Tìm 'Detached HTMLElement'. Thường gặp: event listeners không remove khi component unmount, closures giữ reference đến DOM nodes, WeakRef không được dùng cho observer patterns. Trong React: useEffect cleanup function không remove event listeners, setInterval không clearInterval. Tại Sky Mavis tìm ra: WebSocket onmessage handler giữ reference đến entire React component tree qua closure.",
+          "org": "Sky Mavis (incident post-mortem)"
+        },
+        {
+          "question": "Web Workers và SharedArrayBuffer giải quyết vấn đề gì? Rủi ro security là gì?",
+          "answer": "Web Workers: JavaScript chạy song song trong separate thread, không block UI thread. SharedArrayBuffer: share memory giữa main thread và workers – zero-copy data sharing. Kết hợp: multi-threaded JavaScript với shared memory, critical cho WASM threading. Security risk: Spectre/Meltdown attacks sử dụng timing attacks qua SharedArrayBuffer. Browser response: require COOP/COEP headers (Cross-Origin-Opener-Policy, Cross-Origin-Embedder-Policy) để enable SharedArrayBuffer. Tại EdTech project: phải configure server headers carefully và educate hosting team về requirements.",
+          "org": "EdTech Singapore contractor onboarding"
+        }
+      ],
+      "blacklist_orgs": ["Công ty frontend chỉ làm landing pages và marketing sites", "Môi trường không care về bundle size hay performance metrics"],
+      "evidence_links": [
+        "https://dev.to/lanchi-wasm/cpython-wasm-browser-sandbox-edtech",
+        "https://github.com/lanchi-wasm/wasi-python-browser-runtime"
+      ]
+    }
+  },
+
+  {
+    "personnel_id": "P_025",
+    "public_data": {
+      "full_name": "Trần Thị Minh Phương",
+      "professional_summary": "Principal Engineer và Technical Fellow tại Microsoft Vietnam với 11 năm kinh nghiệm, chuyên sâu về distributed systems security, privacy-preserving computation, và cloud platform architecture. Là một trong số ít kỹ sư người Việt đạt cấp Principal Engineer (tương đương L7 tại Google, Staff+ tại Meta) tại một Big Tech company. Tại Microsoft, làm việc trong Azure Confidential Computing team và sau đó là Microsoft Research Collaboration (Asia Pacific) – nghiên cứu ứng dụng của Differential Privacy và Homomorphic Encryption cho real-world enterprise workloads. Đồng tác giả 3 patents liên quan đến privacy-preserving data analytics. Ngoài research track, có kinh nghiệm thực tiễn: từng dẫn dắt migration Azure Vietnam data center infrastructure (45 microservices, zero-downtime), và xây dựng Azure OpenAI Service regional endpoint cho Southeast Asia. Mentor cho 15+ engineers ở các mức L4–L6 tại Microsoft Vietnam. Tìm kiếm bước chuyển sang CTO, Chief Architect, hoặc Head of AI/Privacy Engineering tại một tổ chức có ambition về responsible AI và data privacy ở tầm chiến lược.",
+      "education": [
+        {
+          "degree": "Thạc sĩ Khoa học Máy tính",
+          "school": "Đại học Bách Khoa Hà Nội",
+          "major": "Hệ thống Thông tin Phân tán",
+          "year": "2015"
+        },
+        {
+          "degree": "Kỹ sư",
+          "school": "Đại học Bách Khoa Hà Nội",
+          "major": "Khoa học Máy tính",
+          "year": "2013"
+        }
+      ],
+      "certificates": [
+        "Microsoft Certified: Azure Solutions Architect Expert",
+        "IAPP Certified Information Privacy Professional/Europe (CIPP/E)",
+        "Google Cloud Professional Data Engineer"
+      ],
+      "skills": [
+        "Differential Privacy (Apple/Google DP libraries, Opacus/PyTorch DP, DP-SGD)",
+        "Homomorphic Encryption (Microsoft SEAL, CKKS scheme, BFV scheme)",
+        "Federated Learning (PySyft, TensorFlow Federated, FATE framework)",
+        "Secure Multi-Party Computation (basic: secret sharing schemes)",
+        "Azure (Confidential Computing: Azure Confidential VMs, Azure Attestation)",
+        "Azure (full stack: AKS, Cosmos DB, Azure OpenAI, Event Hub, Data Factory)",
+        "C# / .NET (primary language tại Microsoft)",
+        "Python (ML/Research track: PyTorch, Opacus, SEAL-Python)",
+        "Go / Java (distributed systems projects)",
+        "Kubernetes (AKS, GKE – architecture level)",
+        "Privacy regulations: GDPR, PDPA (Thailand/Vietnam), CCPA implementation",
+        "Threat modeling: STRIDE, LINDDUN (privacy-specific threat modeling)"
+      ],
+      "experience": [
+        {
+          "project_name": "Microsoft Azure – Confidential Computing Platform (SEA Region)",
+          "role": "Principal Software Engineer",
+          "tech_stack": ["C#/.NET", "Azure Confidential VMs", "Intel TDX/SGX", "Azure Attestation", "Go", "Kubernetes"]
+        },
+        {
+          "project_name": "Microsoft Research – Differential Privacy Enterprise Analytics",
+          "role": "Principal Engineer / Research Collaborator",
+          "tech_stack": ["Python", "Opacus", "Microsoft SEAL", "Azure Synapse", "C#/.NET", "PyTorch"]
+        },
+        {
+          "project_name": "Microsoft Vietnam – Azure OpenAI SEA Regional Endpoint",
+          "role": "Technical Lead / Principal Engineer",
+          "tech_stack": ["Azure OpenAI Service", "C#/.NET", "AKS", "Azure API Management", "Cosmos DB", "Terraform"]
+        }
+      ],
+      "availability": "Open_for_offers",
+      "cultural_tags": ["Engineering excellence", "Academic mindset", "R&D", "Responsible AI", "ISO process"]
+    },
+    "private_data": {
+      "contact": {
+        "email": "tranminhphuong.principal@gmail.com",
+        "phone": "0915678901",
+        "github": "https://github.com/minhphuong-principal"
+      },
+      "salary_expectation": "USD 5,500 – 6,500/tháng cho IC role (Principal/Technical Fellow). USD 6,000 – 7,000 cho CTO/Chief Architect với equity tối thiểu 0.8% tại Series B+. Mức lương phản ánh Microsoft Principal Engineer benchmark và patent authorship. Không xem xét offer dưới USD 5,000.",
+      "project_technical_secrets": "Trong quá trình nghiên cứu tại Microsoft Research Asia Pacific, đã phát triển một kỹ thuật kết hợp Differential Privacy với Homomorphic Encryption để cho phép analytics trên encrypted federated data mà cả data owner lẫn compute provider đều không thể xem raw data – gọi là 'doubly-blind analytics'. Proof-of-concept chạy trên Azure Confidential VMs với Intel TDX attestation. Kỹ thuật này đang trong quá trình patent filing (patent #3 pending), không được discuss chi tiết nhưng có thể describe high-level approach. Đây là một trong những ứng dụng thực tế nhất của Privacy-Enhancing Technologies (PETs) tại Đông Nam Á. Ngoài ra, là người duy nhất tại Vietnam biết rõ roadmap và internal architecture của Azure OpenAI Service cho SEA region trong 18 tháng tới (Microsoft NDA cứng nhắc).",
+      "interview_questions_history": [
+        {
+          "question": "Giải thích Differential Privacy ở mức intuitive. Tại sao epsilon-DP guarantee quan trọng?",
+          "answer": "Intuition: hãy tưởng tượng bạn trả lời survey nhạy cảm nhưng trước khi gửi, bạn tung đồng xu và đôi khi trả lời ngẫu nhiên. Analyst nhận được answers nhiễu nhưng vẫn compute statistics chính xác trên aggregate. Differential Privacy formalize điều này: output distribution của algorithm thay đổi không đáng kể (bounded by epsilon) khi thêm/xóa bất kỳ một record. Epsilon nhỏ = more privacy = more noise = less utility. Trade-off quan trọng: Apple dùng local DP epsilon=2 cho keyboard prediction, US Census dùng global DP epsilon=12.2 cho 2020 Census. Ứng dụng real-world: DP-SGD training model với gradient clipping + noise injection.",
+          "org": "Microsoft Research (paper presentation)"
+        },
+        {
+          "question": "Federated Learning giải quyết privacy vấn đề gì mà tập trung data lại không làm được?",
+          "answer": "FL: model được train locally trên từng device/institution, chỉ gradients (hoặc model updates) được share – raw data không rời thiết bị. Phù hợp với: healthcare (patient records không được share), fintech (giao dịch không được cross-institution), mobile keyboard (typing patterns private). Vấn đề FL không giải quyết được: gradient inversion attacks (có thể reconstruct training data từ gradients), model inversion (query model để leak training data). Giải pháp: kết hợp FL với Secure Aggregation (gradients encrypted trước khi aggregate) và Differential Privacy (add noise vào gradients). Tại Microsoft dùng FL + SEAL-based secure aggregation cho healthcare analytics.",
+          "org": "Microsoft Vietnam (enterprise client privacy workshop)"
+        },
+        {
+          "question": "Khi nào bạn dùng Homomorphic Encryption thay vì Secure Multi-Party Computation?",
+          "answer": "HE (Homomorphic Encryption): one party compute trên encrypted data của party khác mà không decrypt. Overhead lớn: CKKS scheme ~1000-10000x slower than plaintext. Phù hợp: cloud compute trên sensitive data khi không muốn cloud provider xem data, batch evaluation của ML model inference. SMPC: multiple parties jointly compute function mà không reveal input của nhau. Communication-heavy nhưng better suited cho interactive protocols. Rule of thumb: HE cho compute-heavy, non-interactive scenarios (model inference). SMPC cho multi-party agreement scenarios (secure auctions, joint statistics). Trong practice: hybrid – SMPC cho key exchange, HE cho actual computation.",
+          "org": "Microsoft Research Asia Pacific (joint workshop với NTU Singapore)"
+        }
+      ],
+      "blacklist_orgs": ["Tổ chức treat 'AI Ethics' và 'Privacy' như PR marketing không có technical depth", "Công ty không có budget để implement proper privacy-preserving infrastructure"],
+      "evidence_links": [
+        "https://www.microsoft.com/research/publication/placeholder-minhphuong-dp-he-2024",
+        "https://github.com/minhphuong-principal/differential-privacy-enterprise-patterns"
+      ]
+    }
+  }
+]

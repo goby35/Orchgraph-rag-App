@@ -1,0 +1,1500 @@
+[
+  {
+    "personnel_id": "P_031",
+    "public_data": {
+      "full_name": "Nguyễn Hoàng Nam",
+      "professional_summary": "Blockchain và Web3 Backend Engineer với 4 năm kinh nghiệm, bắt đầu tại Sea Group rồi chuyển sang Binance Vietnam trong giai đoạn xây dựng regional trading infrastructure. Tại Sea Group, xây dựng internal wallet và on-chain settlement layer cho SeaMoney's blockchain pilot. Tại Binance, tham gia team xây dựng P2P trading engine và KYC/AML compliance pipeline cho thị trường SEA. Thành thạo Golang và Solidity, nắm vững EVM internals, gas optimization, và smart contract security audit. Có kiến thức sâu về Layer 2 scaling solutions: Optimistic Rollup, ZK-Rollup, và state channel patterns. Ngoài Web3, background distributed systems vững chắc: đã thiết kế event-sourced ledger chịu tải 500k transactions/ngày với strong consistency. Đang nghiên cứu Zero-Knowledge Proofs ứng dụng vào privacy-preserving credential verification. Tìm kiếm role Blockchain Architect hoặc Web3 Infrastructure Lead.",
+      "education": [
+        { "degree": "Kỹ sư", "school": "Đại học Bách Khoa Hà Nội", "major": "Khoa học Máy tính", "year": "2020" }
+      ],
+      "certificates": [
+        "Ethereum Blockchain Developer Bootcamp – Udemy (Moralis certified)",
+        "AWS Certified Developer – Associate",
+        "Certified Blockchain Developer – Blockchain Council"
+      ],
+      "skills": [
+        "Go (production blockchain backends)",
+        "Solidity / Vyper (smart contracts, gas optimization)",
+        "EVM internals (opcode analysis, assembly debugging)",
+        "Layer 2: Optimistic Rollup, ZK-Rollup (Circom/snarkjs basics)",
+        "Zero-Knowledge Proofs: zk-SNARKs, Groth16, PLONK (research level)",
+        "Web3 libraries: ethers.js, web3.js, viem",
+        "Apache Kafka (on-chain event streaming)",
+        "PostgreSQL / Redis (off-chain state management)",
+        "AWS EKS / Kubernetes",
+        "Hardhat / Foundry (smart contract testing framework)",
+        "The Graph Protocol (on-chain data indexing)",
+        "gRPC / REST (blockchain API design)"
+      ],
+      "experience": [
+        {
+          "project_name": "Sea Group (SeaMoney) – Blockchain Pilot: On-chain Settlement Layer",
+          "role": "Blockchain Engineer",
+          "tech_stack": ["Go", "Solidity", "Ethereum", "PostgreSQL", "Kafka", "AWS EKS"]
+        },
+        {
+          "project_name": "Binance Vietnam – P2P Trading Engine & AML Compliance Pipeline",
+          "role": "Senior Backend Engineer (Blockchain)",
+          "tech_stack": ["Go", "Kafka", "PostgreSQL", "Redis", "Kubernetes", "Chainanalysis API integration"]
+        },
+        {
+          "project_name": "Binance Vietnam – KYC/KYB Verification System SEA",
+          "role": "Backend Engineer",
+          "tech_stack": ["Go", "gRPC", "PostgreSQL", "AWS Lambda", "Redis", "Jumio SDK integration"]
+        }
+      ],
+      "availability": "Open_for_offers",
+      "cultural_tags": ["Web3 / Blockchain", "Deep tech focus", "Startup energy in big corp", "R&D"]
+    },
+    "private_data": {
+      "contact": {
+        "email": "nguyenhoangnam.web3@gmail.com",
+        "phone": "0967891234",
+        "github": "https://github.com/hoangnam-web3"
+      },
+      "salary_expectation": "USD 3,000 – 3,600/tháng. Ưu tiên môi trường có on-chain components thực sự, không phải 'blockchain washing'.",
+      "project_technical_secrets": "Đang tự nghiên cứu chuyên sâu về Zero-Knowledge Proofs ứng dụng thực tế: đã implement một proof-of-concept 'ZK Credential Verifier' bằng Circom + snarkjs, cho phép user prove họ thỏa mãn một điều kiện (ví dụ: tuổi > 18, số dư > X) mà không reveal giá trị thực. Circuit được optimize để proof generation time < 800ms trên browser bằng WebAssembly. Đây là kỹ thuật mà hầu hết blockchain developers Việt Nam biết tên nhưng chưa ai implement từ đầu được. Code đang trong private repo, chưa public. Tại Binance, biết rõ internal architecture của P2P matching engine và AML pattern detection rules cho SEA region (Binance confidential).",
+      "interview_questions_history": [
+        {
+          "question": "Giải thích sự khác biệt giữa Optimistic Rollup và ZK-Rollup.",
+          "answer": "Optimistic Rollup: assume transactions valid, fraud provers có 7 ngày để challenge. Rút tiền chậm (7 ngày withdrawal period). EVM compatible dễ (Arbitrum, Optimism). ZK-Rollup: generate cryptographic proof ngay lập tức, verification on L1 nhanh, withdrawal instant. Harder to implement EVM compatibility do proof system constraints – StarkNet dùng Cairo VM riêng. ZK-Rollup theoretically more secure và faster finality. Practical tradeoff: Optimistic Rollup dễ deploy existing Solidity code, ZK-Rollup cần zkEVM (Polygon zkEVM, zkSync Era).",
+          "org": "Binance Vietnam (technical interview)"
+        },
+        {
+          "question": "Làm thế nào bạn prevent reentrancy attack trong smart contract?",
+          "answer": "Reentrancy: external call trước khi update state → attacker contract re-enter function trước khi balance được set về 0. Fixes: (1) Checks-Effects-Interactions pattern: update state TRƯỚC khi external call; (2) ReentrancyGuard (OpenZeppelin mutex); (3) Pull payment pattern thay push. Ví dụ classic: DAO hack 2016. Modern Solidity: dùng `.call()` thay `.transfer()` – nhưng `.call()` không limit gas, phải cẩn thận hơn về reentrancy. Best practice: combine CEI pattern + ReentrancyGuard.",
+          "org": "Binance Vietnam (smart contract security review)"
+        }
+      ],
+      "blacklist_orgs": ["Công ty gọi là 'blockchain' nhưng chỉ là database với fancy name", "Exchange không có proper AML/KYC pipeline"],
+      "evidence_links": [
+        "https://github.com/hoangnam-web3/zk-credential-verifier-circom",
+        "https://medium.com/@hoangnam-web3/zkp-browser-implementation-vietnamese"
+      ]
+    }
+  },
+
+  {
+    "personnel_id": "P_032",
+    "public_data": {
+      "full_name": "Đỗ Thị Hà Linh",
+      "professional_summary": "Cloud Platform Engineer và Infrastructure Automation Specialist với 5 năm kinh nghiệm, đi qua cả hai thế giới – FPT Software (enterprise consulting) và Viettel Cloud (telco cloud infrastructure). Tại FPT Software, xây dựng hybrid cloud landing zones cho các enterprise clients ngân hàng và bảo hiểm. Tại Viettel Cloud, là kỹ sư nòng cốt trong team Platform Engineering, phụ trách automation toàn bộ lifecycle của Viettel Cloud virtual machines trên nền OpenStack và Kubernetes. Đây là môi trường đặc thù: phải build trên top của OpenStack self-hosted thay vì AWS/GCP, đòi hỏi hiểu sâu về virtualization layer. Thành thạo Ansible, Terraform, và Python trong việc orchestrate infrastructure tự động. Có kinh nghiệm với Ceph distributed storage, DPDK-based networking, và SR-IOV cho VM networking performance. Tìm kiếm role Platform Engineer hoặc Cloud Infrastructure Lead.",
+      "education": [
+        { "degree": "Kỹ sư", "school": "Đại học FPT", "major": "Kỹ thuật Phần mềm", "year": "2019" }
+      ],
+      "certificates": [
+        "Red Hat Certified Engineer (RHCE)",
+        "Certified OpenStack Administrator (COA)",
+        "AWS Certified Solutions Architect – Associate"
+      ],
+      "skills": [
+        "OpenStack (Nova, Neutron, Cinder, Glance – operator level)",
+        "Kubernetes (Kubespray on-prem, Rancher, Helm)",
+        "Terraform / Ansible / AWX (infrastructure automation)",
+        "Ceph (RBD block storage, CephFS, RADOS object store)",
+        "DPDK / SR-IOV (high-performance VM networking)",
+        "Python (OpenStack SDK, automation scripts)",
+        "Linux (KVM/QEMU virtualization, networking namespaces)",
+        "Prometheus / Grafana / Elasticsearch (platform monitoring)",
+        "CI/CD: GitHub Actions / GitLab CI / Jenkins",
+        "AWS (EC2, VPC, EKS – consulting context)",
+        "Vault (secrets management)",
+        "Bash scripting (operations automation)"
+      ],
+      "experience": [
+        {
+          "project_name": "Viettel Cloud – OpenStack Platform Engineering & Automation",
+          "role": "Platform Engineer",
+          "tech_stack": ["OpenStack", "Ansible", "Terraform", "Ceph", "Python", "Kubernetes (Kubespray)", "Prometheus"]
+        },
+        {
+          "project_name": "FPT Software – Hybrid Cloud Landing Zone (Banking Client)",
+          "role": "Cloud Engineer",
+          "tech_stack": ["AWS", "Azure", "Terraform", "Ansible", "Kubernetes", "Vault", "GitLab CI"]
+        },
+        {
+          "project_name": "Viettel Cloud – VM Networking Performance Optimization (DPDK)",
+          "role": "Platform Engineer",
+          "tech_stack": ["DPDK", "SR-IOV", "Open vSwitch", "Linux networking", "Python", "Ansible"]
+        }
+      ],
+      "availability": "1_month_notice",
+      "cultural_tags": ["Platform engineering", "Telco infrastructure", "Engineering excellence", "ISO process"]
+    },
+    "private_data": {
+      "contact": {
+        "email": "dohalink.cloud@gmail.com",
+        "phone": "0921098765",
+        "github": "https://github.com/halink-openstack"
+      },
+      "salary_expectation": "45,000,000 – 55,000,000 VNĐ/tháng. Ưu tiên môi trường có on-prem infrastructure challenges, không chỉ click AWS console.",
+      "project_technical_secrets": "Tại Viettel Cloud, đã viết một custom Nova scheduler filter bằng Python để tối ưu VM placement dựa trên NUMA topology awareness – đảm bảo VM sử dụng CPU cores và memory từ cùng NUMA node để tránh remote memory access penalty. Filter này tăng performance của latency-sensitive VMs (banking clients) lên 23% mà không cần hardware upgrade. Code chưa được contribute upstream vì chứa Viettel-specific capacity planning logic. Ngoài ra, đã phát hiện một race condition trong Neutron DHCP agent khi concurrent VM creation rate cao (>500 VMs/phút) – submitted bug report lên OpenStack community và đang được review.",
+      "interview_questions_history": [
+        {
+          "question": "Giải thích sự khác biệt giữa SR-IOV và DPDK cho VM networking performance.",
+          "answer": "SR-IOV: hardware-based, NIC tạo virtual functions (VFs) được assign trực tiếp cho VMs, bypass hypervisor network stack hoàn toàn. Latency rất thấp nhưng live migration khó (VM bind cứng với physical NIC). DPDK: software-based, poll-mode drivers bypass kernel network stack, xử lý packets trong userspace. Flexible hơn, support live migration, nhưng cần dedicated CPU cores cho PMD (Poll Mode Driver). Tại Viettel dùng DPDK + OvS-DPDK cho tenant networking, SR-IOV cho bare-metal-like performance VMs của banking clients.",
+          "org": "Viettel Cloud (architecture review)"
+        },
+        {
+          "question": "Tại sao Ceph OSD rebalance gây performance degradation và bạn mitigate như thế nào?",
+          "answer": "Khi add/remove OSD, Ceph recalculate CRUSH map và migrate PGs (Placement Groups) để rebalance. Migration I/O cạnh tranh với client I/O. Mitigation: (1) tune osd_max_backfills và osd_recovery_max_active để throttle recovery; (2) Set recovery priority thấp hơn client I/O (osd_recovery_op_priority); (3) Add OSDs trong maintenance window, từng node một thay vì bulk; (4) Monitor via Ceph dashboard, pause recovery nếu client latency vượt SLA. Tại Viettel: standard procedure khi add OSD là throttle recovery đến 30% capacity và schedule trong off-peak hours (2-5AM).",
+          "org": "Viettel Cloud (runbook documentation)"
+        }
+      ],
+      "blacklist_orgs": ["Pure AWS/Azure shop không có on-prem hoặc hybrid challenges", "Công ty outsourcing chỉ manage existing infrastructure không build mới"],
+      "evidence_links": [
+        "https://blog.halink-openstack.dev/nova-numa-aware-scheduler-filter",
+        "https://github.com/halink-openstack/openstack-automation-ansible"
+      ]
+    }
+  },
+
+  {
+    "personnel_id": "P_033",
+    "public_data": {
+      "full_name": "Bùi Minh Tuấn",
+      "professional_summary": "Senior Data Engineer với 4 năm kinh nghiệm trong hệ sinh thái Sea Group, bắt đầu tại Garena rồi chuyển sang Shopee Data Platform team. Tại Garena, làm việc trong team của P023 (Nguyễn Xuân Trường) trên game analytics pipeline phục vụ Free Fire – xây dựng real-time event ingestion từ 80 triệu devices, chạy qua Kafka vào data lake trên AWS S3. Tại Shopee, thiết kế và vận hành data mesh architecture: mỗi domain team tự sở hữu data products của mình, với central platform team chỉ provide shared tooling và governance. Thành thạo Apache Spark, dbt, và Airflow. Đặc biệt quan tâm đến data quality và data contracts: implement Great Expectations với custom expectation suites cho 500+ datasets. Tìm kiếm role Senior/Staff Data Engineer tại product company có data platform trưởng thành.",
+      "education": [
+        { "degree": "Kỹ sư", "school": "Đại học Bách Khoa TP.HCM", "major": "Công nghệ Thông tin", "year": "2020" }
+      ],
+      "certificates": [
+        "AWS Certified Data Analytics – Specialty",
+        "dbt Certified Developer",
+        "Apache Spark Developer Certification – Databricks"
+      ],
+      "skills": [
+        "Apache Spark (PySpark, Scala Spark – advanced)",
+        "dbt Core / dbt Cloud (macros, tests, packages)",
+        "Apache Kafka / Kafka Streams",
+        "Apache Airflow (custom operators, sensors)",
+        "AWS (S3, Glue, Athena, EMR, Lake Formation, Kinesis)",
+        "ClickHouse (analytics queries, MergeTree optimization)",
+        "Great Expectations (custom expectation suites, data docs)",
+        "Delta Lake / Apache Iceberg (table formats)",
+        "Python (pandas, PyArrow, data quality tooling)",
+        "SQL (Hive, SparkSQL, Athena – advanced)",
+        "Terraform (data infrastructure)",
+        "Prometheus (custom pipeline metrics)"
+      ],
+      "experience": [
+        {
+          "project_name": "Garena – Free Fire Game Analytics Real-time Ingestion Pipeline",
+          "role": "Data Engineer",
+          "tech_stack": ["Kafka", "PySpark", "AWS S3", "Kinesis", "Airflow", "ClickHouse"]
+        },
+        {
+          "project_name": "Shopee – Data Mesh Platform & Domain Data Products",
+          "role": "Senior Data Engineer",
+          "tech_stack": ["PySpark", "dbt", "Airflow", "Delta Lake", "AWS Glue", "Great Expectations", "Terraform"]
+        },
+        {
+          "project_name": "Shopee – Data Contracts & Quality Framework",
+          "role": "Senior Data Engineer",
+          "tech_stack": ["Great Expectations", "dbt tests", "Python", "Prometheus", "Grafana", "Slack alerting"]
+        }
+      ],
+      "availability": "Open_for_offers",
+      "cultural_tags": ["Data-driven culture", "Product company", "High-scale system", "Engineering excellence"]
+    },
+    "private_data": {
+      "contact": {
+        "email": "buiminhtuan.data@gmail.com",
+        "phone": "0932109876",
+        "github": "https://github.com/tuanbui-data"
+      },
+      "salary_expectation": "USD 2,600 – 3,000/tháng. Phản ánh 4 năm Sea Group experience. Ưu tiên công ty có data mesh hoặc data product mindset.",
+      "project_technical_secrets": "Tại Shopee, đã phát hiện một vấn đề nghiêm trọng trong Delta Lake compaction strategy của platform: auto-compaction chạy trùng với peak Spark job windows gây resource contention, dẫn đến job failure rate tăng 3x vào thứ Hai hàng tuần (batch jobs lớn nhất). Fix: implement custom compaction scheduler aware of job priority queue, chỉ trigger compaction khi cluster utilization < 40%. Giải pháp giảm failure rate về baseline. Ngoài ra, tại Garena biết rõ event schema của Free Fire real-time telemetry – thông tin về player behavior patterns có giá trị cạnh tranh cao.",
+      "interview_questions_history": [
+        {
+          "question": "Giải thích Data Mesh và tại sao nó khác với centralized Data Warehouse.",
+          "answer": "Data Mesh: domain ownership – team product tự manage data của domain mình như một 'data product' với SLA, documentation, quality metrics riêng. Central platform chỉ provide shared infrastructure và governance. Vs centralized DWH: một team central engineer mọi thứ → bottleneck, context switching, slow. Data Mesh giải quyết scalability của data ownership, không phải technical architecture. Challenges: data product quality varies, cross-domain joins phức tạp hơn. Tại Shopee implement partial data mesh: 8 domains tự manage, central platform team provide dbt packages, Great Expectations suites, và data catalog.",
+          "org": "Shopee (data platform architecture review)"
+        },
+        {
+          "question": "Delta Lake vs Apache Iceberg – bạn chọn cái nào và tại sao?",
+          "answer": "Delta Lake: tích hợp tốt với Databricks/Spark ecosystem, ACID transactions, time travel mạnh, OPTIMIZE command built-in. Iceberg: engine-agnostic (Spark, Flink, Trino, Hive), partition evolution không cần rewrite, hidden partitioning. Chọn Delta Lake nếu: primary engine là Spark/Databricks, cần ecosystem support mạnh. Chọn Iceberg nếu: multi-engine (Flink streaming + Trino ad-hoc trên cùng table), cần partition evolution flexibility. Tại Shopee dùng Delta Lake vì EMR/Spark primary, nhưng đang evaluate migrate sang Iceberg để enable Flink streaming writes.",
+          "org": "Shopee (data platform technology selection)"
+        }
+      ],
+      "blacklist_orgs": ["Công ty data team chỉ làm ad-hoc SQL queries không có pipeline engineering", "Nơi data quality không được coi là engineering responsibility"],
+      "evidence_links": [
+        "https://medium.com/@tuanbui-data/data-mesh-shopee-implementation-lessons",
+        "https://github.com/tuanbui-data/delta-lake-compaction-scheduler"
+      ]
+    }
+  },
+
+  {
+    "personnel_id": "P_034",
+    "public_data": {
+      "full_name": "Nguyễn Thị Bảo Ngân",
+      "professional_summary": "Senior Mobile Engineer (Flutter / Cross-platform) với 4 năm kinh nghiệm, từ Sendo (sàn thương mại điện tử) đến Shopee Vietnam. Là một trong số ít engineers Việt Nam có kinh nghiệm production Flutter ở quy mô lớn – Sendo là một trong những ứng dụng thương mại điện tử đầu tiên tại Việt Nam migrate toàn bộ từ native sang Flutter. Tại Shopee, phụ trách Flutter architecture cho Shopee app phiên bản thị trường VN. Thành thạo Flutter performance profiling: DevTools, frame rendering timeline, shader compilation jank. Có kinh nghiệm viết Flutter plugins bằng Kotlin và Swift để tích hợp các native SDK (payment, biometrics, camera). Hiểu sâu về Dart isolates, async/await patterns, và Flutter rendering pipeline (layout, paint, composite). Tìm kiếm role Flutter Lead hoặc Mobile Architect tại product company.",
+      "education": [
+        { "degree": "Kỹ sư", "school": "Đại học Bách Khoa TP.HCM", "major": "Kỹ thuật Máy tính", "year": "2020" }
+      ],
+      "certificates": [
+        "Google Flutter Certified Developer",
+        "AWS Certified Developer – Associate",
+        "Dart Language Certification – Dart.dev"
+      ],
+      "skills": [
+        "Flutter (production: performance, custom render objects, platform channels)",
+        "Dart (advanced: isolates, streams, generators, FFI)",
+        "Flutter plugins (Kotlin bridge / Swift bridge cho native features)",
+        "State management: Riverpod / BLoC / Cubit",
+        "Flutter DevTools (performance profiling, memory analysis)",
+        "Firebase (Crashlytics, Remote Config, A/B Testing, App Distribution)",
+        "Fastlane / Bitrise / Shorebird (Flutter code push)",
+        "REST / gRPC (Dart client)",
+        "SQLite / Hive / Drift (local storage)",
+        "Kotlin (Android native, Flutter plugin development)",
+        "Swift (iOS native, Flutter plugin development)",
+        "Figma / Zeplin (design handoff)"
+      ],
+      "experience": [
+        {
+          "project_name": "Sendo – Flutter Migration từ Native iOS/Android",
+          "role": "Mobile Engineer → Senior Mobile Engineer",
+          "tech_stack": ["Flutter", "Dart", "BLoC", "Kotlin/Swift bridges", "Firebase", "Fastlane"]
+        },
+        {
+          "project_name": "Shopee VN – Flutter App Architecture & Performance",
+          "role": "Senior Flutter Engineer",
+          "tech_stack": ["Flutter", "Riverpod", "Dart isolates", "Firebase", "gRPC-Dart", "Shorebird"]
+        },
+        {
+          "project_name": "Sendo – Flutter Payment SDK Integration",
+          "role": "Mobile Engineer",
+          "tech_stack": ["Flutter", "Platform channels", "VNPay SDK", "Kotlin", "Swift", "SecureStorage"]
+        }
+      ],
+      "availability": "Open_for_offers",
+      "cultural_tags": ["Product-first", "Performance obsessed", "Agile / Scrum", "User-centric design"]
+    },
+    "private_data": {
+      "contact": {
+        "email": "nguyenbaongan.flutter@gmail.com",
+        "phone": "0916789012",
+        "github": "https://github.com/baongan-flutter"
+      },
+      "salary_expectation": "48,000,000 – 58,000,000 VNĐ/tháng. Phản ánh Flutter production expertise hiếm tại VN. Không xem xét role React Native – committed Flutter path.",
+      "project_technical_secrets": "Tại Sendo, đã nghiên cứu và fix một vấn đề shader compilation jank cực kỳ phổ biến với Flutter: lần đầu tiên animation phức tạp chạy, Flutter compile GLSL shader realtime gây freeze 200-400ms. Fix: implement SkSL (Skia Shader Language) shader warm-up bằng cách record shader cache trong CI/CD test runs và bundle vào app release. Kết quả: first-run animation jank giảm 95%. Đây là kỹ thuật ít được document chính thức và hầu hết Flutter teams VN chưa biết. Ngoài ra, đã viết một custom RenderObject cho Shopee product card với 50+ properties – bypass hoàn toàn Flutter widget tree để đạt được consistent 60fps ngay cả khi scroll list 1000 items.",
+      "interview_questions_history": [
+        {
+          "question": "Giải thích Flutter rendering pipeline. Tại sao 'everything is a widget' nhưng rendering không phải?",
+          "answer": "3 trees: Widget tree (immutable description, rebuilt frequently), Element tree (mutable bridge, reconciles widget changes), RenderObject tree (actual layout and paint, expensive to rebuild). Widget rebuild không tốn kém vì chỉ là Dart object creation. Element tree reconciliation là Diffing algorithm như React. RenderObject chỉ rebuild khi layout/paint thực sự thay đổi. Performance tip: const constructors cho widgets không thay đổi, RepaintBoundary để isolate repaint regions. Jank thường xảy ra khi expensive work trên UI thread – move sang Dart Isolate.",
+          "org": "Shopee Vietnam (Flutter architecture review)"
+        },
+        {
+          "question": "Khi nào bạn dùng Dart isolates và tại sao chúng khác với threads?",
+          "answer": "Dart isolates: không share memory (unlike threads), communicate qua message passing (SendPort/ReceivePort). Không có data race by design. Dùng khi: CPU-intensive work muốn không block UI thread (JSON decode lớn, image processing, encryption). Khác threads: mỗi isolate có heap riêng, GC riêng – no shared state, no mutex needed. Flutter compute() là convenience wrapper spawn + send + receive. Limitation: không thể pass non-primitive objects cross-isolate (phải serialize). Tại Sendo: dùng isolate cho product catalog JSON parsing (2MB+ responses) để giữ UI thread free.",
+          "org": "Sendo (mobile performance workshop)"
+        }
+      ],
+      "blacklist_orgs": ["Công ty muốn Flutter developer nhưng trả lương native junior", "Nơi vẫn đang debate Flutter vs React Native không có technical criteria"],
+      "evidence_links": [
+        "https://medium.com/@baongan-flutter/sksl-warmup-flutter-jank-production-fix",
+        "https://github.com/baongan-flutter/flutter-custom-renderobject-examples"
+      ]
+    }
+  },
+
+  {
+    "personnel_id": "P_035",
+    "public_data": {
+      "full_name": "Lê Văn Dũng",
+      "professional_summary": "Site Reliability Engineer với 6 năm kinh nghiệm tại Viettel và AWS Vietnam, chuyên về large-scale infrastructure reliability cho telco và enterprise workloads. Tại Viettel, là SRE đầu tiên của Viettel Digital Division – xây dựng toàn bộ observability stack, incident management process, và capacity planning framework từ đầu cho hệ thống phục vụ 90 triệu thuê bao. Sau đó join AWS Vietnam làm Technical Account Manager kiêm SRE Advisor cho enterprise clients, giúp thiết kế well-architected workloads và implement SRE practices. Thành thạo toàn bộ observability stack: custom Prometheus exporters cho telco metrics, Grafana với complex PromQL queries, distributed tracing với Jaeger/Tempo. Có kinh nghiệm thực chiến về capacity planning cho hệ thống telco scale: 90 triệu subscribers với peak traffic gấp 8x average vào ngày lễ. Tìm kiếm role Staff SRE hoặc Head of Reliability Engineering.",
+      "education": [
+        { "degree": "Kỹ sư", "school": "Đại học Bách Khoa Hà Nội", "major": "Hệ thống Thông tin", "year": "2018" }
+      ],
+      "certificates": [
+        "AWS Certified DevOps Engineer – Professional",
+        "Google Cloud Professional Cloud DevOps Engineer",
+        "Certified Kubernetes Administrator (CKA)"
+      ],
+      "skills": [
+        "Kubernetes (EKS, GKE, on-prem với Kubespray)",
+        "Prometheus / Grafana / Loki / Tempo / Jaeger",
+        "OpenTelemetry (instrumentation, collector pipeline)",
+        "AWS (full SA-level + SRE specifics: Route53, ELB, Auto Scaling, CloudWatch)",
+        "Terraform / Ansible (infra automation at scale)",
+        "Python / Go / Bash (SRE tooling)",
+        "Capacity planning: traffic modeling, regression forecasting",
+        "Incident management: ICS framework, on-call rotation design",
+        "SLO/SLI design và error budget calculation",
+        "Linux performance (perf, strace, eBPF tools – observability use case)",
+        "PagerDuty / Opsgenie / VictorOps",
+        "PostgreSQL / Redis operations (backup, replication, performance)"
+      ],
+      "experience": [
+        {
+          "project_name": "Viettel Digital Division – SRE Foundation (90M subscribers)",
+          "role": "SRE (First hire, tech lead)",
+          "tech_stack": ["Prometheus", "Grafana", "Kubernetes", "Ansible", "Python", "OpenTelemetry", "PagerDuty"]
+        },
+        {
+          "project_name": "AWS Vietnam – Enterprise SRE Advisory (10+ clients)",
+          "role": "Technical Account Manager / SRE Advisor",
+          "tech_stack": ["AWS (all services)", "Terraform", "Well-Architected Framework", "CloudWatch", "Datadog"]
+        },
+        {
+          "project_name": "Viettel – Peak Traffic Capacity Planning Framework",
+          "role": "SRE Lead",
+          "tech_stack": ["Python (forecasting)", "Prometheus", "AWS Forecast", "Terraform", "Grafana"]
+        }
+      ],
+      "availability": "1_month_notice",
+      "cultural_tags": ["SRE culture", "Blameless post-mortems", "Telco infrastructure", "On-call maturity"]
+    },
+    "private_data": {
+      "contact": {
+        "email": "levandung.sre@gmail.com",
+        "phone": "0943210987",
+        "github": "https://github.com/dungvd-sre"
+      },
+      "salary_expectation": "USD 3,500 – 4,000/tháng. Phản ánh 6 năm kinh nghiệm và AWS Advisory background. Không thương lượng dưới USD 3,000.",
+      "project_technical_secrets": "Tại Viettel, trong sự kiện Tết Nguyên Đán (traffic spike 800% trong 30 phút), đã thiết kế và vận hành toàn bộ war room protocol: pre-scaling playbook tự động trigger 2 giờ trước midnight, gradual load shedding plan nếu capacity bị vượt, và tự động rollback mechanism. Năm 2023, protocol này lần đầu tiên hoạt động hoàn toàn không cần manual intervention – hệ thống tự scale, xử lý peak, và scale down. Toàn bộ runbook này là Viettel confidential. Ngoài ra, tại AWS Vietnam, biết rõ chi tiết architecture và SLA commitments của 5 large banking clients – thông tin NDA nghiêm ngặt.",
+      "interview_questions_history": [
+        {
+          "question": "Làm thế nào bạn design SLO cho một service bạn chưa có historical data?",
+          "answer": "Không có data → không đoán mò con số. Approach: (1) Define user journeys và critical paths trước; (2) Benchmark: shadow test với realistic load để measure baseline; (3) Start conservative: 99% availability SLO cho service mới, tighten sau khi có 30 ngày data; (4) Stakeholder alignment: SLO phải phản ánh user experience threshold thực sự – '3 nines có nghĩa 8.7 giờ downtime/năm, acceptable không?'; (5) Error budget phải đủ to để deploy mới liên tục. Worst practice: copy 99.99% từ competitor mà không hiểu cost của nó.",
+          "org": "AWS Vietnam (enterprise client onboarding)"
+        },
+        {
+          "question": "Distributed tracing là gì và khi nào nó cần thiết hơn centralized logging?",
+          "answer": "Logging: what happened, tại một service cụ thể. Distributed tracing: how request flowed qua toàn bộ system – trace context propagated across service calls. Cần tracing khi: microservices > 5, muốn measure end-to-end latency breakdown, và debug intermittent latency issues (chỉ ảnh hưởng certain request paths). OpenTelemetry standard: instrument một lần, export sang Jaeger/Tempo/Zipkin/Datadog. Trade-off: sampling critical – trace 100% requests tốn storage. Adaptive sampling: trace 100% slow requests (>500ms), 1% normal requests. Tại Viettel: implement head-based sampling với parent-based để giữ full traces khi error occurs.",
+          "org": "Viettel Digital Division (observability platform design)"
+        }
+      ],
+      "blacklist_orgs": ["Công ty không có SLO defined", "Nơi ops team bị blame khi incidents xảy ra"],
+      "evidence_links": [
+        "https://medium.com/@dungvd-sre/viettel-peak-traffic-sre-playbook",
+        "https://github.com/dungvd-sre/opentelemetry-collector-config-library"
+      ]
+    }
+  },
+
+  {
+    "personnel_id": "P_036",
+    "public_data": {
+      "full_name": "Trần Văn Thắng",
+      "professional_summary": "Senior Backend Engineer chuyên về distributed systems, với 6 năm kinh nghiệm tại FPT Software và Amazon Vietnam. Tại FPT Software, làm consulting backend engineer cho một số enterprise clients logistics và retail, building high-throughput order processing systems. Tại Amazon Vietnam (AWS Professional Services), tham gia triển khai microservices architecture cho một số largest e-commerce clients tại SEA. Thành thạo Java (Spring ecosystem) và Golang cho backend systems. Đặc biệt quan tâm đến consensus algorithms và distributed database internals – đã đọc toàn bộ papers của Raft, Viewstamped Replication, và Paxos. Trong thời gian rảnh, đóng góp code nhỏ cho Apache Flink community. Tìm kiếm role Staff Backend Engineer hoặc Distributed Systems Engineer.",
+      "education": [
+        { "degree": "Thạc sĩ", "school": "Đại học Công nghệ – ĐHQG Hà Nội", "major": "Khoa học Máy tính", "year": "2019" }
+      ],
+      "certificates": [
+        "AWS Certified Solutions Architect – Professional",
+        "Spring Professional Certification – VMware",
+        "Confluent Certified Developer for Apache Kafka"
+      ],
+      "skills": [
+        "Java 17+ (Spring Boot, Spring Batch, Project Reactor)",
+        "Go (distributed systems components)",
+        "Apache Kafka (advanced: streams, exactly-once, compaction)",
+        "Apache Flink (community contributor, stream processing)",
+        "PostgreSQL / MySQL (advanced operations)",
+        "Redis (cluster, Sentinel, scripting)",
+        "AWS (Lambda, SQS, SNS, DynamoDB, Aurora)",
+        "Kubernetes / Helm / ArgoCD",
+        "Distributed systems patterns: CQRS, Event Sourcing, Outbox",
+        "gRPC / REST / AsyncAPI",
+        "Temporal (workflow orchestration)",
+        "OpenTelemetry / distributed tracing"
+      ],
+      "experience": [
+        {
+          "project_name": "Amazon Vietnam (AWS ProServe) – E-commerce Order Processing System",
+          "role": "Senior Backend Engineer",
+          "tech_stack": ["Java", "Spring Boot", "Kafka", "DynamoDB", "Lambda", "SQS", "AWS EKS"]
+        },
+        {
+          "project_name": "FPT Software – Logistics Real-time Tracking Platform",
+          "role": "Backend Engineer → Senior",
+          "tech_stack": ["Java", "Spring Batch", "PostgreSQL", "Kafka", "Redis", "AWS RDS", "Docker"]
+        },
+        {
+          "project_name": "Apache Flink – Community Contribution (SQL connector improvement)",
+          "role": "Open-source Contributor",
+          "tech_stack": ["Java", "Apache Flink", "Apache Calcite", "JUnit", "GitHub Actions"]
+        }
+      ],
+      "availability": "Open_for_offers",
+      "cultural_tags": ["Engineering excellence", "Open-source culture", "High-scale system", "Agile / Scrum"]
+    },
+    "private_data": {
+      "contact": {
+        "email": "tranvanthang.backend@gmail.com",
+        "phone": "0958901234",
+        "github": "https://github.com/thangtvn-distributed"
+      },
+      "salary_expectation": "USD 3,000 – 3,600/tháng. Mức phản ánh Amazon/FPT consulting background và open-source contributions.",
+      "project_technical_secrets": "Tại Amazon ProServe, trong một large e-commerce project, đã phát hiện một pattern nguy hiểm trong cách client đang dùng DynamoDB: single-table design với hot partition key (user_id) cho order items – gây consistent throttling trên peak. Fix: redesign partition key thành composite (user_id#date_bucket) + GSI. Nhưng quan trọng hơn: đã tự viết một migration tool bằng Go để migrate 2 tỷ records online (không downtime) bằng dual-write pattern với consistency checker. Tool này tái sử dụng được nhưng AWS ProServe không release tools nội bộ ra bên ngoài.",
+      "interview_questions_history": [
+        {
+          "question": "Giải thích Event Sourcing và tại sao nó phức tạp hơn CRUD state storage.",
+          "answer": "Event Sourcing: store sequence of events (what happened) thay vì current state (what is). State = replay all events. Ưu điểm: full audit trail, temporal queries, event replay for debugging. Phức tạp hơn: (1) Eventual consistency giữa event store và projections; (2) Event schema evolution – old events phải still be processable; (3) Snapshot strategy cho long-lived aggregates (không replay 1M events mỗi request); (4) Idempotent event handlers; (5) CQRS thường đi kèm → complexity tăng x2. Phù hợp: financial systems, audit-heavy domains. Không phù hợp: simple CRUD domains, team chưa quen pattern.",
+          "org": "FPT Software (architecture review cho banking client)"
+        },
+        {
+          "question": "Tại sao Kafka không nên được dùng như một database?",
+          "answer": "Kafka log retention: finite (thường 7-30 ngày). Không có secondary indexes – chỉ seek by offset hoặc timestamp. No random access – phải consumer từ offset, không fetch by key. Compacted topics gần giống KV store nhưng không có read semantics mạnh (latest value eventually consistent). Không có JOIN, aggregation, complex queries. Dùng Kafka đúng: event streaming, change data capture, inter-service async communication. Cho long-term storage với query needs: Kafka → Sink Connector → database/data warehouse. Tại FPT: gặp anti-pattern client dùng Kafka như job queue retention 30 ngày – fix bằng migrate sang SQS + separate audit database.",
+          "org": "Amazon ProServe (client architecture review)"
+        }
+      ],
+      "blacklist_orgs": ["Công ty Java vẫn dùng EJB 2.x hoặc legacy XML config Spring", "Nơi distributed systems chỉ là buzzword"],
+      "evidence_links": [
+        "https://github.com/apache/flink/pulls?q=thangtvn",
+        "https://github.com/thangtvn-distributed/dynamodb-online-migration-tool"
+      ]
+    }
+  },
+
+  {
+    "personnel_id": "P_037",
+    "public_data": {
+      "full_name": "Phạm Thị Ngọc Trinh",
+      "professional_summary": "Full-stack Growth Engineer với 4 năm kinh nghiệm trong hệ sinh thái Sea Group, đã trải qua cả Shopee và Sea Money. Khởi đầu là frontend engineer, sau 2 năm pivot sang Growth Engineering – viết code cho cả phía người dùng lẫn phía phân tích dữ liệu tăng trưởng. Tại Shopee Vietnam, xây dựng referral và voucher distribution engine phục vụ campaigns lên đến 10 triệu users đồng thời trong flash sales 9.9, 10.10, 11.11. Tại Sea Money, phụ trách toàn bộ onboarding funnel engineering cho SPayLater (BNPL product): A/B test, personalization, và cohort lifecycle management. Thành thạo React/TypeScript phía frontend và Node.js/Python phía backend. Đặc biệt mạnh về product analytics: SQL phức tạp, Amplitude/Mixpanel, thiết kế tracking schema. Tìm kiếm role Senior Growth Engineer hoặc Product Engineer tại B2C product có scale SEA.",
+      "education": [
+        { "degree": "Cử nhân", "school": "Đại học Ngoại thương TP.HCM", "major": "Thương mại Điện tử", "year": "2020" }
+      ],
+      "certificates": [
+        "React Developer Certification – Meta",
+        "Growth Marketing – Reforge (cohort 2023)",
+        "Google Analytics Certification"
+      ],
+      "skills": [
+        "React / Next.js / TypeScript",
+        "Node.js / Python (growth backend APIs)",
+        "SQL / BigQuery (advanced: window functions, funnel analysis)",
+        "Amplitude / Mixpanel / PostHog",
+        "A/B testing design và analysis",
+        "Feature flags: LaunchDarkly, internal systems",
+        "Apache Airflow (growth pipeline automation)",
+        "Firebase Remote Config / Dynamic Links",
+        "AWS (Lambda, SQS, S3, CloudFront)",
+        "Notification systems (push, in-app, email orchestration)",
+        "AppsFlyer (mobile attribution)",
+        "Redis (session management, rate limiting)"
+      ],
+      "experience": [
+        {
+          "project_name": "Shopee VN – Referral & Voucher Distribution Engine (Flash Sales)",
+          "role": "Growth Engineer",
+          "tech_stack": ["Node.js", "React", "Redis", "Kafka", "PostgreSQL", "AWS Lambda", "BigQuery"]
+        },
+        {
+          "project_name": "Sea Money – SPayLater Onboarding Funnel Engineering",
+          "role": "Senior Growth Engineer",
+          "tech_stack": ["Python", "React", "Amplitude", "Firebase", "Airflow", "BigQuery", "LaunchDarkly"]
+        },
+        {
+          "project_name": "Shopee VN – Gamification & Loyalty Points System",
+          "role": "Full-stack Engineer",
+          "tech_stack": ["React", "Node.js", "Redis", "PostgreSQL", "Kafka", "AWS EKS"]
+        }
+      ],
+      "availability": "Immediate",
+      "cultural_tags": ["Product-first", "Data-driven culture", "Startup energy in big corp", "Agile / Kanban"]
+    },
+    "private_data": {
+      "contact": {
+        "email": "phamngoctrinh.growth@gmail.com",
+        "phone": "0904321098",
+        "github": "https://github.com/ngoct-growth"
+      },
+      "salary_expectation": "35,000,000 – 45,000,000 VNĐ/tháng. Mức thấp hơn do background Ngoại thương thay vì kỹ thuật thuần túy. Bù lại bằng product + engineering hybrid và Sea Group track record.",
+      "project_technical_secrets": "Tại Shopee Vietnam trong campaign 11.11 2022, phát hiện một race condition trong voucher distribution system khi 500k users đồng thời claim cùng voucher batch: Redis SETNX không đủ để prevent double-claim trong cluster mode do cross-slot operations. Fix khẩn trong 4 giờ trước campaign: implement Redlock algorithm với 5 Redis nodes. Campaign diễn ra không sự cố. Đây là incident không được public ra ngoài. Ngoài ra, tại Sea Money biết rõ loan approval decision tree và risk scoring thresholds của SPayLater – thông tin tài chính nhạy cảm.",
+      "interview_questions_history": [
+        {
+          "question": "Bạn design notification system cho 10 triệu users với multiple channels (push, email, SMS) như thế nào?",
+          "answer": "Tách notification engine thành 3 layers: (1) Orchestration: quyết định ai nhận gì, khi nào, channel nào – dựa theo user preferences và segment logic; (2) Rendering: personalize content (tên, product, discount amount) cho từng user – batch với template engine; (3) Delivery: channel-specific adapters (FCM, SES, Twilio) với retry logic và DLQ. Kafka buffer ở giữa các layers để decouple và handle backpressure. Rate limiting per channel (FCM quota). Deduplication để không gửi duplicate nếu service retry. Tracking: link UTM + delivery receipt. Tại Shopee: notification fan-out cho 10M users mất ~8 phút end-to-end qua pipeline này.",
+          "org": "Shopee Vietnam (system design interview)"
+        },
+        {
+          "question": "Làm thế nào bạn identify đâu là North Star metric cho một BNPL product?",
+          "answer": "North Star metric phải: (1) Capture product value delivery; (2) Predictive của long-term business success; (3) Actionable cho team. Sai: Revenue (lagging indicator), DAU (không capture value). Đúng cho BNPL: 'Số GMV được tài trợ bởi active borrowers mỗi tháng' – kết hợp cả adoption lẫn health. Supporting metrics: approval rate (acquisition), D30 repayment rate (risk), repeat usage rate (retention). Tại SeaMoney dùng 'Monthly Active Borrowers x Average Loan Size' như North Star, với guardrail là NPL (non-performing loan) rate < 3%.",
+          "org": "Sea Money (product strategy review)"
+        }
+      ],
+      "blacklist_orgs": ["Công ty không có product analytics infrastructure", "Môi trường engineering thuần không có product collaboration"],
+      "evidence_links": [
+        "https://medium.com/@ngoct-growth/shopee-1111-voucher-system-lessons",
+        "https://github.com/ngoct-growth/notification-orchestration-engine"
+      ]
+    }
+  },
+
+  {
+    "personnel_id": "P_038",
+    "public_data": {
+      "full_name": "Hoàng Đức Minh",
+      "professional_summary": "Real-time Communications Engineer chuyên về WebRTC và media streaming infrastructure, 5 năm kinh nghiệm tại Stringee (công ty VoIP/WebRTC hàng đầu Việt Nam) và KMS Technology. Tại Stringee, là core engineer xây dựng Selective Forwarding Unit (SFU) media server từ đầu bằng Go – đây là thành phần kỹ thuật phức tạp nhất trong video conferencing stack, đòi hỏi hiểu sâu về RTP/RTCP protocols, DTLS-SRTP, và ICE/STUN/TURN. Hệ thống đang phục vụ hơn 2 triệu phút gọi/ngày. Thành thạo WebRTC W3C specification, OPUS/VP8/H.264 codec internals, và network congestion control (GCC algorithm). Có kinh nghiệm xây dựng scalable media routing: từ single-server SFU đến distributed SFU với cascade architecture. Tìm kiếm role Streaming Infrastructure Engineer hoặc Real-time Platform Lead.",
+      "education": [
+        { "degree": "Kỹ sư", "school": "Đại học Công nghệ – ĐHQG Hà Nội", "major": "Điện tử Viễn thông", "year": "2019" }
+      ],
+      "certificates": [
+        "Certified WebRTC Developer – webrtc.ventures",
+        "AWS Certified Developer – Associate",
+        "CCNA (Cisco Certified Network Associate)"
+      ],
+      "skills": [
+        "WebRTC (W3C spec: signaling, ICE, DTLS-SRTP, SDP negotiation)",
+        "Go (SFU media server, concurrent UDP packet processing)",
+        "RTP / RTCP (packet parsing, jitter buffer, NACK/PLI/FIR)",
+        "OPUS / VP8 / H.264 / H.265 (codec internals, transcoding)",
+        "ICE / STUN / TURN (NAT traversal, coturn server operation)",
+        "GCC / BBR (network congestion control algorithms)",
+        "Pion WebRTC (Go library – contributor)",
+        "Redis / Kafka (signaling và session management)",
+        "Kubernetes / AWS (media server fleet management)",
+        "Network programming: raw UDP sockets, DTLS implementation",
+        "FFmpeg (media processing pipeline)",
+        "Prometheus (custom media quality metrics)"
+      ],
+      "experience": [
+        {
+          "project_name": "Stringee – Selective Forwarding Unit (SFU) Media Server",
+          "role": "Core Platform Engineer",
+          "tech_stack": ["Go", "Pion WebRTC", "UDP", "DTLS-SRTP", "Redis", "Kubernetes", "Prometheus"]
+        },
+        {
+          "project_name": "Stringee – Distributed SFU Cascade Architecture",
+          "role": "Senior Platform Engineer",
+          "tech_stack": ["Go", "WebRTC", "Kafka", "Redis Cluster", "AWS EKS", "TURN server"]
+        },
+        {
+          "project_name": "KMS Technology – WebRTC Integration SDK (for Enterprise Clients)",
+          "role": "WebRTC Engineer",
+          "tech_stack": ["JavaScript WebRTC", "Node.js (signaling)", "AWS", "Coturn", "Docker"]
+        }
+      ],
+      "availability": "Open_for_offers",
+      "cultural_tags": ["Deep tech focus", "High-scale system", "Engineering excellence", "Remote-friendly"]
+    },
+    "private_data": {
+      "contact": {
+        "email": "hoangducminh.webrtc@gmail.com",
+        "phone": "0969012345",
+        "github": "https://github.com/ducminh-sfu"
+      },
+      "salary_expectation": "USD 2,800 – 3,400/tháng. Kỹ năng SFU production development cực kỳ hiếm – ước tính ít hơn 10 engineers tại Việt Nam có thể build SFU từ đầu.",
+      "project_technical_secrets": "Tại Stringee, đã implement một custom congestion control algorithm kết hợp GCC (Google Congestion Control) với adaptive simulcast layer selection: thay vì chỉ adjust bitrate, SFU tự động switch giữa các simulcast layers dựa trên available bandwidth estimation, đồng thời skip non-reference frames khi congestion severe để tránh decoder state corruption. Kết quả: video quality degradation graceful hơn nhiều so với standard GCC, đặc biệt trong network brownout scenarios (bandwidth fluctuate randomly). Algorithm này là Stringee IP. Ngoài ra, là contributor nhỏ của Pion WebRTC (Go library) – đã submit patch fix memory leak trong DTLS handshake timeout handling, được merged trong v3.2.1.",
+      "interview_questions_history": [
+        {
+          "question": "Giải thích sự khác biệt giữa SFU, MCU, và P2P trong WebRTC architecture.",
+          "answer": "P2P: direct connection giữa 2 peers, no server media processing. Scale đến 2 người, perfect quality. MCU (Multipoint Control Unit): server decode tất cả streams, mix thành one composite video, re-encode và send đến mọi người. Server CPU rất cao, có encoding delay, nhưng client bandwidth thấp (chỉ nhận 1 stream). SFU (Selective Forwarding Unit): server chỉ forward packets, không decode/encode. Client nhận multiple streams (N-1 streams). Server CPU thấp hơn MCU nhiều, client bandwidth cao hơn. SFU dominant hiện tại vì scalability. Simulcast: client send multiple quality tiers, SFU chọn tier phù hợp với bandwidth của từng receiver.",
+          "org": "Stringee (technical presentation)"
+        },
+        {
+          "question": "Tại sao DTLS-SRTP cần thiết cho WebRTC? Tại sao không chỉ dùng TLS?",
+          "answer": "WebRTC media đi qua UDP, không phải TCP. TLS chạy trên TCP. DTLS (Datagram TLS): TLS ported sang UDP – handle packet reordering, loss, và replay attacks. SRTP (Secure Real-time Transport Protocol): encrypt RTP payload sau khi DTLS handshake exchange master key. Separation of concerns: DTLS cho key exchange, SRTP cho media encryption – efficient hơn encrypt toàn bộ DTLS record cho every packet. Mandatory trong WebRTC spec (RFC 8827): không thể negotiate unencrypted media. Implication cho SFU: SFU cần terminate DTLS per peer connection nhưng không cần decrypt SRTP nếu không transcoding – có thể forward SRTP packets opaque.",
+          "org": "KMS Technology (WebRTC workshop)"
+        }
+      ],
+      "blacklist_orgs": ["Công ty 'WebRTC' nhưng chỉ dùng Agora/Daily.co SDK không có custom media stack", "Nơi không có real-time communications requirements"],
+      "evidence_links": [
+        "https://github.com/pion/webrtc/commits?author=ducminh-sfu",
+        "https://blog.ducminh-sfu.dev/sfu-congestion-control-adaptive-simulcast"
+      ]
+    }
+  },
+
+  {
+    "personnel_id": "P_039",
+    "public_data": {
+      "full_name": "Nguyễn Xuân Hùng",
+      "professional_summary": "Senior Frontend Engineer với 6 năm kinh nghiệm, làm việc qua Tiki và Zalo (VNG). Tại Tiki, là frontend lead cho Tiki Live – tính năng livestream commerce ra mắt 2021, xây dựng toàn bộ real-time viewer interaction layer: live chat với WebSocket, reaction animations ở 60fps với 100k concurrent viewers, và tích hợp payment flow trong livestream. Tại Zalo, phụ trách performance và architecture cho Zalo Web – ứng dụng web messenger phục vụ 70 triệu users. Thành thạo React ecosystem ở mức advanced: custom reconciler, concurrent features (Transitions, Suspense), và low-level DOM optimization. Đặc biệt quan tâm đến Web Performance: đã contribute một RFC về resource hints optimization cho Chromium project (không được merge nhưng đã tạo ra technical discussion). Tìm kiếm role Frontend Architect hoặc Principal Frontend Engineer.",
+      "education": [
+        { "degree": "Kỹ sư", "school": "Đại học Bách Khoa Hà Nội", "major": "Công nghệ Thông tin", "year": "2018" }
+      ],
+      "certificates": [
+        "Google Chrome DevRel Web Performance Advanced",
+        "AWS Certified Developer – Associate",
+        "Meta Frontend Engineer Interview Preparation (completed)"
+      ],
+      "skills": [
+        "React 18 (advanced: custom reconciler, concurrent features, internals)",
+        "TypeScript (advanced: conditional types, template literal types, decorators)",
+        "Web Performance (Core Web Vitals, Performance API, Chrome DevTools deep)",
+        "WebSocket / Server-Sent Events / WebRTC (real-time UI patterns)",
+        "Virtual DOM optimization (windowing, deferred rendering, skeleton screens)",
+        "Webpack / Vite / Turbopack (bundler internals và optimization)",
+        "CSS architecture (CSS-in-JS vs utility, critical CSS extraction)",
+        "Next.js (SSR/SSG/ISR, App Router, React Server Components)",
+        "Testing: Playwright, React Testing Library, Vitest",
+        "Node.js (BFF pattern, API gateway)",
+        "GraphQL (Apollo Client, normalization, fragment colocation)",
+        "Figma API (design token automation)"
+      ],
+      "experience": [
+        {
+          "project_name": "Tiki – Tiki Live Livestream Commerce (Frontend Lead)",
+          "role": "Frontend Lead",
+          "tech_stack": ["React", "TypeScript", "WebSocket", "WebRTC", "Canvas API", "Redis Pub/Sub", "Next.js"]
+        },
+        {
+          "project_name": "Zalo Web – Performance Architecture (70M users)",
+          "role": "Senior Frontend Engineer",
+          "tech_stack": ["React", "TypeScript", "Virtual DOM optimization", "WebSocket", "IndexedDB", "Service Worker"]
+        },
+        {
+          "project_name": "Tiki – Design System & Component Library",
+          "role": "Frontend Engineer",
+          "tech_stack": ["React", "TypeScript", "Storybook", "Chromatic", "Figma API", "Rollup"]
+        }
+      ],
+      "availability": "Open_for_offers",
+      "cultural_tags": ["Engineering excellence", "Performance obsessed", "Product company", "Open-source culture"]
+    },
+    "private_data": {
+      "contact": {
+        "email": "nguyenxuanhung.fe@gmail.com",
+        "phone": "0937654321",
+        "github": "https://github.com/hungxn-frontend"
+      },
+      "salary_expectation": "60,000,000 – 72,000,000 VNĐ/tháng. Mức cao nhất cho frontend specialist tại VN market. Justified bởi Tiki Live tech leadership và Zalo-scale performance experience.",
+      "project_technical_secrets": "Tại Tiki Live, khi có 100k concurrent viewers, reaction animation system (trái tim, emoji bay lên screen) gây frame drop nghiêm trọng. Solution: thay vì dùng React state cho mỗi reaction, implement một WebGL-based particle system trong Web Worker, communicate với main thread qua SharedArrayBuffer. Particle positions được update trong worker mà không block UI thread. Kết quả: 100k viewers với 10 reactions/giây mỗi viewer → 1M particles/giây xử lý hoàn toàn trong worker, main thread chỉ render final frame. Kỹ thuật này không có precedent trong codebase Tiki trước đó.",
+      "interview_questions_history": [
+        {
+          "question": "Giải thích React Concurrent Mode và tại sao nó cần thiết.",
+          "answer": "Legacy React: rendering là synchronous và uninterruptible – một render lớn block main thread toàn bộ. Concurrent Mode: rendering có thể bị interrupted, paused, resumed, hoặc abandoned. useTransition: mark state update là non-urgent → React có thể defer rendering và giữ UI responsive. Suspense: declarative loading states, React có thể 'hold' subtree render cho đến khi data sẵn sàng. useDeferredValue: debounce expensive derived values. Practical impact: search-as-you-type với instant feedback, trang navigation có thể pre-render next page trong background. Không phải magic – vẫn phải structure code đúng để benefit.",
+          "org": "Tiki (frontend architecture review)"
+        },
+        {
+          "question": "Làm thế nào bạn optimize một React app có LCP > 4 giây?",
+          "answer": "Measure trước: Lighthouse để xác định LCP element cụ thể. Thường là hero image hoặc large text block. Fix theo nguồn: (1) Nếu là image: preload với `<link rel=preload>`, serve WebP/AVIF, correct sizing, no lazy-load trên LCP element; (2) Nếu là text: ensure font preloading, avoid FOIT; (3) Nếu là component: SSR/SSG để HTML sẵn sàng khi page load, tránh client-only rendering cho above-fold. Ngoài ra: reduce render-blocking resources (critical CSS inline), eliminate main-thread long tasks blocking LCP. Tại Tiki từng có LCP 4.2s → 1.1s bằng cách: preload hero image + inline critical CSS + defer 3 heavy analytics scripts.",
+          "org": "Tiki (performance audit presentation)"
+        }
+      ],
+      "blacklist_orgs": ["Công ty frontend coi bundle size là vấn đề sau", "Môi trường làm pure marketing sites không có interactive features"],
+      "evidence_links": [
+        "https://github.com/hungxn-frontend/webgl-particle-react-webworker",
+        "https://medium.com/@hungxn-frontend/tiki-live-100k-concurrent-frontend-lessons"
+      ]
+    }
+  },
+
+  {
+    "personnel_id": "P_040",
+    "public_data": {
+      "full_name": "Đặng Thị Thu Nga",
+      "professional_summary": "Cloud FinOps và Cost Optimization Specialist với 4 năm kinh nghiệm, từ AWS Vietnam về Viettel Digital. Tại AWS Vietnam, làm Technical Account Manager cho 8 enterprise clients với trọng tâm FinOps – giảm cloud spend trung bình 26% cho portfolio. Tại Viettel Digital, xây dựng từ đầu FinOps practice cho công ty với monthly cloud spend $800k/tháng trên AWS. Thành thạo phân tích AWS Cost and Usage Report bằng Athena, AWS Cost Explorer API automation, và Savings Plans optimization modeling. Có kinh nghiệm với multi-account governance: AWS Organizations, Service Control Policies, và chargeback/showback model cho các business units. Hiểu rõ unit economics của cloud: cost per transaction, cost per user, và budget alerting workflow. Tìm kiếm role Head of FinOps, Cloud Economics Lead, hoặc Platform Engineering Manager.",
+      "education": [
+        { "degree": "Cử nhân", "school": "Đại học Kinh tế Quốc dân Hà Nội", "major": "Hệ thống Thông tin Quản lý", "year": "2020" }
+      ],
+      "certificates": [
+        "FinOps Certified Practitioner – FinOps Foundation",
+        "AWS Certified Cloud Practitioner",
+        "AWS Certified Solutions Architect – Associate"
+      ],
+      "skills": [
+        "AWS Cost and Usage Report (CUR) analysis bằng Athena",
+        "AWS Cost Explorer API (Python automation, anomaly detection)",
+        "Savings Plans / Reserved Instances strategy modeling",
+        "AWS Organizations / SCPs / Control Tower (cost governance)",
+        "Spot Instance fleet management (EC2, EKS managed node groups)",
+        "Terraform (cost tagging automation, infrastructure labeling)",
+        "Python (FinOps automation, CUR processing, Slack alerting)",
+        "CloudHealth / Apptio Cloudability / Spot.io",
+        "SQL / BigQuery (cost analytics)",
+        "Kubernetes resource optimization (VPA, HPA, KEDA)",
+        "Budgets / Cost Anomaly Detection / Trusted Advisor",
+        "Chargeback / showback model design"
+      ],
+      "experience": [
+        {
+          "project_name": "AWS Vietnam – FinOps Advisory (8 enterprise clients)",
+          "role": "Technical Account Manager (FinOps focus)",
+          "tech_stack": ["AWS Cost Explorer", "Athena", "CloudHealth", "Python", "Terraform", "Organizations"]
+        },
+        {
+          "project_name": "Viettel Digital – FinOps Practice Setup ($800k/month cloud spend)",
+          "role": "Cloud FinOps Lead",
+          "tech_stack": ["AWS CUR", "Athena", "Python", "Terraform", "Slack API", "CloudHealth", "Spot.io"]
+        },
+        {
+          "project_name": "Viettel Digital – Multi-account Cost Governance Framework",
+          "role": "Cloud Platform Engineer",
+          "tech_stack": ["AWS Organizations", "Control Tower", "SCPs", "Terraform", "AWS Config", "Python"]
+        }
+      ],
+      "availability": "Open_for_offers",
+      "cultural_tags": ["Cost-conscious engineering", "Enterprise mindset", "ISO process", "Strategic thinking"]
+    },
+    "private_data": {
+      "contact": {
+        "email": "dangthungan.finops@gmail.com",
+        "phone": "0978234567",
+        "github": "https://github.com/thunga-finops"
+      },
+      "salary_expectation": "50,000,000 – 60,000,000 VNĐ/tháng. Background business + cloud tạo ra unique profile. Ưu tiên role có direct P&L impact qua cost savings.",
+      "project_technical_secrets": "Tại Viettel Digital, đã xây dựng một 'Cost Intelligence Dashboard' kết hợp AWS CUR data với Prometheus metrics và Kubernetes resource utilization để tính unit cost cực kỳ chính xác: cost per API call, cost per model inference, cost per background job. Dashboard này giúp engineering teams thấy trực tiếp cost impact của code changes – ví dụ, một model upgrade tốn thêm $12k/tháng vì memory doubling. Kết quả: 3 tháng sau khi deploy, engineers tự chủ động submit optimization PRs. Công cụ chưa được release dưới dạng open-source vì chứa Viettel internal billing taxonomy.",
+      "interview_questions_history": [
+        {
+          "question": "Giải thích sự khác biệt giữa Savings Plans và Reserved Instances. Bạn chọn cái nào?",
+          "answer": "Reserved Instances: commit specific instance type, region, OS. Discount 40-75%. Kém flexible – nếu architecture thay đổi, RI có thể không applicable. Savings Plans: commit dollar amount per hour ($X/hour for 1 or 3 years). Compute SP: flexible across instance family, region, OS – tự động apply. EC2 SP: specific instance family, region nhưng flexible size/OS. Thực tế: Compute Savings Plans là default choice cho workloads hiện đại (containerized, diverse instance types). RI chỉ tốt hơn khi specific instance type stable 3+ năm (RDS RI). Hybrid: cover baseline với Savings Plans, use Spot cho flexible burst.",
+          "org": "AWS Vietnam (client FinOps workshop)"
+        },
+        {
+          "question": "Làm thế nào bạn implement chargeback model cho 10 business units dùng chung AWS account?",
+          "answer": "Tagging strategy là foundation: mandatory tags `cost_center`, `environment`, `product_team` enforce qua SCP. CUR với resource tags → Athena → weekly chargeback report per cost center. Shared costs (NAT Gateway, Transit Gateway, support) phân bổ theo usage proportion hoặc equal split tùy loại. Challenges: untagged resources (enforce với AWS Config rule + auto-remediation lambda). Showback first (report only) trước khi chuyển sang chargeback (actual billing) để allow teams adjust. Viettel: 6 tháng showback → full chargeback, cloud spend dropped 18% vì teams bắt đầu care về cost.",
+          "org": "Viettel Digital (FinOps practice rollout)"
+        }
+      ],
+      "blacklist_orgs": ["Công ty không track cloud costs theo team/product", "Nơi engineering không được access billing data của mình"],
+      "evidence_links": [
+        "https://medium.com/@thunga-finops/unit-cost-engineering-viettel",
+        "https://github.com/thunga-finops/aws-cur-cost-intelligence-dashboard"
+      ]
+    }
+  },
+
+  {
+    "personnel_id": "P_041",
+    "public_data": {
+      "full_name": "Cao Minh Khoa",
+      "professional_summary": "Compiler Engineer và Programming Language Researcher với 5 năm kinh nghiệm, đặc biệt hiếm tại thị trường Việt Nam. Từng tham gia team research tại VinAI và hiện là Senior Engineer tại KMS Technology chuyên về developer tooling. Background học thuật vững chắc: nghiên cứu về type systems, program analysis, và compiler optimization trong giai đoạn sau đại học. Thành thạo LLVM framework: viết custom LLVM passes cho static analysis và optimization, hiểu sâu về IR (Intermediate Representation) và backend code generation. Có kinh nghiệm xây dựng custom domain-specific languages (DSLs) với parser generators (ANTLR, Tree-sitter) và semantic analysis. Tại KMS, xây dựng static analysis tools cho enterprise clients: custom linters, code quality checkers, và automated refactoring tools. Contributor nhỏ cho LLVM monorepo. Tìm kiếm role Compiler Engineer, Developer Tools Engineer, hoặc PL Research Engineer tại tổ chức đầu tư vào programming toolchain.",
+      "education": [
+        { "degree": "Thạc sĩ", "school": "Đại học Khoa học Tự nhiên – ĐHQG HCM", "major": "Khoa học Máy tính (Compiler & PL track)", "year": "2020" }
+      ],
+      "certificates": [
+        "LLVM Developer Workshop Certificate – LLVM Foundation",
+        "AWS Certified Developer – Associate"
+      ],
+      "skills": [
+        "LLVM (IR, custom passes: optimization + analysis, backend code generation basics)",
+        "Clang (AST analysis, LibASTMatchers, ClangTidy custom checks)",
+        "C++ (advanced: template metaprogramming, undefined behavior analysis)",
+        "Python (compiler tooling scripts, test infrastructure)",
+        "Rust (intermediate: procedural macros, compiler plugin basics)",
+        "Tree-sitter (grammar writing, incremental parsing)",
+        "ANTLR4 (grammar definition, visitor/listener patterns)",
+        "Static analysis: data flow analysis, points-to analysis, taint tracking",
+        "WebAssembly (WASM as compilation target from custom language)",
+        "Git bisect / debugging tools: rr (Mozilla Record & Replay)",
+        "Formal methods basics: SMT solvers (Z3), abstract interpretation",
+        "Bazel / CMake (large build system management)"
+      ],
+      "experience": [
+        {
+          "project_name": "KMS Technology – Custom Static Analysis Toolkit for Enterprise Java/C++ Clients",
+          "role": "Senior Compiler/Tools Engineer",
+          "tech_stack": ["LLVM", "Clang LibASTMatchers", "Java ASM bytecode", "Python", "Tree-sitter", "Bazel"]
+        },
+        {
+          "project_name": "VinAI Research – DSL for ML Pipeline Configuration",
+          "role": "Research Engineer",
+          "tech_stack": ["ANTLR4", "Python", "LLVM IR (via MLIR basics)", "WASM compilation target"]
+        },
+        {
+          "project_name": "LLVM Community – Custom Optimization Pass Contribution",
+          "role": "Open-source Contributor",
+          "tech_stack": ["LLVM C++", "FileCheck (LLVM testing)", "TableGen", "CMake"]
+        }
+      ],
+      "availability": "Open_for_offers",
+      "cultural_tags": ["Deep tech focus", "Academic mindset", "R&D", "Open-source culture"]
+    },
+    "private_data": {
+      "contact": {
+        "email": "caominhkhoa.compiler@gmail.com",
+        "phone": "0915432109",
+        "github": "https://github.com/minhkhoa-llvm"
+      },
+      "salary_expectation": "USD 2,500 – 3,200/tháng. Thấp hơn market vì compiler engineering niche chưa được định giá đúng tại VN. Sẵn sàng nhận offer thấp hơn nếu môi trường có full-time compiler research.",
+      "project_technical_secrets": "Tại KMS Technology, đã build một custom LLVM pass phân tích C++ codebase của một automotive client để detect undefined behavior patterns (signed integer overflow, null pointer dereference, use-after-free) mà commercial tools (Coverity, SonarQube) miss trong một số edge cases với template instantiation sâu. Pass này kết hợp data flow analysis với symbolic execution nhẹ (dùng Z3 SMT solver cho path condition simplification). Tìm ra 23 latent UB bugs trong 500k LOC codebase automotive. Tool là KMS IP. Ngoài ra, đang viết một unpublished paper về 'Incremental Taint Analysis cho LLVM IR' – target submit PLDI 2025.",
+      "interview_questions_history": [
+        {
+          "question": "Giải thích LLVM IR và tại sao nó là trung gian quan trọng trong compiler pipeline.",
+          "answer": "LLVM IR: typed, SSA (Static Single Assignment) form, machine-independent. Frontend (clang) translate source → IR. Middle-end chạy optimization passes trên IR. Backend lower IR → machine code cho target architecture. IR design choices: SSA simplifies data flow analysis (each variable assigned exactly once, use-def chains explicit). Typed (i32, i64, float, pointer) → type-based optimizations. IR là clean abstraction layer: viết optimization pass một lần, chạy cho tất cả languages và targets. Ví dụ: inlining, dead code elimination, loop unrolling đều work at IR level bất kể source language.",
+          "org": "KMS Technology (compiler team tech talk)"
+        },
+        {
+          "question": "Tại sao undefined behavior trong C++ là nguy hiểm và compiler có thể 'exploit' nó như thế nào?",
+          "answer": "UB = compiler được assume behavior đó không xảy ra. Implication: compiler optimization assume UB không có để generate faster code. Ví dụ nguy hiểm: signed overflow UB → compiler assume `x + 1 > x` luôn true → optimize away overflow check. Null pointer deref UB → compiler assume pointer không null → optimize away null check → segfault thay vì graceful error. Tệ hơn: attacker exploit UB predictions để bypass security checks. Clang UndefinedBehaviorSanitizer (UBSan) để detect runtime. Static analysis: Clang Static Analyzer, custom LLVM passes. Modern C++: prefer std::optional, bounds-checked containers, [[nodiscard]] để giảm UB surface.",
+          "org": "KMS Technology (security training cho automotive client)"
+        }
+      ],
+      "blacklist_orgs": ["Công ty không có compiler hoặc systems programming work", "Môi trường pure application development không có tooling investment"],
+      "evidence_links": [
+        "https://github.com/llvm/llvm-project/commits?author=minhkhoa-llvm",
+        "https://github.com/minhkhoa-llvm/llvm-ub-detection-pass"
+      ]
+    }
+  },
+
+  {
+    "personnel_id": "P_042",
+    "public_data": {
+      "full_name": "Trịnh Thị Lan Hương",
+      "professional_summary": "Senior Data Scientist với 5 năm kinh nghiệm ứng dụng ML vào bài toán kinh doanh thực tế trong lĩnh vực FMCG và retail tại Masan Group và Vingroup. Tại Masan Consumer, xây dựng demand forecasting models cho 50,000 SKUs với MAPE dưới 12%, góp phần giảm inventory carrying cost 18%. Tại Vingroup (VinCommerce), thiết kế và triển khai dynamic pricing system cho chuỗi VinMart – một trong những dynamic pricing deployments lớn nhất trong retail tại Việt Nam. Thành thạo toàn bộ ML workflow cho forecasting: feature engineering từ time series, training LightGBM/Prophet/DeepAR, backtesting frameworks, và production deployment. Có kinh nghiệm thực tế với causal inference trong business context: A/B test design, difference-in-differences, synthetic control. Biết translate business problem thành ML problem và ngược lại. Tìm kiếm role Lead Data Scientist hoặc Head of AI trong FMCG, retail, hoặc logistics.",
+      "education": [
+        { "degree": "Thạc sĩ", "school": "Đại học Bách Khoa TP.HCM", "major": "Kỹ thuật Dữ liệu và Trí tuệ Nhân tạo", "year": "2019" }
+      ],
+      "certificates": [
+        "Causal Inference in Python – Coursera (University of Michigan)",
+        "AWS Certified Machine Learning – Specialty",
+        "Google Professional Data Engineer"
+      ],
+      "skills": [
+        "Python (scikit-learn, LightGBM, XGBoost, statsmodels, Prophet)",
+        "Deep learning: DeepAR, N-BEATS, Temporal Fusion Transformer (time series)",
+        "Causal inference: DiD, synthetic control, propensity scoring, IV",
+        "Optimization: linear programming (PuLP), constraint satisfaction",
+        "SQL / BigQuery / Hive (advanced time series queries)",
+        "Apache Spark (large-scale feature engineering)",
+        "MLflow / DVC (experiment tracking, model versioning)",
+        "Airflow (ML pipeline orchestration)",
+        "FastAPI / Docker / Kubernetes (model deployment)",
+        "Power BI / Tableau (business stakeholder communication)",
+        "R (statistical testing, econometric models)",
+        "Domain: FMCG demand sensing, dynamic pricing, inventory optimization"
+      ],
+      "experience": [
+        {
+          "project_name": "Masan Consumer – Demand Forecasting for 50,000 SKUs",
+          "role": "Senior Data Scientist",
+          "tech_stack": ["Python", "LightGBM", "Prophet", "Apache Spark", "Airflow", "MLflow", "AWS SageMaker"]
+        },
+        {
+          "project_name": "Vingroup (VinCommerce) – Dynamic Pricing System cho VinMart",
+          "role": "Lead Data Scientist",
+          "tech_stack": ["Python", "XGBoost", "Linear programming (PuLP)", "FastAPI", "PostgreSQL", "Airflow"]
+        },
+        {
+          "project_name": "Masan Consumer – Promotional Uplift Modeling",
+          "role": "Data Scientist",
+          "tech_stack": ["Python", "Causal ML (DoWhy)", "A/B testing", "Statsmodels", "BigQuery", "Power BI"]
+        }
+      ],
+      "availability": "1_month_notice",
+      "cultural_tags": ["Data-driven culture", "Business impact focus", "Cross-functional collaboration", "Product company"]
+    },
+    "private_data": {
+      "contact": {
+        "email": "trinhlanhuong.ds@gmail.com",
+        "phone": "0962345678",
+        "github": "https://github.com/lanhuong-ds"
+      },
+      "salary_expectation": "60,000,000 – 75,000,000 VNĐ/tháng. Phản ánh business impact track record và domain expertise FMCG/retail hiếm trong thị trường DS Việt Nam.",
+      "project_technical_secrets": "Tại VinCommerce, dynamic pricing system đã phát hiện một insight quan trọng: giảm giá sữa trẻ em vào thứ Sáu sau 16:00 có demand elasticity gấp 2.3x so với các khung giờ khác và 3.1x so với cùng mức giảm vào ngày khác. Insight này từ causal analysis trên 18 tháng data, không phải correlation đơn giản. Ngoài ra, một quirk trong data: barcode scanner errors tại một số cửa hàng VinMart tạo ra 'ghost sales' làm sai lệch forecast 8% cho một số SKU – phát hiện bằng anomaly detection trên residuals, không bao giờ được report lên management.",
+      "interview_questions_history": [
+        {
+          "question": "Tại sao bạn không dùng RMSE làm primary metric cho demand forecasting trong retail?",
+          "answer": "RMSE penalize large errors heavily → model optimize để giảm variance, có thể bias toward mean prediction cho high-variance SKUs (seasonal products). Retail context cần asymmetric loss: under-forecast (stockout) thường tốn kém hơn over-forecast (overstock) vì lost revenue và customer dissatisfaction. Dùng: MAPE (relative error, intuitive cho business), hoặc custom asymmetric loss function (under-forecast penalty cao gấp 2-3x). Thêm: evaluate trên correct business window (weekly cho replenishment cycles), không daily. Pinball loss cho probabilistic forecasting (predict quantiles, không just point estimate).",
+          "org": "Masan Consumer (model evaluation framework)"
+        },
+        {
+          "question": "Giải thích Difference-in-Differences và assumption nào cần thiết để valid.",
+          "answer": "DiD: compare outcome change trong treatment group vs control group trước và sau intervention. Estimate = (treatment_after - treatment_before) - (control_after - control_before). Core assumption: Parallel Trends – nếu không có intervention, treatment và control group sẽ trend parallel. Verify: plot pre-treatment trends, kiểm tra chúng có parallel không. Violation: selection bias (treatment group differs fundamentally from control), concurrent other events. Tại Masan: dùng DiD để estimate impact của promotions ở một số tỉnh, control group là tỉnh không có promotion với similar demographics và historical sales trends.",
+          "org": "Masan Consumer (causal analysis methodology review)"
+        }
+      ],
+      "blacklist_orgs": ["Data science team chỉ làm dashboards và reports", "Công ty không có proper experiment design process"],
+      "evidence_links": [
+        "https://medium.com/@lanhuong-ds/dynamic-pricing-retail-vietnam-lessons",
+        "https://github.com/lanhuong-ds/demand-forecasting-fmcg-template"
+      ]
+    }
+  },
+
+  {
+    "personnel_id": "P_043",
+    "public_data": {
+      "full_name": "Nguyễn Văn Phúc",
+      "professional_summary": "Cyber Security Engineer và SOC (Security Operations Center) Analyst với 5 năm kinh nghiệm tại Viettel Cyber Security – một trong những trung tâm bảo mật lớn nhất Việt Nam. Chuyên sâu về threat hunting, incident response, và SIEM/SOAR implementation cho hệ thống telco scale. Đã tham gia điều tra và phản ứng với hơn 200 security incidents trong 5 năm, bao gồm một số vụ APT (Advanced Persistent Threat) nhắm vào critical infrastructure Việt Nam. Thành thạo threat intelligence: MITRE ATT&CK framework, threat actor profiling, và IoC (Indicators of Compromise) extraction. Có kinh nghiệm xây dựng SOAR playbooks bằng Python để automate response cho common threat categories. Ngoài phòng thủ, có kinh nghiệm red team cơ bản: network pivoting, privilege escalation, và lateral movement simulation. Tìm kiếm role Threat Intelligence Lead, Senior SOC Engineer, hoặc Incident Response Manager.",
+      "education": [
+        { "degree": "Kỹ sư", "school": "Học viện Kỹ thuật Mật mã", "major": "An toàn Thông tin", "year": "2019" }
+      ],
+      "certificates": [
+        "Certified SOC Analyst (CSA) – EC-Council",
+        "GIAC Certified Incident Handler (GCIH)",
+        "Splunk Certified Power User"
+      ],
+      "skills": [
+        "SIEM: Splunk (advanced SPL queries), QRadar, Microsoft Sentinel",
+        "SOAR: Splunk SOAR (Phantom), IBM Resilient (playbook automation)",
+        "Threat intelligence: MITRE ATT&CK, STIX/TAXII, OpenCTI",
+        "Network forensics: Zeek/Bro, Suricata, NetworkMiner",
+        "Endpoint forensics: Velociraptor, OSQuery, Windows Event Log analysis",
+        "Malware analysis: static (YARA rules, PE analysis) và dynamic (Cuckoo Sandbox)",
+        "Python (SOAR playbooks, threat intel automation, log parsing)",
+        "Threat hunting: hypothesis-driven, behavioral analytics",
+        "APT TTPs: understanding of major threat actors (APT1, APT29, APT40)",
+        "Incident response lifecycle: containment, eradication, recovery",
+        "Cloud security monitoring: AWS GuardDuty, CloudTrail analysis",
+        "Vulnerability management: Tenable Nessus, Qualys"
+      ],
+      "experience": [
+        {
+          "project_name": "Viettel Cyber Security – SOC Operations & Threat Hunting",
+          "role": "SOC Analyst L2 → L3",
+          "tech_stack": ["Splunk", "Zeek", "Suricata", "Velociraptor", "Python", "MITRE ATT&CK", "OpenCTI"]
+        },
+        {
+          "project_name": "Viettel Cyber Security – SOAR Playbook Automation",
+          "role": "Security Engineer",
+          "tech_stack": ["Splunk SOAR", "Python", "REST APIs (VirusTotal, Shodan, AbuseIPDB)", "Jira automation"]
+        },
+        {
+          "project_name": "Viettel Cyber Security – APT Campaign Investigation (Confidential)",
+          "role": "Threat Intelligence Analyst",
+          "tech_stack": ["Maltego", "OpenCTI", "YARA", "Cuckoo Sandbox", "NetworkMiner", "Volatility"]
+        }
+      ],
+      "availability": "Open_for_offers",
+      "cultural_tags": ["Security-first culture", "ISO process", "Compliance mindset", "Blameless post-mortems"]
+    },
+    "private_data": {
+      "contact": {
+        "email": "nguyenvanphuc.soc@gmail.com",
+        "phone": "0954567890",
+        "github": "https://github.com/phucnv-threat"
+      },
+      "salary_expectation": "42,000,000 – 52,000,000 VNĐ/tháng. Thấp hơn market rate cho offensive security nhưng phản ánh chuyên sâu defensive/SOC. Sẵn sàng tăng nếu role kết hợp cả red và blue team.",
+      "project_technical_secrets": "Tại Viettel Cyber Security, đã tham gia điều tra một APT campaign nhắm vào một số cơ quan chính phủ Việt Nam trong 2022. Campaign sử dụng spear-phishing với custom backdoor được obfuscate bằng kỹ thuật process hollowing và living-off-the-land binaries. Threat actor profiling kết luận liên kết với một nation-state group. Toàn bộ TTP report và attribution analysis là top-secret, không được disclose. Ngoài ra, đã xây dựng một set 47 YARA rules detect các malware families phổ biến nhắm vào tổ chức Việt Nam – rules này được share nội bộ trong cộng đồng CERT Việt Nam nhưng chưa public.",
+      "interview_questions_history": [
+        {
+          "question": "Giải thích MITRE ATT&CK framework và cách sử dụng trong threat hunting.",
+          "answer": "ATT&CK: knowledge base về adversary TTPs dựa trên real-world observations. 14 Tactics (high-level goals: Initial Access, Execution, Persistence...), mỗi tactic có Techniques và Sub-techniques. Threat hunting sử dụng ATT&CK: (1) Choose tactic based on hypotheses (e.g., 'attacker đã có foothold, đang lateral movement'); (2) Map technique sang data sources cần (Windows Event Logs, network logs, EDR telemetry); (3) Craft detection logic (SPL queries, Sigma rules); (4) Hunt và document findings. Ví dụ: T1055 Process Injection → hunt trong Sysmon Event ID 8 (CreateRemoteThread), correlate với suspicious parent-child process relationships.",
+          "org": "Viettel Cyber Security (internal training)"
+        },
+        {
+          "question": "Tại sao SOAR automation phải có human-in-the-loop cho một số playbooks?",
+          "answer": "Full automation risk: false positive → automated block của legitimate business traffic → production incident. Rule of thumb: automate enrichment và low-risk actions (IP reputation lookup, alert correlation, ticket creation, notification). Require human approval cho: account lockout, firewall block, host isolation, evidence collection từ production systems. Design pattern: SOAR pause và prompt analyst với evidence + recommended action, analyst approve/reject trong SLA window. Nếu no response sau SLA: escalate, không auto-execute. Tại Viettel: phishing email automation fully blocks malicious attachments, nhưng phishing URL blocking requires analyst approval vì false positive rate 3%.",
+          "org": "Viettel Cyber Security (SOAR design review)"
+        }
+      ],
+      "blacklist_orgs": ["Tổ chức không có SOC hoặc incident response process", "Công ty security chỉ làm compliance audit không có operational security"],
+      "evidence_links": [
+        "https://github.com/phucnv-threat/yara-rules-vietnam-threats",
+        "https://blog.phucnv-threat.dev/apt-hunting-vietnam-soc-lessons"
+      ]
+    }
+  },
+
+  {
+    "personnel_id": "P_044",
+    "public_data": {
+      "full_name": "Bùi Thị Thanh Hà",
+      "professional_summary": "Senior Frontend Engineer và Design System Lead với 5 năm kinh nghiệm tại MoMo và Zalo (VNG). Tại MoMo, là người xây dựng và maintain MoMo Design System – thư viện component chính thức được dùng bởi toàn bộ 15 product teams, phục vụ 30 triệu users. Tại Zalo, lead frontend cho ZaloBusiness (B2B messaging platform) và tham gia xây dựng shared component infrastructure. Thành thạo React, TypeScript, và CSS architecture ở mức advanced. Đặc biệt quan tâm đến accessibility (a11y): đã đưa MoMo app đạt WCAG 2.1 AA compliance, một trong số ít super-apps tại Việt Nam có hệ thống accessibility đáng kể. Có kinh nghiệm thực chiến với component API design, visual regression testing (Chromatic), và Storybook governance ở scale lớn (500+ components). Tìm kiếm role Frontend Platform Lead, Design System Engineer, hoặc Principal Frontend Engineer.",
+      "education": [
+        { "degree": "Kỹ sư", "school": "Đại học Bách Khoa TP.HCM", "major": "Kỹ thuật Máy tính", "year": "2019" }
+      ],
+      "certificates": [
+        "Certified Web Accessibility Specialist (WAS) – IAAP",
+        "React Certified Developer",
+        "Google UX Design Certificate"
+      ],
+      "skills": [
+        "React 18 / TypeScript (advanced, design system architecture)",
+        "CSS (advanced: custom properties, container queries, layers, architecture patterns)",
+        "Storybook (stories, addons, design token integration)",
+        "Chromatic (visual regression testing, UI review workflow)",
+        "Accessibility (WCAG 2.1/3.0, ARIA, axe-core, screen reader testing)",
+        "Design tokens (Style Dictionary, Theo, Token Studio)",
+        "Figma API / Figma Tokens (design ↔ code sync automation)",
+        "Rollup / tsup (library bundling)",
+        "Jest / React Testing Library / Playwright (component testing)",
+        "Turborepo / Nx (monorepo management cho design system)",
+        "npm / pnpm workspace (package publishing)",
+        "Web Components (vanilla, Lit) – for cross-framework interop"
+      ],
+      "experience": [
+        {
+          "project_name": "MoMo – Design System (Mochi UI) – 500+ components, 15 teams",
+          "role": "Design System Lead",
+          "tech_stack": ["React", "TypeScript", "Storybook", "Chromatic", "Style Dictionary", "Turborepo", "Figma API"]
+        },
+        {
+          "project_name": "MoMo – Accessibility Program (WCAG 2.1 AA compliance)",
+          "role": "Senior Frontend Engineer / a11y Champion",
+          "tech_stack": ["React", "ARIA", "axe-core", "NVDA/VoiceOver testing", "Playwright (a11y tests)"]
+        },
+        {
+          "project_name": "Zalo (VNG) – ZaloBusiness Frontend & Shared Component Library",
+          "role": "Senior Frontend Engineer",
+          "tech_stack": ["React", "TypeScript", "Storybook", "Rollup", "CSS custom properties", "Nx monorepo"]
+        }
+      ],
+      "availability": "1_month_notice",
+      "cultural_tags": ["Design-driven", "Accessibility-first", "Product company", "Engineering excellence"]
+    },
+    "private_data": {
+      "contact": {
+        "email": "buithanhha.frontend@gmail.com",
+        "phone": "0907891234",
+        "github": "https://github.com/thanhha-a11y"
+      },
+      "salary_expectation": "55,000,000 – 65,000,000 VNĐ/tháng. Phản ánh design system leadership và a11y expertise hiếm tại Việt Nam. Đặc biệt quan tâm role có design collaboration thực sự.",
+      "project_technical_secrets": "Khi xây dựng MoMo Design System, đã phát hiện một vấn đề nghiêm trọng về design token governance: 3 product teams đã fork component riêng thay vì dùng shared library vì thiếu customization API. Giải pháp: redesign component API để expose 'component slots' (React children composition) và 'style overrides' theo từng layer, không phải đơn giản là props drilling. Cũng thiết kế một 'token taxonomy' tách biệt semantic tokens (color.primary.default) khỏi primitive tokens (palette.blue.500) để teams có thể theme mà không break design consistency. Sau khi triển khai, fork rate giảm từ 23% xuống 4% trong 6 tháng.",
+      "interview_questions_history": [
+        {
+          "question": "Giải thích tại sao design tokens quan trọng và sự khác biệt giữa primitive và semantic tokens.",
+          "answer": "Design tokens: named variables cho design decisions (color, spacing, typography), thay thế hardcoded values để maintain consistency và enable theming. Primitive tokens: lowest level, map sang specific values (blue-500 = #3B82F6). Semantic tokens: reference primitive tokens, mang meaning (color.interactive.primary = blue-500 trong light mode, blue-400 trong dark mode). Tại sao phân tách: dark mode chỉ cần thay semantic token mapping, không cần đổi mọi component. Component chỉ reference semantic tokens – không biết underlying primitive. Đây là 'token taxonomy' pattern của DTCG (Design Token Community Group) spec.",
+          "org": "MoMo (Design System architecture talk)"
+        },
+        {
+          "question": "Làm thế nào bạn ensure accessibility trong một design system ở scale lớn?",
+          "answer": "Accessibility at scale: không thể test manually mọi component. Strategy: (1) Bake a11y vào component API – ví dụ Button component force aria-label khi không có visible text (TypeScript type error nếu thiếu); (2) axe-core integration trong Storybook automated stories; (3) Playwright a11y test suite chạy trong CI; (4) Component documentation phải include a11y usage notes và antipatterns; (5) 'a11y office hours' hàng tuần cho product teams. Tại MoMo: discovered 47 a11y violations khi implement axe-core – fix in 2 sprints. Hardest: form error association (aria-describedby) và focus management trong modal dialogs.",
+          "org": "MoMo (a11y compliance retrospective)"
+        }
+      ],
+      "blacklist_orgs": ["Công ty không có design collaboration process", "Môi trường frontend chỉ là 'pixel pusher' không có engineering depth"],
+      "evidence_links": [
+        "https://medium.com/@thanhha-a11y/momo-design-system-token-taxonomy",
+        "https://github.com/thanhha-a11y/design-system-a11y-testing-starter"
+      ]
+    }
+  },
+
+  {
+    "personnel_id": "P_045",
+    "public_data": {
+      "full_name": "Lê Minh Trí",
+      "professional_summary": "Real-time Video Infrastructure Engineer với 4 năm kinh nghiệm tại Stringee, công ty tiên phong về CPaaS (Communications Platform as a Service) tại Việt Nam. Làm việc cùng team với P038 (Hoàng Đức Minh) trong core infrastructure của Stringee SFU. Trong khi P038 focus vào SFU server architecture, Lê Minh Trí chuyên sâu hơn về media quality: codec optimization, adaptive bitrate streaming, và recording/transcoding pipeline. Đã xây dựng recording infrastructure có khả năng ghi lại và transcode 100,000 phút video/ngày bằng FFmpeg farm trên Kubernetes. Thành thạo video pipeline end-to-end: WebRTC capture → RTP → SFU forwarding → RTMP/HLS → CDN. Có kinh nghiệm thực chiến với QoE (Quality of Experience) metrics: VMAF, MOS score estimation, jitter/packet loss impact analysis. Tìm kiếm role Video Infrastructure Engineer hoặc Streaming Platform Engineer.",
+      "education": [
+        { "degree": "Kỹ sư", "school": "Đại học Bách Khoa TP.HCM", "major": "Điện tử – Viễn thông", "year": "2020" }
+      ],
+      "certificates": [
+        "AWS Certified Developer – Associate",
+        "FFmpeg Certified Developer – FFmpeg.org training"
+      ],
+      "skills": [
+        "WebRTC (client SDK: browser, React Native bridge)",
+        "FFmpeg (advanced: custom filter graphs, hardware acceleration với NVENC/VAAPI)",
+        "RTP / RTMP / HLS / DASH (streaming protocols)",
+        "Go (video processing pipeline orchestration)",
+        "GStreamer (media pipeline framework – familiarity)",
+        "Kubernetes (media workload scheduling, GPU node management for transcoding)",
+        "AWS (S3 + CloudFront cho CDN, EKS, MediaConvert comparison)",
+        "Redis / Kafka (recording job queue, pipeline state)",
+        "Video quality: VMAF, SSIM, PSNR metrics computation",
+        "Python (QoE analysis scripts, load testing với locust)",
+        "Coturn (TURN server operation)",
+        "Docker (media container optimization, multi-stage builds)"
+      ],
+      "experience": [
+        {
+          "project_name": "Stringee – Recording & Transcoding Pipeline (100k minutes/day)",
+          "role": "Video Infrastructure Engineer",
+          "tech_stack": ["Go", "FFmpeg", "Kubernetes", "S3", "Kafka", "Redis", "NVENC GPU acceleration"]
+        },
+        {
+          "project_name": "Stringee – Adaptive Bitrate Streaming và QoE Monitoring",
+          "role": "Infrastructure Engineer",
+          "tech_stack": ["HLS/DASH", "FFmpeg", "VMAF", "Prometheus", "Grafana", "Python"]
+        },
+        {
+          "project_name": "Stringee – WebRTC Client SDK (Browser + React Native)",
+          "role": "Software Engineer",
+          "tech_stack": ["JavaScript WebRTC", "React Native", "WebSocket (signaling)", "AWS CloudFront"]
+        }
+      ],
+      "availability": "Open_for_offers",
+      "cultural_tags": ["Deep tech focus", "High-scale system", "Engineering excellence", "Remote-friendly"]
+    },
+    "private_data": {
+      "contact": {
+        "email": "leminhtri.video@gmail.com",
+        "phone": "0963456789",
+        "github": "https://github.com/leminhtri-video"
+      },
+      "salary_expectation": "USD 2,400 – 3,000/tháng. Thấp hơn P038 do ít kinh nghiệm hơn. Rất linh hoạt với role cụ thể miễn là có WebRTC/video infrastructure depth.",
+      "project_technical_secrets": "Tại Stringee, đã xây dựng một FFmpeg-based transcoding pipeline với custom filter graph để normalize audio quality từ nhiều sources khác nhau (mobile mic, laptop mic, landline) về một chuẩn chất lượng nhất quán trước khi record. Filter chain: noise suppression (afftdn) → echo cancellation → normalization → dynamic range compression. Kết quả: MOS score trung bình của recordings tăng từ 2.8 lên 3.6. FFmpeg filter graph này được parameter-tuned bằng automated testing trên 10,000 sample audio clips. Config chưa được public. Cùng làm việc với P038 (Hoàng Đức Minh) trong một số components shared giữa SFU và recording pipeline.",
+      "interview_questions_history": [
+        {
+          "question": "Giải thích HLS adaptive bitrate streaming hoạt động như thế nào.",
+          "answer": "HLS: video được encode thành nhiều quality levels (renditions) – ví dụ 240p/400kbps, 480p/800kbps, 1080p/3000kbps. Mỗi rendition được chia thành segments (thường 2-10 giây). Master playlist (.m3u8) list tất cả renditions. Client player measure download speed và buffer level để switch renditions: bandwidth thấp → downgrade; buffer full → upgrade. ABR algorithm: simple bandwidth-based, hoặc buffer-based (BBA), hoặc hybrid. Challenge: frequent switching gây visual quality flicker. Stable switching: hysteresis (chỉ upgrade nếu bandwidth cao hơn target 20%, chỉ downgrade nếu bandwidth thấp hơn 10%).",
+          "org": "Stringee (video streaming tech talk)"
+        },
+        {
+          "question": "Tại sao hardware video encoding (NVENC) quan trọng cho transcoding at scale?",
+          "answer": "Software encoding (libx264/libx265 via FFmpeg): CPU-intensive, ~10x realtime encoding speed cho 1080p H.264. Hardware encoding (NVENC GPU): offload encoding sang dedicated video encoder trên GPU, ~100x realtime, CPU load rất thấp. Cost: một GPU NVIDIA T4 encode 100 simultaneous 1080p streams, thay thế 20+ CPU cores. Tại Stringee: migrate từ CPU transcoding sang NVENC giảm transcoding cost 75%, latency từ 8 giây xuống 1.2 giây. Trade-off: NVENC rate control không flexible bằng software, quality slightly lower at same bitrate. Acceptable cho recording, không acceptable cho broadcast streaming cần perfect quality.",
+          "org": "Stringee (infrastructure cost review)"
+        }
+      ],
+      "blacklist_orgs": ["Công ty không có real-time media component", "Nơi video = chỉ upload và serve static files"],
+      "evidence_links": [
+        "https://medium.com/@leminhtri-video/ffmpeg-audio-normalization-webrtc-recording",
+        "https://github.com/leminhtri-video/adaptive-ffmpeg-transcoder"
+      ]
+    }
+  },
+
+  {
+    "personnel_id": "P_046",
+    "public_data": {
+      "full_name": "Nguyễn Thị Kim Ngân",
+      "professional_summary": "Senior AI Research Engineer và MLOps Specialist với 5 năm kinh nghiệm, từ VinAI Research đến hiện tại tại Samsung R&D Vietnam (làm việc trong team của P014 Phạm Hoàng Việt). Tại VinAI, tập trung vào Computer Vision: object detection, image segmentation cho autonomous driving dataset curation. Tại Samsung, xây dựng MLOps infrastructure cho on-device AI team: automated model evaluation pipeline, model compression (knowledge distillation, pruning), và deployment validation framework cho Galaxy devices. Đặc biệt quan tâm đến responsible AI: fairness evaluation, bias detection trong CV models, và model interpretability. Từng tham gia một workshop về AI safety với Anthropic researchers tại Singapore (2023). Có kinh nghiệm thực tế deploy AI models với nghiêm ngặt về latency: p99 < 30ms trên mobile GPU. Tìm kiếm role Senior/Staff ML Engineer, MLOps Lead, hoặc AI Infrastructure Engineer.",
+      "education": [
+        { "degree": "Thạc sĩ", "school": "Đại học Bách Khoa Hà Nội", "major": "Khoa học Máy tính – Computer Vision track", "year": "2021" }
+      ],
+      "certificates": [
+        "Google Professional Machine Learning Engineer",
+        "AWS Certified Machine Learning – Specialty",
+        "NVIDIA Deep Learning Institute – Computer Vision"
+      ],
+      "skills": [
+        "Python (PyTorch, TensorFlow, OpenCV, Albumentations)",
+        "Computer Vision: object detection (YOLO series, DETR), segmentation (SAM, Mask R-CNN)",
+        "Model optimization: knowledge distillation, structured pruning, quantization (PTQ/QAT)",
+        "MLOps: MLflow, DVC, Kubeflow Pipelines, Argo Workflows",
+        "Model evaluation: fairness metrics, bias detection (Fairlearn, AIF360)",
+        "TensorRT / ONNX Runtime / TFLite (mobile/edge deployment)",
+        "Docker / Kubernetes (ML workload orchestration)",
+        "AWS SageMaker / GCP Vertex AI",
+        "Responsible AI: model cards, interpretability (SHAP, LIME, Grad-CAM)",
+        "C++ (basic: TensorRT plugin writing, OpenCV integration)",
+        "GitHub Actions / Jenkins (ML CI/CD pipelines)",
+        "Large-scale annotation management: Label Studio, CVAT"
+      ],
+      "experience": [
+        {
+          "project_name": "VinAI Research – Autonomous Driving Dataset Curation & CV Models",
+          "role": "AI Research Engineer",
+          "tech_stack": ["PyTorch", "YOLO", "Mask R-CNN", "CVAT", "MLflow", "AWS S3", "Label Studio"]
+        },
+        {
+          "project_name": "Samsung R&D – On-device AI MLOps & Model Compression Pipeline",
+          "role": "Senior MLOps Engineer",
+          "tech_stack": ["Python", "TensorRT", "TFLite", "knowledge distillation", "Kubeflow", "DVC", "Argo Workflows"]
+        },
+        {
+          "project_name": "Samsung R&D – Responsible AI Evaluation Framework",
+          "role": "ML Engineer",
+          "tech_stack": ["Fairlearn", "AIF360", "SHAP", "Grad-CAM", "Python", "Grafana (bias metrics dashboard)"]
+        }
+      ],
+      "availability": "Open_for_offers",
+      "cultural_tags": ["R&D", "Responsible AI", "Deep tech focus", "Academic mindset"]
+    },
+    "private_data": {
+      "contact": {
+        "email": "nguyenkimngan.ai@gmail.com",
+        "phone": "0926789012",
+        "github": "https://github.com/kimngan-mlops"
+      },
+      "salary_expectation": "USD 3,200 – 4,000/tháng. Phản ánh MLOps + Responsible AI expertise. Đặc biệt quan tâm tổ chức có explicit AI ethics policies.",
+      "project_technical_secrets": "Tại Samsung R&D, đã phát hiện một bias nghiêm trọng trong một CV model face recognition được cân nhắc deploy trên Galaxy: accuracy chênh lệch 8.3% giữa các ethnicity groups trong test set đại diện cho Đông Nam Á. Bias xuất phát từ training data skew (70% dữ liệu từ nguồn Western). Đã escalate và đề xuất rebalancing dataset với targeted data collection – model không được deploy cho đến khi bias được reduce xuống < 2%. Ngoài ra, trong quá trình làm việc cùng P014 (Phạm Hoàng Việt), có kiến thức về CUDA kernel optimization strategy của Samsung Galaxy AI – không được public.",
+      "interview_questions_history": [
+        {
+          "question": "Làm thế nào bạn detect và mitigate bias trong một CV model?",
+          "answer": "Detect: (1) Disaggregated evaluation – compute metrics per demographic group, không chỉ overall; (2) Representation audit của training data; (3) Fairness metrics: equalized odds, demographic parity, individual fairness. Mitigate: (1) Data-level: oversample underrepresented groups, synthetic augmentation (e.g., skin tone augmentation cho face models); (2) Algorithm-level: adversarial debiasing, reweighting loss function per group; (3) Post-processing: threshold adjustment per group (careful: may violate fairness axioms). Quan trọng nhất: define fairness criterion trước khi train, không phải sau khi thấy bias. Different fairness metrics có thể contradict nhau (impossibility theorem).",
+          "org": "Samsung R&D (AI ethics review)"
+        },
+        {
+          "question": "Giải thích knowledge distillation và khi nào nó tốt hơn quantization đơn thuần?",
+          "answer": "Knowledge distillation: train student model nhỏ để mimic teacher model lớn. Loss = combination of (1) task loss vs ground truth và (2) KL divergence với teacher's soft predictions. Soft labels giàu information hơn one-hot: chứa inter-class relationships. Tốt hơn quantization khi: (1) Muốn giảm model capacity thực sự (thay đổi architecture, không chỉ precision); (2) Task cần specific architecture constraint (latency, memory footprint trên specific hardware). Quantization nhanh hơn (không cần retrain) nhưng chỉ giảm precision, không giảm số parameters. Hybrid: distill trước để tạo compact model → quantize compact model → tốt nhất cả hai.",
+          "org": "Samsung R&D (model compression strategy)"
+        }
+      ],
+      "blacklist_orgs": ["Công ty deploy AI models mà không có bias testing", "Nơi không có Responsible AI policy"],
+      "evidence_links": [
+        "https://medium.com/@kimngan-mlops/responsible-ai-evaluation-framework",
+        "https://github.com/kimngan-mlops/cv-fairness-evaluation-toolkit"
+      ]
+    }
+  },
+
+  {
+    "personnel_id": "P_047",
+    "public_data": {
+      "full_name": "Phạm Xuân Lộc",
+      "professional_summary": "Senior Distributed Systems Engineer với 6 năm kinh nghiệm, từ Cốc Cốc (trình duyệt và search engine Việt Nam) đến Viettel Digital. Tại Cốc Cốc, tham gia xây dựng distributed web crawler infrastructure – hệ thống phải crawl và index hàng chục triệu web pages Việt Nam mỗi ngày với strong focus vào Vietnamese language understanding. Tại Viettel Digital, làm việc cùng team với P035 (Lê Văn Dũng) và P032 (Đỗ Thị Hà Linh) trong platform engineering, chuyên trách distributed storage layer. Thành thạo Go và Java cho distributed systems. Đặc biệt quan tâm đến consensus protocols: đã implement một Raft variant từ đầu như side project để hiểu sâu. Có kinh nghiệm thực chiến với Apache ZooKeeper operations, etcd cluster management, và distributed locking patterns. Tìm kiếm role Staff Backend Engineer hoặc Distributed Systems Platform Engineer.",
+      "education": [
+        { "degree": "Kỹ sư", "school": "Đại học Công nghệ – ĐHQG Hà Nội", "major": "Khoa học Máy tính", "year": "2018" }
+      ],
+      "certificates": [
+        "Certified Kubernetes Administrator (CKA)",
+        "AWS Certified Solutions Architect – Associate",
+        "Confluent Certified Developer for Apache Kafka"
+      ],
+      "skills": [
+        "Go (distributed systems, consensus protocol implementation)",
+        "Java (Spring Boot, concurrent programming)",
+        "Distributed consensus: Raft, ZAB (ZooKeeper), Paxos (theoretical)",
+        "Apache ZooKeeper (operations, recipe patterns)",
+        "etcd (cluster management, watch API, lease mechanism)",
+        "Apache Kafka (operations: partition reassignment, rack awareness)",
+        "Distributed storage: MinIO, Ceph (operation basics)",
+        "Redis (Sentinel, Cluster, distributed patterns)",
+        "Kubernetes / Helm",
+        "PostgreSQL (replication: logical, physical, Patroni HA)",
+        "Prometheus / Grafana",
+        "Python / Bash (automation)"
+      ],
+      "experience": [
+        {
+          "project_name": "Cốc Cốc – Distributed Web Crawler Infrastructure",
+          "role": "Backend Engineer → Senior Backend Engineer",
+          "tech_stack": ["Go", "Apache Kafka", "ZooKeeper", "MinIO", "Redis", "PostgreSQL", "Kubernetes"]
+        },
+        {
+          "project_name": "Viettel Digital – Distributed Storage Platform Engineering",
+          "role": "Senior Platform Engineer",
+          "tech_stack": ["Go", "etcd", "Ceph", "Kafka", "Kubernetes", "Prometheus", "Terraform"]
+        },
+        {
+          "project_name": "Side project – Raft Consensus Implementation in Go",
+          "role": "Solo Developer",
+          "tech_stack": ["Go", "gRPC", "LevelDB (log storage)", "GitHub Actions (CI testing)"]
+        }
+      ],
+      "availability": "Open_for_offers",
+      "cultural_tags": ["Engineering excellence", "Deep tech focus", "Open-source culture", "High-scale system"]
+    },
+    "private_data": {
+      "contact": {
+        "email": "phamxuanloc.distributed@gmail.com",
+        "phone": "0947890123",
+        "github": "https://github.com/xuanloc-distributed"
+      },
+      "salary_expectation": "55,000,000 – 65,000,000 VNĐ/tháng. Phản ánh distributed systems specialization và 6 năm kinh nghiệm.",
+      "project_technical_secrets": "Tại Cốc Cốc, crawler infrastructure gặp vấn đề nghiêm trọng với Vietnamese diacritics trong URL normalization: nhiều websites Việt Nam encode URL theo nhiều cách khác nhau (NFC, NFD, percent-encoded UTF-8, Windows-1258 encoded) → duplicate page detection fail 15% cho Vietnamese content. Đã xây dựng một canonical URL normalizer với 23 transformation rules đặc thù cho Vietnamese web ecosystem. Đây là domain knowledge hẹp nhưng cực kỳ quan trọng cho Vietnamese search engine. Normalizer chưa được public dưới dạng library. Ngoài ra, Raft implementation side project đã tìm ra một edge case trong leader lease mechanism khi clock drift xảy ra – edge case này không được cover trong TiKV implementation nhưng được fix trong etcd v3.4.",
+      "interview_questions_history": [
+        {
+          "question": "Giải thích split-brain trong distributed systems và cách ZooKeeper prevent nó.",
+          "answer": "Split-brain: network partition chia cluster thành 2+ partitions, mỗi partition think nó là primary → multiple leaders → data inconsistency. ZooKeeper prevent bằng quorum: với 5 nodes, quorum = 3. Chỉ partition có ≥3 nodes mới có thể elect leader và process writes. Minority partition (1-2 nodes) từ chối serve writes. Implication: ZK ensemble phải có odd number của nodes (3, 5, 7). Với 2 nodes: no quorum possible sau partition → unacceptable. Trade-off: availability bị sacrifice khi minority partition – ZK chọn CP (consistency + partition tolerance) trong CAP theorem.",
+          "org": "Viettel Digital (distributed storage architecture review)"
+        },
+        {
+          "question": "Tại sao etcd recommend không dùng cluster > 7 nodes?",
+          "answer": "Raft leader phải replicate log entries đến majority trước khi acknowledge write. Với N nodes, quorum = N/2 + 1. Latency tăng theo số nodes vì leader chờ majority ACK. 7 nodes: quorum = 4, leader chờ 4 nodes. Network roundtrip bị multiply. Throughput: Raft leader serialize writes → throughput bottleneck không scale với nodes. Recommendation: 3 nodes cho tolerate 1 failure, 5 nodes tolerate 2 failures, 7 nodes tolerate 3 failures. Beyond 7: fault tolerance gain không justify performance cost. Horizontal scale bằng sharding (multiple etcd clusters), không single cluster.",
+          "org": "Viettel Digital (etcd cluster sizing decision)"
+        }
+      ],
+      "blacklist_orgs": ["Công ty không có distributed systems challenges thực sự", "Nơi etcd chỉ là 'Kubernetes backend' không ai quan tâm"],
+      "evidence_links": [
+        "https://github.com/xuanloc-distributed/raft-go-implementation",
+        "https://medium.com/@xuanloc-distributed/vietnamese-url-normalization-crawler"
+      ]
+    }
+  },
+
+  {
+    "personnel_id": "P_048",
+    "public_data": {
+      "full_name": "Trần Đình Đức",
+      "professional_summary": "Backend Engineer chuyên về Rust và Blockchain Infrastructure với 4 năm kinh nghiệm trong hệ sinh thái Sea Group và Web3. Bắt đầu tại Shopee Vietnam, sau đó chuyển sang Sea Capital (crypto division) khi Sea Group mở rộng vào crypto. Tại Sea Capital, là một trong 3 engineers đầu tiên build Rust-based blockchain indexing và trading infrastructure. Thành thạo Rust ở mức production: async/await với Tokio, performance profiling với perf/flamegraph, và unsafe Rust khi cần thiết. Hiểu sâu về blockchain data structures: Merkle trees, UTXO model vs account model, mempool mechanics. Có kinh nghiệm thực chiến với high-frequency data ingestion từ blockchain nodes: xử lý 10,000+ transactions/giây với latency requirement nghiêm ngặt. Đây là hồ sơ thứ ba trong 'Rust trio' (cùng P012 và P022) của dataset – ba người này đại diện cho toàn bộ Rust production engineering talent pool tại Việt Nam ở thời điểm hiện tại. Tìm kiếm role Rust Engineer, Blockchain Infrastructure Engineer.",
+      "education": [
+        { "degree": "Kỹ sư", "school": "Đại học Khoa học Tự nhiên – ĐHQG TP.HCM", "major": "Công nghệ Thông tin", "year": "2020" }
+      ],
+      "certificates": [
+        "Rust Programming Fundamentals – Rustaceans.org",
+        "AWS Certified Developer – Associate",
+        "Solana Blockchain Developer Bootcamp"
+      ],
+      "skills": [
+        "Rust (production: Tokio async, Axum web framework, Diesel ORM, Serde)",
+        "Rust (advanced: lifetime elision, unsafe blocks, FFI với C libraries)",
+        "Blockchain: Ethereum/EVM, Solana (basic), Bitcoin UTXO model",
+        "Go (prior experience, familiar with comparison vs Rust trade-offs)",
+        "PostgreSQL / TimescaleDB (blockchain time-series data)",
+        "Redis (caching, pub/sub for blockchain events)",
+        "Apache Kafka (blockchain event streaming)",
+        "gRPC / REST (API design in Rust)",
+        "Docker / Kubernetes",
+        "Performance profiling: perf, flamegraph, criterion.rs (Rust benchmarks)",
+        "AWS (EKS, RDS, ElastiCache)",
+        "Python (data analysis scripts, ad-hoc blockchain queries)"
+      ],
+      "experience": [
+        {
+          "project_name": "Sea Capital – Rust Blockchain Indexer (EVM + Solana)",
+          "role": "Backend Engineer (Rust)",
+          "tech_stack": ["Rust", "Tokio", "PostgreSQL", "Redis", "Kafka", "Axum", "AWS EKS"]
+        },
+        {
+          "project_name": "Sea Capital – High-frequency Blockchain Data Ingestion Pipeline",
+          "role": "Senior Backend Engineer",
+          "tech_stack": ["Rust", "TimescaleDB", "Kafka", "Redis", "gRPC", "AWS"]
+        },
+        {
+          "project_name": "Shopee Vietnam – Backend Services (pre-Rust career)",
+          "role": "Backend Engineer",
+          "tech_stack": ["Go", "PostgreSQL", "Redis", "Kafka", "AWS EKS"]
+        }
+      ],
+      "availability": "Open_for_offers",
+      "cultural_tags": ["Deep tech focus", "Web3 / Blockchain", "Engineering excellence", "Startup energy in big corp"]
+    },
+    "private_data": {
+      "contact": {
+        "email": "trandinhduc.rust@gmail.com",
+        "phone": "0971098765",
+        "github": "https://github.com/dinhduc-rust"
+      },
+      "salary_expectation": "USD 3,000 – 3,600/tháng. Rust expertise rare enough to command premium. Đặc biệt quan tâm environment với Rust-first codebase.",
+      "project_technical_secrets": "Tại Sea Capital, đã xây dựng một 'Mempool Monitor' bằng Rust subscribe trực tiếp vào Ethereum mempool via WebSocket, parse pending transactions realtime, và apply custom heuristics để identify MEV (Miner Extractable Value) opportunities trước khi transactions confirmed. Toàn bộ pipeline từ mempool subscription đến decision trong 50ms. Đây là proprietary trading signal infrastructure – không được public. Kỹ thuật Rust cho low-latency financial systems (custom allocator với jemalloc, NUMA-aware thread pinning) được apply tại đây là cực kỳ hiếm tại Việt Nam. Là một phần của Rust trio với P012 (Sky Mavis, NFT indexer) và P022 (FPT Semi, embedded Rust) – ba người này cover toàn bộ Rust use cases: systems, backend, embedded.",
+      "interview_questions_history": [
+        {
+          "question": "Giải thích lifetime trong Rust. Tại sao cần thiết và cách borrow checker enforce nó?",
+          "answer": "Lifetime: annotation thể hiện bao lâu một reference valid. Borrow checker verify tại compile time rằng không reference nào outlive data nó trỏ đến. Syntax: `fn longest<'a>(s1: &'a str, s2: &'a str) -> &'a str` – return reference valid ít nhất bằng shortest của hai inputs. Tại sao cần: prevent use-after-free mà không cần GC. Thực tế: 80% Rust code lifetime được infer tự động (elision rules), chỉ cần annotate khi compiler không thể infer. Hardest case: struct holding references cần lifetime annotation. Tradeoff: learning curve cao nhưng guarantee zero dangling pointers.",
+          "org": "Sea Capital (Rust onboarding)"
+        },
+        {
+          "question": "Khi nào bạn dùng Rust thay vì Go cho backend services?",
+          "answer": "Go: developer productivity cao, simple concurrency model (goroutines), fast compilation, large ecosystem. Rust: predictable performance (no GC pauses), memory safety without GC, zero-cost abstractions, suitable khi Go's GC latency unacceptable. Chọn Rust khi: p99 latency requirement < 1ms (GC pauses in Go can be 1-5ms occasionally), memory-constrained environments (embedded, WASM), safety-critical code (crypto, parser của untrusted data). Chọn Go khi: team productivity matters more, standard backend services, CRUD APIs. Tại Sea Capital: Rust cho latency-sensitive trading pipeline, Go cho admin APIs và monitoring services – pragmatic split.",
+          "org": "Sea Capital (architecture decision)"
+        }
+      ],
+      "blacklist_orgs": ["Công ty Rust chỉ để 'try new technology', không production-critical", "Nơi Go/Python đủ nhưng muốn Rust vì trend"],
+      "evidence_links": [
+        "https://github.com/dinhduc-rust/ethereum-mempool-monitor",
+        "https://medium.com/@dinhduc-rust/rust-vs-go-financial-backend-sea-capital"
+      ]
+    }
+  },
+
+  {
+    "personnel_id": "P_049",
+    "public_data": {
+      "full_name": "Đỗ Thị Minh Tâm",
+      "professional_summary": "QA Lead và Testing Manager với 7 năm kinh nghiệm tại FPT Software và Nashtech Vietnam, chuyên về test strategy, automation framework leadership, và quality engineering culture building. Tại FPT Software, đã dẫn dắt QA team 12 người phụ trách quality cho 5 đồng thời projects offshore cho clients Nhật Bản và Châu Âu. Tại Nashtech, xây dựng từ đầu Testing Center of Excellence (TCoE) – chuẩn hóa automation frameworks, test process, và quality metrics cho toàn bộ company. Thành thạo toàn bộ testing spectrum: từ unit/integration đến E2E, performance, security testing. Có chứng chỉ ISTQB Advanced Level Test Manager – một trong số ít người tại Việt Nam có chứng chỉ này. Đặc biệt quan tâm đến shift-left testing và continuous quality trong DevOps pipelines. Tìm kiếm role QA Director, Head of Quality Engineering, hoặc Test Architecture Lead.",
+      "education": [
+        { "degree": "Kỹ sư", "school": "Đại học FPT", "major": "Kỹ thuật Phần mềm", "year": "2017" }
+      ],
+      "certificates": [
+        "ISTQB Advanced Level Test Manager (CTAL-TM)",
+        "ISTQB Advanced Level Test Automation Engineer (CTAL-TAE)",
+        "Certified Agile Tester (CAT) – iSQI"
+      ],
+      "skills": [
+        "Test strategy: risk-based testing, test pyramid design, acceptance criteria definition",
+        "Automation: Playwright, Cypress, Selenium Grid 4, RestAssured, Postman/Newman",
+        "Performance: JMeter, Gatling, k6, locust",
+        "Security: OWASP ZAP, Burp Suite (basic), SAST integration",
+        "CI/CD quality gates: GitHub Actions, Jenkins, GitLab CI",
+        "Test management: TestRail, Zephyr, Xray (Jira)",
+        "Team management: 12+ direct reports, offshore coordination",
+        "Quality metrics: defect density, escape rate, test coverage (meaningful), DORA metrics",
+        "Mobile testing: Appium, Espresso, XCUITest",
+        "API testing: Pact (contract), RestAssured, Postman",
+        "Accessibility testing: axe-core, WAVE, NVDA/VoiceOver",
+        "Java / Python / JavaScript (test scripting)"
+      ],
+      "experience": [
+        {
+          "project_name": "FPT Software – Offshore QA Management (Japan/Europe clients)",
+          "role": "QA Lead → Senior QA Lead",
+          "tech_stack": ["Selenium", "JMeter", "TestRail", "Jenkins", "Java", "Python", "Offshore coordination"]
+        },
+        {
+          "project_name": "Nashtech Vietnam – Testing Center of Excellence Setup",
+          "role": "QA Manager / TCoE Lead",
+          "tech_stack": ["Playwright", "k6", "GitHub Actions", "Xray", "Pact", "Quality metrics dashboards"]
+        },
+        {
+          "project_name": "Nashtech Vietnam – DevOps Quality Gates Implementation",
+          "role": "QA Architect",
+          "tech_stack": ["GitHub Actions", "SonarQube", "OWASP ZAP", "Playwright", "k6", "Grafana (quality dashboards)"]
+        }
+      ],
+      "availability": "Open_for_offers",
+      "cultural_tags": ["Quality-first", "Agile / Scrum", "ISO process", "Mentoring culture"]
+    },
+    "private_data": {
+      "contact": {
+        "email": "dominhtam.qa@gmail.com",
+        "phone": "0918901234",
+        "github": "https://github.com/minhtam-qa"
+      },
+      "salary_expectation": "50,000,000 – 62,000,000 VNĐ/tháng. ISTQB CTAL-TM là chứng chỉ hiếm tại Việt Nam, justified premium.",
+      "project_technical_secrets": "Tại Nashtech, trong quá trình setup TCoE đã phát hiện rằng 60% automation scripts trong company là 'zombie tests' – scripts pass trong CI nhưng không detect actual bugs do test data stale, assertions too broad, hoặc test logic không match current behavior. Thiết kế một 'Test Effectiveness Score' metric: ratio of (bugs caught by automated tests) / (total bugs escaped to production) trên 6-month rolling window. Metric này expose thực tế đáng lo ngại và trigger một cleanup initiative loại bỏ 40% automation suite – giảm CI time 35% trong khi tăng bug detection rate.",
+      "interview_questions_history": [
+        {
+          "question": "Tại sao 100% test coverage không đảm bảo chất lượng phần mềm?",
+          "answer": "Coverage đo lines executed, không đo assertions đúng hoặc behavior verified. Coverage 100% có thể đạt với empty assertions hoặc assertions kiểm tra wrong things. Mutation testing (Pitest, StrykerJS) measure real quality: inject mutations (thay đổi logic nhỏ) và check nếu tests fail – nếu mutation survive thì test quá weak. Thực tế: 70% meaningful coverage với quality assertions > 100% coverage với poor assertions. Quan trọng hơn: test the right things – risk-based selection, focus trên critical business paths, boundary values, error handling. Đừng optimize cho metric, optimize cho defect detection.",
+          "org": "Nashtech Vietnam (quality engineering training)"
+        },
+        {
+          "question": "Làm thế nào bạn build testing culture trong team không có automated testing trước đó?",
+          "answer": "Culture change, không chỉ tooling change. Step 1: Make pain visible – show defect escape rate, time spent on manual regression, customer bug reports. Data beats opinion. Step 2: Quick wins – automate top 10 most-repeated manual tests, show CI integration working. Step 3: Pair programming for tests – developer + tester write automation together, share ownership. Step 4: 'Definition of Done' includes automated test for any new feature. Step 5: celebrate when automation catches a bug before production – make heroes visible. Avoid: forcing coverage metrics without readiness, blaming dev for not writing tests.",
+          "org": "Nashtech Vietnam (TCoE rollout)"
+        }
+      ],
+      "blacklist_orgs": ["Công ty QA chỉ là manual testing 'phase' cuối sprint", "Nơi không có automated testing trong CI pipeline"],
+      "evidence_links": [
+        "https://medium.com/@minhtam-qa/test-effectiveness-score-nashtech-tcoe",
+        "https://github.com/minhtam-qa/devops-quality-gates-template"
+      ]
+    }
+  },
+
+  {
+    "personnel_id": "P_050",
+    "public_data": {
+      "full_name": "Võ Thanh Liêm",
+      "professional_summary": "CTO và Principal Engineer với 13 năm kinh nghiệm, đỉnh cao của dataset này. Từng là Engineering Director tại Viettel Digital Services và trước đó là Principal Engineer tại Microsoft Vietnam (chồng chéo thời gian với P025 Trần Thị Minh Phương tại Microsoft Vietnam, hai người biết nhau trong technical community). Tại Viettel, đã lãnh đạo transformation từ monolith COBOL/Java legacy sang cloud-native microservices cho hệ thống billing của 90 triệu thuê bao – một trong những migration phức tạp nhất trong lịch sử tech Việt Nam. Tại Microsoft, làm việc trong Azure Platform team và từng mentor P025. Có kinh nghiệm thực tế điều hành engineering organization lớn (70+ engineers), xây dựng hiring pipeline, và đại diện kỹ thuật với board và investors. Đặc biệt quan tâm đến legacy modernization và platform thinking. Hiện đang consulting tự do, tìm kiếm CTO/Co-founder, VP Engineering, hoặc Board Technical Advisor role tại tổ chức phù hợp.",
+      "education": [
+        { "degree": "Kỹ sư (Xuất sắc, thủ khoa khóa)", "school": "Đại học Bách Khoa TP.HCM", "major": "Khoa học Máy tính", "year": "2011" }
+      ],
+      "certificates": [
+        "AWS Certified Solutions Architect – Professional",
+        "Microsoft Certified: Azure Solutions Architect Expert",
+        "TOGAF 9.2 Certified",
+        "Executive Education – Strategic Technology Leadership, Singapore Management University"
+      ],
+      "skills": [
+        "C# / .NET (Microsoft track), Java (enterprise), Go (cloud-native)",
+        "Legacy modernization: strangler fig pattern, event-driven decomposition",
+        "Enterprise architecture: TOGAF, domain-driven design at enterprise scale",
+        "Cloud architecture: Azure, AWS (dual-cloud expertise)",
+        "Engineering management: hiring, performance management, org design",
+        "Kubernetes / service mesh / API gateway (architecture level)",
+        "Data architecture: event streaming, CQRS, eventual consistency at scale",
+        "Security architecture (prior Microsoft experience)",
+        "Vendor management và procurement for technology",
+        "Board presentation, investor due diligence support",
+        "Technical debt quantification frameworks",
+        "OKR / DORA metrics / engineering productivity measurement"
+      ],
+      "experience": [
+        {
+          "project_name": "Viettel Digital Services – Legacy Billing System Modernization (90M subscribers)",
+          "role": "Engineering Director / CTO",
+          "tech_stack": ["Java", "Go", "Kubernetes (GKE)", "Kafka", "PostgreSQL", "Azure", "Terraform"]
+        },
+        {
+          "project_name": "Microsoft Vietnam – Azure Platform & Enterprise Architecture",
+          "role": "Principal Software Engineer",
+          "tech_stack": ["C#/.NET", "Azure (full stack)", "Kubernetes (AKS)", "Service Fabric", "Cosmos DB"]
+        },
+        {
+          "project_name": "Independent Consulting – Tech Due Diligence & Architecture Advisory",
+          "role": "Technical Advisor / Consulting CTO",
+          "tech_stack": ["Architecture review", "Technology assessment", "Team evaluation", "Roadmap planning"]
+        }
+      ],
+      "availability": "Open_for_offers",
+      "cultural_tags": ["Engineering excellence", "Strategic thinking", "Mentoring culture", "Enterprise mindset"]
+    },
+    "private_data": {
+      "contact": {
+        "email": "vothanhliem.cto@gmail.com",
+        "phone": "0912345000",
+        "github": "https://github.com/vothanhliem-principal"
+      },
+      "salary_expectation": "USD 7,000 – 8,000/tháng cho CTO/VP Engineering với equity (tối thiểu 1.5% tại Series B, 3% tại Series A). USD 6,000 – 7,000 cho Principal Engineer IC role. Đây là mức cao nhất trong toàn bộ dataset. Không thương lượng dưới USD 6,000 trong mọi trường hợp.",
+      "project_technical_secrets": "Tại Viettel Digital, quá trình modernize billing COBOL/Java sang cloud-native cho 90 triệu subscribers là một trong những technical challenges lớn nhất từng thực hiện tại Việt Nam. Phát hiện rằng COBOL billing engine có 47 undocumented business rules được encode trong procedural logic mà không có bất kỳ documentation nào – đã dùng một combination của static analysis và event recording để reverse-engineer toàn bộ business rules trước khi migrate. Ngoài ra, biết rõ architecture và kế hoạch kỹ thuật của Viettel trong 3 năm tới – thông tin chiến lược cấp quốc gia. Có mối quan hệ cá nhân với P025 (Trần Thị Minh Phương) từ thời Microsoft Vietnam – hai người có thể tham chiếu nhau và có technical trust.",
+      "interview_questions_history": [
+        {
+          "question": "Làm thế nào bạn modernize một legacy system mà không thể stop-the-world?",
+          "answer": "Strangler Fig Pattern: build new system alongside old, route traffic gradually. Step 1: identify bounded contexts trong monolith – domain boundaries nơi extraction ít phụ thuộc nhất. Step 2: extract leaf services trước (ít dependency nhất). Step 3: event-driven decoupling – legacy emits events mà new services consume, không cần direct API call. Step 4: dual-write period – viết vào cả legacy và new system, validate consistency. Step 5: cut-over sau khi confidence đủ cao. Viettel case: 3 năm, 47 microservices extracted, zero planned downtime. Hardest: session management và distributed transaction across monolith + new services.",
+          "org": "Viettel Digital (board presentation)"
+        },
+        {
+          "question": "Bạn evaluate technical debt trong một codebase như thế nào để justify business investment?",
+          "answer": "Technical debt không phải số abstract – phải translate sang business metrics. Framework: (1) Interest rate: mỗi tháng team spend bao nhiêu % effort fight technical debt thay vì ship features? Nếu 30% → debt costing 30% engineering salary; (2) Velocity impact: story points per sprint trend down? Plot against time, extrapolate; (3) Incident correlation: incidents per month vs code age, complexity metrics; (4) Onboarding time: mới onboard mất bao lâu productive? High debt = high onboarding time. Present dưới dạng: 'Current tech debt costs $X00k/year và tăng. Payoff investment = $Xk, ROI positive trong Y months.' Board hiểu language này.",
+          "org": "Viettel Digital (Annual tech strategy presentation to Board)"
+        }
+      ],
+      "blacklist_orgs": ["Startup giai đoạn pre-seed không đủ engineering scale để justify CTO hire", "Tổ chức treat CTO như Senior Developer", "Công ty không có equity program cho C-level"],
+      "evidence_links": [
+        "https://medium.com/@vothanhliem/viettel-billing-modernization-13-lessons",
+        "https://www.linkedin.com/in/vothanhliem-cto"
+      ]
+    }
+  }
+]

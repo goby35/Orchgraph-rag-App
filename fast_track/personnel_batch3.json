@@ -1,0 +1,424 @@
+[
+  {
+    "personnel_id": "P_011",
+    "public_data": {
+      "full_name": "Đỗ Thị Quỳnh Anh",
+      "professional_summary": "Senior SDET / QA Automation Lead với 5 năm kinh nghiệm, xây dựng và vận hành test automation infrastructure tại Tiki và MoMo. Tại Tiki, bootstrapped toàn bộ QA automation framework từ số 0: thiết lập Playwright E2E suite cho 300+ test cases, API contract testing bằng Pact, performance baseline với k6. Kết quả: regression cycle giảm từ 3 ngày xuống 4 giờ, release confidence tăng đáng kể. Tại MoMo, phụ trách QA cho mobile SDK và payment flow testing trên cả iOS và Android. Thành thạo shift-left testing: tích hợp SAST và test gates vào CI/CD pipelines từ giai đoạn code review. Có kinh nghiệm thực hành chaos engineering ở staging environment. Hiểu sâu về testing pyramid, flaky test management, và observability-driven testing. Tìm kiếm vai trò QA Lead hoặc SDET Manager tại công ty coi quality là engineering concern, không phải bottleneck.",
+      "education": [
+        {
+          "degree": "Kỹ sư",
+          "school": "Đại học Bách Khoa Hà Nội",
+          "major": "Công nghệ Thông tin",
+          "year": "2019"
+        }
+      ],
+      "certificates": [
+        "ISTQB Advanced Level – Test Automation Engineer",
+        "Playwright Official Certification (Microsoft Learn)",
+        "Certified Agile Tester (CAT) – iSQI"
+      ],
+      "skills": [
+        "Playwright / Cypress / Selenium Grid 4",
+        "k6 / JMeter / Gatling (performance testing)",
+        "Postman / RestAssured / Karate (API testing)",
+        "Pact (consumer-driven contract testing)",
+        "Python (pytest, Hypothesis – property-based testing)",
+        "Java (TestNG, JUnit 5)",
+        "Allure Reports / ReportPortal",
+        "Docker / Kubernetes (test environment management)",
+        "GitHub Actions / Jenkins / CircleCI",
+        "WireMock / MockServer (API stubbing)",
+        "SQL (test data management, validation queries)",
+        "Detox / Appium (mobile automation)"
+      ],
+      "experience": [
+        {
+          "project_name": "Tiki – QA Automation Framework (E2E + Contract + Performance)",
+          "role": "QA Automation Engineer → Senior SDET",
+          "tech_stack": ["Playwright", "Pact", "k6", "Python/pytest", "Docker", "GitHub Actions", "Allure"]
+        },
+        {
+          "project_name": "MoMo – Payment Flow & SDK Quality Engineering",
+          "role": "Senior SDET",
+          "tech_stack": ["Detox", "Appium", "RestAssured", "WireMock", "Java/TestNG", "Bitrise"]
+        },
+        {
+          "project_name": "Tiki – CI/CD Quality Gates Integration",
+          "role": "QA Automation Engineer",
+          "tech_stack": ["GitHub Actions", "SonarQube", "Playwright", "k6", "Pact Broker"]
+        }
+      ],
+      "availability": "1_month_notice",
+      "cultural_tags": ["Quality-first", "Shift-left testing", "Agile / Scrum", "CI/CD integration"]
+    },
+    "private_data": {
+      "contact": {
+        "email": "doquynhanh.sdet@gmail.com",
+        "phone": "0901234567",
+        "github": "https://github.com/quynh-sdet"
+      },
+      "salary_expectation": "40,000,000 – 48,000,000 VNĐ/tháng. Ưu tiên môi trường có test automation được coi trọng ngang dev, không phải afterthought.",
+      "project_technical_secrets": "Tại Tiki, phát hiện rằng 15% API endpoints của hệ thống không có timeout configuration – điều này có nghĩa một downstream service chậm có thể cascade thành toàn bộ system unavailability. Đây là silent risk không ai nhận ra cho đến khi bị đào bới trong quá trình setup contract tests. Ngoài ra, đã tự xây dựng một 'chaos injection library' bằng Python để inject network latency và random HTTP 503 vào staging traffic – tìm ra 3 critical bugs trong retry logic của payment service trước khi lên production. Library này chưa được clean up và open-source nhưng đang dùng thực tế. Tại MoMo, biết rõ các edge cases trong SDK payment flow mà ngay cả dev team chính thức cũng không có test coverage đầy đủ.",
+      "interview_questions_history": [
+        {
+          "question": "Giải thích sự khác biệt giữa E2E test và integration test. Khi nào dùng cái nào?",
+          "answer": "E2E test verify toàn bộ user journey qua browser/app thực tế, chậm nhưng confidence cao cho critical paths. Integration test verify contract giữa các services, nhanh hơn và dễ debug. Theo testing trophy của Kent C. Dodds, ưu tiên integration test nhiều nhất, E2E chỉ cho critical paths. Tại Tiki tỷ lệ unit/integration/E2E là 40/45/15.",
+          "org": "MoMo (technical interview vào QA team)"
+        },
+        {
+          "question": "Flaky tests là gì và bạn xử lý chúng như thế nào?",
+          "answer": "Flaky test: pass đôi khi fail mà không có code thay đổi – thường do: timing issues, test order dependency, shared state, external service instability. Phân loại root cause trước khi fix: dùng retry reporter để collect failure patterns. Fix theo thứ tự: explicit waits thay implicit → isolate test data → mock external calls → review async handling. Không nên quarantine flaky tests quá lâu vì mất giá trị signal.",
+          "org": "Shopee Vietnam (SDET interview, nhận offer nhưng chọn Tiki vì tech stack phù hợp hơn)"
+        },
+        {
+          "question": "Design một test strategy cho tính năng thanh toán mới sắp ra mắt trong 2 tuần.",
+          "answer": "Risk-based approach: xác định critical paths (happy path, insufficient funds, network timeout, double-tap prevention). Test levels: unit test cho business logic, contract test với payment gateway, E2E cho 5 critical scenarios, load test với 3x expected peak. Tạo test data factory để seed realistic scenarios. Đặc biệt: idempotency testing – gửi cùng transaction ID hai lần phải không tạo charge thứ hai.",
+          "org": "Tiki (internal QA strategy presentation)"
+        }
+      ],
+      "blacklist_orgs": ["Công ty không có automated testing trong CI pipeline", "Nơi QA chỉ là manual click-through người kiểm tra cuối cùng"],
+      "evidence_links": [
+        "https://dev.to/quynh-sdet/pact-contract-testing-tiki-ecommerce",
+        "https://github.com/quynh-sdet/k6-payment-performance-suite"
+      ]
+    }
+  },
+
+  {
+    "personnel_id": "P_012",
+    "public_data": {
+      "full_name": "Hoàng Minh Khải",
+      "professional_summary": "Senior Backend Engineer với 6 năm kinh nghiệm chuyên sâu về hệ thống hiệu năng cao và distributed systems. Tốt nghiệp ĐH FPT, bắt đầu sự nghiệp tại Tiki với vai trò core backend engineer cho hệ thống payment reconciliation và order management, xử lý hàng chục triệu records mỗi ngày. Sau đó chuyển sang Sky Mavis (Axie Infinity) trong giai đoạn peak growth của Web3 gaming, tham gia xây dựng blockchain data indexer và NFT metadata service. Thành thạo Golang ở mức production-grade: goroutine tuning, escape analysis, profiling với pprof. Trong vai trò hiện tại quan tâm nhiều đến Rust cho các use case cần predictable latency và zero-cost abstractions. Hiểu sâu về PostgreSQL internals (query planner, index types, MVCC), Redis data structures, và Kafka partition strategy. Tìm kiếm môi trường có high-scale technical challenges thực sự, không phải CRUD services.",
+      "education": [
+        {
+          "degree": "Kỹ sư",
+          "school": "Đại học FPT",
+          "major": "Kỹ thuật Phần mềm",
+          "year": "2018"
+        }
+      ],
+      "certificates": [
+        "Go Professional Certification – The Go Authors",
+        "AWS Certified Developer – Associate",
+        "PostgreSQL Associate Certification – EDB"
+      ],
+      "skills": [
+        "Go (advanced: goroutines, channels, pprof profiling, escape analysis)",
+        "Rust (intermediate–advanced: async/Tokio, ownership model, unsafe blocks)",
+        "gRPC / Protocol Buffers", "GraphQL (gqlgen)",
+        "PostgreSQL (internals: EXPLAIN ANALYZE, index tuning, partitioning)",
+        "Redis (data structures, Lua scripting, cluster mode)",
+        "Apache Kafka (producer/consumer tuning, exactly-once)",
+        "AWS (EKS, RDS, ElastiCache, SQS, Lambda)",
+        "Docker / Kubernetes / Helm",
+        "NATS JetStream", "ClickHouse (analytics queries)",
+        "Temporal (workflow orchestration)", "OpenTelemetry"
+      ],
+      "experience": [
+        {
+          "project_name": "Tiki – Payment Reconciliation & Settlement Engine",
+          "role": "Backend Engineer → Senior Backend Engineer",
+          "tech_stack": ["Go", "PostgreSQL", "Kafka", "Redis", "AWS RDS", "gRPC"]
+        },
+        {
+          "project_name": "Sky Mavis – Blockchain Data Indexer & NFT Metadata Service",
+          "role": "Senior Backend Engineer",
+          "tech_stack": ["Go", "PostgreSQL", "Redis", "Kafka", "Ethereum RPC", "AWS EKS"]
+        },
+        {
+          "project_name": "Tiki – Order Management System – High-concurrency Refactor",
+          "role": "Backend Engineer",
+          "tech_stack": ["Go", "PostgreSQL", "Redis Cluster", "Kafka", "Temporal"]
+        }
+      ],
+      "availability": "Open_for_offers",
+      "cultural_tags": ["High-scale system", "Engineering excellence", "Startup energy in big corp", "Deep tech focus"]
+    },
+    "private_data": {
+      "contact": {
+        "email": "hoangminkhai.backend@gmail.com",
+        "phone": "0933112244",
+        "github": "https://github.com/khai-hm-backend"
+      },
+      "salary_expectation": "USD 3,200 – 3,800/tháng. Sẵn sàng xem xét mức thấp hơn nếu có equity meaningful tại early-stage startup.",
+      "project_technical_secrets": "Tại Sky Mavis, sau security incident của Ronin Bridge (2022), đã được giao viết lại toàn bộ NFT metadata indexer từ Go sang Rust như một phần của infrastructure hardening. Kết quả: throughput tăng 8x, memory footprint giảm 60%, và quan trọng hơn – loại bỏ hoàn toàn data race conditions mà Go version có (được phát hiện bằng race detector sau incident). Codebase Rust này dùng Tokio async runtime với custom thread pool configuration cho I/O-bound vs CPU-bound tasks. Kỹ năng Rust production này không được đề cập trên LinkedIn hoặc CV vì toàn bộ giai đoạn incident recovery nằm dưới NDA với Sky Mavis. Đây là kỹ năng cực kỳ hiếm trong thị trường VN – chỉ có khoảng 3-5 người có thể viết Rust production-grade cho backend systems.",
+      "interview_questions_history": [
+        {
+          "question": "Giải thích Go memory model và tại sao cần dùng sync primitives ngay cả với channel.",
+          "answer": "Go memory model đảm bảo happens-before chỉ trong một số trường hợp cụ thể (channel send/receive, sync.Mutex lock/unlock). Đọc/ghi biến shared mà không có synchronization là undefined behavior dù Go runtime không crash ngay. Channel không thay thế mutex khi pattern là multiple goroutines update shared state – dùng sync.RWMutex cho read-heavy, atomic operations cho counters. Minh họa bằng ví dụ map concurrent write gây panic.",
+          "org": "Sky Mavis (senior interview)"
+        },
+        {
+          "question": "Làm thế nào bạn debug một Go service bị memory leak trong production?",
+          "answer": "Enable pprof endpoint (net/http/pprof). Lấy heap profile: `go tool pprof http://localhost:6060/debug/pprof/heap`. Xem top allocations. Với goroutine leak: `/debug/pprof/goroutine` – xem stacks. Thường gặp: goroutine bị block trên channel không có người đọc, timer không được Stop, closure giữ reference đến large slice. Tại Sky Mavis đã tìm ra goroutine leak do WebSocket handler không cleanup khi connection drop.",
+          "org": "Tiki (internal senior engineering review)"
+        },
+        {
+          "question": "Design một distributed rate limiter có thể xử lý 100k requests/giây, consistent trên 50 nodes.",
+          "answer": "Token bucket algorithm với Redis Cluster làm backing store. Dùng Lua script atomic để check-and-decrement token count – đảm bảo atomicity. Sliding window log thay fixed window để tránh burst at boundary. Sharding: hash user_id vào slot để giảm hot key. Fallback strategy khi Redis unavailable: local rate limiter per node với higher limit. Trade-off: consistency vs availability – chấp nhận slight over-limit khi network partition.",
+          "org": "Grab Vietnam (Backend infrastructure interview)"
+        }
+      ],
+      "blacklist_orgs": ["Công ty chỉ làm REST CRUD API không có distributed systems challenge", "Nơi Go được dùng như Python – không care về performance"],
+      "evidence_links": [
+        "https://blog.hoangminkhai.dev/go-memory-model-practical-guide",
+        "https://github.com/khai-hm-backend/go-distributed-ratelimiter"
+      ]
+    }
+  },
+
+  {
+    "personnel_id": "P_013",
+    "public_data": {
+      "full_name": "Nguyễn Thị Thu Thảo",
+      "professional_summary": "Senior React Native Engineer với 5 năm kinh nghiệm chuyên sâu về cross-platform mobile development trong ngành Fintech và B2B SaaS. Làm việc tại MoMo trong 2.5 năm với vai trò key engineer cho Mini App Platform – hệ thống cho phép third-party developers xây dựng mini-apps chạy bên trong MoMo super-app, tương tự WeChat Mini Program. Thành thạo React Native New Architecture (JSI, Fabric renderer, TurboModules) và có kinh nghiệm đào sâu vào Hermes JS engine để tối ưu bundle size và startup time. Giảm React Native bundle từ 12MB xuống 3.8MB bằng Metro bundler tree shaking và code splitting. Hiện tại tại Base.vn, phụ trách mobile app cho B2B HR platform. Nắm vững Reanimated 3 cho complex animations, React Query cho server state management, Detox cho E2E mobile testing. Tìm kiếm role Senior/Lead React Native tại product company fintech hoặc super-app.",
+      "education": [
+        {
+          "degree": "Kỹ sư",
+          "school": "Đại học Khoa học Tự nhiên – ĐHQG TP.HCM",
+          "major": "Công nghệ Thông tin",
+          "year": "2019"
+        }
+      ],
+      "certificates": [
+        "Meta React Native Professional Certificate",
+        "AWS Certified Developer – Associate",
+        "Google UX Design Certificate (mobile focus)"
+      ],
+      "skills": [
+        "React Native (New Architecture: JSI / Fabric / TurboModules)",
+        "TypeScript", "JavaScript (ES2024)",
+        "Hermes engine (bundle optimization, bytecode compilation)",
+        "React Navigation v6", "Reanimated 3 / Gesture Handler",
+        "Redux Toolkit / Zustand / React Query",
+        "Expo (managed + bare workflow)", "EAS Build / Submit",
+        "Detox (E2E) / React Native Testing Library / Jest",
+        "Fastlane / Bitrise / GitHub Actions (mobile CI/CD)",
+        "Native modules (Kotlin bridge / Swift bridge)",
+        "Firebase (Crashlytics, Performance, Remote Config)",
+        "WebRTC (React Native integration)"
+      ],
+      "experience": [
+        {
+          "project_name": "MoMo – Mini App Platform (Super-App Ecosystem)",
+          "role": "Senior React Native Engineer",
+          "tech_stack": ["React Native", "JSI/TurboModules", "TypeScript", "Hermes", "Custom JS sandbox", "Firebase"]
+        },
+        {
+          "project_name": "MoMo – Peer-to-peer Money Transfer Feature Redesign",
+          "role": "React Native Engineer",
+          "tech_stack": ["React Native", "Reanimated 2", "Redux Toolkit", "Biometric API", "Firebase A/B Testing"]
+        },
+        {
+          "project_name": "Base.vn – HR Mobile App (Attendance, Payslip, Leave)",
+          "role": "Senior React Native Engineer",
+          "tech_stack": ["React Native", "TypeScript", "React Query", "Zustand", "Detox", "EAS Build"]
+        }
+      ],
+      "availability": "Open_for_offers",
+      "cultural_tags": ["Startup", "Product-first", "Cross-platform advocate", "Performance-obsessed"]
+    },
+    "private_data": {
+      "contact": {
+        "email": "nguyenthuthao.rn@gmail.com",
+        "phone": "0956789012",
+        "github": "https://github.com/thuthao-rn"
+      },
+      "salary_expectation": "55,000,000 – 65,000,000 VNĐ/tháng. Ưu tiên remote hybrid, không chấp nhận yêu cầu OT không có kế hoạch trước.",
+      "project_technical_secrets": "Tại MoMo, đã thiết kế và xây dựng toàn bộ technical architecture cho Mini App Platform: mỗi mini-app là một JS bundle riêng biệt được load động vào isolated JS context tại runtime, với custom bridge layer kiểm soát hoàn toàn các native API mà mini-app được phép gọi (camera, contacts, payment triggers). Đây là kiến trúc 'mini-program sandbox' tương tự WeChat nhưng tự implement từ đầu, không dùng bất kỳ off-the-shelf framework nào. Toàn bộ security model của sandbox (cách isolate JS context, whitelist native modules, revoke permission theo lifecycle) là IP của MoMo. Ngoài ra, biết rõ cách MoMo xử lý deep link interception và universal link security để ngăn link hijacking từ mini-app malicious.",
+      "interview_questions_history": [
+        {
+          "question": "React Native New Architecture (JSI) khác gì so với Bridge cũ?",
+          "answer": "Bridge cũ: giao tiếp JS↔Native qua JSON serialization, bất đồng bộ hoàn toàn, bottleneck ở large data transfer. JSI (JavaScript Interface): JS engine expose trực tiếp C++ host objects, gọi native code synchronously không cần serialize. TurboModules: lazy load native modules chỉ khi cần. Fabric: concurrent rendering với React 18 features. Kết quả thực tế: startup time giảm ~40%, animation frame drops giảm đáng kể.",
+          "org": "MoMo (technical lead interview)"
+        },
+        {
+          "question": "Bạn sẽ approach như thế nào khi React Native app bị jank (drop frames) trên màn hình danh sách dài?",
+          "answer": "Đo trước bằng Flipper Performance Monitor: JS thread hay UI thread bị block? Nếu JS thread: optimize re-renders (React.memo, useCallback, selector memoization), dùng FlatList thay ScrollView với getItemLayout. Nếu UI thread: reduce shadow/elevation, avoid overdraw, image resizing trước khi display. Worst case: move heavy computation vào worklets bằng Reanimated để chạy trực tiếp trên UI thread. Tại MoMo đã giải quyết jank trong transaction history list bằng cách virtualize 500+ items.",
+          "org": "Shopee Vietnam (mobile team, đã phỏng vấn)"
+        },
+        {
+          "question": "Làm thế nào bạn đảm bảo security khi deep link trigger một payment action?",
+          "answer": "Validate scheme + host trong app config (không cho custom scheme trigger payment). Sử dụng Universal Links (iOS) / App Links (Android) với digital asset links verification. Require re-authentication (biometrics/PIN) khi deep link trigger financial action bất kể session state. Log và alert khi deep link params chứa suspicious patterns. Tại MoMo có thêm layer: mọi payment initiation từ external source đều phải qua confirmation screen với full transaction detail.",
+          "org": "VNPay (partner technical alignment meeting)"
+        }
+      ],
+      "blacklist_orgs": ["Công ty muốn React Native nhưng trả lương native developer mức junior", "Môi trường buộc OT cuối sprint mà không có planning tốt"],
+      "evidence_links": [
+        "https://medium.com/@thuthao-rn/react-native-mini-app-architecture-lessons",
+        "https://github.com/thuthao-rn/rn-hermes-bundle-optimizer"
+      ]
+    }
+  },
+
+  {
+    "personnel_id": "P_014",
+    "public_data": {
+      "full_name": "Phạm Hoàng Việt",
+      "professional_summary": "AI Research Engineer với 5 năm kinh nghiệm, từng làm tại VinAI Research (top AI lab tại Việt Nam) và Samsung R&D Vietnam. Tại VinAI, là thành viên của nhóm NLP – đồng tác giả 2 bài báo về Vietnamese language understanding tại hội nghị EMNLP và NAACL. Chuyên sâu về LLM infrastructure: fine-tuning (full fine-tune, LoRA/QLoRA, PEFT), efficient inference (GPTQ, AWQ, GGUF quantization), và serving (vLLM, TensorRT-LLM). Tại Samsung R&D, tập trung vào on-device AI: tối ưu LLM inference cho chip NPU của Galaxy, viết custom CUDA/OpenCL kernels cho quantized attention. Có kinh nghiệm distributed training trên multi-GPU cluster với DeepSpeed ZeRO-3 và FSDP. Contributor nhỏ trong HuggingFace Transformers repository. Đang tìm kiếm vị trí Senior/Staff AI Engineer hoặc ML Infrastructure Lead tại tổ chức có bài toán AI production thực sự phức tạp.",
+      "education": [
+        {
+          "degree": "Kỹ sư",
+          "school": "Đại học Bách Khoa TP.HCM",
+          "major": "Khoa học Máy tính",
+          "year": "2019"
+        }
+      ],
+      "certificates": [
+        "NVIDIA Deep Learning Institute – Accelerating CUDA C++ Applications",
+        "Deep Learning Specialization – Coursera (Andrew Ng) – with distinction",
+        "Google Professional Machine Learning Engineer"
+      ],
+      "skills": [
+        "Python (PyTorch, JAX, NumPy, HuggingFace ecosystem)",
+        "CUDA programming (custom kernels, Triton language)",
+        "Model quantization (GPTQ, AWQ, GGUF, SmoothQuant)",
+        "LLM serving (vLLM, TensorRT-LLM, llama.cpp)",
+        "PEFT / LoRA / QLoRA / DPO fine-tuning",
+        "Distributed training (DeepSpeed ZeRO, FSDP, Megatron-LM)",
+        "MLflow / Weights & Biases (experiment tracking)",
+        "Docker / Kubernetes (ML workloads)",
+        "FastAPI / Triton Inference Server (model serving)",
+        "Evaluation frameworks (HELM, lm-evaluation-harness)",
+        "Vietnamese NLP (PhoBERT, VinAI Translate, tokenization for tonal languages)",
+        "RAG architecture (LangChain, LlamaIndex, vector DBs: Weaviate, Qdrant)"
+      ],
+      "experience": [
+        {
+          "project_name": "VinAI Research – Vietnamese NLP & Language Model Pre-training",
+          "role": "AI Research Engineer",
+          "tech_stack": ["PyTorch", "HuggingFace", "DeepSpeed", "CUDA", "MLflow", "SLURM (HPC cluster)"]
+        },
+        {
+          "project_name": "Samsung R&D – On-device LLM Inference Optimization (Galaxy AI)",
+          "role": "Senior AI Engineer",
+          "tech_stack": ["CUDA", "OpenCL", "TensorRT", "ONNX Runtime", "PyTorch Mobile", "Custom quantization kernels"]
+        },
+        {
+          "project_name": "VinAI Research – Document Understanding Pipeline (Legal Domain)",
+          "role": "AI Research Engineer",
+          "tech_stack": ["PyTorch", "LayoutLM", "HuggingFace", "FastAPI", "PostgreSQL", "Docker"]
+        }
+      ],
+      "availability": "1_month_notice",
+      "cultural_tags": ["R&D", "Academic mindset", "Deep tech focus", "Publication culture"]
+    },
+    "private_data": {
+      "contact": {
+        "email": "phamhoangviet.ai@gmail.com",
+        "phone": "0977654321",
+        "github": "https://github.com/viet-ai-research"
+      },
+      "salary_expectation": "USD 4,500 – 5,500/tháng. Mức cao nhất trong career history. Justified bởi CUDA expertise, research background, và on-device AI experience cực kỳ hiếm tại thị trường Việt Nam.",
+      "project_technical_secrets": "Tại Samsung R&D Vietnam, đã viết custom CUDA kernels cho quantized grouped attention mechanism trong Transformer (4-bit weight, 8-bit activation, với custom dequantization fused vào attention computation). Kernel này kết hợp flash attention pattern với quantization-aware compute để chạy hiệu quả trên Exynos NPU + GPU hybrid của Galaxy S24 series. Kết quả: 3.2x inference speedup so với vanilla PyTorch implementation, 55% memory reduction. Đây là Samsung IP, không thể disclose chi tiết nhưng có thể describe approach chung. Ngoài ra, đang hoàn thiện một unpublished research paper về Vietnamese-specific tokenizer sử dụng byte-level BPE với tone-aware merge rules – giảm sequence length 18% so với SentencePiece cho tiếng Việt, cải thiện đáng kể context window utilization khi fine-tune LLM cho Vietnamese tasks. Target submit EMNLP 2025.",
+      "interview_questions_history": [
+        {
+          "question": "Giải thích Flash Attention và tại sao nó quan trọng cho LLM training.",
+          "answer": "Standard attention: O(N²) memory do lưu toàn bộ attention matrix. Flash Attention: tiling – chia Q/K/V thành blocks, compute attention incrementally để tránh materialize full N×N matrix. Memory complexity giảm từ O(N²) xuống O(N). Kết quả: 2-4x speedup, memory giảm 5-20x. Flash Attention 2 thêm work partition tốt hơn trên multi-head. Flash Attention 3 dùng async SM pipeline cho H100. Trong practice tại VinAI: tăng sequence length training từ 512 lên 4096 với cùng GPU memory.",
+          "org": "VinAI Research (internal knowledge sharing)"
+        },
+        {
+          "question": "Làm thế nào bạn decide giữa full fine-tuning, LoRA, và QLoRA cho một LLM task mới?",
+          "answer": "Full fine-tune: khi data lớn (>100k examples), task đòi hỏi thay đổi sâu representation, và compute không bị giới hạn. LoRA: task-specific adaptation với rank r << d_model, tiết kiệm 70%+ memory, merge được với base model khi serve. QLoRA: khi chỉ có 1-2 GPU consumer grade (24GB VRAM), 4-bit base model + LoRA adapters, trade-off: training chậm hơn ~20%. Tại Samsung thường dùng QLoRA vì constraint on-device model phải fit 6B params trong 4GB.",
+          "org": "Samsung R&D Vietnam (AI team knowledge transfer)"
+        },
+        {
+          "question": "Bạn sẽ evaluate một LLM Vietnamese như thế nào ngoài perplexity?",
+          "answer": "Perplexity là proxy yếu. Dùng: VLUE benchmark (Vietnamese Language Understanding Evaluation) cho downstream tasks. Human evaluation sample (100-200 examples) với rubric rõ ràng: fluency, accuracy, cultural appropriateness. Specific probes: diacritics handling, tonal word disambiguation, formal vs informal register. Với instruction-tuned model thêm adversarial prompts để test safety và refusal quality. Tại VinAI tự build internal benchmark cho legal và medical domain Vietnamese.",
+          "org": "VinAI Research (research review board)"
+        }
+      ],
+      "blacklist_orgs": ["Công ty gọi là 'AI company' nhưng chỉ wrap OpenAI API không có ML engineering thực sự", "Môi trường không có GPU budget cho nghiên cứu"],
+      "evidence_links": [
+        "https://aclanthology.org/placeholder-emnlp-2023-phamhoangviet",
+        "https://github.com/viet-ai-research/vietnamese-efficient-tokenizer"
+      ]
+    }
+  },
+
+  {
+    "personnel_id": "P_015",
+    "public_data": {
+      "full_name": "Lê Thị Khánh Linh",
+      "professional_summary": "Cloud Solutions Architect và Staff Engineer với 8 năm kinh nghiệm, từng làm tại FPT Software và 3 năm ở vị trí Solutions Architect tại AWS Vietnam. Trong thời gian tại AWS, thiết kế cloud architecture cho hơn 40 enterprise clients tại Việt Nam trong lĩnh vực banking, retail, và manufacturing – giúp các tổ chức này tiết kiệm trung bình 28% cloud spend thông qua FinOps optimization framework tự phát triển. Thành thạo AWS ở mức Professional: deep expertise về networking (Transit Gateway, Direct Connect, PrivateLink), security (IAM, SCPs, GuardDuty, Security Hub), và cost optimization (Savings Plans, RI, Spot). Có kinh nghiệm thiết kế multi-account AWS Organizations strategy và Control Tower landing zone. Ngoài AWS, làm việc thực tế với GCP (GKE, BigQuery, Cloud Run) và Azure (AKS). Tìm kiếm vai trò VP Engineering, CTO, hoặc Principal Engineer tại product company với cloud-first architecture.",
+      "education": [
+        {
+          "degree": "Kỹ sư",
+          "school": "Đại học Bách Khoa TP.HCM",
+          "major": "Kỹ thuật Điện tử – Viễn thông",
+          "year": "2016"
+        }
+      ],
+      "certificates": [
+        "AWS Certified Solutions Architect – Professional",
+        "AWS Certified Advanced Networking – Specialty",
+        "Google Cloud Professional Cloud Architect",
+        "FinOps Certified Practitioner – FinOps Foundation",
+        "TOGAF 9 Certified (Enterprise Architecture)"
+      ],
+      "skills": [
+        "AWS (SA-Pro level: EC2, EKS, RDS Aurora, DynamoDB, S3, CloudFront, WAF, Direct Connect, Transit Gateway, Organizations, Control Tower, GuardDuty, Security Hub, Cost Explorer)",
+        "GCP (GKE, Cloud Run, BigQuery, Anthos)",
+        "Azure (AKS, Azure AD, ExpressRoute)",
+        "Terraform / AWS CDK / Pulumi",
+        "FinOps (Savings Plans optimization, RI strategy, spot fleet management)",
+        "Kubernetes (EKS, GKE – architecture level)",
+        "Network architecture (BGP, DNS design, load balancing, CDN)",
+        "Security architecture (Zero Trust, IAM governance, compliance frameworks)",
+        "Python / Go (infrastructure automation scripts)",
+        "ArgoCD / GitHub Actions (GitOps at enterprise scale)",
+        "TOGAF / AWS Well-Architected Framework"
+      ],
+      "experience": [
+        {
+          "project_name": "AWS Vietnam – Enterprise Cloud Architecture Consulting (40+ clients)",
+          "role": "Solutions Architect",
+          "tech_stack": ["AWS (full stack)", "Terraform", "AWS CDK", "Direct Connect", "Transit Gateway", "Organizations"]
+        },
+        {
+          "project_name": "FPT Software – Cloud Migration Factory (10 clients/year)",
+          "role": "Cloud Architect",
+          "tech_stack": ["AWS", "GCP", "Terraform", "Kubernetes", "Python automation"]
+        },
+        {
+          "project_name": "AWS Vietnam – FinOps Practice Development",
+          "role": "Solutions Architect (FinOps specialist)",
+          "tech_stack": ["AWS Cost Explorer", "CloudHealth", "Spot.io", "Custom Athena queries", "Python"]
+        }
+      ],
+      "availability": "Open_for_offers",
+      "cultural_tags": ["Enterprise mindset", "Cost-conscious engineering", "Well-Architected", "Strategic thinking"]
+    },
+    "private_data": {
+      "contact": {
+        "email": "lekhanh.linh.arch@gmail.com",
+        "phone": "0918876543",
+        "github": "https://github.com/khanh-linh-arch"
+      },
+      "salary_expectation": "USD 4,000 – 4,800/tháng. Sẵn sàng xem xét thấp hơn 20% nếu role là VP Engineering hoặc CTO với equity tại Series A+ startup. Không dưới USD 3,500 trong mọi trường hợp.",
+      "project_technical_secrets": "Trong 3 năm tại AWS Vietnam, đã phát triển một 'FinOps Waste Detection Framework' độc quyền: bộ 47 Athena queries phân tích Cost and Usage Report theo taxonomy tùy chỉnh, tự động identify idle resources, oversized instances, và suboptimal data transfer patterns. Framework này nhất quán tìm ra 28% cloud spend reduction trung bình cho clients VN – cao hơn 2x so với AWS Cost Explorer recommendations mặc định vì tính đến hành vi usage patterns cụ thể của doanh nghiệp Việt. Framework không được publish dưới dạng tool vì AWS không khuyến khích SAs tạo competing products. Ngoài ra, trong quá trình consulting cho 2 ngân hàng Việt Nam lớn, có kiến thức sâu về security gaps và technical debt trong hệ thống core banking của họ (dưới NDA nghiêm ngặt).",
+      "interview_questions_history": [
+        {
+          "question": "Giải thích sự khác biệt giữa AWS Transit Gateway và VPC Peering. Khi nào dùng cái nào?",
+          "answer": "VPC Peering: point-to-point, không transitive (A↔B, B↔C không có nghĩa A↔C), phù hợp ít VPCs. Transit Gateway: hub-and-spoke, transitive routing, support 5000+ VPCs, tích hợp Direct Connect và VPN. Cost: TGW đắt hơn (data processing fee $0.02/GB). Với multi-account Organizations: TGW + RAM (Resource Access Manager) là best practice. VPC Peering vẫn hợp lý khi 2-3 VPCs và cost sensitivity cao.",
+          "org": "AWS internal Solutions Architect interview"
+        },
+        {
+          "question": "Khách hàng đang có cloud bill $200k/tháng và muốn giảm 30%. Bạn bắt đầu từ đâu?",
+          "answer": "1/ Enable Cost Explorer + Cost Anomaly Detection ngay. 2/ Phân tích breakdown: EC2 thường chiếm 40-60%, RDS 15-20%. 3/ Quick wins (2 tuần): delete unattached EBS volumes và idle ELBs, rightsize theo CloudWatch metrics, stop dev/staging instances ngoài giờ. 4/ Medium term (1 tháng): Savings Plans cho EC2/Fargate/Lambda baseline, RDS Reserved Instances. 5/ Strategic: Spot Fleet cho batch workloads, S3 Intelligent-Tiering, review data transfer giữa AZs. Tại một client banking đã đạt 32% reduction trong 6 tuần.",
+          "org": "FPT Software (client pitch, sau đó áp dụng thực tế)"
+        },
+        {
+          "question": "Design AWS landing zone cho một startup mới với 5 teams, dự kiến scale lên 50 teams trong 2 năm.",
+          "answer": "AWS Organizations với multi-account strategy ngay từ đầu: Management account (chỉ billing), Security account (GuardDuty master, CloudTrail central, Security Hub aggregator), Log Archive account, Shared Services account (DNS, VPN, artifact repos). Per team: 2 accounts (dev/staging và production), kết nối qua Transit Gateway. Control Tower để enforce SCPs và guardrails. Thiết kế IAM identity với AWS SSO + permission sets, không phải individual IAM users. Landing Zone Accelerator để IaC toàn bộ baseline setup.",
+          "org": "AWS Vietnam (client workshop với fintech startup)"
+        }
+      ],
+      "blacklist_orgs": ["Công ty treat cloud architect như 'senior sysadmin đổi tên'", "Môi trường lift-and-shift mà không tư duy cloud-native", "Tổ chức không có FinOps mindset – chỉ quan tâm feature, không quan tâm cost"],
+      "evidence_links": [
+        "https://aws.amazon.com/blogs/architecture/placeholder-khanh-linh-finops-vietnam",
+        "https://github.com/khanh-linh-arch/aws-finops-waste-detector"
+      ]
+    }
+  }
+]

@@ -1,0 +1,398 @@
+[
+  {
+    "personnel_id": "P_001",
+    "public_data": {
+      "full_name": "Nguyễn Minh Khoa",
+      "professional_summary": "Senior Backend Engineer với hơn 6 năm kinh nghiệm xây dựng các hệ thống phân tán hiệu năng cao tại VNG Corporation và Shopee Vietnam. Thành thạo Go và Java trong việc thiết kế microservices giao tiếp qua gRPC, tích hợp message queue Kafka với throughput hơn 1 triệu message/giây. Có kinh nghiệm sâu về database sharding với PostgreSQL và caching layer sử dụng Redis Cluster. Từng dẫn dắt team 5 kỹ sư backend triển khai hệ thống thanh toán realtime xử lý 50.000 TPS tại VNG. Nắm vững Kubernetes, Helm Charts và CI/CD pipelines trên môi trường AWS EKS. Hiểu biết về Domain-Driven Design, CQRS, Event Sourcing. Có đóng góp cho các open-source Go libraries về connection pooling. Đam mê giải quyết bài toán low-latency và high-availability. Tìm kiếm môi trường kỹ thuật cao, đặt engineering excellence làm trung tâm.",
+      "education": [
+        {
+          "degree": "Kỹ sư",
+          "school": "Đại học Bách Khoa Hà Nội",
+          "major": "Khoa học Máy tính",
+          "year": "2017"
+        }
+      ],
+      "certificates": [
+        "AWS Certified Solutions Architect – Associate",
+        "Certified Kubernetes Application Developer (CKAD)",
+        "Google Cloud Professional Data Engineer (đang hoàn thành)"
+      ],
+      "skills": [
+        "Go (Golang)", "Java 17", "gRPC / Protocol Buffers", "Apache Kafka",
+        "PostgreSQL", "Redis Cluster", "Kubernetes / Helm", "AWS EKS / ECR / RDS",
+        "Docker", "Elasticsearch", "Microservices Architecture", "Domain-Driven Design",
+        "CQRS / Event Sourcing", "CI/CD (GitHub Actions, ArgoCD)"
+      ],
+      "experience": [
+        {
+          "project_name": "ZaloPay Core Payment Engine",
+          "role": "Senior Backend Engineer (Tech Lead phụ)",
+          "tech_stack": ["Go", "gRPC", "Kafka", "PostgreSQL", "Redis", "Kubernetes"]
+        },
+        {
+          "project_name": "Shopee Order Management System – Vietnam Market",
+          "role": "Backend Engineer L4",
+          "tech_stack": ["Java", "Spring Boot", "Kafka", "AWS RDS Aurora", "Redis", "DynamoDB"]
+        },
+        {
+          "project_name": "Internal API Gateway tại VNG",
+          "role": "Backend Engineer",
+          "tech_stack": ["Go", "Nginx", "Lua scripting", "Consul", "Prometheus"]
+        }
+      ],
+      "availability": "1_month_notice",
+      "cultural_tags": ["High-scale system", "Engineering excellence", "Agile / Scrum", "Startup energy in big corp"]
+    },
+    "private_data": {
+      "contact": {
+        "email": "nguyenminhkhoa.dev@gmail.com",
+        "phone": "0912345678",
+        "github": "https://github.com/minhkhoa-dev"
+      },
+      "salary_expectation": "USD 4,000 – 4,500/tháng (gross), linh hoạt với equity nếu startup tiềm năng",
+      "project_technical_secrets": "Tại ZaloPay, đã tự thiết kế thuật toán 'Adaptive Rate Limiter' dùng sliding window + token bucket hybrid, cho phép auto-scale limit dựa theo pattern giao dịch realtime mà không cần restart service. Logic core viết thuần Go không dùng thư viện ngoài để tránh license risk. Đây là IP của VNG, chưa từng public.",
+      "interview_questions_history": [
+        {
+          "question": "Thiết kế một hệ thống distributed lock không dùng Redis, đảm bảo correctness khi có network partition.",
+          "answer": "Đề xuất dùng Raft-based consensus (etcd) kết hợp lease-based lock với TTL. Giải thích tại sao Redis SETNX không đảm bảo safety trong split-brain scenario. Vẽ diagram Raft leader election.",
+          "org": "Shopee Vietnam"
+        },
+        {
+          "question": "Làm sao bạn handle exactly-once semantics trong Kafka consumer pipeline?",
+          "answer": "Dùng transactional API của Kafka producer + idempotent consumer với deduplication table trong PostgreSQL. Giải thích trade-off giữa at-least-once và exactly-once về throughput.",
+          "org": "Google Vietnam (vòng system design)"
+        },
+        {
+          "question": "Kể về thời điểm production incident tệ nhất bạn từng gặp.",
+          "answer": "ZaloPay incident 2021: Kafka consumer lag spike do GC pause trong JVM. Giải pháp: migrate sang Go consumer, tune GC off, kết quả p99 latency giảm từ 2s xuống 80ms.",
+          "org": "VNG Corporation (internal review)"
+        }
+      ],
+      "blacklist_orgs": ["Công ty XYZ Tech (quản lý toxic, từng offer rồi rút lại)", "Outsourcing Corp A (làm body-shop, không phù hợp)"],
+      "evidence_links": [
+        "https://medium.com/@minhkhoa-dev/building-payment-gateway-golang-2022",
+        "https://github.com/minhkhoa-dev/adaptive-rate-limiter-concept"
+      ]
+    }
+  },
+
+  {
+    "personnel_id": "P_002",
+    "public_data": {
+      "full_name": "Trần Thị Lan Anh",
+      "professional_summary": "Data Engineer với 5 năm kinh nghiệm xây dựng data pipelines và real-time analytics platforms tại FPT Software và Grab Vietnam. Chuyên sâu về Apache Spark, dbt, Apache Airflow trong thiết kế data lakehouse trên AWS S3 + Glue Catalog. Thành thạo SQL nâng cao, window functions, và data modeling theo Kimball methodology. Tại Grab, đã xây dựng và vận hành data platform phục vụ 50+ data consumers với SLA 99.9%. Có kinh nghiệm tích hợp streaming data từ Kafka vào batch pipeline. Hiểu biết về Machine Learning lifecycle: feature engineering, MLflow experiment tracking, model serving với FastAPI. Quan tâm đến data quality, data observability (Great Expectations, Monte Carlo). Tìm kiếm vai trò Senior DE hoặc Staff DE trong môi trường product company, ưu tiên team có data culture mạnh.",
+      "education": [
+        {
+          "degree": "Kỹ sư",
+          "school": "Đại học Bách Khoa Hà Nội",
+          "major": "Công nghệ Thông tin",
+          "year": "2018"
+        },
+        {
+          "degree": "Chứng chỉ Data Science chuyên sâu",
+          "school": "Coursera – Johns Hopkins University",
+          "major": "Applied Data Science",
+          "year": "2019"
+        }
+      ],
+      "certificates": [
+        "AWS Certified Data Analytics – Specialty",
+        "dbt Certified Developer",
+        "Databricks Certified Associate Developer for Apache Spark"
+      ],
+      "skills": [
+        "Apache Spark (PySpark, Scala)", "Apache Airflow", "dbt (Data Build Tool)",
+        "Apache Kafka", "Python (pandas, numpy, scikit-learn)", "SQL / DWH design",
+        "AWS (S3, Glue, Athena, EMR, Redshift)", "ClickHouse", "Trino / Presto",
+        "Great Expectations", "MLflow", "Terraform (infra cho data stack)", "Git / GitOps"
+      ],
+      "experience": [
+        {
+          "project_name": "Grab Data Platform – Voucher & Incentive Analytics",
+          "role": "Senior Data Engineer",
+          "tech_stack": ["PySpark", "Airflow", "dbt", "AWS S3", "Redshift", "Kafka", "ClickHouse"]
+        },
+        {
+          "project_name": "FPT Software – Telecom Customer 360 DWH",
+          "role": "Data Engineer",
+          "tech_stack": ["Scala Spark", "Hive", "HDFS", "Oozie", "Oracle DWH"]
+        },
+        {
+          "project_name": "Feature Store cho ML Models tại Grab",
+          "role": "Data Engineer (ML Platform)",
+          "tech_stack": ["Python", "MLflow", "Redis (feature serving)", "Feast (feature store)", "Airflow"]
+        }
+      ],
+      "availability": "Open_for_offers",
+      "cultural_tags": ["Data-driven culture", "R&D", "Product company", "Remote-friendly"]
+    },
+    "private_data": {
+      "contact": {
+        "email": "tranlananh.data@gmail.com",
+        "phone": "0987654321",
+        "github": "https://github.com/lananh-data"
+      },
+      "salary_expectation": "USD 3,000 – 3,500/tháng, ưu tiên remote 100% hoặc hybrid 2 ngày/tuần",
+      "project_technical_secrets": "Tại Grab, đã xây dựng một mini data lineage engine nội bộ bằng Python + NetworkX, tự động parse DAG của Airflow và dbt manifest để vẽ đồ thị phụ thuộc cột-mức (column-level lineage). Giải pháp này chưa được document chính thức nhưng đang dùng thực tế cho 200+ dbt models. Ngoài ra, thành thạo Apache Flink stateful streaming (không public trên LinkedIn do NDA với dự án thử nghiệm nội bộ của Grab) – đây là kỹ năng hiếm trong thị trường VN hiện tại. Đã viết Flink jobs xử lý realtime fraud scoring với latency <100ms.",
+      "interview_questions_history": [
+        {
+          "question": "Giải thích sự khác nhau giữa star schema và snowflake schema, khi nào dùng cái nào?",
+          "answer": "Star schema phù hợp với BI tools vì join ít bảng hơn, query nhanh. Snowflake schema tiết kiệm storage nhưng query chậm hơn do nhiều join. Tại Grab dùng star schema cho marketing analytics vì đội BA cần self-serve trên Looker.",
+          "org": "Grab Vietnam (vòng technical)"
+        },
+        {
+          "question": "Bạn sẽ xử lý late-arriving data trong streaming pipeline như thế nào?",
+          "answer": "Dùng watermark mechanism trong Flink/Spark Structured Streaming, kết hợp với event-time window. Allowedlateness parameter để recompute aggregate. Với trường hợp late > threshold thì drop hoặc đẩy vào dead-letter queue để reconcile batch sau.",
+          "org": "Shopee Vietnam (đã từ chối offer vì lương thấp hơn kỳ vọng)"
+        },
+        {
+          "question": "Design một data quality monitoring system cho production pipeline.",
+          "answer": "Dùng Great Expectations cho assertion-based tests chạy sau mỗi Airflow task. Kết hợp với data freshness check bằng custom sensor. Alert qua PagerDuty nếu critical check fail. Đề xuất anomaly detection dùng Z-score trên volume metrics.",
+          "org": "Lazada Vietnam"
+        }
+      ],
+      "blacklist_orgs": ["Công ty outsource chỉ làm data reporting", "Tổ chức không có data engineer team riêng"],
+      "evidence_links": [
+        "https://medium.com/@lananh-data/column-level-lineage-dbt-airflow",
+        "https://github.com/lananh-data/flink-fraud-scoring-demo"
+      ]
+    }
+  },
+
+  {
+    "personnel_id": "P_003",
+    "public_data": {
+      "full_name": "Lê Hoàng Phúc",
+      "professional_summary": "Fullstack Engineer với 5 năm kinh nghiệm, chuyên sâu về React ecosystem và Node.js backend. Đã làm việc tại Tiki và Axon Active Vietnam, có kinh nghiệm thực tế tối ưu Core Web Vitals đưa LCP từ 4.2s xuống 1.1s cho trang danh sách sản phẩm hàng triệu SKU. Thành thạo TypeScript toàn stack, GraphQL API design với Apollo Server, caching strategy dùng Redis và CDN edge caching. Quen thuộc với kiến trúc micro-frontend sử dụng Module Federation. Có background về UX/Performance: profiling bằng Chrome DevTools, Lighthouse CI tích hợp vào pipeline. Tại Axon Active phát triển SaaS B2B cho khách hàng Thụy Sĩ trong ngành insurance. Tìm kiếm vai trò Lead Frontend hoặc Fullstack tại product company có engineering culture tốt, không phải thuần outsourcing.",
+      "education": [
+        {
+          "degree": "Kỹ sư",
+          "school": "Đại học Công nghệ Thông tin – ĐHQG TP.HCM",
+          "major": "Kỹ thuật Phần mềm",
+          "year": "2019"
+        }
+      ],
+      "certificates": [
+        "Meta Frontend Developer Professional Certificate",
+        "AWS Certified Developer – Associate",
+        "Google UX Design Certificate"
+      ],
+      "skills": [
+        "React 18 / Next.js 14", "TypeScript", "Node.js / Express / Fastify",
+        "GraphQL / Apollo Server", "Redux Toolkit / Zustand", "Module Federation (Micro-frontend)",
+        "PostgreSQL / Prisma ORM", "Redis", "AWS (S3, CloudFront, Lambda@Edge)",
+        "Docker", "Jest / React Testing Library / Playwright", "Figma (design collaboration)",
+        "Performance optimization (Core Web Vitals, Lighthouse)"
+      ],
+      "experience": [
+        {
+          "project_name": "Tiki Product Listing Page – Performance Overhaul",
+          "role": "Frontend Engineer",
+          "tech_stack": ["React", "Next.js", "GraphQL", "Redis", "CloudFront", "TypeScript"]
+        },
+        {
+          "project_name": "Axon Active – InsurTech SaaS (Swiss Client)",
+          "role": "Fullstack Engineer",
+          "tech_stack": ["React", "TypeScript", "Node.js", "PostgreSQL", "AWS", "GraphQL"]
+        },
+        {
+          "project_name": "Tiki Seller Center – Micro-frontend Migration",
+          "role": "Frontend Engineer",
+          "tech_stack": ["React", "Module Federation", "Webpack 5", "TypeScript", "Jest"]
+        }
+      ],
+      "availability": "1_month_notice",
+      "cultural_tags": ["Product company", "Agile / Kanban", "Remote-friendly", "Engineering-driven"]
+    },
+    "private_data": {
+      "contact": {
+        "email": "lehoangphuc.web@gmail.com",
+        "phone": "0909123456",
+        "github": "https://github.com/phuc-le-dev"
+      },
+      "salary_expectation": "50,000,000 – 60,000,000 VNĐ/tháng (gross), open with USD nếu công ty nước ngoài",
+      "project_technical_secrets": "Tại Tiki, đã tự nghiên cứu và implement 'Speculative Prefetching' pattern: track mouse hover velocity để predict link người dùng sẽ click, prefetch route trước 200ms. Kết quả: navigation perceived latency giảm 40%. Logic này chưa có trong bất kỳ framework nào, viết thuần vanilla JS. Ngoài ra, tại Axon Active, biết rõ kiến trúc bảo mật của hệ thống insurance claim processing (không được tiết lộ).",
+      "interview_questions_history": [
+        {
+          "question": "Giải thích React Fiber architecture và tại sao nó được tạo ra.",
+          "answer": "Fiber là rewrite của React reconciler, từ synchronous call stack sang incremental rendering. Giải thích Fiber node tree, work loop, và cơ chế time-slicing. Liên kết với Concurrent Mode và Suspense.",
+          "org": "Tiki (vòng technical interview 2019)"
+        },
+        {
+          "question": "Làm thế nào bạn đảm bảo code quality trong một team frontend lớn?",
+          "answer": "ESLint + Prettier + Husky pre-commit hooks. TypeScript strict mode. Component design system với Storybook. Code review checklist chuẩn hóa. Lighthouse CI budget trong pipeline. Đặc biệt quan trọng là 'definition of done' bao gồm accessibility (axe-core).",
+          "org": "Axon Active Vietnam"
+        },
+        {
+          "question": "Tại sao bạn chọn Zustand thay vì Redux trong một số dự án gần đây?",
+          "answer": "Zustand ít boilerplate hơn, API trực quan, bundle size nhỏ (8KB). Phù hợp với dự án vừa và nhỏ. Redux Toolkit vẫn tốt hơn khi cần time-travel debugging hoặc team size lớn cần strict action logging.",
+          "org": "Momo (đã phỏng vấn nhưng không match về tech direction)"
+        }
+      ],
+      "blacklist_orgs": ["Công ty outsource 100% không có product riêng", "Nơi không có code review process"],
+      "evidence_links": [
+        "https://dev.to/phucle/speculative-prefetching-react-nextjs",
+        "https://github.com/phuc-le-dev/module-federation-starter"
+      ]
+    }
+  },
+
+  {
+    "personnel_id": "P_004",
+    "public_data": {
+      "full_name": "Phạm Đức Thành",
+      "professional_summary": "DevOps / Site Reliability Engineer với 6 năm kinh nghiệm tại Tiki và Shopee Vietnam. Chuyên thiết kế và vận hành infrastructure trên AWS và GCP phục vụ hàng triệu người dùng. Thành thạo Kubernetes (EKS, GKE), Terraform Infrastructure-as-Code, và Helm Chart packaging. Tại Tiki, đã dẫn dắt migration toàn bộ infrastructure từ VM sang Kubernetes (47 microservices, zero-downtime). Tại Shopee, xây dựng observability stack (Prometheus + Grafana + Loki + Tempo) đạt MTTD dưới 3 phút cho production incidents. Kinh nghiệm thực tế với GitOps workflow dùng ArgoCD, image scanning bằng Trivy, và secret management qua Vault. Hiểu sâu về Linux kernel, networking (eBPF, Cilium CNI), và cost optimization trên cloud. Tìm kiếm vai trò Staff SRE hoặc Platform Engineer tại công ty có SRE culture trưởng thành.",
+      "education": [
+        {
+          "degree": "Kỹ sư",
+          "school": "Đại học Khoa học Tự nhiên – ĐHQG TP.HCM",
+          "major": "Công nghệ Thông tin",
+          "year": "2017"
+        }
+      ],
+      "certificates": [
+        "Certified Kubernetes Administrator (CKA)",
+        "Certified Kubernetes Security Specialist (CKS)",
+        "AWS Certified DevOps Engineer – Professional",
+        "HashiCorp Certified: Terraform Associate"
+      ],
+      "skills": [
+        "Kubernetes (EKS, GKE, bare-metal)", "Terraform / Pulumi", "Helm",
+        "ArgoCD / Flux (GitOps)", "Prometheus / Grafana / Loki / Tempo",
+        "AWS (EC2, EKS, RDS, S3, VPC, IAM, Cost Explorer)", "GCP (GKE, Cloud Run, BigQuery)",
+        "Docker / containerd", "HashiCorp Vault", "Trivy / Falco (security)",
+        "eBPF / Cilium", "Linux networking / iptables", "Python / Bash scripting",
+        "GitHub Actions / Jenkins", "PagerDuty / OpsGenie"
+      ],
+      "experience": [
+        {
+          "project_name": "Tiki Infrastructure Migration – VM to Kubernetes",
+          "role": "DevOps Lead",
+          "tech_stack": ["Kubernetes", "Helm", "Terraform", "AWS EKS", "ArgoCD", "Prometheus"]
+        },
+        {
+          "project_name": "Shopee VN – Observability Platform Build-out",
+          "role": "SRE Engineer L3",
+          "tech_stack": ["Prometheus", "Grafana", "Loki", "Tempo", "PagerDuty", "GCP GKE"]
+        },
+        {
+          "project_name": "Tiki Platform Security Hardening",
+          "role": "DevOps Engineer",
+          "tech_stack": ["Trivy", "Falco", "HashiCorp Vault", "AWS IAM", "OPA/Gatekeeper"]
+        }
+      ],
+      "availability": "Immediate",
+      "cultural_tags": ["SRE culture", "Platform engineering", "Blameless post-mortems", "On-call maturity"]
+    },
+    "private_data": {
+      "contact": {
+        "email": "phamducthanh.sre@gmail.com",
+        "phone": "0978123456",
+        "github": "https://github.com/thanh-sre"
+      },
+      "salary_expectation": "USD 3,500 – 4,000/tháng, có thể thương lượng nếu có RSU/stock option",
+      "project_technical_secrets": "Tại Tiki, đã viết một Kubernetes admission webhook tùy chỉnh bằng Go để auto-inject sidecar proxy vào các pods nhất định dựa theo namespace annotation, kết hợp với mutating webhook để override resource requests/limits theo cost-tier của service. Solution này giúp giảm 30% cloud cost nhưng chưa được open-source vì vẫn chứa business logic nội bộ. Ngoài ra, biết rõ toàn bộ kiến trúc security boundary của Shopee VN data center (confidential).",
+      "interview_questions_history": [
+        {
+          "question": "Explain the difference between Deployment, StatefulSet, and DaemonSet. When do you use each?",
+          "answer": "Deployment cho stateless workloads với rolling update. StatefulSet cho databases/Kafka cần stable network identity và persistent storage. DaemonSet cho per-node agents như log shippers, monitoring. Giải thích volumeClaimTemplates trong StatefulSet.",
+          "org": "Shopee Vietnam"
+        },
+        {
+          "question": "Làm sao bạn debug một pod bị CrashLoopBackOff mà logs không có gì hữu ích?",
+          "answer": "Dùng `kubectl describe pod` để xem events. Check `previous container logs` bằng `-p` flag. Nếu OOMKilled thì check memory limits. Dùng `kubectl debug` ephemeral container để attach vào running pod. Check readiness/liveness probe config.",
+          "org": "Grab Vietnam (đã phỏng vấn, nhận offer nhưng Shopee counter-offer cao hơn)"
+        },
+        {
+          "question": "Design a zero-downtime deployment strategy for a stateful service with database migrations.",
+          "answer": "Expand-contract pattern: migration chia làm 3 giai đoạn (add column nullable -> backfill data -> add constraint). Blue-green deployment ở application layer. Feature flag để rollback nhanh không cần rollback DB. Dùng ArgoCD progressive delivery với Argo Rollouts canary.",
+          "org": "Tiki (internal promotion interview)"
+        }
+      ],
+      "blacklist_orgs": ["Công ty không có on-call culture rõ ràng", "Nơi dev tự deploy lên production không qua pipeline"],
+      "evidence_links": [
+        "https://medium.com/@thanh-sre/k8s-admission-webhook-cost-optimization",
+        "https://github.com/thanh-sre/observability-stack-helm"
+      ]
+    }
+  },
+
+  {
+    "personnel_id": "P_005",
+    "public_data": {
+      "full_name": "Vũ Thị Thu Hương",
+      "professional_summary": "Senior iOS Engineer với 7 năm kinh nghiệm trong lĩnh vực Fintech và Super App. Đã phát triển các tính năng core của ứng dụng MoMo (thanh toán QR, ví điện tử, loyalty) từ giai đoạn early growth đến 30 triệu người dùng. Hiện tại tại VNG Corporation, tham gia phát triển module livestream commerce trên ZaloShop. Thành thạo Swift, UIKit, và SwiftUI. Có kinh nghiệm sâu về RxSwift / Combine reactive programming, async/await concurrency model. Hiểu biết mạnh về iOS performance: Instruments profiling, memory leak detection, startup time optimization. Kinh nghiệm tích hợp SDK thanh toán (VNPay, MoMo, Apple Pay), sinh trắc học (Face ID, Touch ID). Từng review App Store submission cho team 8 người. Tìm kiếm vai trò iOS Lead hoặc Mobile Architect tại công ty fintech/super-app với technical challenge thực sự.",
+      "education": [
+        {
+          "degree": "Kỹ sư",
+          "school": "Đại học Khoa học Tự nhiên – ĐHQG TP.HCM",
+          "major": "Khoa học Máy tính",
+          "year": "2016"
+        }
+      ],
+      "certificates": [
+        "Apple Certified iOS Developer (WWDC Scholar 2020)",
+        "Professional Scrum Master I (PSM I)",
+        "CFA Level 1 (kiến thức domain cho fintech)"
+      ],
+      "skills": [
+        "Swift 5.9 / Objective-C", "SwiftUI / UIKit", "RxSwift / Combine",
+        "async/await / Swift Concurrency", "Core Data / Realm", "Core Animation / Core Graphics",
+        "AVFoundation (video/livestream)", "ARKit (thử nghiệm)", "XCTest / XCUITest",
+        "Fastlane / Bitrise (CI/CD mobile)", "Firebase (Crashlytics, A/B Testing, Remote Config)",
+        "Payment SDK integration (VNPay, Apple Pay, MoMo SDK)", "App Store Connect / TestFlight",
+        "Instruments (performance profiling)"
+      ],
+      "experience": [
+        {
+          "project_name": "MoMo – QR Payment & Digital Wallet Core",
+          "role": "iOS Engineer → Senior iOS Engineer",
+          "tech_stack": ["Swift", "UIKit", "RxSwift", "Core Data", "VNPay SDK", "Firebase", "Fastlane"]
+        },
+        {
+          "project_name": "VNG ZaloShop – Livestream Commerce Feature",
+          "role": "Senior iOS Engineer",
+          "tech_stack": ["Swift", "SwiftUI", "AVFoundation", "WebRTC", "Combine", "Firebase"]
+        },
+        {
+          "project_name": "MoMo – Loyalty & Gamification Module",
+          "role": "iOS Engineer",
+          "tech_stack": ["Swift", "Core Animation", "RxSwift", "Firebase Remote Config", "Lottie"]
+        }
+      ],
+      "availability": "Open_for_offers",
+      "cultural_tags": ["Fintech / Superapp", "Product-obsessed", "User-centric design", "Agile / Scrum"]
+    },
+    "private_data": {
+      "contact": {
+        "email": "vuthuhuong.ios@gmail.com",
+        "phone": "0934567890",
+        "github": "https://github.com/huong-ios"
+      },
+      "salary_expectation": "70,000,000 – 80,000,000 VNĐ/tháng, hoặc USD 3,000 – 3,500 nếu công ty nước ngoài. Không xem xét dưới 65M.",
+      "project_technical_secrets": "Tại MoMo, đã tự nghiên cứu và implement một 'Secure Memory Zone' cho các sensitive data (PIN, biometric token) bằng cách kết hợp iOS Secure Enclave với in-memory encryption. Data được XOR với một runtime key được gen từ device fingerprint, không bao giờ persist ra disk dưới dạng plaintext. Giải pháp này vượt qua được một cuộc pentest của đối tác nước ngoài năm 2021. Đây là IP của MoMo. Ngoài ra, biết rõ luồng xử lý thanh toán nội bộ của MoMo bao gồm fail-over strategy khi NAPAS gặp sự cố.",
+      "interview_questions_history": [
+        {
+          "question": "Giải thích cơ chế hoạt động của ARC (Automatic Reference Counting) và cách tránh retain cycles.",
+          "answer": "ARC tự động quản lý memory bằng cách theo dõi strong references. Retain cycle xảy ra khi hai object giữ strong reference lẫn nhau. Giải pháp: dùng `weak` hoặc `unowned` trong closure captures và delegate patterns. Demo bằng ví dụ UIViewController + ViewModel với RxSwift DisposeBag.",
+          "org": "MoMo (internal promotion interview lên Senior)"
+        },
+        {
+          "question": "Làm sao bạn tối ưu app launch time?",
+          "answer": "Đo bằng Instruments Time Profiler. Giảm static initializers, lazy-load non-critical frameworks. Dùng `dyld_closure_create_from_shared_cache` awareness. Tại MoMo đã giảm cold launch từ 3.2s xuống 1.4s bằng cách defer Firebase initialization và lazy-load 3 SDK nặng.",
+          "org": "Grab Vietnam (mobile team, đã phỏng vấn)"
+        },
+        {
+          "question": "Describe your approach to handling offline-first functionality in a payment app.",
+          "answer": "Dùng Core Data với conflict resolution policy, sync queue với exponential backoff. Quan trọng nhất: idempotency key cho mọi payment transaction để tránh double-charge khi reconnect. UI phải clearly communicate trạng thái pending/synced/failed cho user.",
+          "org": "Stripe Singapore (remote interview, offer nhưng không muốn relocate)"
+        }
+      ],
+      "blacklist_orgs": ["Công ty game (không match domain)", "Tổ chức yêu cầu OT thường xuyên không có compensation"],
+      "evidence_links": [
+        "https://medium.com/@huong-ios/secure-enclave-ios-fintech-2021",
+        "https://github.com/huong-ios/swiftui-rx-architecture-pattern"
+      ]
+    }
+  }
+]
