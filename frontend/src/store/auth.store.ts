@@ -23,6 +23,11 @@ function roleFromMetadata(user: User | null): AppRole | null {
   return null
 }
 
+function neoIdFromUser(user: User | null): string | null {
+  const raw = user?.user_metadata?.neo4j_id
+  return typeof raw === "string" && raw.length > 0 ? raw : null
+}
+
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   neoId: null,
@@ -31,6 +36,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({
       user,
       role: roleFromMetadata(user),
+      neoId: neoIdFromUser(user),
     }),
   setNeoId: (id) => set({ neoId: id }),
   clear: () => set({ user: null, neoId: null, role: null }),

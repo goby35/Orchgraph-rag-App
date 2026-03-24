@@ -2,6 +2,9 @@ from __future__ import annotations
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+import traceback as _traceback
+from fastapi import Request
+from fastapi.responses import JSONResponse
 
 from api.routers import auth, chat, graph, ingest, interview, search, availability, schedule, notification
 
@@ -32,3 +35,12 @@ app.include_router(notification.router,  prefix="/notification",  tags=["Notific
 @app.get("/health")
 async def health() -> dict[str, str]:
     return {"status": "ok"}
+
+@app.exception_handler(Exception)
+async def _debug_handler(request: Request, exc: Exception) -> JSONResponse:
+    print(_traceback.format_exc())
+    return JSONResponse(
+        status_code=500,
+        content={"detail": str(exc)},
+        headers={"Access-Control-Allow-Origin": "http://localhost:3000"},
+    )

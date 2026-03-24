@@ -193,7 +193,7 @@ async def reschedule(
             "status":         "rescheduled",
             "rescheduled_at": body.rescheduled_at.isoformat(),
             "notes":          body.notes,
-        }).eq("id", schedule_id).execute().data[0]
+        }).eq("id", schedule_id).execute() # xóa data[0]
     )
     _notify(
         sb                 = sb,
@@ -227,7 +227,7 @@ async def update_status(
     row: dict[str, Any] = sb_one(
         sb.schema("vdme").table("interview_schedules").update(
             update
-        ).eq("id", schedule_id).execute().data[0]
+        ).eq("id", schedule_id).execute()
     )
 
     notif_type = "schedule_confirmed" if body.status == "confirmed" else "schedule_cancelled"

@@ -160,6 +160,9 @@ LOG_LEVEL=INFO
 | GET | /notification/unread-count | Đếm thông báo chưa đọc |
 | GET | /health | Health check |
 
+## Chạy Backend
+uvicorn api.main:app --reload
+
 ## Chạy test
 ```bash
 python test_engine.py
