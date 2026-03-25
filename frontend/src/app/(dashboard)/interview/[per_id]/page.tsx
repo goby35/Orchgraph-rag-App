@@ -6,7 +6,7 @@ import { useAuthStore }        from '@/store/auth.store'
 import ChatWindow              from '@/components/chat/ChatWindow'
 import BookingModal            from '@/components/scheduling/BookingModal'
 import ConnectionStatusBadge   from '@/components/chat/ConnectionStatusBadge'
-import { getConnectionStatus, sendInterviewRequest } from "@/lib/api/interview"
+import { getConnectionStatus, sendInterviewRequest, getPersonnelProfile } from "@/lib/api/interview"
 import type { ConnectionStatus } from "@/lib/api/interview"
 import { cn }                  from '@/lib/utils'
 
@@ -14,6 +14,22 @@ export default function InterviewPage({ params }: { params: Promise<{ per_id: st
   const { per_id }      = use(params)
   const [bookingOpen, setBookingOpen] = useState(false)
   const queryClient     = useQueryClient()
+
+  // Personnel profile
+  const { data: profileData } = useQuery({
+    queryKey: ["personnel-profile", per_id],
+    queryFn:  () => getPersonnelProfile(per_id),
+    staleTime: 5 * 60 * 1000,
+  })
+
+  const displayName = profileData?.name ?? per_id
+  const initials    = displayName
+    .split(" ")
+    .filter(Boolean)
+    .slice(-2)
+    .map((w: string) => w[0])
+    .join("")
+    .toUpperCase() || per_id.replace("P_", "")
 
   // Connection status
   const { data: connData } = useQuery({
@@ -40,12 +56,12 @@ export default function InterviewPage({ params }: { params: Promise<{ per_id: st
       <div className="hidden md:flex w-72 flex-shrink-0 flex-col border rounded-lg p-4 gap-3">
         {/* Avatar */}
         <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center text-xl font-semibold mx-auto">
-          {per_id.replace('P_', '')}
+          {initials}
         </div>
 
         {/* ID + connection badge */}
         <div className="flex flex-col items-center gap-2">
-          <p className="text-sm font-medium">{per_id}</p>
+          <p className="text-sm font-medium">{displayName}</p>
           <ConnectionStatusBadge status={connectionStatus} />
         </div>
 

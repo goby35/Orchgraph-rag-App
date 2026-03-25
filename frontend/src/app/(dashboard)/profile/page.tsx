@@ -75,7 +75,7 @@ export default function ProfilePage() {
 function SkillsSummarySection({ neoId }: { neoId: string }) {
   const { data, isLoading } = useQuery({
     queryKey: ["graph"],
-    queryFn:  () => getGraph(true),
+    queryFn:  () => getGraph(false),
     staleTime: 5 * 60 * 1000,
   })
 

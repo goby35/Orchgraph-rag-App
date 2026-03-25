@@ -8,17 +8,62 @@ import {
   markNotificationRead,
   markAllNotificationsRead,
 } from "@/lib/api/notification"
+import { acceptInterviewRequest, rejectInterviewRequest } from "@/lib/api/interview"
 import { useRealtimeNotifications } from "@/hooks/useRealtimeNotifications"
 import { formatDate } from "@/lib/utils"
 import { cn }         from "@/lib/utils"
 
 interface NotificationItem {
   id:                 string
+  type?:              string
   title:              string
   body?:              string | null
   is_read:            boolean
   created_at:         string
   payload?:           Record<string, unknown>
+}
+
+function InterviewRequestActions({ notification }: { notification: NotificationItem }) {
+  const queryClient = useQueryClient()
+
+  const acceptMut = useMutation({
+    mutationFn: () => acceptInterviewRequest(notification.payload?.per_neo4j_id as string ?? ""),
+    onSuccess: () => {
+      toast.success("Đã chấp nhận lời mời phỏng vấn!")
+      queryClient.invalidateQueries({ queryKey: ["notifications"] })
+      queryClient.invalidateQueries({ queryKey: ["unread-count"] })
+    },
+    onError: () => toast.error("Không thể chấp nhận. Thử lại sau."),
+  })
+
+  const rejectMut = useMutation({
+    mutationFn: () => rejectInterviewRequest(notification.payload?.per_neo4j_id as string ?? ""),
+    onSuccess: () => {
+      toast.info("Đã từ chối lời mời.")
+      queryClient.invalidateQueries({ queryKey: ["notifications"] })
+      queryClient.invalidateQueries({ queryKey: ["unread-count"] })
+    },
+    onError: () => toast.error("Không thể từ chối. Thử lại sau."),
+  })
+
+  return (
+    <div className="flex gap-2 mt-2">
+      <button
+        onClick={(e) => { e.stopPropagation(); acceptMut.mutate() }}
+        disabled={acceptMut.isPending || rejectMut.isPending}
+        className="text-xs px-3 py-1.5 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
+      >
+        {acceptMut.isPending ? "Đang xử lý..." : "Chấp nhận"}
+      </button>
+      <button
+        onClick={(e) => { e.stopPropagation(); rejectMut.mutate() }}
+        disabled={acceptMut.isPending || rejectMut.isPending}
+        className="text-xs px-3 py-1.5 rounded-md border hover:bg-muted disabled:opacity-50"
+      >
+        {rejectMut.isPending ? "Đang xử lý..." : "Từ chối"}
+      </button>
+    </div>
+  )
 }
 
 export default function NotificationsPage() {
@@ -141,7 +186,7 @@ export default function NotificationsPage() {
 
           <div className="space-y-1.5">
             {items.map(n => (
-              <button
+              <div
                 key={n.id}
                 onClick={() => handleClick(n)}
                 className={cn(
@@ -171,13 +216,16 @@ export default function NotificationsPage() {
                         {n.body}
                       </p>
                     )}
+                    {n.type === "interview_request" &&  ( // !n.is_read &&
+                      <InterviewRequestActions notification={n} />
+                    )}
                   </div>
 
                   <span className="text-[11px] text-muted-foreground whitespace-nowrap shrink-0 mt-0.5">
                     {formatDate(n.created_at)}
                   </span>
                 </div>
-              </button>
+              </div>
             ))}
           </div>
         </div>

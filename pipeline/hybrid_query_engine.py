@@ -576,15 +576,46 @@ __all__ = [
 
 # pipeline/hybrid_query_engine.py — thêm function mới cuối file
 
+# def create_connection_request(
+#     org_id: str,
+#     personnel_id: str,
+#     status: str = "pending",
+# ) -> bool:
+#     """
+#     Tạo hoặc cập nhật CONNECTED_TO relationship giữa Org và Personnel.
+#     Dùng cho: "Mời phỏng vấn" button (P3) và accept flow.
+#     """
+#     driver = GraphDatabase.driver(
+#         settings.NEO4J_URI,
+#         auth=(settings.NEO4J_USER, settings.NEO4J_PASSWORD),
+#     )
+#     try:
+#         with driver.session() as session:
+#             result = session.run(
+#                 """
+#                 MATCH (o:Organization {id: $org_id}), (p:Personnel {id: $personnel_id})
+#                 MERGE (o)-[r:CONNECTED_TO]->(p)
+#                 SET r.status = $status,
+#                     r.updated_at = timestamp()
+#                 RETURN r.status AS status
+#                 """,
+#                 org_id=org_id,
+#                 personnel_id=personnel_id,
+#                 status=status,
+#             )
+#             row = result.single()
+#             return row is not None
+#     except Exception as exc:
+#         logger.error("create_connection_request failed: %s", exc)
+#         return False
+#     finally:
+#         driver.close()
+
 def create_connection_request(
     org_id: str,
     personnel_id: str,
     status: str = "pending",
-) -> bool:
-    """
-    Tạo hoặc cập nhật CONNECTED_TO relationship giữa Org và Personnel.
-    Dùng cho: "Mời phỏng vấn" button (P3) và accept flow.
-    """
+) -> tuple[bool, str]:  # <--- FIX 1: Đổi type hint thành tuple chứa bool và str
     driver = GraphDatabase.driver(
         settings.NEO4J_URI,
         auth=(settings.NEO4J_USER, settings.NEO4J_PASSWORD),
@@ -593,24 +624,27 @@ def create_connection_request(
         with driver.session() as session:
             result = session.run(
                 """
-                MATCH (o:Organization {id: $org_id}), (p:Personnel {id: $personnel_id})
+                MERGE (o:Organization {id: $org_id})
+                MERGE (p:Personnel    {id: $personnel_id})
                 MERGE (o)-[r:CONNECTED_TO]->(p)
-                SET r.status = $status,
+                SET r.status     = $status,
                     r.updated_at = timestamp()
-                RETURN r.status AS status
+                // FIX 2: Thêm dấu phẩy sau chữ status và xóa dấu phẩy thừa ở cuối
+                RETURN r.status AS status, coalesce(o.public_name, o.public_full_name, o.name, o.id) AS org_name
                 """,
                 org_id=org_id,
                 personnel_id=personnel_id,
                 status=status,
             )
             row = result.single()
-            return row is not None
+            if row:
+                return True, str(row["org_name"]) # Trả về True và tên Tổ chức
+            return False, org_id
     except Exception as exc:
         logger.error("create_connection_request failed: %s", exc)
-        return False
+        return False, org_id
     finally:
         driver.close()
-
 
 def get_connection_status(org_id: str, personnel_id: str) -> str | None:
     """

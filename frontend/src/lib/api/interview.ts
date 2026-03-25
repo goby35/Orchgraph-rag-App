@@ -56,3 +56,20 @@ export const getConnectionStatus = (perNeoId: string): Promise<{ status: Connect
 
 export const sendInterviewRequest = (perNeoId: string): Promise<{ status: string; message: string }> =>
   apiClient.post(`/interview/request/${perNeoId}`).then((r) => r.data)
+
+export const acceptInterviewRequest = (perNeoId: string): Promise<{ status: string }> =>
+  apiClient.patch(`/interview/request/${perNeoId}/accept`).then((r) => r.data)
+
+export const rejectInterviewRequest = (perNeoId: string): Promise<{ status: string }> =>
+  apiClient.patch(`/interview/request/${perNeoId}/reject`).then((r) => r.data)
+
+export interface PersonnelProfile {
+  neo4j_id:   string
+  name:       string
+  skills:     string[]
+  summary:    string
+  experience: unknown[]
+}
+
+export const getPersonnelProfile = (perNeoId: string): Promise<PersonnelProfile> =>
+  apiClient.get<PersonnelProfile>(`/interview/profile/${perNeoId}`).then((r) => r.data)

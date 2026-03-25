@@ -2,6 +2,7 @@
 import { useCallback, useState, useRef, useEffect } from 'react'
 import { useDropzone }           from 'react-dropzone'
 import { toast }                 from 'sonner'
+import { useQueryClient }        from '@tanstack/react-query'
 import { uploadFile }            from '@/lib/api/ingest'
 import IngestStatusBadge         from './IngestStatusBadge'
 import { cn }                    from '@/lib/utils'
@@ -14,6 +15,7 @@ type UploadState = 'idle' | 'uploading' | 'done' | 'failed'
 export default function FileDropzone() {
   const [uploadState, setUploadState] = useState<UploadState>('idle')
   const [fileName,    setFileName]    = useState<string | null>(null)
+  const queryClient = useQueryClient()
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     const file = acceptedFiles[0]
@@ -28,6 +30,7 @@ export default function FileDropzone() {
       if (res.status === 'ok') {
         setUploadState('done')
         toast.success('Hồ sơ đã được xử lý thành công!')
+        queryClient.invalidateQueries({ queryKey: ['graph'] })
       } else {
         setUploadState('failed')
         toast.error('Xử lý thất bại. Vui lòng thử lại.')

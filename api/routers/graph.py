@@ -79,7 +79,7 @@ async def get_graph(
                 # Giữ nguyên cấu trúc riêng nếu là Personnel để UI không bị vỡ
                 if node_type == "personnel":
                     node_data["skills"] = _parse_json_field(node.get("public_skills"))
-                    node_data["summary"] = node.get("public_summary", "")
+                    node_data["summary"] = node.get("public_professional_summary", "")
                     node_data["availability"] = bool(node.get("public_is_available", False))
                     
                 nodes.append({
