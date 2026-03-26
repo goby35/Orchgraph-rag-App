@@ -29,3 +29,12 @@ Thumbs.db
 fast_track/*test*
 neo4j_ready/
 *.log
+
+
+neo4j/data/
+neo4j/logs/
+neo4j/import/
+neo4j/plugins/
+*.db
+*.log
+*.jar
