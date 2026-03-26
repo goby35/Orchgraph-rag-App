@@ -10,9 +10,11 @@ interface Options {
 }
 
 export function useDigitalTwinChat({ perNeoId, orgNeoId }: Options) {
-  const wsRef           = useRef<WebSocket | null>(null)
+  const wsRef                = useRef<WebSocket | null>(null)
+  // Accumulates assistant chunks so we can persist the full response on 'done'
+  const assistantContentRef  = useRef<string>('')
   const [messages,      setMessages]      = useState<ChatMessage[]>([])
-  const [status,        setStatus]        = useState<WsStatus>('open') // open by default vì không persistent
+  const [status,        setStatus]        = useState<WsStatus>('open')
   const [historyLoaded, setHistoryLoaded] = useState(false)
   const [isStreaming,   setIsStreaming]   = useState(false)
 
@@ -43,6 +45,9 @@ export function useDigitalTwinChat({ perNeoId, orgNeoId }: Options) {
     const { data: { session } } = await supabase.auth.getSession()
     if (!session?.access_token) return
 
+    // Reset accumulator for this turn
+    assistantContentRef.current = ''
+
     // 1. Optimistic update — hiện message user ngay
     const userMsg: ChatMessage = {
       id:      crypto.randomUUID(),
@@ -62,7 +67,6 @@ export function useDigitalTwinChat({ perNeoId, orgNeoId }: Options) {
 
     ws.onopen = () => {
       setStatus('open')
-      // Gửi token + câu hỏi trong message đầu tiên
       ws.send(JSON.stringify({
         token:        session.access_token,
         personnel_id: perNeoId,
@@ -79,7 +83,9 @@ export function useDigitalTwinChat({ perNeoId, orgNeoId }: Options) {
       }
 
       if ('chunk' in data) {
-        // Append chunk vào assistant message
+        // Track full assistant content for persistence
+        assistantContentRef.current += data.chunk
+
         setMessages(prev => {
           const last = prev[prev.length - 1]
           if (last?.streaming && last.id === assistantId) {
@@ -88,7 +94,6 @@ export function useDigitalTwinChat({ perNeoId, orgNeoId }: Options) {
               { ...last, content: last.content + data.chunk },
             ]
           }
-          // Tạo assistant message mới
           return [...prev, {
             id:        assistantId,
             role:      'assistant' as const,
@@ -99,23 +104,37 @@ export function useDigitalTwinChat({ perNeoId, orgNeoId }: Options) {
       }
 
       if ('done' in data) {
-        // Kết thúc stream
+        const assistantContent  = assistantContentRef.current
+        const isPrivate         = data.is_private_mode
+        assistantContentRef.current = ''
+
         setMessages(prev => prev.map(m =>
           m.id === assistantId ? { ...m, streaming: false } : m
         ))
         setIsStreaming(false)
         setStatus('open')
 
-        // Lưu message user + assistant vào backend (fire-and-forget)
+        // Persist user message
         saveChatMessage({
           per_neo4j_id:    perNeoId,
           role:            'user',
           content:         question,
           is_private_mode: false,
         }).catch(() => {})
+
+        // Persist assistant response (the missing piece)
+        if (assistantContent) {
+          saveChatMessage({
+            per_neo4j_id:    perNeoId,
+            role:            'assistant',
+            content:         assistantContent,
+            is_private_mode: isPrivate,
+          }).catch(() => {})
+        }
       }
 
       if ('error' in data) {
+        assistantContentRef.current = ''
         setMessages(prev => [...prev, {
           id:      crypto.randomUUID(),
           role:    'assistant' as const,
@@ -127,6 +146,7 @@ export function useDigitalTwinChat({ perNeoId, orgNeoId }: Options) {
     }
 
     ws.onerror = () => {
+      assistantContentRef.current = ''
       setStatus('error')
       setIsStreaming(false)
       setMessages(prev => [...prev, {

@@ -1,7 +1,8 @@
 'use client'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueries, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { listSchedules, updateScheduleStatus, rescheduleAppointment } from '@/lib/api/schedule'
+import { getPersonnelProfile } from '@/lib/api/interview'
 import { useAuthStore } from '@/store/auth.store'
 import { formatDate } from '@/lib/utils'
 import { cn } from '@/lib/utils'
@@ -31,7 +32,8 @@ const STATUS_COLOR: Record<string, string> = {
 export default function SchedulePage() {
   const role    = useAuthStore(s => s.role)
   const qc      = useQueryClient()
-  const [rescheduleId, setRescheduleId] = useState<string | null>(null)
+  const [rescheduleId,    setRescheduleId]    = useState<string | null>(null)
+  const [expandedSummary, setExpandedSummary] = useState<string | null>(null)
 
   const { data: schedules = [], isLoading, error, refetch } = useQuery({
     queryKey: ['schedules'],
@@ -48,8 +50,32 @@ export default function SchedulePage() {
     onError: () => toast.error('Cập nhật thất bại'),
   })
 
+  // Fetch personnel names for org users (batch, deduped by React Query)
+  const perIds = role === 'organization'
+    ? [...new Set((schedules as ScheduleRecord[]).map(s => s.per_neo4j_id))]
+    : []
+
+  const profileResults = useQueries({
+    queries: perIds.map(id => ({
+      queryKey: ['personnel-profile', id] as const,
+      queryFn:  () => getPersonnelProfile(id),
+      staleTime: 5 * 60 * 1000,
+    })),
+  })
+
+  const nameMap: Record<string, string> = {}
+  perIds.forEach((id, i) => {
+    const name = profileResults[i]?.data?.name
+    if (name) nameMap[id] = name
+  })
+
   if (isLoading) return <PageSkeleton variant="table" />
   if (error)     return <ErrorState message="Không tải được lịch hẹn" onRetry={refetch} />
+
+  function getCounterpartLabel(s: ScheduleRecord): string {
+    if (role === 'organization') return nameMap[s.per_neo4j_id] ?? s.per_neo4j_id
+    return s.org_neo4j_id
+  }
 
   return (
     <div className="max-w-3xl mx-auto py-8 px-4">
@@ -63,17 +89,39 @@ export default function SchedulePage() {
         <div className="space-y-3">
           {(schedules as ScheduleRecord[]).map(s => (
             <div key={s.id} className="border rounded-lg p-4 space-y-3">
+
+              {/* Header row */}
               <div className="flex items-start justify-between gap-3">
-                <div>
-                  <p className="text-sm font-medium">
-                    {role === 'organization' ? s.per_neo4j_id : s.org_neo4j_id}
-                  </p>
+                <div className="space-y-1 min-w-0">
+
+                  {/* Counterpart + email badge */}
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <p className="text-sm font-medium truncate">
+                      {getCounterpartLabel(s)}
+                    </p>
+                    {s.email_sent && (
+                      <span className="text-[11px] text-green-700 bg-green-50 border border-green-200 rounded px-1.5 py-0.5 shrink-0">
+                        ✉ Email đã gửi
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Date · duration · format · location */}
                   <p className="text-xs text-muted-foreground">
                     {formatDate(s.rescheduled_at ?? s.proposed_at)}
                     {' · '}{s.duration_minutes} phút
-                    {' · '}{s.format === 'online' ? 'Online' : 'Offline'}
+                    {' · '}{s.format === 'online' ? '🌐 Online' : '📍 Offline'}
+                    {s.location ? ` · ${s.location}` : ''}
                   </p>
+
+                  {/* Confirmed timestamp */}
+                  {s.status === 'confirmed' && s.confirmed_at && (
+                    <p className="text-[11px] text-green-600">
+                      Xác nhận lúc: {formatDate(s.confirmed_at)}
+                    </p>
+                  )}
                 </div>
+
                 <span className={cn(
                   'text-xs px-2 py-1 rounded-full flex-shrink-0',
                   STATUS_COLOR[s.status] ?? 'bg-gray-100',
@@ -81,6 +129,24 @@ export default function SchedulePage() {
                   {STATUS_LABEL[s.status] ?? s.status}
                 </span>
               </div>
+
+              {/* Chat summary (expandable) */}
+              {s.chat_summary && (
+                <div className="border-t pt-2">
+                  <button
+                    onClick={() => setExpandedSummary(expandedSummary === s.id ? null : s.id)}
+                    className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors"
+                  >
+                    Tóm tắt phỏng vấn AI
+                    <span>{expandedSummary === s.id ? '▲' : '▼'}</span>
+                  </button>
+                  {expandedSummary === s.id && (
+                    <p className="mt-2 text-xs text-muted-foreground bg-muted/50 rounded-md p-3 whitespace-pre-line leading-relaxed">
+                      {s.chat_summary}
+                    </p>
+                  )}
+                </div>
+              )}
 
               {/* Actions theo role và status */}
               <div className="flex gap-2 flex-wrap">

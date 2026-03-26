@@ -342,3 +342,6 @@ score = α × jaccard_graph_score + β × vector_similarity
 - [ ] Multi-language support (EN/VI)
 - [ ] Notification push real-time (WebSocket)
 - [ ] Admin dashboard: thống kê, quản lý user
+
+## kích hoạt environment
+.venv\Scripts\activate
