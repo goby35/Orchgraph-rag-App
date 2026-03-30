@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cmd.exe /c \"D:\\\\Study\\\\uni\\\\25_26\\\\HKII\\\\graphRAG\\\\run_eval.bat\")",
+      "Bash(echo \"CMD done: $?\")"
+    ]
+  }
+}

@@ -13,7 +13,8 @@ from typing import Dict, List, Optional, Union, Any, cast
 from cerebras.cloud.sdk import Cerebras
 from openai import OpenAI
 from pydantic import BaseModel, Field, ValidationError
-
+from typing import Any, Dict, List, Optional, Union
+from pydantic import field_validator
 from pipeline.config import settings, get_logger
 
 logger = get_logger(__name__)
@@ -38,7 +39,24 @@ class PersonnelPrivateData(BaseModel):
     interview_questions_history: List[Dict[str, Any]] = Field(default_factory=list)
     blacklist_orgs: List[str] = Field(default_factory=list)
     evidence_links: List[str] = Field(default_factory=list)
-    additional_information: Optional[Dict[str, Any]] = Field(default_factory=dict)
+    # Chấp nhận cả Dict, List, hoặc Any
+    additional_information: Optional[Union[Dict[str, Any], List[Dict[str, Any]], Any]] = Field(default_factory=dict)
+    # Ép kiểu
+    @field_validator("additional_information", mode="before")
+    @classmethod
+    def convert_llm_list_to_dict(cls, v: Any) -> dict:
+        if isinstance(v, dict):
+            return v
+        if isinstance(v, list):
+            result = {}
+            for item in v:
+                if isinstance(item, dict):
+                    k = item.get("key") or item.get("name")
+                    val = item.get("value") or item.get("val")
+                    if k:
+                        result[str(k)] = val
+            return result
+        return {}
 
 class PersonnelSchema(BaseModel):
     personnel_id: Optional[str] = Field(default=None)

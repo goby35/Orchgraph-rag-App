@@ -129,7 +129,7 @@ class PrivateData(BaseModel):
     interview_questions_history: list[InterviewQA] = Field(default_factory=list)
     blacklist_orgs: list[str] = Field(default_factory=list)
     evidence_links: list[str] = Field(default_factory=list)
-    additional_information: dict[str, Any] = Field(default_factory=dict)
+    additional_information: Any = None
     @field_validator("additional_information", mode="before")
     @classmethod
     def coerce_additional_info(cls, v: Any) -> dict:

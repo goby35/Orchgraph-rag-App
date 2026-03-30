@@ -1,0 +1,562 @@
+[
+  {
+    "query_id": "JD_001",
+    "category": "IT",
+    "input_data": {
+      "job_title": "Senior Data/Streaming Engineer",
+      "seniority_level": "Senior",
+      "must_have_skills": ["Apache Flink", "Kafka", "ClickHouse", "RocksDB"],
+      "job_description": "Xây dựng và vận hành real-time fraud detection pipeline xử lý 500k transactions/phút với latency phát hiện dưới 2 giây. Đây là vị trí kỹ thuật cốt lõi nhất của công ty.\n\nTrách nhiệm:\n- Thiết kế hệ thống stream processing kết hợp OLAP query layer.\n- Viết custom ProcessFunction với keyed state để xử lý complex event patterns.\n- Tối ưu hóa ClickHouse materialized views.\n\nQuyền lợi & Môi trường:\n- Lương 3,000 - 4,500 USD/tháng.\n- ESOP 0.1-0.2%.\n- Làm việc Remote-first hoặc Hybrid tại HN/HCM."
+    },
+    "ground_truth": {
+      "relevant_personnel": ["P_051", "P_077", "P_001"],
+      "reasoning": "P_051 và P_077 là chuyên gia Flink/ClickHouse đáp ứng chính xác yêu cầu streaming. P_001 có kinh nghiệm vận hành hệ thống Kafka thông lượng cao."
+    }
+  },
+  {
+    "query_id": "JD_002",
+    "category": "IT",
+    "input_data": {
+      "job_title": "Distributed Database Engineer",
+      "seniority_level": "Senior",
+      "must_have_skills": ["TiDB", "TiKV", "Go", "Raft Consensus"],
+      "job_description": "Xây dựng và maintain managed TiDB service. Vị trí đòi hỏi sự am hiểu sâu sắc về hệ thống cơ sở dữ liệu phân tán và kiến trúc lưu trữ.\n\nTrách nhiệm:\n- Đảm bảo độ tin cậy (reliability) và tinh chỉnh hiệu năng (performance tuning) cho TiDB/TiKV cluster.\n- Khắc phục các vấn đề write hotspot do monotonically increasing primary keys.\n- Hỗ trợ khách hàng migrate từ MySQL sharded sang TiDB.\n\nQuyền lợi & Môi trường:\n- Lương 3,000 - 4,000 USD/tháng.\n- Môi trường remote-friendly, văn hóa kỹ thuật cao."
+    },
+    "ground_truth": {
+      "relevant_personnel": ["P_060", "P_071", "P_029", "P_047"],
+      "reasoning": "P_060 và P_071 (AxonDB) chuyên xử lý TiKV write hotspot. P_029 từng migrate MySQL sang TiDB tại Shopee. P_047 tự implement Raft consensus bằng Go."
+    }
+  },
+  {
+    "query_id": "JD_003",
+    "category": "IT",
+    "input_data": {
+      "job_title": "Network Platform Engineer (Kernel & eBPF)",
+      "seniority_level": "Senior",
+      "must_have_skills": ["C", "Go", "eBPF", "XDP", "Linux Networking"],
+      "job_description": "Xây dựng core data plane của high-performance cloud networking platform phục vụ enterprise và telco tại thị trường SEA.\n\nTrách nhiệm:\n- Viết eBPF programs và XDP packet processing pipelines chạy trực tiếp tại kernel space.\n- Triển khai custom XDP-based load balancer (tương tự Katran/Maglev).\n- Tối ưu hóa NUMA topology và NIC interrupt affinity.\n\nQuyền lợi & Môi trường:\n- Lương 3,000 - 4,500 USD/tháng.\n- Môi trường remote-first, async culture (Đông Nam Á)."
+    },
+    "ground_truth": {
+      "relevant_personnel": ["P_019", "P_053", "P_079", "P_010"],
+      "reasoning": "P_019, P_053, P_079 đều có kinh nghiệm thực chiến eBPF/XDP load balancer. P_010 có kinh nghiệm debug eBPF bytecode với Cilium."
+    }
+  },
+  {
+    "query_id": "JD_004",
+    "category": "IT",
+    "input_data": {
+      "job_title": "Blockchain/Web3 Backend Engineer",
+      "seniority_level": "Middle",
+      "must_have_skills": ["Rust", "Solidity", "Zero-Knowledge Proofs", "Kafka"],
+      "job_description": "Tham gia xây dựng nền tảng giao dịch P2P và các giải pháp Layer 2 scaling cho hệ sinh thái Web3/Crypto.\n\nTrách nhiệm:\n- Xây dựng high-frequency data ingestion pipeline từ blockchain nodes.\n- Tối ưu hóa gas fee và audit smart contracts.\n- Tích hợp và phát triển các hệ thống ZK-Rollup hoặc ứng dụng ZKP cho credential verification.\n\nQuyền lợi & Môi trường:\n- Mức lương 3,000 - 3,600 USD/tháng.\n- Môi trường làm việc nhịp độ cao, công nghệ cutting-edge."
+    },
+    "ground_truth": {
+      "relevant_personnel": ["P_048", "P_031", "P_012", "P_083", "P_092"],
+      "reasoning": "P_048 làm Rust blockchain data ingestion. P_031 implement ZK-proof credential verifier. P_012 viết Rust backend cho NFT indexer. P_083 và P_092 có kinh nghiệm sâu về ZKP và cryptographic systems."
+    }
+  },
+  {
+    "query_id": "JD_005",
+    "category": "IT",
+    "input_data": {
+      "job_title": "Application Security Architect",
+      "seniority_level": "Lead",
+      "must_have_skills": ["DevSecOps", "SAST/DAST", "PCI-DSS", "HashiCorp Vault"],
+      "job_description": "Lãnh đạo và thiết kế kiến trúc bảo mật cho các hệ thống Fintech / Cloud-native xử lý giao dịch quy mô lớn.\n\nTrách nhiệm:\n- Triển khai và duy trì tuân thủ PCI-DSS v4.0.\n- Tích hợp SAST/DAST vào CI/CD pipeline (shift-left security).\n- Quản lý hạ tầng mã hóa (HSM) và Key Management (HashiCorp Vault).\n\nQuyền lợi & Môi trường:\n- Thu nhập 3,500 - 4,200 USD/tháng.\n- Môi trường security-first, tuân thủ các tiêu chuẩn ISO và bảo mật quốc tế."
+    },
+    "ground_truth": {
+      "relevant_personnel": ["P_009", "P_018", "P_043", "P_095"],
+      "reasoning": "P_009 có OSCP và làm AppSec/PCI-DSS. P_018 chuyên về HSM, Vault và supply chain security. P_095 chuyên audit PCI-DSS và DevSecOps. P_043 hỗ trợ bằng kinh nghiệm xử lý sự cố bảo mật SOC."
+    }
+  },
+  {
+    "query_id": "JD_006",
+    "category": "IT",
+    "input_data": {
+      "job_title": "WebRTC Infrastructure Engineer",
+      "seniority_level": "Senior",
+      "must_have_skills": ["WebRTC", "Go", "C++", "FFmpeg"],
+      "job_description": "Mở rộng và tối ưu video conferencing infrastructure cho nền tảng CPaaS xử lý hàng triệu phút gọi/ngày.\n\nTrách nhiệm:\n- Ownership cụm máy chủ SFU (Selective Forwarding Unit) media server.\n- Xử lý packet loss, implement NACK/PLI/FIR và tối ưu adaptive bitrate (GCC algorithm).\n- Quản lý recording pipeline bằng FFmpeg với hardware acceleration.\n\nQuyền lợi & Môi trường:\n- Lương 2,800 - 3,600 USD/tháng.\n- Hybrid làm việc tại Hà Nội hoặc Hồ Chí Minh."
+    },
+    "ground_truth": {
+      "relevant_personnel": ["P_038", "P_045", "P_064", "P_027"],
+      "reasoning": "P_038 xây dựng SFU Media Server bằng Go. P_045 và P_064 chuyên tối ưu WebRTC infrastructure và custom FFmpeg filter chains. P_027 am hiểu TCP/UDP networking cho game server."
+    }
+  },
+  {
+    "query_id": "JD_007",
+    "category": "IT",
+    "input_data": {
+      "job_title": "Compiler / Static Analysis Engineer",
+      "seniority_level": "Senior",
+      "must_have_skills": ["C++ 20", "LLVM IR", "Static Analysis", "Rust"],
+      "job_description": "Core engineering cho nền tảng phân tích mã nguồn (static analysis) dựa trên LLVM, phục vụ AI-assisted code review.\n\nTrách nhiệm:\n- Viết custom LLVM optimization/analysis passes (data flow, taint tracking).\n- Xử lý các bài toán performance liên quan đến C++ template instantiation explosion.\n- Xây dựng AST analysis tooling.\n\nQuyền lợi & Môi trường:\n- Lương 3,000 - 4,500 USD/tháng.\n- ESOP 0.2-0.5%.\n- Làm việc từ xa toàn cầu (Remote-first)."
+    },
+    "ground_truth": {
+      "relevant_personnel": ["P_041", "P_065", "P_086", "P_024"],
+      "reasoning": "P_041, P_065 và P_086 là những compiler engineers cực hiếm, chuyên viết custom LLVM passes và demand-driven static analysis. P_024 có nền tảng build WebAssembly từ C++ bằng Emscripten."
+    }
+  },
+  {
+    "query_id": "JD_008",
+    "category": "IT",
+    "input_data": {
+      "job_title": "Distributed Systems Engineer (Formal Methods)",
+      "seniority_level": "Lead",
+      "must_have_skills": ["TLA+", "Distributed Protocols", "Go", "Java"],
+      "job_description": "Ứng dụng các phương pháp hình thức (formal methods) để verify độ chính xác của các giao thức phân tán trong hạ tầng tài chính.\n\nTrách nhiệm:\n- Model và verify distributed consensus protocols (Raft, Paxos) bằng TLA+ / TLC model checker.\n- Implement reference code cho các giao thức đã được verified bằng Go/Java.\n\nQuyền lợi & Môi trường:\n- Lương 5,000 - 7,000 USD/tháng.\n- Remote-first, có thời gian dành cho nghiên cứu học thuật (Research time)."
+    },
+    "ground_truth": {
+      "relevant_personnel": ["P_068", "P_073", "P_089", "P_020"],
+      "reasoning": "P_068, P_073 và P_089 đều có kinh nghiệm thực chiến hiếm có dùng TLC model checker tìm bug liveness/safety trong giao thức (TLA+). P_020 từng ứng dụng TLA+ tại Google."
+    }
+  },
+  {
+    "query_id": "JD_009",
+    "category": "IT",
+    "input_data": {
+      "job_title": "Principal Chaos Engineering Specialist",
+      "seniority_level": "Lead",
+      "must_have_skills": ["Chaos Mesh", "Go", "Kubernetes", "Prometheus"],
+      "job_description": "Xây dựng và phát triển Chaos Engineering platform tự động hóa việc inject lỗi và kiểm soát blast radius cho enterprise clients.\n\nTrách nhiệm:\n- Phát triển fault injection engine bằng Go.\n- Thiết kế cơ chế blast radius control dựa trên Prometheus SLOs.\n- Quản lý Kubernetes admission webhooks và operator pattern.\n\nQuyền lợi & Môi trường:\n- Lương 3,200 - 4,200 USD/tháng.\n- Môi trường đề cao tính ổn định hệ thống (Reliability), văn hóa blameless."
+    },
+    "ground_truth": {
+      "relevant_personnel": ["P_026", "P_069", "P_075", "P_011"],
+      "reasoning": "P_026, P_069, P_075 là chuyên gia Chaos Engineering (Chaos Mesh, LitmusChaos) đã build blast radius controller từ đầu. P_011 có kinh nghiệm viết chaos injection library riêng cho QA pipeline."
+    }
+  },
+  {
+    "query_id": "JD_010",
+    "category": "IT",
+    "input_data": {
+      "job_title": "Embedded Systems Engineer",
+      "seniority_level": "Middle",
+      "must_have_skills": ["C", "Rust (no_std)", "FreeRTOS", "ARM Cortex-M"],
+      "job_description": "Phát triển firmware và Board Support Package (BSP) cho các chip IoT SoC và thiết bị viễn thông/ô tô.\n\nTrách nhiệm:\n- Lập trình bare-metal và RTOS (FreeRTOS/Zephyr).\n- Tối ưu hóa trình điều khiển ngoại vi (DMA, SPI, I2C) với zero-copy buffer.\n- Thiết kế bootloader tùy chỉnh và hệ thống cập nhật OTA an toàn.\n\nQuyền lợi & Môi trường:\n- Lương 2,200 - 2,800 USD/tháng.\n- Được tiếp cận với các phòng lab hardware hiện đại, khuyến khích dùng Rust."
+    },
+    "ground_truth": {
+      "relevant_personnel": ["P_022", "P_030", "P_041"],
+      "reasoning": "P_022 là chuyên gia Embedded Rust (DMA, FreeRTOS, Bootloader). P_030 và P_041 có kiến thức C++ cực tốt về hardware pipeline và hệ thống low-level."
+    }
+  },
+  {
+    "query_id": "JD_011",
+    "category": "IT",
+    "input_data": {
+      "job_title": "GPU/NPU Software Engineer",
+      "seniority_level": "Senior",
+      "must_have_skills": ["CUDA C++", "Python", "TensorRT", "Hardware Optimization"],
+      "job_description": "Viết và tối ưu các compute kernels cấp thấp cho custom AI accelerator (NPU/GPU) để tối đa hóa hiệu suất inference của LLM.\n\nTrách nhiệm:\n- Xây dựng custom CUDA kernels cho các kiến trúc mạng Neural (vd: Flash Attention).\n- Triển khai quantization (INT4/INT8) và memory bandwidth optimization.\n- Đo lường và tối ưu bằng Nsight Profiling.\n\nQuyền lợi & Môi trường:\n- Lương 4,000 - 6,000 USD/tháng.\n- Thưởng cho các nghiên cứu và bằng sáng chế (patents). Làm việc on-site tại Lab."
+    },
+    "ground_truth": {
+      "relevant_personnel": ["P_014", "P_061", "P_082", "P_030"],
+      "reasoning": "P_014, P_061, P_082 là những chuyên gia hiếm hoi tự viết custom CUDA kernels (fused attention) cho quantized Transformers. P_030 hỗ trợ với khả năng GPU programming/shader cực sâu."
+    }
+  },
+  {
+    "query_id": "JD_012",
+    "category": "IT",
+    "input_data": {
+      "job_title": "Principal Cloud FinOps Architect",
+      "seniority_level": "Lead",
+      "must_have_skills": ["AWS Organizations", "Terraform", "Cost Explorer", "FinOps"],
+      "job_description": "Quản trị, phân tích và tối ưu hóa chi phí điện toán đám mây cho các hệ thống multi-account có hóa đơn hàng trăm ngàn USD/tháng.\n\nTrách nhiệm:\n- Thiết kế chiến lược Multi-account AWS Organizations và Control Tower.\n- Phân tích Cost and Usage Report (CUR) qua Athena, áp dụng Savings Plans.\n- Viết script tự động điều phối BGP routing để né Egress Data Transfer.\n\nQuyền lợi & Môi trường:\n- Lương 4,000 - 6,000 USD/tháng.\n- Tư duy cloud-native, ảnh hưởng trực tiếp đến P&L của doanh nghiệp."
+    },
+    "ground_truth": {
+      "relevant_personnel": ["P_040", "P_072", "P_100", "P_015"],
+      "reasoning": "P_040, P_100, P_015 là các chuyên gia Cloud FinOps giàu kinh nghiệm tối ưu hóa CUR và Savings Plans. P_072 xử lý sâu về AWS Control Tower và Multi-account cost governance."
+    }
+  },
+  {
+    "query_id": "JD_013",
+    "category": "Business",
+    "input_data": {
+      "job_title": "Chief Technology Officer (CTO)",
+      "seniority_level": "Manager",
+      "must_have_skills": ["Engineering Leadership", "Strangler Fig Pattern", "Java/Go", "Microservices"],
+      "job_description": "Lãnh đạo mảng kỹ thuật cho startup Series B B2B SaaS. Chịu trách nhiệm scale team từ 20 lên 80 kỹ sư và hiện đại hóa hệ thống.\n\nTrách nhiệm:\n- Tái cấu trúc khối Monolith Java khổng lồ thành Microservices an toàn (Strangler Fig).\n- Thiết lập văn hóa kỹ thuật (RFC, ADR, Blameless Post-mortem).\n- Định hướng chiến lược công nghệ và giao tiếp với C-board/Investors.\n\nQuyền lợi & Môi trường:\n- Lương 6,000 - 8,000 USD/tháng + Equity (1.5-2.5%).\n- Quyền tự quyết cao, đối mặt với bài toán organizational scale."
+    },
+    "ground_truth": {
+      "relevant_personnel": ["P_050", "P_076", "P_090", "P_056", "P_020"],
+      "reasoning": "P_050 là CTO xử lý monolith Viettel siêu lớn. P_076, P_090, P_056 đều phù hợp tuyệt đối với JD CTO phân rã monolith sang microservices cho Series B. P_020 có kinh nghiệm scale tech team."
+    }
+  },
+  {
+    "query_id": "JD_014",
+    "category": "Business",
+    "input_data": {
+      "job_title": "QA Manager / TCoE Lead",
+      "seniority_level": "Manager",
+      "must_have_skills": ["Playwright", "CI/CD Integration", "Test Strategy", "ISTQB"],
+      "job_description": "Thiết lập và quản lý Trung tâm Kiểm thử Xuất sắc (Testing Center of Excellence - TCoE), chuẩn hóa quy trình quality engineering.\n\nTrách nhiệm:\n- Xây dựng chiến lược Automation Testing, tích hợp Shift-left testing vào CI/CD.\n- Quản lý QA team, thiết lập các Quality Metrics (Defect escape rate, Test coverage).\n- Triển khai Performance và Contract testing (Pact, k6).\n\nQuyền lợi & Môi trường:\n- Lương 50,000,000 - 62,000,000 VNĐ/tháng.\n- Môi trường đề cao chất lượng (Quality-first), thay đổi mindset từ manual sang automation."
+    },
+    "ground_truth": {
+      "relevant_personnel": ["P_049", "P_011", "P_091", "P_004"],
+      "reasoning": "P_049 là QA Manager đã thiết lập TCoE. P_011 và P_091 là QA Automation Lead chuyên shift-left testing. P_004 hỗ trợ CI/CD quality gates từ góc độ SRE."
+    }
+  },
+  {
+    "query_id": "JD_015",
+    "category": "Business",
+    "input_data": {
+      "job_title": "Full-stack Growth Engineer",
+      "seniority_level": "Middle",
+      "must_have_skills": ["React", "Node.js", "A/B Testing", "Mixpanel/Amplitude"],
+      "job_description": "Kỹ sư định hướng sản phẩm, phụ trách vòng lặp tăng trưởng (viral loops) và các hệ thống experimentation cho B2C super-app.\n\nTrách nhiệm:\n- Thiết kế và triển khai A/B Testing framework, feature flags.\n- Xây dựng end-to-end các tính năng referral program, voucher distribution.\n- Cấu hình product analytics và schema tracking sự kiện người dùng.\n\nQuyền lợi & Môi trường:\n- Lương 42,000,000 - 52,000,000 VNĐ/tháng.\n- Làm việc liên chức năng cực kỳ chặt chẽ với team Marketing và Product."
+    },
+    "ground_truth": {
+      "relevant_personnel": ["P_021", "P_037", "P_099", "P_008"],
+      "reasoning": "P_021, P_037, P_099 là các Growth Engineers tinh nhuệ mạnh về A/B Testing và Mixpanel. P_008 có background Analytics vững chắc hỗ trợ growth experiments."
+    }
+  },
+  {
+    "query_id": "JD_016",
+    "category": "Business",
+    "input_data": {
+      "job_title": "AI Product Manager / ML Hybrid Engineer",
+      "seniority_level": "Lead",
+      "must_have_skills": ["Python", "Product Management", "NLP / LLMs", "MLflow"],
+      "job_description": "Đứng ở giao điểm giữa Business và AI/ML. Định nghĩa đúng bài toán kinh doanh trước khi tiến hành model hóa.\n\nTrách nhiệm:\n- Khảo sát yêu cầu, thiết kế luồng sản phẩm và đánh giá trade-off của mô hình ML.\n- Trực tiếp fine-tune LLMs (LoRA/QLoRA) cho Information Extraction và Intent Classification.\n- Xây dựng Data annotation pipelines và ML serving (Triton).\n\nQuyền lợi & Môi trường:\n- Lương 2,200 - 2,700 USD/tháng.\n- Môi trường khởi nghiệp Data-driven, kết hợp tư duy Product-first."
+    },
+    "ground_truth": {
+      "relevant_personnel": ["P_028", "P_042", "P_008"],
+      "reasoning": "P_028 là case chuyển đổi xuất sắc từ Product Manager sang ML Engineer chuyên NLP. P_042 là DS có khả năng translate problem cực tốt. P_008 có tư duy product data sắc bén."
+    }
+  },
+  {
+    "query_id": "JD_017",
+    "category": "Business",
+    "input_data": {
+      "job_title": "Analytics Engineer",
+      "seniority_level": "Middle",
+      "must_have_skills": ["dbt", "BigQuery", "SQL", "Dimensional Modeling"],
+      "job_description": "Làm việc trực tiếp với business stakeholders để chuyển đổi yêu cầu nghiệp vụ phức tạp thành data model tối ưu.\n\nTrách nhiệm:\n- Thiết kế data warehouse theo Kimball methodology.\n- Viết dbt models, data quality tests (Great Expectations) và documentation.\n- Quản lý orchestration bằng Apache Airflow.\n\nQuyền lợi & Môi trường:\n- Lương 50,000,000 - 65,000,000 VNĐ/tháng.\n- Trực tiếp tạo ra impact qua các báo cáo Business Intelligence (BI) cho ban giám đốc."
+    },
+    "ground_truth": {
+      "relevant_personnel": ["P_008", "P_054", "P_085", "P_002"],
+      "reasoning": "P_008 và P_054 là Analytics Engineers sinh ra để làm việc với dbt và Dimensional modeling. P_085 và P_002 là Data Engineers am hiểu sâu sắc hệ sinh thái dbt/Airflow."
+    }
+  },
+  {
+    "query_id": "JD_018",
+    "category": "Business",
+    "input_data": {
+      "job_title": "Lead Data Scientist (Retail/FMCG)",
+      "seniority_level": "Lead",
+      "must_have_skills": ["Python", "Causal Inference", "Demand Forecasting", "LightGBM"],
+      "job_description": "Ứng dụng Machine Learning vào các bài toán kinh doanh cốt lõi của ngành bán lẻ (Dynamic Pricing, Demand Sensing).\n\nTrách nhiệm:\n- Xây dựng mô hình dự báo nhu cầu cho hàng chục ngàn SKUs.\n- Áp dụng Causal Inference (Difference-in-Differences) để đo lường hiệu quả khuyến mãi.\n- Tối ưu hóa chuỗi cung ứng và inventory carrying cost.\n\nQuyền lợi & Môi trường:\n- Lương 60,000,000 - 75,000,000 VNĐ/tháng.\n- Team Data có thẩm quyền lớn, data culture trưởng thành."
+    },
+    "ground_truth": {
+      "relevant_personnel": ["P_042", "P_017", "P_006"],
+      "reasoning": "P_042 chuyên về retail (Dynamic Pricing/Forecasting). P_017 làm RecSys và Causal Inference cho E-commerce. P_006 có kinh nghiệm triển khai robust ML pipeline vào production."
+    }
+  },
+  {
+    "query_id": "JD_019",
+    "category": "Business",
+    "input_data": {
+      "job_title": "Privacy Tech / Security Compliance Architect",
+      "seniority_level": "Lead",
+      "must_have_skills": ["Differential Privacy", "Zero-Knowledge Proofs", "Rust / Go", "Cryptography"],
+      "job_description": "Thiết kế kiến trúc bảo vệ quyền riêng tư cho các nền tảng tính toán đa bên (Secure Multi-Party Computation) của tổ chức tài chính.\n\nTrách nhiệm:\n- Triển khai Differential Privacy analytics pipelines trên cloud (Azure/AWS).\n- Thiết kế ZK-SNARK circuits hoặc Homomorphic Encryption cho enterprise workloads.\n- Đảm bảo tuân thủ các quy định bảo mật quốc tế và framework bảo mật dữ liệu.\n\nQuyền lợi & Môi trường:\n- Lương 5,000 - 7,000 USD/tháng.\n- Làm việc trong môi trường nghiên cứu chuyên sâu (R&D) và cutting-edge tech."
+    },
+    "ground_truth": {
+      "relevant_personnel": ["P_025", "P_062", "P_080", "P_092"],
+      "reasoning": "P_025, P_062, P_080, P_092 là các nhân sự hiếm hoi trên thị trường am hiểu sâu về Privacy Tech (Differential Privacy, ZKP, Homomorphic Encryption, Cryptography)."
+    }
+  },
+  {
+    "query_id": "JD_020",
+    "category": "Business",
+    "input_data": {
+      "job_title": "Enterprise Backend Tech Lead (Core Banking)",
+      "seniority_level": "Lead",
+      "must_have_skills": ["Java EE", "Spring Boot", "Oracle RAC", "Microservices"],
+      "job_description": "Phát triển, duy trì và hiện đại hóa hệ thống Core Banking phục vụ hàng triệu giao dịch cho các ngân hàng lớn.\n\nTrách nhiệm:\n- Tối ưu hóa các batch job thanh toán bù trừ cuối ngày (EOD Settlement).\n- Dẫn dắt kiến trúc chuyển đổi từ SOA/Monolith sang Microservices.\n- Xử lý các giao dịch phân tán, tuân thủ process deployment khắt khe của ngân hàng.\n\nQuyền lợi & Môi trường:\n- Lương 45,000,000 - 50,000,000 VNĐ/tháng.\n- Môi trường Enterprise ổn định, quy trình nghiêm ngặt (ISO, CAB approval)."
+    },
+    "ground_truth": {
+      "relevant_personnel": ["P_070", "P_087", "P_097", "P_066", "P_014"],
+      "reasoning": "P_070, P_087, P_097, P_066 là những chuyên gia backend quen thuộc với việc duy trì và nâng cấp Java legacy (core banking/insurance). P_014 làm core banking tại VinaCorp."
+    }
+  },
+  {
+    "query_id": "JD_021",
+    "category": "Business",
+    "input_data": {
+      "job_title": "SOC Manager / Threat Intel Lead",
+      "seniority_level": "Manager",
+      "must_have_skills": ["SIEM (Splunk)", "SOAR", "Threat Hunting", "MITRE ATT&CK"],
+      "job_description": "Lãnh đạo Trung tâm Điều hành An ninh (SOC), xử lý các sự cố an toàn thông tin và rà quét các chiến dịch APT.\n\nTrách nhiệm:\n- Xây dựng SOAR playbooks bằng Python để tự động hóa incident response.\n- Phân tích mã độc, network forensics và hunting theo giả thuyết (hypothesis-driven).\n- Quản lý ca trực (on-call rotation) và điều phối War Room khi có sự cố mạng.\n\nQuyền lợi & Môi trường:\n- Lương 42,000,000 - 52,000,000 VNĐ/tháng.\n- Làm việc trực tiếp với các hệ thống Critical Infrastructure quốc gia."
+    },
+    "ground_truth": {
+      "relevant_personnel": ["P_043", "P_009", "P_018"],
+      "reasoning": "P_043 là chuyên gia phân tích SOC dày dặn kinh nghiệm điều tra sự cố và xử lý APT. P_009 và P_018 đóng góp nền tảng kiến trúc DevSecOps và hệ thống phòng thủ vững chắc."
+    }
+  },
+  {
+    "query_id": "JD_022",
+    "category": "Design",
+    "input_data": {
+      "job_title": "Design System Lead",
+      "seniority_level": "Lead",
+      "must_have_skills": ["React", "TypeScript", "Storybook", "WCAG Accessibility"],
+      "job_description": "Chịu trách nhiệm thiết kế, chuẩn hóa và phân phối thư viện UI Component dùng chung cho toàn bộ hệ sinh thái sản phẩm.\n\nTrách nhiệm:\n- Thiết lập kiến trúc CSS (Design Tokens, Style Dictionary) và tự động hóa Figma-to-Code.\n- Đảm bảo các component đạt chuẩn tiếp cận WCAG 2.1 AA (ARIA, axe-core testing).\n- Vận hành Visual Regression Testing (Chromatic) và monorepo (Turborepo/Nx).\n\nQuyền lợi & Môi trường:\n- Lương 55,000,000 - 65,000,000 VNĐ/tháng.\n- Văn hóa Design-driven, phối hợp mật thiết với UX/UI designers."
+    },
+    "ground_truth": {
+      "relevant_personnel": ["P_044", "P_003", "P_039"],
+      "reasoning": "P_044 là Design System Lead chuyên sâu về Storybook và WCAG accessibility. P_003 có kinh nghiệm tối ưu UX performance. P_039 thành thạo trong việc xây dựng component library lớn."
+    }
+  },
+  {
+    "query_id": "JD_023",
+    "category": "Design",
+    "input_data": {
+      "job_title": "Senior Frontend Performance Engineer",
+      "seniority_level": "Senior",
+      "must_have_skills": ["React 18", "Core Web Vitals", "Web Workers", "Webpack/Vite"],
+      "job_description": "Đẩy giới hạn tối đa của trình duyệt web để mang lại trải nghiệm mượt mà nhất cho các trang thương mại điện tử hàng triệu traffic.\n\nTrách nhiệm:\n- Tối ưu hóa chuyên sâu Virtual DOM, ứng dụng React Concurrent Features (Suspense, Transitions).\n- Giảm thiểu các chỉ số LCP, CLS, FID thông qua SSR/SSG và caching.\n- Profile memory leak và main-thread blocking tasks bằng Chrome DevTools.\n\nQuyền lợi & Môi trường:\n- Lương 60,000,000 - 72,000,000 VNĐ/tháng.\n- Được trao quyền lớn trong việc thay đổi kiến trúc frontend để tối ưu tốc độ."
+    },
+    "ground_truth": {
+      "relevant_personnel": ["P_003", "P_039", "P_024"],
+      "reasoning": "P_003 có track record giảm LCP từ 4.2s xuống 1.1s. P_039 am hiểu Virtual DOM optimization và Concurrent Mode ở level Architect. P_024 tập trung vào Web Performance APIs."
+    }
+  },
+  {
+    "query_id": "JD_024",
+    "category": "Design",
+    "input_data": {
+      "job_title": "Game Graphics / Rendering Engineer",
+      "seniority_level": "Middle",
+      "must_have_skills": ["C++", "Vulkan / DirectX 12", "Render Graph", "GPU Profiling"],
+      "job_description": "Phát triển Graphics Pipeline cho game PC/Console AAA, tối đa hóa sức mạnh phần cứng GPU.\n\nTrách nhiệm:\n- Thiết kế và implement hệ thống Render Graph để đồng bộ hóa tài nguyên GPU tự động.\n- Xử lý các bài toán over-synchronization và tối ưu Vulkan pipeline barrier.\n- Viết custom shader (PBR, shadow mapping) và profile memory allocation.\n\nQuyền lợi & Môi trường:\n- Lương 28,000,000 - 40,000,000 VNĐ/tháng.\n- Môi trường Indie/Game Studio sáng tạo, tập trung mạnh vào R&D đồ họa."
+    },
+    "ground_truth": {
+      "relevant_personnel": ["P_030", "P_052", "P_078"],
+      "reasoning": "P_030, P_052, P_078 đều có profile kỹ thuật tập trung vào C++ 20, Render Graph, Vulkan API và GPU profiling cho game architecture."
+    }
+  },
+  {
+    "query_id": "JD_025",
+    "category": "Design",
+    "input_data": {
+      "job_title": "React Native Engineer (Mini App Platform)",
+      "seniority_level": "Senior",
+      "must_have_skills": ["React Native", "JSI / TurboModules", "TypeScript", "Native bridge"],
+      "job_description": "Kỹ sư cốt lõi xây dựng nền tảng Mini App (tương tự WeChat) chạy bên trong một Super App có 30 triệu người dùng.\n\nTrách nhiệm:\n- Áp dụng React Native New Architecture (Fabric, JSI) để giao tiếp JS và Native không qua bridge cũ.\n- Đào sâu Hermes engine để tối ưu bytecode compilation và bundle size.\n- Quản lý JS Sandbox isolation và bảo mật deep link payment.\n\nQuyền lợi & Môi trường:\n- Lương 55,000,000 - 65,000,000 VNĐ/tháng.\n- Giải quyết các bài toán architectural cực kỳ thách thức của Cross-platform."
+    },
+    "ground_truth": {
+      "relevant_personnel": ["P_013", "P_005", "P_034", "P_007"],
+      "reasoning": "P_013 là ứng viên hoàn hảo tuyệt đối từng trực tiếp xây dựng Mini App Platform bằng React Native New Architecture. P_034 chuyên sâu Flutter cross-platform. P_005 và P_007 am hiểu Superapp UX."
+    }
+  },
+  {
+    "query_id": "JD_026",
+    "category": "Design",
+    "input_data": {
+      "job_title": "Senior iOS Engineer",
+      "seniority_level": "Senior",
+      "must_have_skills": ["Swift", "SwiftUI", "Combine / RxSwift", "Instruments"],
+      "job_description": "Phát triển các luồng tính năng thanh toán (Payment flows) mượt mà và bảo mật cho ứng dụng ví điện tử Fintech.\n\nTrách nhiệm:\n- Profiling bằng Instruments để chẩn đoán memory leak và giảm thời gian Cold Start (< 1.5s).\n- Tích hợp API sinh trắc học (FaceID/TouchID) và Secure Enclave.\n- Triển khai kiến trúc modular hóa ứng dụng và setup CI/CD Fastlane.\n\nQuyền lợi & Môi trường:\n- Lương 60,000,000 - 80,000,000 VNĐ/tháng.\n- Môi trường phát triển product tập trung 100% vào UI/UX mobile."
+    },
+    "ground_truth": {
+      "relevant_personnel": ["P_005", "P_057", "P_007"],
+      "reasoning": "P_005 và P_057 chuyên tối ưu iOS cold start time bằng Instruments profiling cho ứng dụng Fintech. P_007 cũng sở hữu tư duy tối ưu UX mạnh mẽ cho ứng dụng di động."
+    }
+  },
+  {
+    "query_id": "JD_027",
+    "category": "Design",
+    "input_data": {
+      "job_title": "Android Performance Expert",
+      "seniority_level": "Senior",
+      "must_have_skills": ["Kotlin", "Jetpack Compose", "Coroutines", "Android Profiler"],
+      "job_description": "Ownership toàn bộ hiệu năng của Android app có hàng chục triệu DAU. Chuyên gia diệt ANR (Application Not Responding).\n\nTrách nhiệm:\n- Viết native plugins (C++/NDK) để bypass các lỗi cấp hệ điều hành hoặc thư viện bên thứ ba.\n- Tối ưu hóa UI rendering bằng Jetpack Compose và Baseline Profiles.\n- Quản lý kiến trúc Clean Architecture / MVI cho ứng dụng quy mô lớn.\n\nQuyền lợi & Môi trường:\n- Lương 45,000,000 - 55,000,000 VNĐ/tháng.\n- Văn hóa Engineering-first, khuyến khích tối ưu system-level."
+    },
+    "ground_truth": {
+      "relevant_personnel": ["P_007", "P_093", "P_034"],
+      "reasoning": "P_007 và P_093 chuyên xử lý các lỗi nhớ (memory leak) và ANR bằng C++/NDK cho nền tảng Android. P_034 có kinh nghiệm sử dụng Kotlin để viết plugin tối ưu trải nghiệm."
+    }
+  },
+  {
+    "query_id": "JD_028",
+    "category": "Design",
+    "input_data": {
+      "job_title": "Interactive UX Frontend Developer",
+      "seniority_level": "Middle",
+      "must_have_skills": ["WebGL / Canvas API", "React", "WebSocket", "Web Workers"],
+      "job_description": "Xây dựng các giao diện tương tác real-time phức tạp không block main thread, đặc biệt dùng cho Livestream hoặc Gaming UI.\n\nTrách nhiệm:\n- Triển khai hệ thống particle effects (như thả tim, comment real-time) chạy hoàn toàn trong Web Worker qua SharedArrayBuffer.\n- Tối ưu hóa render loop 60fps cho hàng trăm ngàn lượt tương tác đồng thời.\n- Tích hợp WebRTC frontend SDK.\n\nQuyền lợi & Môi trường:\n- Lương 40,000,000 - 50,000,000 VNĐ/tháng.\n- Giao điểm giữa nghệ thuật UI và sức mạnh thuật toán tối ưu trên browser."
+    },
+    "ground_truth": {
+      "relevant_personnel": ["P_039", "P_024", "P_045"],
+      "reasoning": "P_039 có dự án WebGL particle system xử lý tương tác qua Web Worker không block main thread. P_024 xử lý giao tiếp trình duyệt backend (WASM). P_045 nắm vững tích hợp WebRTC UI SDK."
+    }
+  },
+  {
+    "query_id": "JD_029",
+    "category": "Design",
+    "input_data": {
+      "job_title": "Full-stack Developer",
+      "seniority_level": "Middle",
+      "must_have_skills": ["React", "Node.js", "PostgreSQL", "DigitalOcean"],
+      "job_description": "Nhân sự All-in-one xây dựng SaaS quản trị cho doanh nghiệp SME. Một người làm từ thiết kế database đến deploy UI.\n\nTrách nhiệm:\n- Thiết kế schema PostgreSQL, viết REST/GraphQL API bằng Node.js.\n- Phát triển giao diện React/Next.js mượt mà.\n- Tự thiết lập hạ tầng CI/CD cơ bản (GitHub Actions) và deploy lên VPS/Droplet.\n\nQuyền lợi & Môi trường:\n- Lương 28,000,000 - 35,000,000 VNĐ/tháng.\n- Môi trường Work-life balance, end-to-end ownership toàn bộ tính năng."
+    },
+    "ground_truth": {
+      "relevant_personnel": ["P_067", "P_088", "P_003"],
+      "reasoning": "P_067 và P_088 match chuẩn xác với vị trí NanoTech Full-stack dev (React, Node.js, DigitalOcean). P_003 có kỹ năng Full-stack vững giúp support product UX từ đầu chí cuối."
+    }
+  },
+  {
+    "query_id": "JD_030",
+    "category": "Design",
+    "input_data": {
+      "job_title": "Edge Computing & WASM Engineer",
+      "seniority_level": "Senior",
+      "must_have_skills": ["Rust", "WebAssembly (WASM)", "WASI", "C/C++"],
+      "job_description": "Vị trí cực kỳ ngách (niche) tập trung vào việc đưa các runtime nặng (như Python, LLVM) xuống chạy an toàn tại trình duyệt hoặc Edge server.\n\nTrách nhiệm:\n- Biên dịch C/C++/Rust sang WASM thông qua Emscripten hoặc wasm-pack.\n- Implement virtualized filesystem (WASI) và custom memory allocator trong sandbox.\n- Tối ưu hóa startup time và syscall overhead của các Edge Serverless function.\n\nQuyền lợi & Môi trường:\n- Lương 2,500 - 3,500 USD/tháng.\n- Làm việc 100% remote với các bài toán Deep Tech hiếm có trên thế giới."
+    },
+    "ground_truth": {
+      "relevant_personnel": ["P_024", "P_055", "P_074", "P_098"],
+      "reasoning": "P_024 có dự án đặc biệt khi compile CPython chạy hoàn toàn trên trình duyệt qua WASM. P_055, P_074, P_098 là các chuyên gia Edge Platform Engineer tập trung vào sandbox environment (WASI, Emscripten)."
+    }
+  },
+{
+    "query_id": "JD_031",
+    "category": "Business",
+    "input_data": {
+      "job_title": "VP Engineering / CTO",
+      "seniority_level": "Manager",
+      "must_have_skills": ["Engineering Leadership", "Strangler Fig Pattern", "Microservices", "Java/Go"],
+      "job_description": "Tìm kiếm lãnh đạo công nghệ dẫn dắt đội ngũ kỹ sư từ 20 lên 80 người. Chịu trách nhiệm quy hoạch chiến lược kỹ thuật, chuyển đổi kiến trúc từ Monolith khổng lồ sang Microservices an toàn, quản lý Technical Debt và có khả năng giao tiếp về ROI công nghệ với C-level/Hội đồng quản trị."
+    },
+    "ground_truth": {
+      "relevant_personnel": ["P_090", "P_056", "P_076"],
+      "reasoning": "Cả 3 đều là ứng viên cấp quản lý cao (CTO/VP) sở hữu kinh nghiệm thực chiến trong việc rã khối Java Monolith khổng lồ thành Microservices bằng Strangler Fig Pattern, có năng lực xây dựng văn hóa kỹ thuật và giao tiếp với C-board."
+    }
+  },
+  {
+    "query_id": "JD_032",
+    "category": "IT",
+    "input_data": {
+      "job_title": "Medical AI Researcher",
+      "seniority_level": "Middle",
+      "must_have_skills": ["PyTorch", "Computer Vision", "Medical Imaging", "TensorRT", "Bias evaluation"],
+      "job_description": "Nghiên cứu, phát triển và tối ưu mô hình Computer Vision phục vụ chẩn đoán y tế trên thiết bị edge (Edge AI). Cần hiểu rõ quy trình đánh giá fairness/bias của mô hình AI trong y tế để đạt chuẩn compliance quốc tế (như FDA 510k) và có kinh nghiệm tối ưu hóa với TensorRT/Quantization."
+    },
+    "ground_truth": {
+      "relevant_personnel": ["P_058", "P_096"],
+      "reasoning": "P_058 và P_096 đều là những chuyên gia R&D hiếm có về Medical Imaging, am hiểu sâu sắc quy trình kiểm định bias y tế đạt chuẩn FDA 510(k) và có kinh nghiệm deploy mô hình nặng lên edge device bằng TensorRT."
+    }
+  },
+  {
+    "query_id": "JD_033",
+    "category": "IT",
+    "input_data": {
+      "job_title": "Privacy Tech / Cryptographic Engineer",
+      "seniority_level": "Senior",
+      "must_have_skills": ["Rust", "Zero-Knowledge Proofs", "Cryptography", "Go"],
+      "job_description": "Xây dựng các giải pháp mã hóa ứng dụng Zero-Knowledge Proofs (ZKP) để xác thực tính toàn vẹn dữ liệu trong hệ thống phân tán mà không làm lộ dữ liệu gốc. Đòi hỏi kỹ năng tối ưu hóa ZK-SNARK circuit để giảm thời gian sinh proof và tích hợp dễ dàng qua các backend API."
+    },
+    "ground_truth": {
+      "relevant_personnel": ["P_083", "P_092", "P_080"],
+      "reasoning": "P_083 và P_092 có kinh nghiệm sâu về thiết kế và tối ưu ZK-SNARK circuit, am hiểu mật mã học (Cryptography). P_080 bổ sung sức mạnh với nền tảng Privacy Tech (Differential Privacy, ZKP)."
+    }
+  },
+  {
+    "query_id": "JD_034",
+    "category": "IT",
+    "input_data": {
+      "job_title": "Senior Data Platform Engineer",
+      "seniority_level": "Senior",
+      "must_have_skills": ["Apache Airflow", "dbt Core", "BigQuery", "Snowflake"],
+      "job_description": "Xây dựng hạ tầng dữ liệu và mô hình phân tích cho nền tảng B2B SaaS. Tập trung thiết kế kiến trúc xử lý dữ liệu multi-tenant, đảm bảo cô lập tài nguyên cho từng khách hàng bằng Airflow (dynamic DAGs) và tối ưu hóa toàn bộ pipeline chuyển đổi dữ liệu bằng dbt."
+    },
+    "ground_truth": {
+      "relevant_personnel": ["P_094", "P_085", "P_054"],
+      "reasoning": "P_094 và P_085 có khả năng thiết kế multi-tenant architecture trên Airflow, xử lý bài toán cô lập worker node cho B2B SaaS. P_054 là chuyên gia dbt có kinh nghiệm migrate logic phức tạp."
+    }
+  },
+  {
+    "query_id": "JD_035",
+    "category": "IT",
+    "input_data": {
+      "job_title": "Core Banking Backend Engineer",
+      "seniority_level": "Senior",
+      "must_have_skills": ["Java EE", "Spring Boot", "Oracle RAC", "Event Sourcing"],
+      "job_description": "Phát triển và bảo trì hệ thống Core Banking xử lý giao dịch quy mô lớn của ngân hàng. Yêu cầu sự kiên nhẫn với quy trình deployment khắt khe (CAB approval), tối ưu hóa các batch job thanh toán chốt sổ cuối ngày (EOD) và xử lý tính nhất quán của dữ liệu qua các pattern như Saga/Event Sourcing."
+    },
+    "ground_truth": {
+      "relevant_personnel": ["P_087", "P_097", "P_070"],
+      "reasoning": "P_087, P_097, P_070 đều có nhiều năm kinh nghiệm vận hành, tối ưu hóa hệ thống legacy Java EE/Oracle RAC tại các ngân hàng lớn, thấu hiểu quy trình enterprise và batch processing EOD."
+    }
+  },
+  {
+    "query_id": "JD_036",
+    "category": "IT",
+    "input_data": {
+      "job_title": "Edge Computing / WASM Engineer",
+      "seniority_level": "Senior",
+      "must_have_skills": ["Rust", "WebAssembly (WASM)", "WASI", "eBPF"],
+      "job_description": "Tham gia core-team phát triển Edge Computing Platform, tối ưu hóa runtime serverless. Yêu cầu hiểu biết cực kỳ chuyên sâu về WebAssembly, kiến trúc ảo hóa hệ thống tệp WASI, quản lý memory allocator, và có khả năng giảm thiểu syscall overhead cho các container ở thiết bị biên (edge nodes)."
+    },
+    "ground_truth": {
+      "relevant_personnel": ["P_055", "P_074", "P_098"],
+      "reasoning": "P_055, P_074, P_098 đều làm việc trực tiếp với nền tảng WASMEdge, am hiểu ngôn ngữ Rust, kiến trúc WASI, và từng tối ưu hóa I/O overhead cho edge serverless functions."
+    }
+  },
+  {
+    "query_id": "JD_037",
+    "category": "IT",
+    "input_data": {
+      "job_title": "Senior SRE / Chaos Engineering",
+      "seniority_level": "Senior",
+      "must_have_skills": ["Kubernetes", "Chaos Mesh", "Prometheus", "SLO/SLI Design"],
+      "job_description": "Đảm bảo độ tin cậy của nền tảng thông qua tự động hóa Chaos Engineering. Thiết lập hệ thống SLI/SLO vững chắc, quản lý và kiểm soát blast radius khi inject lỗi tự động (dựa trên metrics Prometheus), đồng thời dẫn dắt các quy trình Blameless Post-mortem để khắc phục sự cố hệ thống."
+    },
+    "ground_truth": {
+      "relevant_personnel": ["P_084", "P_069", "P_075"],
+      "reasoning": "P_084 có kinh nghiệm thiết kế SLI/SLO chuẩn xác. P_069 và P_075 là chuyên gia thực chiến Chaos Engineering, từng phát triển các admission webhook trên Kubernetes để auto-abort experiment khi vượt SLO."
+    }
+  },
+  {
+    "query_id": "JD_038",
+    "category": "Business",
+    "input_data": {
+      "job_title": "QA Automation Lead",
+      "seniority_level": "Lead",
+      "must_have_skills": ["Playwright", "CI/CD GitHub Actions", "Pact Contract Testing", "ISTQB Advanced"],
+      "job_description": "Dẫn dắt và thiết lập Trung tâm kiểm thử xuất sắc (Testing Center of Excellence). Xây dựng hệ thống kiểm thử E2E chạy song song, tích hợp Contract Testing, loại bỏ flaky tests bằng các cơ chế auto-retry/quarantine, và áp dụng shift-left testing trực tiếp vào CI/CD pipeline."
+    },
+    "ground_truth": {
+      "relevant_personnel": ["P_091", "P_011", "P_049"],
+      "reasoning": "P_091 và P_011 có track record tự build các E2E framework bằng Playwright và tích hợp Pact contract testing. P_049 (QA Manager) có khả năng thiết lập TCoE chuẩn hóa quy trình test và tracking metric ở mức vĩ mô."
+    }
+  },
+  {
+    "query_id": "JD_039",
+    "category": "Business",
+    "input_data": {
+      "job_title": "Growth Analytics Engineer",
+      "seniority_level": "Middle",
+      "must_have_skills": ["A/B Testing", "Mixpanel", "Advanced SQL", "Node.js"],
+      "job_description": "Đứng ở giao điểm giữa engineering và business, phụ trách phân tích dữ liệu tăng trưởng. Tham gia thiết kế A/B Testing, setup tracking schema trên Mixpanel/Amplitude, và sử dụng Advanced SQL để bóc tách các metric như Net Dollar Retention, churn rate, và tối ưu hóa funnel."
+    },
+    "ground_truth": {
+      "relevant_personnel": ["P_099", "P_021", "P_037"],
+      "reasoning": "P_099 có khả năng reverse-engineer mô hình churn rate và cực mạnh về SQL/Mixpanel. P_021 và P_037 là những Fullstack Growth Engineer có khả năng vừa code Node.js/React vừa nắm vững A/B testing methodology."
+    }
+  },
+  {
+    "query_id": "JD_040",
+    "category": "Design",
+    "input_data": {
+      "job_title": "GPU/NPU Software Engineer",
+      "seniority_level": "Senior",
+      "must_have_skills": ["CUDA C++", "Quantization", "Transformer Attention", "Nsight Profiling"],
+      "job_description": "Nghiên cứu và tối ưu hóa các low-level compute kernels cho custom AI Accelerator. Công việc đòi hỏi khả năng tự viết fused attention kernel cho các mô hình ngôn ngữ lớn (LLM) bị lượng tử hóa, hiểu và phá vỡ giới hạn memory bandwidth của phần cứng, đo lường liên tục bằng Nsight Profiling."
+    },
+    "ground_truth": {
+      "relevant_personnel": ["P_082", "P_061", "P_014"],
+      "reasoning": "P_082, P_061, P_014 là những chuyên gia R&D vô cùng hiếm hoi có khả năng tự implement custom fused attention kernel bằng CUDA C++ cho mô hình lượng tử hóa, chuyên trị vấn đề memory bandwidth bottlenecks tầng phần cứng."
+    }
+  }
+]

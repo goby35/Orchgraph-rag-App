@@ -1,0 +1,250 @@
+{
+  "summary": {
+    "files_processed": 30,
+    "avg_noise_removal_pct": 0.3204,
+    "avg_vi_ratio_before": 0.0903,
+    "avg_vi_ratio_after": 0.0903
+  },
+  "per_file": [
+    {
+      "file": "CV_Bui_Ngoc_Tu.pdf",
+      "original_len": 2393,
+      "cleaned_len": 2385,
+      "noise_removal_pct": 0.3343,
+      "vi_ratio_before": 0.1037,
+      "vi_ratio_after": 0.1037
+    },
+    {
+      "file": "CV_Bui_Tan_Phat.pdf",
+      "original_len": 2644,
+      "cleaned_len": 2639,
+      "noise_removal_pct": 0.1891,
+      "vi_ratio_before": 0.0865,
+      "vi_ratio_after": 0.0865
+    },
+    {
+      "file": "CV_Do_Cao_Cuong.pdf",
+      "original_len": 3415,
+      "cleaned_len": 3407,
+      "noise_removal_pct": 0.2343,
+      "vi_ratio_before": 0.077,
+      "vi_ratio_after": 0.077
+    },
+    {
+      "file": "CV_Doan_Kien_Quoc.pdf",
+      "original_len": 2821,
+      "cleaned_len": 2815,
+      "noise_removal_pct": 0.2127,
+      "vi_ratio_before": 0.0802,
+      "vi_ratio_after": 0.0802
+    },
+    {
+      "file": "CV_Doan_Minh_Nhat.pdf",
+      "original_len": 2728,
+      "cleaned_len": 2720,
+      "noise_removal_pct": 0.2933,
+      "vi_ratio_before": 0.0763,
+      "vi_ratio_after": 0.0763
+    },
+    {
+      "file": "CV_Ho_Ngoc_Bich.pdf",
+      "original_len": 2920,
+      "cleaned_len": 2911,
+      "noise_removal_pct": 0.3082,
+      "vi_ratio_before": 0.0737,
+      "vi_ratio_after": 0.0737
+    },
+    {
+      "file": "CV_Hoang_Tuan_Anh.pdf",
+      "original_len": 2357,
+      "cleaned_len": 2346,
+      "noise_removal_pct": 0.4667,
+      "vi_ratio_before": 0.1089,
+      "vi_ratio_after": 0.1089
+    },
+    {
+      "file": "CV_Ngo_Mai_Chi.pdf",
+      "original_len": 2958,
+      "cleaned_len": 2949,
+      "noise_removal_pct": 0.3043,
+      "vi_ratio_before": 0.1153,
+      "vi_ratio_after": 0.1153
+    },
+    {
+      "file": "CV_P051_NguyenHaiDang_StreamingEngineer.pdf",
+      "original_len": 2449,
+      "cleaned_len": 2443,
+      "noise_removal_pct": 0.245,
+      "vi_ratio_before": 0.0847,
+      "vi_ratio_after": 0.0847
+    },
+    {
+      "file": "CV_P052_TranQuocBao_GraphicsEngineer.pdf",
+      "original_len": 2371,
+      "cleaned_len": 2364,
+      "noise_removal_pct": 0.2952,
+      "vi_ratio_before": 0.0753,
+      "vi_ratio_after": 0.0753
+    },
+    {
+      "file": "CV_P053_LeThanhTung_eBPFEngineer.pdf",
+      "original_len": 2156,
+      "cleaned_len": 2147,
+      "noise_removal_pct": 0.4174,
+      "vi_ratio_before": 0.0691,
+      "vi_ratio_after": 0.0691
+    },
+    {
+      "file": "CV_P054_PhamBichDiep_AnalyticsEngineer.pdf",
+      "original_len": 2674,
+      "cleaned_len": 2666,
+      "noise_removal_pct": 0.2992,
+      "vi_ratio_before": 0.096,
+      "vi_ratio_after": 0.096
+    },
+    {
+      "file": "CV_P055_HoangTrongNghia_WASMEngineer.pdf",
+      "original_len": 2952,
+      "cleaned_len": 2942,
+      "noise_removal_pct": 0.3388,
+      "vi_ratio_before": 0.0673,
+      "vi_ratio_after": 0.0673
+    },
+    {
+      "file": "CV_P056_VuNgocMai_CTO.pdf",
+      "original_len": 1568,
+      "cleaned_len": 1566,
+      "noise_removal_pct": 0.1276,
+      "vi_ratio_before": 0.1228,
+      "vi_ratio_after": 0.1228
+    },
+    {
+      "file": "CV_P057_DoTuanKhang_iOSEngineer.pdf",
+      "original_len": 1623,
+      "cleaned_len": 1618,
+      "noise_removal_pct": 0.3081,
+      "vi_ratio_before": 0.1438,
+      "vi_ratio_after": 0.1438
+    },
+    {
+      "file": "CV_P058_NgoBichTram_MLEngineer.pdf",
+      "original_len": 1885,
+      "cleaned_len": 1876,
+      "noise_removal_pct": 0.4775,
+      "vi_ratio_before": 0.1453,
+      "vi_ratio_after": 0.1453
+    },
+    {
+      "file": "CV_P059_CloudSolutionsArchitect.pdf",
+      "original_len": 2176,
+      "cleaned_len": 2170,
+      "noise_removal_pct": 0.2757,
+      "vi_ratio_before": 0.1034,
+      "vi_ratio_after": 0.1034
+    },
+    {
+      "file": "CV_P060_TruongVietHung_DBEngineer.pdf",
+      "original_len": 2467,
+      "cleaned_len": 2461,
+      "noise_removal_pct": 0.2432,
+      "vi_ratio_before": 0.1147,
+      "vi_ratio_after": 0.1147
+    },
+    {
+      "file": "CV_P081_PhanVinhKhang_GameBackend.pdf",
+      "original_len": 2936,
+      "cleaned_len": 2923,
+      "noise_removal_pct": 0.4428,
+      "vi_ratio_before": 0.0652,
+      "vi_ratio_after": 0.0652
+    },
+    {
+      "file": "CV_P082_TruongCamLy_GPUEngineer.pdf",
+      "original_len": 2842,
+      "cleaned_len": 2831,
+      "noise_removal_pct": 0.3871,
+      "vi_ratio_before": 0.0662,
+      "vi_ratio_after": 0.0662
+    },
+    {
+      "file": "CV_P083_VuongDinhThai_CryptoBackend.pdf",
+      "original_len": 3208,
+      "cleaned_len": 3197,
+      "noise_removal_pct": 0.3429,
+      "vi_ratio_before": 0.0786,
+      "vi_ratio_after": 0.0786
+    },
+    {
+      "file": "CV_P084_LeHuynhDuc_SRE.pdf",
+      "original_len": 3048,
+      "cleaned_len": 3038,
+      "noise_removal_pct": 0.3281,
+      "vi_ratio_before": 0.0774,
+      "vi_ratio_after": 0.0774
+    },
+    {
+      "file": "CV_P085_DangMaiAnh_DataEngineer.pdf",
+      "original_len": 3152,
+      "cleaned_len": 3141,
+      "noise_removal_pct": 0.349,
+      "vi_ratio_before": 0.0687,
+      "vi_ratio_after": 0.0687
+    },
+    {
+      "file": "CV_P091_DangThaiSon_QAAutomation.pdf",
+      "original_len": 3134,
+      "cleaned_len": 3123,
+      "noise_removal_pct": 0.351,
+      "vi_ratio_before": 0.0791,
+      "vi_ratio_after": 0.0791
+    },
+    {
+      "file": "CV_P092_TranDieuNhi_BlockchainZKP.pdf",
+      "original_len": 3329,
+      "cleaned_len": 3315,
+      "noise_removal_pct": 0.4205,
+      "vi_ratio_before": 0.0636,
+      "vi_ratio_after": 0.0636
+    },
+    {
+      "file": "CV_P093_LeQuocBao_AndroidPerformance.pdf",
+      "original_len": 3245,
+      "cleaned_len": 3233,
+      "noise_removal_pct": 0.3698,
+      "vi_ratio_before": 0.0807,
+      "vi_ratio_after": 0.0807
+    },
+    {
+      "file": "CV_P094_PhamThuHuong_DataPlatform.pdf",
+      "original_len": 3010,
+      "cleaned_len": 2999,
+      "noise_removal_pct": 0.3654,
+      "vi_ratio_before": 0.0739,
+      "vi_ratio_after": 0.0739
+    },
+    {
+      "file": "CV_P095_VuGiaKhiem_AppSecArchitect.pdf",
+      "original_len": 3591,
+      "cleaned_len": 3580,
+      "noise_removal_pct": 0.3063,
+      "vi_ratio_before": 0.0907,
+      "vi_ratio_after": 0.0907
+    },
+    {
+      "file": "CV_Trinh_Quang_Vinh.pdf",
+      "original_len": 2151,
+      "cleaned_len": 2147,
+      "noise_removal_pct": 0.186,
+      "vi_ratio_before": 0.1182,
+      "vi_ratio_after": 0.1182
+    },
+    {
+      "file": "CV_Vo_Hoang_Yen.pdf",
+      "original_len": 2298,
+      "cleaned_len": 2289,
+      "noise_removal_pct": 0.3916,
+      "vi_ratio_before": 0.1016,
+      "vi_ratio_after": 0.1016
+    }
+  ]
+}

@@ -1,0 +1,2809 @@
+[
+  {
+    "file": "CV_Bui_Ngoc_Tu.pdf",
+    "public_data": {
+      "full_name": "Bùi Ngọc Tú",
+      "professional_summary": "Growth Analytics Engineer kết hợp tư duy product và kỹ thuật dữ liệu. 5 năm kinh nghiệm xây dựng hệ thống tracking, A/B testing và analytics cho các nền tảng B2B SaaS. Từng tư vấn chiến lược data-driven growth giúp AgileTech tăng 30% user retention.",
+      "is_available": true,
+      "skills": [
+        "advanced sql",
+        "a/b testing",
+        "mixpanel",
+        "node.js",
+        "python",
+        "dbt core",
+        "amplitude",
+        "bigquery",
+        "looker studio",
+        "event schema design",
+        "funnel analysis",
+        "ndr / mrr metrics"
+      ],
+      "certificates": [
+        "dbt certified developer – dbt labs (2023)",
+        "google analytics individual qualification (gaiq)"
+      ],
+      "cultural_tags": [],
+      "education": [
+        {
+          "degree": "BACHELOR",
+          "major": "Hệ thống Thông tin Quản lý",
+          "school": "ĐH Kinh tế TP.HCM",
+          "year": 2018
+        }
+      ],
+      "experience": [
+        {
+          "organization_name": "AgileTech Series B Vietnam",
+          "project_name": "",
+          "role": "Growth Analytics Engineer",
+          "tech_stack": [
+            "advanced sql",
+            "python",
+            "dbt core",
+            "bigquery",
+            "looker"
+          ]
+        },
+        {
+          "organization_name": "Teko Vietnam (VinGroup)",
+          "project_name": "",
+          "role": "Product Analytics Lead",
+          "tech_stack": [
+            "mixpanel",
+            "dbt core",
+            "airflow"
+          ]
+        },
+        {
+          "organization_name": "Topica Edtech Group",
+          "project_name": "",
+          "role": "Data Analyst",
+          "tech_stack": [
+            "python",
+            "sql"
+          ]
+        }
+      ]
+    },
+    "private_data": {
+      "contact": {
+        "email": "ngoctu.growth@gmail.com",
+        "phone": "0911 559 988",
+        "github": "github.com/tu-growth",
+        "linkedin": "linkedin.com/in/ngoctu"
+      },
+      "salary_expectation": "50,000,000 VND / tháng",
+      "project_technical_secrets": "",
+      "interview_questions_history": [
+        {
+          "question": "Metric quan trọng nhất B2B SaaS: NDR – phản ánh cả satisfaction lẫn upsell; quan trọng hơn New MRR",
+          "answer": "",
+          "org": "AgileTech"
+        }
+      ],
+      "blacklist_orgs": [],
+      "evidence_links": [],
+      "additional_information": [
+        {
+          "key": "Tổ chức không ứng tuyển",
+          "value": "Không có"
+        },
+        {
+          "key": "Thành tích đặc biệt",
+          "value": "Phân tích đối thủ, điều chỉnh event tracking schema nội bộ; tăng retention 30% cho AgileTech"
+        }
+      ]
+    }
+  },
+  {
+    "file": "CV_Bui_Tan_Phat.pdf",
+    "public_data": {
+      "full_name": "Bùi Tấn Phát",
+      "professional_summary": "Kỹ sư Compiler và Static Analysis với kinh nghiệm chuyên sâu về LLVM IR, phát triển custom LLVM passes và data flow analysis. Có khả năng optimize pipeline phân tích tính trên các codebase C++ quy mô lớn (500k+ LOC). Chuyên gia trong việc phát hiện lỗ hổng bảo mật thông qua taint tracking và inter-procedural analysis.",
+      "is_available": true,
+      "skills": [
+        "c++",
+        "llvm ir",
+        "static analysis",
+        "taint tracking",
+        "rust",
+        "clang ast",
+        "data flow analysis",
+        "mlir",
+        "cmake / ninja"
+      ],
+      "certificates": [
+        "LLVM Developer Meeting – Certificate of Participation (2022)"
+      ],
+      "cultural_tags": [],
+      "education": [
+        {
+          "degree": "BACHELOR",
+          "major": "Kỹ sư Khoa học Máy tính",
+          "school": "Đại học Bách Khoa TP.HCM",
+          "year": 2016
+        }
+      ],
+      "experience": [
+        {
+          "organization_name": "CodeCraft Developer Tools",
+          "project_name": "",
+          "role": "Senior Compiler Engineer",
+          "tech_stack": [
+            "c++",
+            "llvm ir",
+            "static analysis",
+            "taint tracking",
+            "rust",
+            "clang ast",
+            "data flow analysis",
+            "mlir",
+            "cmake / ninja"
+          ]
+        },
+        {
+          "organization_name": "VNG Corporation – Zalo Platform",
+          "project_name": "",
+          "role": "Compiler Research Engineer",
+          "tech_stack": [
+            "c++",
+            "llvm ir",
+            "static analysis",
+            "taint tracking",
+            "rust",
+            "clang ast",
+            "data flow analysis",
+            "mlir",
+            "cmake / ninja"
+          ]
+        },
+        {
+          "organization_name": "FPT Software",
+          "project_name": "",
+          "role": "Software Engineer",
+          "tech_stack": [
+            "rust",
+            "c++"
+          ]
+        }
+      ]
+    },
+    "private_data": {
+      "contact": {
+        "email": "phat.compiler@gmail.com",
+        "phone": "0908 112 244",
+        "github": "github.com/phat-llvm",
+        "linkedin": "linkedin.com/in/phat-bui"
+      },
+      "salary_expectation": "4,000 USD / tháng",
+      "project_technical_secrets": "",
+      "interview_questions_history": [
+        {
+          "question": "Demand-driven vs whole-program",
+          "answer": "Chỉ phân tích paths reach từ security sinks",
+          "org": "CodeCraft"
+        }
+      ],
+      "blacklist_orgs": [
+        "SonarSource"
+      ],
+      "evidence_links": [],
+      "additional_information": [
+        {
+          "key": "Technical achievement",
+          "value": "Optimize data flow analysis: 500k LOC C++ – 2h → 15 phút"
+        }
+      ]
+    }
+  },
+  {
+    "file": "CV_Do_Cao_Cuong.pdf",
+    "public_data": {
+      "full_name": "Đỗ Cao Cường",
+      "professional_summary": "Principal Cloud FinOps Architect với 10+ năm kinh nghiệm tối ưu hóa chi phí hạ tầng AWS cho các siêu ứng dụng. Chuyên gia BGP Routing, AWS Advanced Networking và Cost Explorer API automation. Đã tiết kiệm hơn 1 triệu USD/năm tiền AWS Egress Data Transfer cho một siêu ứng dụng thông qua tối ưu hóa BGP routing. Thành thạo Kubernetes, Terraform IaC và FinOps Framework.",
+      "is_available": true,
+      "skills": [
+        "aws advanced networking",
+        "cloud cost optimization",
+        "finops",
+        "kubernetes",
+        "terraform",
+        "bgp routing",
+        "cost explorer api",
+        "aws transit gateway",
+        "spot fleet management",
+        "reserved instance strategy",
+        "savings plans",
+        "cloudfront optimization",
+        "direct connect"
+      ],
+      "certificates": [
+        "aws certified solutions architect – professional (sap-c02)",
+        "aws certified advanced networking – specialty (ans-c01)",
+        "finops certified practitioner – finops foundation",
+        "certified kubernetes administrator (cka)",
+        "terraform associate (003)"
+      ],
+      "cultural_tags": [],
+      "education": [
+        {
+          "degree": "BACHELOR",
+          "major": "Kỹ sư Mạng máy tính",
+          "school": "ĐH Bách Khoa TP.HCM",
+          "year": 2014
+        }
+      ],
+      "experience": [
+        {
+          "organization_name": "CloudEdge Networks",
+          "project_name": "",
+          "role": "Principal Cloud FinOps Architect",
+          "tech_stack": [
+            "aws",
+            "bgp routing",
+            "kubernetes",
+            "terraform"
+          ]
+        },
+        {
+          "organization_name": "VNG Corporation – ZaloPay",
+          "project_name": "",
+          "role": "Senior Cloud Infrastructure Engineer",
+          "tech_stack": [
+            "aws",
+            "terraform"
+          ]
+        },
+        {
+          "organization_name": "FPT Cloud",
+          "project_name": "",
+          "role": "DevOps Engineer",
+          "tech_stack": [
+            "kubernetes",
+            "jenkins",
+            "argocd"
+          ]
+        }
+      ]
+    },
+    "private_data": {
+      "contact": {
+        "email": "caocuong.finops@gmail.com",
+        "phone": "0909 001 122",
+        "github": "github.com/cuong-finops",
+        "linkedin": "linkedin.com/in/caocuong"
+      },
+      "salary_expectation": "6000 USD / tháng",
+      "project_technical_secrets": "",
+      "interview_questions_history": [
+        {
+          "question": "Spot Instances: rủi ro termination",
+          "answer": "Spot Fleet multi-AZ + multi-type + Graceful Shutdown K8s handler",
+          "org": "CloudEdge"
+        }
+      ],
+      "blacklist_orgs": [
+        "CMC Global"
+      ],
+      "evidence_links": [
+        "https://cuong-finops.github.io/bgp-egress-saving",
+        "linkedin.com/in/caocuong",
+        "github.com/cuong-finops"
+      ],
+      "additional_information": [
+        {
+          "key": "Thành tích kỹ thuật",
+          "value": "BGP routing script né tuyến cáp AWS đắt: tiết kiệm >1 triệu USD/năm Egress cost"
+        },
+        {
+          "key": "Thông tin sức khỏe cá nhân",
+          "value": "Keto, v.v. không được thu thập – không liên quan đến hồ sơ nghề nghiệp"
+        }
+      ]
+    }
+  },
+  {
+    "file": "CV_Doan_Kien_Quoc.pdf",
+    "public_data": {
+      "full_name": "ĐOÀN KIÊN QUỐC",
+      "professional_summary": "Kỹ sư hệ thống phân tán chuyên về formal methods và correctness verification. Có kinh nghiệm sử dụng TLA+ và TLC Model Checker để phát hiện lỗi thiết kế distributed protocols trước khi viết code. Thành thạo Raft consensus, Go và Java 17 trong môi trường high-availability. Đóng góp vào cộng đồng research qua blog kỹ thuật và open source formal specifications.",
+      "is_available": true,
+      "skills": [
+        "tla+",
+        "tlc model checker",
+        "go",
+        "java 17",
+        "raft consensus",
+        "model checking",
+        "distributed protocols",
+        "grpc",
+        "etcd",
+        "kubernetes",
+        "paxos",
+        "zookeeper"
+      ],
+      "certificates": [],
+      "cultural_tags": [],
+      "education": [
+        {
+          "degree": "MASTER",
+          "major": "Hệ thống Phân tán",
+          "school": "ĐH Bách Khoa TP.HCM",
+          "year": 2015
+        },
+        {
+          "degree": "BACHELOR",
+          "major": "Kỹ sư CNTT",
+          "school": "ĐH Bách Khoa TP.HCM",
+          "year": 2013
+        }
+      ],
+      "experience": [
+        {
+          "organization_name": "CertaProof Distributed Systems",
+          "project_name": "",
+          "role": "Senior Distributed Systems Engineer",
+          "tech_stack": [
+            "tla+",
+            "go"
+          ]
+        },
+        {
+          "organization_name": "VNG Cloud (Zalo)",
+          "project_name": "",
+          "role": "Backend Engineer",
+          "tech_stack": [
+            "go",
+            "etcd",
+            "java 17"
+          ]
+        },
+        {
+          "organization_name": "FPT Software",
+          "project_name": "",
+          "role": "Software Engineer",
+          "tech_stack": [
+            "spring boot",
+            "postgresql",
+            "redis"
+          ]
+        }
+      ]
+    },
+    "private_data": {
+      "contact": {
+        "email": "quoc.tla@gmail.com",
+        "phone": "0911 559 988",
+        "github": "github.com/quoc-formal-methods",
+        "linkedin": "linkedin.com/in/quoc-doan"
+      },
+      "salary_expectation": "6,000 USD / tháng",
+      "project_technical_secrets": "TLC model checker: phát hiện state data loss trước khi viết code thực tế",
+      "interview_questions_history": [
+        {
+          "question": "TLA+ verify correctness design",
+          "answer": "phát hiện liveness/safety bugs",
+          "org": "CertaProof"
+        }
+      ],
+      "blacklist_orgs": [],
+      "evidence_links": [
+        "https://quoc-formal-methods.github.io/tla-data-loss",
+        "https://cs.vn/papers/formal-verification-distributed-2023"
+      ],
+      "additional_information": [
+        {
+          "key": "Chỉ số IQ",
+          "value": "Không được tiết lộ theo chính sách quyền riêng tư"
+        }
+      ]
+    }
+  },
+  {
+    "file": "CV_Doan_Minh_Nhat.pdf",
+    "public_data": {
+      "full_name": "ĐOÀN MINH NHẬT",
+      "professional_summary": "Platform Engineer chuyên về Edge Computing, WebAssembly (WASM) và Rust systems programming. Là top-3 contributor cho một repo open-source WebAssembly nền tảng WASMEdge đang sử dụng. Tự viết lại WASI networking interface từ đầu bằng Rust, giải quyết I/O bottleneck trên edge node. Đam mê xây dựng runtime nhẹ, cold-start nhanh cho serverless edge functions.",
+      "is_available": true,
+      "skills": [
+        "rust",
+        "webassembly",
+        "wasi",
+        "c++",
+        "ebpf",
+        "kubernetes edge",
+        "wasmedge runtime",
+        "go",
+        "linux networking",
+        "io_uring",
+        "k3s",
+        "cilium"
+      ],
+      "certificates": [
+        "Rust Systems Programming – Linux Foundation (LFD272)"
+      ],
+      "cultural_tags": [],
+      "education": [
+        {
+          "degree": "BACHELOR",
+          "major": "Kỹ sư Hệ thống Nhúng",
+          "school": "ĐH Bách Khoa TP.HCM",
+          "year": 2017
+        }
+      ],
+      "experience": [
+        {
+          "organization_name": "WASMEdge Platform",
+          "project_name": "WASMEdge",
+          "role": "Senior Edge Platform Engineer",
+          "tech_stack": [
+            "rust",
+            "wasm",
+            "wasi"
+          ]
+        },
+        {
+          "organization_name": "Momo – Platform Infrastructure",
+          "project_name": "",
+          "role": "Systems Software Engineer",
+          "tech_stack": [
+            "rust",
+            "io_uring",
+            "k3s"
+          ]
+        },
+        {
+          "organization_name": "Axon Technology",
+          "project_name": "",
+          "role": "Software Engineer",
+          "tech_stack": [
+            "c++",
+            "webassembly"
+          ]
+        }
+      ]
+    },
+    "private_data": {
+      "contact": {
+        "email": "minhnhat.wasm@gmail.com",
+        "phone": "0988 665 544",
+        "github": "github.com/nhat-wasm",
+        "linkedin": "linkedin.com/in/minhnhat-d"
+      },
+      "salary_expectation": "4,200 USD / tháng",
+      "project_technical_secrets": "",
+      "interview_questions_history": [
+        {
+          "question": "WASM vs Docker",
+          "answer": "sandbox nhẹ hơn, cold start microsecond thay vì millisecond, phù hợp edge serverless",
+          "org": "WASMEdge"
+        }
+      ],
+      "blacklist_orgs": [
+        "FPT Software"
+      ],
+      "evidence_links": [
+        "https://github.com/nhat-wasm/wasi-net-rs",
+        "https://github.com/WASMEdge/WASMEdge",
+        "https://github.com/nhat-wasm/ebpf-edge-monitor"
+      ],
+      "additional_information": [
+        {
+          "key": "Thành tích kỹ thuật",
+          "value": "Tự viết lại WASI networking interface bằng Rust; vượt I/O bottleneck edge node"
+        }
+      ]
+    }
+  },
+  {
+    "file": "CV_Ho_Ngoc_Bich.pdf",
+    "public_data": {
+      "full_name": "Hồ Ngọc Bích",
+      "professional_summary": "CTO / VP Engineering với hơn 10 năm kinh nghiệm lãnh đạo kỹ thuật trong môi trường startup đến Series B. Chuyên gia trong việc scale engineering team từ 10 lên 80+ người, dày dạn migration Monolith → Microservices, và xây dựng văn hóa RFC/ADR cho tổ chức. Có khả năng quy đổi technical debt thành ngôn ngữ business cho C-level và Board. Ở tiền công ty đã gây vốn Series A trở lên.",
+      "is_available": false,
+      "skills": [
+        "engineering leadership",
+        "strangler fig pattern",
+        "java spring boot",
+        "go microservices",
+        "rfc",
+        "adr process design",
+        "team building",
+        "hiring",
+        "technical debt management",
+        "board communication",
+        "okr",
+        "engineering metrics"
+      ],
+      "certificates": [
+        "Certified Scrum Master (CSM)",
+        "Google Cloud Professional Architect",
+        "Executive Leadership Program – INSEAD Vietnam"
+      ],
+      "cultural_tags": [
+        "strategic thinking",
+        "transformational leadership",
+        "board communication"
+      ],
+      "education": [
+        {
+          "degree": "BACHELOR",
+          "major": "Công nghệ thông tin",
+          "school": "ĐH Bách Khoa TP.HCM",
+          "year": 2012
+        }
+      ],
+      "experience": [
+        {
+          "organization_name": "AgileTech",
+          "project_name": "",
+          "role": "VP of Engineering",
+          "tech_stack": [
+            "go",
+            "microservices",
+            "java spring boot"
+          ]
+        },
+        {
+          "organization_name": "TechVision",
+          "project_name": "",
+          "role": "Head of Engineering",
+          "tech_stack": [
+            "java spring boot",
+            "microservices"
+          ]
+        },
+        {
+          "organization_name": "LogiTech Solutions",
+          "project_name": "",
+          "role": "Senior Software Architect",
+          "tech_stack": [
+            "apache kafka",
+            "go"
+          ]
+        },
+        {
+          "organization_name": "FPT Software",
+          "project_name": "",
+          "role": "Software Engineer",
+          "tech_stack": [
+            "java ee"
+          ]
+        }
+      ]
+    },
+    "private_data": {
+      "contact": {
+        "email": "bich.ho.cto@gmail.com",
+        "phone": "0909 001 122",
+        "github": "github.com/bich-ho-leader",
+        "linkedin": "linkedin.com/in/bich-ho"
+      },
+      "salary_expectation": "7,000 USD / tháng + 1% Equity",
+      "project_technical_secrets": "Lead migration monolith 800k LOC → Go microservices; RFC/ADR cho 50 engineers",
+      "interview_questions_history": [
+        {
+          "question": "Technical debt → interest rate: % dev time debug thay vì feature",
+          "answer": "",
+          "org": "AgileTech"
+        }
+      ],
+      "blacklist_orgs": [
+        "Cá startup chưa gây vốn Series A"
+      ],
+      "evidence_links": [],
+      "additional_information": [
+        {
+          "key": "Technical achievement",
+          "value": "Lead migration monolith 800k LOC → Go microservices; RFC/ADR cho 50 engineers"
+        }
+      ]
+    }
+  },
+  {
+    "file": "CV_Hoang_Tuan_Anh.pdf",
+    "public_data": {
+      "full_name": "HOÀNG TUẤN ANH",
+      "professional_summary": "Kỹ sư hệ thống Core Banking với 9 năm kinh nghiệm vận hành và tối ưu hóa hệ thống tài chính quy mô lớn. Chuyên gia về java ee, spring boot và oracle rac. Có kinh nghiệm dàn dựng dự án migration monolith sang microservices trong môi trường ngân hàng. Thành thạo event sourcing, soap-to-rest migration và tối ưu hóa oracle batch job cho eod settlement.",
+      "is_available": true,
+      "skills": [
+        "java ee",
+        "spring boot",
+        "oracle rac",
+        "microservices migration",
+        "soap to rest",
+        "event sourcing",
+        "kafka",
+        "saga pattern",
+        "pl/sql",
+        "jenkins ci/cd",
+        "docker",
+        "iso 8583"
+      ],
+      "certificates": [
+        "Oracle Certified Professional (OCP) – Java SE 11",
+        "Oracle Database 19c Administrator Certified Professional"
+      ],
+      "cultural_tags": [],
+      "education": [
+        {
+          "degree": "BACHELOR",
+          "major": "Công nghệ Phần mềm",
+          "school": "ĐH Bách Khoa Hà Nội",
+          "year": 2014
+        }
+      ],
+      "experience": [
+        {
+          "organization_name": "VinaCorp",
+          "project_name": "Digital Transformation",
+          "role": "Senior Core Banking Engineer",
+          "tech_stack": [
+            "java ee",
+            "spring boot",
+            "oracle rac",
+            "microservices migration",
+            "soap to rest",
+            "event sourcing",
+            "kafka",
+            "saga pattern",
+            "pl/sql",
+            "jenkins ci/cd",
+            "docker",
+            "iso 8583"
+          ]
+        },
+        {
+          "organization_name": "Vietcombank",
+          "project_name": "IT Center",
+          "role": "Java Backend Developer",
+          "tech_stack": [
+            "java ee",
+            "spring boot",
+            "oracle rac",
+            "microservices migration",
+            "soap to rest",
+            "event sourcing",
+            "kafka",
+            "saga pattern",
+            "pl/sql",
+            "jenkins ci/cd",
+            "docker",
+            "iso 8583"
+          ]
+        },
+        {
+          "organization_name": "FIS Vietnam",
+          "project_name": "",
+          "role": "Junior Java Developer",
+          "tech_stack": [
+            "java ee",
+            "spring boot",
+            "oracle rac",
+            "microservices migration",
+            "soap to rest",
+            "event sourcing",
+            "kafka",
+            "saga pattern",
+            "pl/sql",
+            "jenkins ci/cd",
+            "docker",
+            "iso 8583"
+          ]
+        }
+      ]
+    },
+    "private_data": {
+      "contact": {
+        "email": "tuananh.banking@gmail.com",
+        "phone": "0933 778 899",
+        "github": "github.com/tuananh-core",
+        "linkedin": "linkedin.com/in/tuananh"
+      },
+      "salary_expectation": "45,000,000 VND / tháng",
+      "project_technical_secrets": "",
+      "interview_questions_history": [
+        {
+          "question": "Rủi ro migrate sang Microservices: Data Consistency; giải pháp Saga Pattern cần thân",
+          "answer": "",
+          "org": "VinaCorp"
+        }
+      ],
+      "blacklist_orgs": [
+        "Techcombank"
+      ],
+      "evidence_links": [],
+      "additional_information": [
+        {
+          "key": "Tổ chức không ứng tuyển",
+          "value": "Techcombank"
+        },
+        {
+          "key": "Thành tích kỹ thuật",
+          "value": "EOD batch Oracle: 6 giờ → 45 phút (redesign 12 composite index)"
+        }
+      ]
+    }
+  },
+  {
+    "file": "CV_Ngo_Mai_Chi.pdf",
+    "public_data": {
+      "full_name": "Ngô Mai Chi",
+      "professional_summary": "Nhà nghiên cứu AI chuyên về Computer Vision và Medical Imaging với bề dày công bố quốc tế. Thành thạo pipeline từ training (pytorch) đến deployment trên edge device (tensorrt, int8 quantization). Có kinh nghiệm thực chiến với quy trình đánh giá bias y tế chuẩn FDA 510(k), hiệu chỉnh model để đảm bảo công bằng trên mọi nhóm bệnh nhân.",
+      "is_available": true,
+      "skills": [
+        "pytorch",
+        "computer vision",
+        "medical imaging",
+        "tensorrt",
+        "model quantization",
+        "python",
+        "onnx",
+        "monai",
+        "dicom processing",
+        "int8 / fp16 inference",
+        "pruning & distillation",
+        "fda 510(k) bias eval"
+      ],
+      "certificates": [],
+      "cultural_tags": [],
+      "education": [
+        {
+          "degree": "MASTER",
+          "major": "Trí tuệ Nhân tạo",
+          "school": "ĐH Bách Khoa TP.HCM",
+          "year": 2020
+        },
+        {
+          "degree": "BACHELOR",
+          "major": "Khoa học Máy tính",
+          "school": "ĐH Khoa học Tự nhiên TP.HCM",
+          "year": 2018
+        }
+      ],
+      "experience": [
+        {
+          "organization_name": "HealthAI Technologies",
+          "project_name": "",
+          "role": "AI Research Scientist",
+          "tech_stack": [
+            "pytorch",
+            "tensorrt",
+            "monai"
+          ]
+        },
+        {
+          "organization_name": "VinBrain (VinGroup AI)",
+          "project_name": "",
+          "role": "Computer Vision Engineer",
+          "tech_stack": [
+            "pytorch",
+            "tensorrt",
+            "python"
+          ]
+        },
+        {
+          "organization_name": "AI Lab – ĐH Bách Khoa TP.HCM",
+          "project_name": "",
+          "role": "Research Intern",
+          "tech_stack": [
+            "self-supervised learning"
+          ]
+        }
+      ]
+    },
+    "private_data": {
+      "contact": {
+        "email": "maichi.cv@gmail.com",
+        "phone": "0908 112 244",
+        "github": "github.com/maichi-vision",
+        "linkedin": "linkedin.com/in/maichi-ngo"
+      },
+      "salary_expectation": "3,500 USD / tháng",
+      "project_technical_secrets": "Quy trình đánh giá bias y tế FDA 510(k); hiệu chỉnh model fairness theo độ tuổi bệnh nhân",
+      "interview_questions_history": [
+        {
+          "question": "Deploy ResNet lên edge: TensorRT layer fusion + INT8 quantization + pruning channel",
+          "answer": "",
+          "org": "HealthAI"
+        }
+      ],
+      "blacklist_orgs": [],
+      "evidence_links": [
+        "https://arxiv.org/abs/2309.XXXXX",
+        "https://ieeexplore.ieee.org/document/RIVF2020-maichi",
+        "https://github.com/maichi-vision/tensorrt-medical-deploy"
+      ],
+      "additional_information": [
+        {
+          "key": "Kinh nghiệm đặc biệt",
+          "value": "Quy trình đánh giá bias y tế FDA 510(k); hiệu chỉnh model fairness theo độ tuổi bệnh nhân"
+        },
+        {
+          "key": "Thông tin bổ sung",
+          "value": "Chỉ số BMI và thông tin sức khỏe cá nhân không được thu thập – không liên quan đến năng lực chuyên môn"
+        }
+      ]
+    }
+  },
+  {
+    "file": "CV_P051_NguyenHaiDang_StreamingEngineer.pdf",
+    "public_data": {
+      "full_name": "Nguyễn Hải Đăng",
+      "professional_summary": "Data & Streaming Engineer với 5+ năm kinh nghiệm xây dựng pipeline xử lý dữ liệu thời gian thực tại quy mô hàng triệu sự kiện/giây. Chuyên môn cốt lõi là Apache Flink, Kafka và ClickHouse trong các bài toán fraud detection, financial analytics và operational intelligence. Có track record tối ưu hóa performance sâu ở tầng storage engine (RocksDB state) và materialized view latency cho hệ thống tài chính mission-critical.",
+      "is_available": false,
+      "skills": [
+        "stream processing",
+        "apache flink",
+        "kafka streams",
+        "message queuing",
+        "apache kafka",
+        "kafka connect",
+        "schema registry",
+        "olap",
+        "storage",
+        "clickhouse",
+        "materialized views",
+        "rocksdb state backend",
+        "programming",
+        "go",
+        "python",
+        "sql",
+        "infrastructure",
+        "kubernetes",
+        "docker",
+        "terraform",
+        "prometheus",
+        "grafana",
+        "data patterns",
+        "event sourcing",
+        "cqrs",
+        "lambda architecture",
+        "kappa architecture"
+      ],
+      "certificates": [
+        "confluent certified developer for apache kafka (ccdak)",
+        "clickhouse certified developer",
+        "certified kubernetes application developer (ckad)"
+      ],
+      "cultural_tags": [],
+      "education": [
+        {
+          "degree": "BACHELOR",
+          "major": "Khoa học Máy tính",
+          "school": "Đại học Bách Khoa Hà Nội",
+          "year": 2018
+        }
+      ],
+      "experience": [
+        {
+          "organization_name": "NexPay Financial Technology",
+          "project_name": "",
+          "role": "Senior Data / Streaming Engineer",
+          "tech_stack": [
+            "apache flink",
+            "kafka",
+            "clickhouse",
+            "rocksdb",
+            "kubernetes",
+            "docker"
+          ]
+        },
+        {
+          "organization_name": "Công ty Công nghệ VNTech Solutions",
+          "project_name": "",
+          "role": "Data Engineer",
+          "tech_stack": [
+            "kafka",
+            "flink",
+            "clickhouse",
+            "go"
+          ]
+        },
+        {
+          "organization_name": "Startup FinData JSC",
+          "project_name": "",
+          "role": "Junior Backend Engineer",
+          "tech_stack": [
+            "go",
+            "apache kafka",
+            "mysql",
+            "clickhouse"
+          ]
+        }
+      ]
+    },
+    "private_data": {
+      "contact": {
+        "email": "",
+        "phone": "",
+        "github": "",
+        "linkedin": ""
+      },
+      "salary_expectation": "",
+      "project_technical_secrets": "",
+      "interview_questions_history": [],
+      "blacklist_orgs": [],
+      "evidence_links": [],
+      "additional_information": []
+    }
+  },
+  {
+    "file": "CV_P052_TranQuocBao_GraphicsEngineer.pdf",
+    "public_data": {
+      "full_name": "TRẦN QUỐC BẢO",
+      "professional_summary": "Graphics Engineer với 7+ năm kinh nghiệm xây dựng rendering pipeline hiệu năng cao cho game engine và ứng dụng real-time 3D. Thành thạo Vulkan API, DirectX 12 và kiến trúc Render Graph. Đam mê tối ưu hóa GPU pipeline, giảm draw call overhead và thiết kế frame graph linh hoạt. Có kinh nghiệm thực chiến với PBR shading, ray tracing và GPU profiling trên cả console và PC platforms.",
+      "is_available": true,
+      "skills": [
+        "c++20",
+        "vulkan api",
+        "directx 12",
+        "render graph architecture",
+        "gpu profiling & optimization",
+        "hlsl / glsl shaders",
+        "ray tracing (dxr / vk)",
+        "frame graph design",
+        "multithreaded rendering",
+        "renderdoc / nvidia nsight",
+        "pbr shading",
+        "deferred/forward+"
+      ],
+      "certificates": [],
+      "cultural_tags": [],
+      "education": [],
+      "experience": [
+        {
+          "organization_name": "PixelForge Interactive",
+          "project_name": "",
+          "role": "Lead Graphics Engineer",
+          "tech_stack": [
+            "vulkan api",
+            "directx 12"
+          ]
+        },
+        {
+          "organization_name": "VirtualWorld Studios",
+          "project_name": "",
+          "role": "Senior Graphics Programmer",
+          "tech_stack": [
+            "vulkan",
+            "pbr shading"
+          ]
+        },
+        {
+          "organization_name": "GameLab Vietnam",
+          "project_name": "",
+          "role": "Graphics Programmer",
+          "tech_stack": [
+            "directx 11"
+          ]
+        }
+      ]
+    },
+    "private_data": {
+      "contact": {
+        "email": "quocbao.gfx@gmail.com",
+        "phone": "(+84) 908 xxx xxx",
+        "github": "github.com/quocbao-gfx",
+        "linkedin": ""
+      },
+      "salary_expectation": "4,000 USD / tháng (gross)",
+      "project_technical_secrets": "",
+      "interview_questions_history": [],
+      "blacklist_orgs": [],
+      "evidence_links": [],
+      "additional_information": [
+        {
+          "key": "Dự án nổi bật",
+          "value": "VkRenderGraph (GitHub, 800+ stars): Thư viện C++20 mã nguồn mở triển khai frame graph trên Vulkan với automatic resource barrier management và async compute support."
+        },
+        {
+          "key": "Dự án nổi bật",
+          "value": "DX12RayTracer: Demo ray tracer real-time với DXR, hỗ trợ path tracing 1spp + denoising SVGF, chạy 60fps trên RTX 3070."
+        }
+      ]
+    }
+  },
+  {
+    "file": "CV_P053_LeThanhTung_eBPFEngineer.pdf",
+    "public_data": {
+      "full_name": "Lê Thanh Tùng",
+      "professional_summary": "Network Platform Engineer (eBPF)",
+      "is_available": false,
+      "skills": [
+        "ebpf",
+        "xdp",
+        "linux networking",
+        "c",
+        "go",
+        "rust",
+        "python",
+        "kubernetes networking",
+        "bpftrace",
+        "bcc tools",
+        "perf",
+        "flamegraph",
+        "prometheus",
+        "ftrace",
+        "kprobes",
+        "uprobes",
+        "tracepoints",
+        "pahole / btf dump"
+      ],
+      "certificates": [],
+      "cultural_tags": [],
+      "education": [
+        {
+          "degree": "BACHELOR",
+          "major": "Kỹ thuật Máy tính",
+          "school": "Học viện Kỹ thuật Quân sự",
+          "year": 2017
+        }
+      ],
+      "experience": [
+        {
+          "organization_name": "NetCore Systems",
+          "project_name": "",
+          "role": "Senior Network Platform Engineer",
+          "tech_stack": [
+            "ebpf",
+            "xdp"
+          ]
+        },
+        {
+          "organization_name": "CloudEdge Networks",
+          "project_name": "",
+          "role": "Linux Kernel / Network Engineer",
+          "tech_stack": [
+            "linux kernel",
+            "networking"
+          ]
+        },
+        {
+          "organization_name": "SecureNet",
+          "project_name": "",
+          "role": "Systems Programmer",
+          "tech_stack": [
+            "c",
+            "bpf"
+          ]
+        }
+      ]
+    },
+    "private_data": {
+      "contact": {
+        "email": "letihnhtung.ebpf@email.com",
+        "phone": "+84 976 xxx xxx",
+        "github": "",
+        "linkedin": ""
+      },
+      "salary_expectation": "80,000,000 VND / tháng (gross)",
+      "project_technical_secrets": "",
+      "interview_questions_history": [],
+      "blacklist_orgs": [],
+      "evidence_links": [],
+      "additional_information": [
+        {
+          "key": "Nơi làm việc",
+          "value": "Hà Nội, Việt Nam"
+        },
+        {
+          "key": "Kinh nghiệm làm việc",
+          "value": "Senior Network Platform Engineer tại NetCore Systems, Linux Kernel / Network Engineer tại CloudEdge Networks, Systems Programmer tại SecureNet."
+        }
+      ]
+    }
+  },
+  {
+    "file": "CV_P054_PhamBichDiep_AnalyticsEngineer.pdf",
+    "public_data": {
+      "full_name": "PHẠM BÍCH DIỆP",
+      "professional_summary": "Analytics Engineer với 6+ năm kinh nghiệm xây dựng và vận hành modern data stack cho các tổ chức dữ liệu trường thành. Chuyên sâu về transformation layer với dbt Core, data warehouse BigQuery và Snowflake, và orchestration với Apache Airflow. Có kinh nghiệm thực chiến migrate legacy stored procedures sang dbt models đi kèm với bộ test Great Expectations đảm bảo data quality end-to-end. Đặc biệt quan tâm đến data modeling tốt và documentation-as-code.",
+      "is_available": true,
+      "skills": [
+        "dbt",
+        "bigquery",
+        "snowflake",
+        "apache airflow",
+        "python",
+        "sql"
+      ],
+      "certificates": [
+        "dbt Analytics Engineer Certification (dbt Labs)",
+        "Google Professional Data Engineer",
+        "Snowflake SnowPro Core Certification",
+        "Astronomer Certification for Apache Airflow"
+      ],
+      "cultural_tags": [],
+      "education": [
+        {
+          "degree": "BACHELOR",
+          "major": "Hệ thống Thông tin Quản lý",
+          "school": "Đại học Kinh tế TP. Hồ Chí Minh",
+          "year": 2018
+        }
+      ],
+      "experience": [
+        {
+          "organization_name": "DataBridge Analytics",
+          "project_name": "",
+          "role": "Senior Analytics Engineer",
+          "tech_stack": [
+            "dbt",
+            "bigquery",
+            "apache airflow"
+          ]
+        },
+        {
+          "organization_name": "E-commerce VNShop",
+          "project_name": "",
+          "role": "Analytics Engineer / Data Analyst",
+          "tech_stack": [
+            "bigquery",
+            "dbt",
+            "apache airflow"
+          ]
+        },
+        {
+          "organization_name": "Công ty Thống kê StatVN",
+          "project_name": "",
+          "role": "Data Analyst",
+          "tech_stack": [
+            "postgresql",
+            "sql",
+            "python"
+          ]
+        }
+      ]
+    },
+    "private_data": {
+      "contact": {
+        "email": "bichdiep.analytics@email.com",
+        "phone": "(+84) 914 xxx xxx",
+        "github": "",
+        "linkedin": ""
+      },
+      "salary_expectation": "2,500 USD / tháng (gross)",
+      "project_technical_secrets": "",
+      "interview_questions_history": [],
+      "blacklist_orgs": [],
+      "evidence_links": [],
+      "additional_information": []
+    }
+  },
+  {
+    "file": "CV_P055_HoangTrongNghia_WASMEngineer.pdf",
+    "public_data": {
+      "full_name": "HOÀNG TRỌNG NGHĨA",
+      "professional_summary": "Systems Engineer chuyên sâu về WebAssembly runtime và WASI với 5+ năm kinh nghiệm trong lĩnh vực systems programming và low-level optimization. Là contributor tích cực cho dự án WasmEdge mã nguồn mở, đặc biệt ở mảng WASI filesystem virtualization và memory model. Thành thạo Rust và hiểu sâu về WASM/WASI specification, linear memory model, và interface types. Đam mê tối ưu hóa runtime performance ở mức syscall và ABI boundary.",
+      "is_available": true,
+      "skills": [
+        "webassembly",
+        "wasi",
+        "rust",
+        "c",
+        "c++",
+        "linux",
+        "docker",
+        "kubernetes",
+        "llvm",
+        "wasm-tools",
+        "wit-bindgen",
+        "cargo-component",
+        "wasm-opt"
+      ],
+      "certificates": [],
+      "cultural_tags": [],
+      "education": [
+        {
+          "degree": "BACHELOR",
+          "major": "Tin học",
+          "school": "Đại học Khoa học Tự nhiên – ĐHQG TP. HCM",
+          "year": 2018
+        }
+      ],
+      "experience": [
+        {
+          "organization_name": "WASMEdge Platform",
+          "project_name": "WebAssembly Runtime Engineer",
+          "role": "Full-time Contributor",
+          "tech_stack": [
+            "rust",
+            "wasm",
+            "wasi"
+          ]
+        },
+        {
+          "organization_name": "Công ty Nền tảng Đám mây CloudOS",
+          "project_name": "Systems Software Engineer",
+          "role": "",
+          "tech_stack": []
+        },
+        {
+          "organization_name": "Startup EmbedTech",
+          "project_name": "Software Engineer – Systems",
+          "role": "",
+          "tech_stack": []
+        }
+      ]
+    },
+    "private_data": {
+      "contact": {
+        "email": "trongnghia.wasm@email.com",
+        "phone": "+84 962 xxx xxx",
+        "github": "github.com/trongnghi",
+        "linkedin": ""
+      },
+      "salary_expectation": "3,500 USD / tháng (gross)",
+      "project_technical_secrets": "",
+      "interview_questions_history": [],
+      "blacklist_orgs": [],
+      "evidence_links": [],
+      "additional_information": [
+        {
+          "key": "Kinh nghiệm làm việc",
+          "value": "5+ năm kinh nghiệm trong lĩnh vực systems programming và low-level optimization."
+        },
+        {
+          "key": "Tham gia dự án",
+          "value": "30+ PRs vào WasmEdge upstream."
+        }
+      ]
+    }
+  },
+  {
+    "file": "CV_P056_VuNgocMai_CTO.pdf",
+    "public_data": {
+      "full_name": "vũ ngọc mai",
+      "professional_summary": "Nhà lãnh đạo kỹ thuật cấp cao với hơn 10 năm kinh nghiệm dẫn dắt đội ngũ Engineering quy mô lớn tại các công ty công nghệ giai đoạn tăng trưởng nhanh (Series B+). Chuyên môn cốt lõi là tái cấu trúc hệ thống java monolith quy mô lớn (trên 1 triệu dòng code) và xử lý technical debt tích lũy – đặc biệt phù hợp với các startup cần hiện đại hóa nền tảng kỹ thuật để chuẩn bị cho giai đoạn scale up. Có track record rõ ràng trong việc chuyển đổi tổ chức kỹ thuật từ mô hình monolithic sang kiến trúc microservices mà không gián đoạn hoạt động kinh doanh.",
+      "is_available": false,
+      "skills": [
+        "java",
+        "spring boot",
+        "engineering leadership",
+        "strangler fig pattern",
+        "decomposition",
+        "org transformation & scaling",
+        "technical debt strategy",
+        "microservices architecture",
+        "team building (50+ engineers)",
+        "cross-functional alignment",
+        "agile / okr frameworks",
+        "system design at scale",
+        "series b platform readiness",
+        "devops & ci/cd culture"
+      ],
+      "certificates": [],
+      "cultural_tags": [],
+      "education": [],
+      "experience": []
+    },
+    "private_data": {
+      "contact": {
+        "email": "",
+        "phone": "",
+        "github": "",
+        "linkedin": ""
+      },
+      "salary_expectation": "7,000 USD / tháng",
+      "project_technical_secrets": "",
+      "interview_questions_history": [],
+      "blacklist_orgs": [],
+      "evidence_links": [],
+      "additional_information": [
+        {
+          "key": "equity",
+          "value": "2% (negotiable)"
+        }
+      ]
+    }
+  },
+  {
+    "file": "CV_P057_DoTuanKhang_iOSEngineer.pdf",
+    "public_data": {
+      "full_name": "Đỗ Tuấn Khang",
+      "professional_summary": "Senior iOS Engineer với hơn 6 năm kinh nghiệm xây dựng ứng dụng mobile trong các lĩnh vực Fintech và thương mại điện tử. Thành thạo swiftui, combine và tối ưu hóa hiệu năng ứng dụng từ cold start đến render pipeline. Có kinh nghiệm tích hợp SDK thanh toán, bảo mật dữ liệu người dùng và làm việc trong môi trường Agile với đội ngũ đa quốc gia.",
+      "is_available": true,
+      "skills": [
+        "swiftui",
+        "uikit",
+        "combine / async-await",
+        "fintech mobile sdk",
+        "instruments profiling",
+        "app startup optimization",
+        "xctest / xcuitest",
+        "fastlane / ci/cd",
+        "core data",
+        "restful api"
+      ],
+      "certificates": [],
+      "cultural_tags": [],
+      "education": [
+        {
+          "degree": "BACHELOR",
+          "major": "Công nghệ Thông tin",
+          "school": "Đại học Bách Khoa TP. Hồ Chí Minh",
+          "year": 2018
+        }
+      ],
+      "experience": [
+        {
+          "organization_name": "Công ty Công nghệ Tài chính ABC",
+          "project_name": "",
+          "role": "Senior iOS Engineer",
+          "tech_stack": [
+            "swiftui",
+            "combine / async-await"
+          ]
+        },
+        {
+          "organization_name": "Công ty Phần mềm XYZ",
+          "project_name": "",
+          "role": "iOS Engineer",
+          "tech_stack": [
+            "combine / async-await",
+            "restful api",
+            "core data"
+          ]
+        },
+        {
+          "organization_name": "Công ty Startup DEF",
+          "project_name": "",
+          "role": "Junior iOS Developer",
+          "tech_stack": [
+            "uikit",
+            "restful api",
+            "core data"
+          ]
+        }
+      ]
+    },
+    "private_data": {
+      "contact": {
+        "email": "tuankhang.ios@gmail.com",
+        "phone": "(+84) 909 xxx xxx",
+        "github": "github.com/dotuankhang",
+        "linkedin": ""
+      },
+      "salary_expectation": "75,000,000 VND / tháng",
+      "project_technical_secrets": "",
+      "interview_questions_history": [],
+      "blacklist_orgs": [],
+      "evidence_links": [],
+      "additional_information": []
+    }
+  },
+  {
+    "file": "CV_P058_NgoBichTram_MLEngineer.pdf",
+    "public_data": {
+      "full_name": "Ngô Bích Trâm",
+      "professional_summary": "ML Engineer chuyên sâu về Computer Vision và Medical Imaging với 5+ năm kinh nghiệm nghiên cứu và triển khai mô hình AI trong môi trường làm sáng. Thành thạo toàn bộ pipeline từ data preprocessing, model training, TensorRT optimization đến triển khai production trên hạ tầng y tế. Có hiểu biết chuyên sâu về quy trình đánh giá độ thiên lệch (bias evaluation) theo tiêu chuẩn FDA 510(k) cho thiết bị y tế phần mềm (SaMD).",
+      "is_available": true,
+      "skills": [
+        "deep learning frameworks",
+        "pytorch",
+        "tensorflow",
+        "monai",
+        "model optimization",
+        "tensorrt",
+        "onnx",
+        "fp16/int8 quantization",
+        "medical imaging",
+        "dicom",
+        "nifti",
+        "segmentation",
+        "detection",
+        "bias & safety evaluation",
+        "fda 510(k) samd standards",
+        "fairness metrics",
+        "infrastructure",
+        "docker",
+        "kubernetes",
+        "nvidia a100",
+        "cuda",
+        "python",
+        "c++",
+        "bash"
+      ],
+      "certificates": [],
+      "cultural_tags": [],
+      "education": [
+        {
+          "degree": "MASTER",
+          "major": "AI",
+          "school": "Đại học Bách Khoa Hà Nội",
+          "year": 2019
+        },
+        {
+          "degree": "BACHELOR",
+          "major": "Computer Science",
+          "school": "",
+          "year": 2017
+        }
+      ],
+      "experience": [
+        {
+          "organization_name": "HealthAI Technologies (Hợp tác Vinmec)",
+          "project_name": "ML Engineer – Medical Imaging",
+          "role": "ML Engineer",
+          "tech_stack": [
+            "monai",
+            "tensorrt",
+            "nvidia t4"
+          ]
+        },
+        {
+          "organization_name": "Viện Nghiên cứu Trí tuệ Nhân tạo Quốc gia",
+          "project_name": "AI Research Engineer",
+          "role": "AI Research Engineer",
+          "tech_stack": [
+            "dicom",
+            "annotation tooling"
+          ]
+        }
+      ]
+    },
+    "private_data": {
+      "contact": {
+        "email": "bichtram.ml@email.com",
+        "phone": "+84 912 xxx xxx",
+        "github": "",
+        "linkedin": ""
+      },
+      "salary_expectation": "3,000 USD / tháng (gross)",
+      "project_technical_secrets": "",
+      "interview_questions_history": [],
+      "blacklist_orgs": [],
+      "evidence_links": [],
+      "additional_information": []
+    }
+  },
+  {
+    "file": "CV_P059_CloudSolutionsArchitect.pdf",
+    "public_data": {
+      "full_name": "Cloud Solutions Architect",
+      "professional_summary": "Cloud Solutions Architect chuyên về AWS với 8+ năm kinh nghiệm thiết kế và triển khai hạ tầng đám mây cho các tổ chức tài chính, ngân hàng và doanh nghiệp quy mô lớn. Thành thạo tư vấn kiến trúc AWS Organizations, container orchestration với eks và tối ưu chi phí FinOps. Có chuyên môn sâu về tuân thủ Banking Compliance và PCI-DSS trong môi trường cloud đa tài khoản (multi-account).",
+      "is_available": true,
+      "skills": [
+        "aws",
+        "eks",
+        "ecs",
+        "kubernetes",
+        "helm",
+        "terraform",
+        "cloudformation",
+        "aws organizations",
+        "control tower",
+        "service control policies",
+        "aws cost explorer",
+        "savings plans",
+        "spot instances",
+        "rightsizing",
+        "pci-dss",
+        "banking compliance",
+        "aws security hub",
+        "guardduty",
+        "cloudwatch",
+        "grafana",
+        "opentelemetry",
+        "sre practices",
+        "python",
+        "bash",
+        "github actions"
+      ],
+      "certificates": [
+        "aws certified solutions architect – professional",
+        "aws certified devops engineer – professional",
+        "hashicorp certified: terraform associate",
+        "certified kubernetes administrator (cka)"
+      ],
+      "cultural_tags": [],
+      "education": [
+        {
+          "degree": "BACHELOR",
+          "major": "Khoa học Tự nhiên",
+          "school": "ĐHQG TP. HCM",
+          "year": 2014
+        }
+      ],
+      "experience": [
+        {
+          "organization_name": "Công ty Tư vấn Công nghệ Đám mây (Vendor)",
+          "project_name": "",
+          "role": "Senior Cloud Solutions Architect",
+          "tech_stack": [
+            "aws",
+            "eks",
+            "terraform",
+            "cloudformation"
+          ]
+        },
+        {
+          "organization_name": "Công ty Giải pháp IT FPT",
+          "project_name": "",
+          "role": "Cloud Infrastructure Engineer",
+          "tech_stack": [
+            "aws",
+            "terraform",
+            "cloudformation"
+          ]
+        }
+      ]
+    },
+    "private_data": {
+      "contact": {
+        "email": "minhhoang.cloud@email.com",
+        "phone": "(+84) 938 xxx xxx",
+        "github": "",
+        "linkedin": ""
+      },
+      "salary_expectation": "4,500 USD / tháng (gross)",
+      "project_technical_secrets": "",
+      "interview_questions_history": [],
+      "blacklist_orgs": [],
+      "evidence_links": [],
+      "additional_information": []
+    }
+  },
+  {
+    "file": "CV_P081_PhanVinhKhang_GameBackend.pdf",
+    "public_data": {
+      "full_name": "PHAN VĨNH KHANG",
+      "professional_summary": "Backend Game Systems Engineer với 6+ năm kinh nghiệm xây dựng game server infrastructure hiệu năng cao và hệ thống real-time matchmaking quy mô lớn. Thành thạo rust và go cho low-latency systems, redis 7 cho distributed state và postgresql cho game data persistence. Có kinh nghiệm thiết kế custom memory allocator tối ưu cho hot paths trong game loop, đạt gc latency dưới 1ms. Từng tham gia kiểm thử và tối ưu hóa game server cho tựa game action-RPG quy mô lớn trên môi trường production.",
+      "is_available": false,
+      "skills": [
+        "rust",
+        "go",
+        "redis",
+        "postgresql",
+        "kubernetes",
+        "docker",
+        "prometheus",
+        "grafana",
+        "github actions",
+        "distributed systems",
+        "matchmaking",
+        "data stores",
+        "memory optimization",
+        "game infrastructure"
+      ],
+      "certificates": [
+        "certified kubernetes application developer (ckad)",
+        "redis certified developer – redis university",
+        "rust systems programming – certified (linux foundation)"
+      ],
+      "cultural_tags": [],
+      "education": [
+        {
+          "degree": "BACHELOR",
+          "major": "Công nghệ Thông tin",
+          "school": "Đại học Bách Khoa TP. Hồ Chí Minh",
+          "year": 2017
+        }
+      ],
+      "experience": [
+        {
+          "organization_name": "GameServer Labs Vietnam",
+          "project_name": "",
+          "role": "Senior Backend Game Systems Engineer",
+          "tech_stack": [
+            "rust",
+            "redis",
+            "postgresql"
+          ]
+        },
+        {
+          "organization_name": "Indie Studio XYZ",
+          "project_name": "",
+          "role": "Game Backend Developer",
+          "tech_stack": [
+            "go",
+            "redis",
+            "postgresql"
+          ]
+        },
+        {
+          "organization_name": "Tech Company ABC",
+          "project_name": "",
+          "role": "Junior Backend Engineer",
+          "tech_stack": [
+            "go",
+            "rust"
+          ]
+        }
+      ]
+    },
+    "private_data": {
+      "contact": {
+        "email": "khang.phan.game@gmail.com",
+        "phone": "0988112233",
+        "github": "github.com/khang-ga",
+        "linkedin": "linkedin.com/in/khang-phan"
+      },
+      "salary_expectation": "3,500 USD / tháng (gross)",
+      "project_technical_secrets": "",
+      "interview_questions_history": [],
+      "blacklist_orgs": [],
+      "evidence_links": [],
+      "additional_information": [
+        {
+          "key": "Mức lương kỳ vọng",
+          "value": "3,500 USD / tháng (gross)"
+        }
+      ]
+    }
+  },
+  {
+    "file": "CV_P082_TruongCamLy_GPUEngineer.pdf",
+    "public_data": {
+      "full_name": "Truong Cam Ly",
+      "professional_summary": "GPU/NPU Software Engineer với nền tảng nghiên cứu chuyên sâu về AI chip optimization và high-performance computing. Thành thạo CUDA C++ và python cho deep learning inference optimization. Có kinh nghiệm thực chiến implement fused CUDA kernels cho quantized transformer inference, tối ưu memory bandwidth và warp occupancy trên GPU/NPU hardware. Từng làm nghiên cứu tại môi trường AI chip lab, am hiểu pipeline từ model quantization đến hardware deployment.",
+      "is_available": true,
+      "skills": [
+        "cuda",
+        "python",
+        "c++",
+        "pytorch",
+        "tensorrt",
+        "onnx",
+        "bash",
+        "cmake",
+        "cuBLAS",
+        "cuDNN",
+        "triton",
+        "quantization-aware training",
+        "int4",
+        "int8",
+        "fp8",
+        "onnx runtime",
+        "fused attention",
+        "flash attention variant",
+        "kv-cache optimization",
+        "nvidia nsight compute",
+        "nsight systems",
+        "warp occupancy",
+        "roofline model"
+      ],
+      "certificates": [
+        "nvidia deep learning institute – cuda c++ developer",
+        "nvidia nsight profiling certification",
+        "tensorrt developer – nvidia dli",
+        "pytorch advanced – coursera (deeplearning.ai)"
+      ],
+      "cultural_tags": [
+        "hardware-level optimization",
+        "research-driven",
+        "data-informed decisions",
+        "low-level systems thinker",
+        "collaborative researcher"
+      ],
+      "education": [
+        {
+          "degree": "BACHELOR",
+          "major": "Khoa học Máy tính – Chuyên ngành AI & HPC",
+          "school": "Đại học Bách Khoa",
+          "year": 2022
+        },
+        {
+          "degree": "BACHELOR",
+          "major": "Kỹ thuật Điện tử – Tin học",
+          "school": "Đại học Bách Khoa",
+          "year": 2020
+        }
+      ],
+      "experience": [
+        {
+          "organization_name": "VinAI Semiconductor Lab",
+          "project_name": "GPU/NPU Software Engineer",
+          "role": "Intern → Researcher",
+          "tech_stack": [
+            "cuda",
+            "nvidia nsight compute"
+          ]
+        },
+        {
+          "organization_name": "Đại học Bách Khoa",
+          "project_name": "Junior AI Researcher",
+          "role": "Research Lab",
+          "tech_stack": [
+            "pytorch"
+          ]
+        }
+      ]
+    },
+    "private_data": {
+      "contact": {
+        "email": "camly.gpu@gmail.com",
+        "phone": "0909445566",
+        "github": "github.com/camly-cuda",
+        "linkedin": "linkedin.com/in/camly-truong"
+      },
+      "salary_expectation": "5,000 USD / tháng (gross)",
+      "project_technical_secrets": "",
+      "interview_questions_history": [],
+      "blacklist_orgs": [],
+      "evidence_links": [],
+      "additional_information": []
+    }
+  },
+  {
+    "file": "CV_P083_VuongDinhThai_CryptoBackend.pdf",
+    "public_data": {
+      "full_name": "Vương Đình Thái",
+      "professional_summary": "Backend Engineer chuyên sâu về cryptographic systems và privacy-preserving computation với 5+ năm kinh nghiệm. Thành thạo Go và Rust cho high-assurance backend services, gRPC cho distributed API design. Có chuyên môn đặc biệt về Zero-Knowledge Proof systems (ZK-SNARKs/STARKs), Smart Contract integration và xây dựng privacy layer cho Web3 infrastructure. Am hiểu cách thiết kế ZK circuit để verify data integrity mà không tiết lộ raw data, tích hợp qua backend API trên production systems.",
+      "is_available": true,
+      "skills": [
+        "go",
+        "rust",
+        "solidity",
+        "typescript",
+        "zk-snarks",
+        "zk-starks",
+        "pedersen commitments",
+        "circom",
+        "snarkjs",
+        "halo2",
+        "arkworks",
+        "bellman",
+        "grpc",
+        "protobuf",
+        "distributed consensus",
+        "byzantine fault tolerance",
+        "evm smart contracts",
+        "hardhat",
+        "foundry",
+        "kubernetes",
+        "docker",
+        "postgresql",
+        "redis",
+        "prometheus",
+        "secure enclave",
+        "threshold cryptography",
+        "key management"
+      ],
+      "certificates": [
+        "Certified Ethereum Developer – ConsenSys Academy",
+        "Applied Cryptography – Stanford Online (Coursera)",
+        "Certified Kubernetes Application Developer (CKAD)"
+      ],
+      "cultural_tags": [],
+      "education": [
+        {
+          "degree": "MASTER",
+          "major": "Bảo mật",
+          "school": "Đại học Khoa học Tự nhiên – ĐHQG TP. HCM",
+          "year": 2018
+        },
+        {
+          "degree": "BACHELOR",
+          "major": "Toán – Tin học",
+          "school": "Đại học Khoa học Tự nhiên – ĐHQG TP. HCM",
+          "year": 2016
+        }
+      ],
+      "experience": [
+        {
+          "organization_name": "PrivacyTech Startup (Web3)",
+          "project_name": "",
+          "role": "Senior Backend Engineer – Privacy & ZK Systems",
+          "tech_stack": [
+            "go",
+            "rust",
+            "zk-snarks",
+            "grpc"
+          ]
+        },
+        {
+          "organization_name": "Công ty Blockchain Solutions",
+          "project_name": "",
+          "role": "Backend Engineer – Blockchain Infrastructure",
+          "tech_stack": [
+            "go",
+            "solidity"
+          ]
+        },
+        {
+          "organization_name": "Công ty Phần mềm Bảo mật NetSec",
+          "project_name": "",
+          "role": "Software Engineer",
+          "tech_stack": [
+            "go"
+          ]
+        }
+      ]
+    },
+    "private_data": {
+      "contact": {
+        "email": "thai.vuong.crypto@gmail.com",
+        "phone": "0933998877",
+        "github": "github.com/thai-crypto",
+        "linkedin": "linkedin.com/in/thai"
+      },
+      "salary_expectation": "4,000 USD / tháng (gross)",
+      "project_technical_secrets": "",
+      "interview_questions_history": [],
+      "blacklist_orgs": [],
+      "evidence_links": [],
+      "additional_information": [
+        {
+          "key": "Hình thức làm việc",
+          "value": "Remote / Hybrid (ưu tiên)"
+        },
+        {
+          "key": "Sẵn sàng",
+          "value": "Có thể bắt đầu ngay"
+        },
+        {
+          "key": "Sở thích cá nhân",
+          "value": "Nghiên cứu và đọc paper về cryptographic protocols (ZK, MPC, FHE)"
+        }
+      ]
+    }
+  },
+  {
+    "file": "CV_P084_LeHuynhDuc_SRE.pdf",
+    "public_data": {
+      "full_name": "Lê Huỳnh Đức",
+      "professional_summary": "Site Reliability Engineer với 6+ năm kinh nghiệm xây dựng và vận hành hệ thống phân tán quy mô lớn ở cả fintech và logistics. Thành thạo kubernetes, terraform, prometheus/grafana và thiết kế SLO/SLI toàn diện. Có track record dạn dĩ blameless post-mortem culture, cải thiện MTTR và ngăn chặn incident tái phát. Mục tiêu: đóng góp vào việc xử lý 2M+ orders/ngày tại quy mô logistics.",
+      "is_available": true,
+      "skills": [
+        "kubernetes",
+        "terraform",
+        "prometheus",
+        "grafana",
+        "helm",
+        "kustomize",
+        "argo cd",
+        "ansible",
+        "cloudformation",
+        "pulumi",
+        "loki",
+        "tempo",
+        "opentelemetry",
+        "jaeger",
+        "python",
+        "go",
+        "bash",
+        "promql",
+        "sql"
+      ],
+      "certificates": [
+        "certified kubernetes administrator (cka)",
+        "certified kubernetes security specialist (cks)",
+        "aws certified solutions architect – associate",
+        "hashicorp certified: terraform associate",
+        "google professional cloud devops engineer"
+      ],
+      "cultural_tags": [],
+      "education": [
+        {
+          "degree": "BACHELOR",
+          "major": "Kỹ thuật Máy tính",
+          "school": "Đại học Khoa học Tự nhiên – ĐHQG TP. HCM",
+          "year": 2018
+        }
+      ],
+      "experience": [
+        {
+          "organization_name": "Logistics TechMove",
+          "project_name": "Platform Reliability",
+          "role": "Senior SRE",
+          "tech_stack": [
+            "kubernetes",
+            "terraform",
+            "prometheus",
+            "grafana"
+          ]
+        },
+        {
+          "organization_name": "Fintech PaySystem",
+          "project_name": "",
+          "role": "SRE / Platform Engineer",
+          "tech_stack": [
+            "kubernetes",
+            "terraform"
+          ]
+        },
+        {
+          "organization_name": "Startup E-commerce ShopVN",
+          "project_name": "",
+          "role": "DevOps / Infra Engineer",
+          "tech_stack": [
+            "prometheus",
+            "grafana",
+            "terraform",
+            "github actions",
+            "docker"
+          ]
+        }
+      ]
+    },
+    "private_data": {
+      "contact": {
+        "email": "duc.sre@gmail.com",
+        "phone": "0911223344",
+        "github": "github.com/duc-sre",
+        "linkedin": "linkedin.com/in/duc-le"
+      },
+      "salary_expectation": "3,500 USD / tháng (gross)",
+      "project_technical_secrets": "",
+      "interview_questions_history": [],
+      "blacklist_orgs": [],
+      "evidence_links": [],
+      "additional_information": []
+    }
+  },
+  {
+    "file": "CV_P085_DangMaiAnh_DataEngineer.pdf",
+    "public_data": {
+      "full_name": "Đặng Mai Anh",
+      "professional_summary": "Senior Data Engineer với 7+ năm kinh nghiệm xây dựng modern data stack cho các tổ chức B2B SaaS và analytics-driven. Thành thạo toàn bộ pipeline từ ingestion (spark, airflow), transformation (dbt core), quality (great expectations) đến serving layer (clickhouse, bigquery). Có kinh nghiệm thiết kế multi-tenant data processing architecture với dynamic DAGs trên airflow, áp dụng per-customer resource isolation. Đặc biệt phù hợp với môi trường data-driven, product analytics.",
+      "is_available": true,
+      "skills": [
+        "batch & stream processing",
+        "apache spark",
+        "kafka",
+        "flink",
+        "orchestration",
+        "apache airflow",
+        "transformation layer",
+        "dbt core",
+        "data quality",
+        "great expectations",
+        "soda core",
+        "olap & warehousing",
+        "clickhouse",
+        "bigquery",
+        "snowflake",
+        "data modeling",
+        "dimensional modeling",
+        "data vault 2.0",
+        "obt pattern",
+        "languages & tools",
+        "python",
+        "sql",
+        "terraform",
+        "dbt-utils"
+      ],
+      "certificates": [
+        "dbt analytics engineer certification",
+        "google professional data engineer",
+        "apache airflow certification",
+        "clickhouse certified developer",
+        "snowflake snowpro core certification"
+      ],
+      "cultural_tags": [
+        "data-driven",
+        "b2b saas",
+        "documentation-first",
+        "async-first remote",
+        "open source contributor"
+      ],
+      "education": [
+        {
+          "degree": "BACHELOR",
+          "major": "Kinh tế",
+          "school": "Đại học Kinh tế TP. Hồ Chí Minh",
+          "year": 2017
+        }
+      ],
+      "experience": [
+        {
+          "organization_name": "DataBridge Analytics",
+          "project_name": "",
+          "role": "Senior Data Engineer",
+          "tech_stack": [
+            "apache airflow",
+            "clickhouse",
+            "great expectations"
+          ]
+        },
+        {
+          "organization_name": "VNCloud",
+          "project_name": "",
+          "role": "Data Engineer",
+          "tech_stack": [
+            "dbt",
+            "spark",
+            "bigquery"
+          ]
+        },
+        {
+          "organization_name": "QuickShop",
+          "project_name": "",
+          "role": "Junior Data Engineer / Analyst",
+          "tech_stack": [
+            "postgresql",
+            "mysql",
+            "airflow"
+          ]
+        }
+      ]
+    },
+    "private_data": {
+      "contact": {
+        "email": "maianh.data@gmail.com",
+        "phone": "0977556611",
+        "github": "github.com/maianh-de",
+        "linkedin": "linkedin.com/in/mai"
+      },
+      "salary_expectation": "3,200 USD / tháng (gross)",
+      "project_technical_secrets": "",
+      "interview_questions_history": [],
+      "blacklist_orgs": [],
+      "evidence_links": [],
+      "additional_information": [
+        {
+          "key": "Chế độ",
+          "value": "Remote 100%"
+        },
+        {
+          "key": "Mức lương kỳ vọng",
+          "value": "3,200 USD / tháng (gross)"
+        }
+      ]
+    }
+  },
+  {
+    "file": "CV_P091_DangThaiSon_QAAutomation.pdf",
+    "public_data": {
+      "full_name": "Đặng Thái Sơn",
+      "professional_summary": "Senior QA Automation Engineer với 7+ năm kinh nghiệm xây dựng test infrastructure quy mô lớn cho các dự án phần mềm phức tạp. Thành thạo Playwright, Selenium Grid và Java cho E2E automation. Có track record thiết kế và triển khai distributed test execution framework chạy song song 50 nodes, rút ngắn regression cycle từ 2 ngày xuống 45 phút. Chuyên sâu về contract testing (Pact), CI/CD integration và chiến lược phân tầng kiểm thử theo ISTQB Advanced.",
+      "is_available": false,
+      "skills": [
+        "test automation",
+        "playwright",
+        "selenium grid 4",
+        "appium",
+        "restassured",
+        "java",
+        "typescript",
+        "python",
+        "contract testing",
+        "pact",
+        "ci/cd integration",
+        "github actions",
+        "jenkins",
+        "gitlab ci",
+        "docker",
+        "performance testing",
+        "k6",
+        "jmeter",
+        "gatling",
+        "test strategy",
+        "istqb advanced tm",
+        "risk-based testing",
+        "shift-left",
+        "tdd",
+        "bdd",
+        "cucumber",
+        "reporting & metrics",
+        "allure report",
+        "testrail",
+        "jira xray",
+        "dora metrics"
+      ],
+      "certificates": [
+        "istqb advanced level – test manager (ctal-tm)",
+        "istqb advanced level – technical test analyst (ctal-tta)",
+        "playwright certified automation engineer – lambdatest",
+        "pact foundation – contract testing practitioner"
+      ],
+      "cultural_tags": [],
+      "education": [
+        {
+          "degree": "BACHELOR",
+          "major": "Công nghệ Thông tin",
+          "school": "Đại học Bách Khoa TP. Hồ Chí Minh",
+          "year": 2017
+        }
+      ],
+      "experience": [
+        {
+          "organization_name": "GlobalDev Outsourcing Vietnam",
+          "project_name": "Senior QA Automation Engineer – Project Lead",
+          "role": "Senior QA Automation Engineer",
+          "tech_stack": [
+            "selenium grid 4",
+            "playwright",
+            "docker"
+          ]
+        },
+        {
+          "organization_name": "Công ty Phần mềm Nhật-Việt TechBridge",
+          "project_name": "QA Automation Engineer",
+          "role": "QA Automation Engineer",
+          "tech_stack": [
+            "restassured",
+            "jmeter",
+            "jenkins"
+          ]
+        },
+        {
+          "organization_name": "Startup Fintech PayEasy",
+          "project_name": "Junior QA Engineer",
+          "role": "Junior QA Engineer",
+          "tech_stack": [
+            "selenium webdriver",
+            "istqb foundation"
+          ]
+        }
+      ]
+    },
+    "private_data": {
+      "contact": {
+        "email": "thaison.qa@gmail.com",
+        "phone": "0988112233",
+        "github": "github.com/thaison-qa",
+        "linkedin": "linkedin.com/in/thais"
+      },
+      "salary_expectation": "35,000,000 VND / tháng (gross)",
+      "project_technical_secrets": "",
+      "interview_questions_history": [],
+      "blacklist_orgs": [],
+      "evidence_links": [],
+      "additional_information": []
+    }
+  },
+  {
+    "file": "CV_P092_TranDieuNhi_BlockchainZKP.pdf",
+    "public_data": {
+      "full_name": "Trần Diệu Nhi",
+      "professional_summary": "Blockchain & Privacy Tech Engineer với chuyên môn sâu về Zero-Knowledge Proof systems và cryptographic protocol design. Thành thạo Circom/SnarkJS, rust (arkworks, halo2) và solidity cho smart contract development. Có kinh nghiệm nghiên cứu và tối ưu hóa ZK-rollup circuit design nhằm giảm on-chain computation và gas cost cho private transaction protocols. Đóng góp tích cực cho cộng đồng cryptography mã nguồn mở và tham gia nghiên cứu học thuật về privacy-preserving computation.",
+      "is_available": true,
+      "skills": [
+        "zk proof systems",
+        "circom",
+        "snarkjs",
+        "halo2",
+        "arkworks",
+        "bellman",
+        "solidity",
+        "foundry",
+        "hardhat",
+        "ethers.js",
+        "rust",
+        "go",
+        "python",
+        "c++",
+        "wasm-pack",
+        "noir"
+      ],
+      "certificates": [
+        "zkp mooc certificate – berkeley rdi (2023)",
+        "ethereum foundation zk research grant recipient (2022)",
+        "certified ethereum developer – consensus academy",
+        "research paper: 'efficient zkp for private data sharing' – usenix security workshop 2021",
+        "research paper: 'optimizing plonk circuits for on-chain verification' – ieee s&p; 2023 (co-author)"
+      ],
+      "cultural_tags": [
+        "privacy-first",
+        "cypherpunk ethos",
+        "research-driven",
+        "trustless systems",
+        "open-source contributor",
+        "believer"
+      ],
+      "education": [
+        {
+          "degree": "BACHELOR",
+          "major": "Computer Science",
+          "school": "Đại học Khoa học Tự nhiên – ĐHQG TP. HCM",
+          "year": 2018
+        },
+        {
+          "degree": "MASTER",
+          "major": "Computer Science",
+          "school": "Đại học Khoa học Tự nhiên – ĐHQG TP. HCM",
+          "year": 2020
+        }
+      ],
+      "experience": [
+        {
+          "organization_name": "Privacy Protocol Lab (Web3 Research Studio)",
+          "project_name": "Blockchain / ZKP Engineer",
+          "role": "Blockchain / ZKP Engineer",
+          "tech_stack": [
+            "circom",
+            "plonk",
+            "solidity",
+            "rust"
+          ]
+        },
+        {
+          "organization_name": "DeFi Protocol (Stealth Project)",
+          "project_name": "Smart Contract & Protocol Developer",
+          "role": "Smart Contract & Protocol Developer",
+          "tech_stack": [
+            "solidity",
+            "go"
+          ]
+        },
+        {
+          "organization_name": "Đại học KHTN (Research Lab)",
+          "project_name": "Research Engineer – Cryptography",
+          "role": "Research Engineer – Cryptography",
+          "tech_stack": [
+            "circom"
+          ]
+        }
+      ]
+    },
+    "private_data": {
+      "contact": {
+        "email": "dieunhi.zkp@gmail.c",
+        "phone": "0909445566",
+        "github": "github.com/dieunhi-cry",
+        "linkedin": "linkedin.com/in/dieu"
+      },
+      "salary_expectation": "4,500 USD / tháng (gross)",
+      "project_technical_secrets": "",
+      "interview_questions_history": [],
+      "blacklist_orgs": [],
+      "evidence_links": [],
+      "additional_information": [
+        {
+          "key": "pto",
+          "value": "nhi-tran"
+        }
+      ]
+    }
+  },
+  {
+    "file": "CV_P093_LeQuocBao_AndroidPerformance.pdf",
+    "public_data": {
+      "full_name": "Lê Quốc Bảo",
+      "professional_summary": "Android Performance Expert với 8+ năm kinh nghiệm tối ưu hóa ứng dụng Android từ tầng UI (Jetpack Compose, RenderThread) đến tầng native (NDK, JNI). Chuyên sâu về phân tích và giải quyết ANR, memory leak, frame drop và startup latency. Từng mentor trực tiếp cho đội mobile tại các product company về kỹ thuật profiling và kiến trúc reactive (Coroutines, RxJava). Có kinh nghiệm phát hiện và xử lý các vấn đề memory management phức tạp trong camera integration thông qua Android NDK C++ bridge.",
+      "is_available": true,
+      "skills": [
+        "android",
+        "jetpack compose",
+        "kotlin",
+        "ndk",
+        "jni",
+        "rxjava",
+        "coroutines",
+        "memory management",
+        "performance tooling",
+        "gradle",
+        "espresso"
+      ],
+      "certificates": [
+        "Google Associate Android Developer",
+        "Kotlin Multiplatform Certified – JetBrains Academy",
+        "Android Performance – Google Developer Expert (GDE track)"
+      ],
+      "cultural_tags": [
+        "tiếng anh",
+        "tiếng nhật",
+        "board game strategy"
+      ],
+      "education": [
+        {
+          "degree": "BACHELOR",
+          "major": "Công nghệ Thông tin",
+          "school": "Đại học Bách Khoa Hà Nội",
+          "year": 2016
+        }
+      ],
+      "experience": [
+        {
+          "organization_name": "PocketApp Vietnam",
+          "project_name": "",
+          "role": "Android Performance Consultant / Expert",
+          "tech_stack": [
+            "android",
+            "jetpack compose",
+            "kotlin",
+            "ndk",
+            "jni",
+            "rxjava"
+          ]
+        },
+        {
+          "organization_name": "Super App Platform Vietnam",
+          "project_name": "",
+          "role": "Senior Android Engineer",
+          "tech_stack": [
+            "android",
+            "jetpack compose",
+            "kotlin",
+            "ndk",
+            "jni",
+            "rxjava"
+          ]
+        },
+        {
+          "organization_name": "Công ty Mobile App XYZ",
+          "project_name": "",
+          "role": "Android Developer",
+          "tech_stack": [
+            "android",
+            "rxjava"
+          ]
+        }
+      ]
+    },
+    "private_data": {
+      "contact": {
+        "email": "quocbao.android@mail.com",
+        "phone": "0933998877",
+        "github": "github.com/quocbao-dr",
+        "linkedin": "linkedin.com/in/quoc"
+      },
+      "salary_expectation": "60,000,000 VND / tháng (gross)",
+      "project_technical_secrets": "",
+      "interview_questions_history": [],
+      "blacklist_orgs": [],
+      "evidence_links": [],
+      "additional_information": [
+        {
+          "key": "Sở thích",
+          "value": "Board game strategy (Terraforming Mars, Spirit Island)"
+        },
+        {
+          "key": "Đọc",
+          "value": "paper Android internals"
+        }
+      ]
+    }
+  },
+  {
+    "file": "CV_P094_PhamThuHuong_DataPlatform.pdf",
+    "public_data": {
+      "full_name": "Phạm Thu Hương",
+      "professional_summary": "Data Platform Engineer với 6+ năm kinh nghiệm thiết kế và vận hành modern data infrastructure cho môi trường B2B SaaS. Thành thạo Apache Airflow (dynamic DAGs, KubernetesPodOperator), Apache Spark và dbt Core cho toàn bộ data pipeline lifecycle. Có kinh nghiệm thiết kế multi-tenant data platform với cách ly hoàn toàn worker resources giữa các khách hàng. Định hướng rõ ràng sang product company với data platform làm core business value.",
+      "is_available": true,
+      "skills": [
+        "apache airflow",
+        "apache spark",
+        "dbt core",
+        "kafka",
+        "flink",
+        "great expectations",
+        "snowflake",
+        "bigquery",
+        "terraform",
+        "kubernetes",
+        "docker",
+        "python",
+        "sql",
+        "promql"
+      ],
+      "certificates": [
+        "dbt analytics engineer certification – dbt labs",
+        "astronomer certification for apache airflow (dag authoring)",
+        "snowflake snowpro core certification",
+        "google professional data engineer",
+        "hashicorp certified: terraform associate"
+      ],
+      "cultural_tags": [],
+      "education": [
+        {
+          "degree": "BACHELOR",
+          "major": "Cử nhân Hệ thống Thông tin",
+          "school": "Đại học Kinh tế TP. Hồ Chí Minh",
+          "year": 2018
+        }
+      ],
+      "experience": [
+        {
+          "organization_name": "SaaS Analytics Company (B2B)",
+          "project_name": "",
+          "role": "Senior Data Platform Engineer",
+          "tech_stack": [
+            "apache airflow",
+            "kubernetes",
+            "snowflake",
+            "great expectations",
+            "dbt"
+          ]
+        },
+        {
+          "organization_name": "E-commerce Platform TechShop",
+          "project_name": "",
+          "role": "Data Engineer",
+          "tech_stack": [
+            "pyspark",
+            "airflow",
+            "snowflake"
+          ]
+        },
+        {
+          "organization_name": "Công ty Data Consulting ABCData",
+          "project_name": "",
+          "role": "Junior Data Engineer",
+          "tech_stack": [
+            "python",
+            "airflow",
+            "dbt"
+          ]
+        }
+      ]
+    },
+    "private_data": {
+      "contact": {
+        "email": "thuhuong.data@gmail.com",
+        "phone": "0911223344",
+        "github": "github.com/thuhuong-deuong-pham",
+        "linkedin": "linkedin.com/in/thuhuong-pham"
+      },
+      "salary_expectation": "3,000 USD / tháng",
+      "project_technical_secrets": "",
+      "interview_questions_history": [],
+      "blacklist_orgs": [],
+      "evidence_links": [],
+      "additional_information": []
+    }
+  },
+  {
+    "file": "CV_P095_VuGiaKhiem_AppSecArchitect.pdf",
+    "public_data": {
+      "full_name": "Vũ Gia Khiêm",
+      "professional_summary": "Application Security Architect với 8+ năm kinh nghiệm bảo mật ứng dụng và hạ tầng cho lĩnh vực tài chính – ngân hàng. Chuyên sâu về DevSecOps, Penetration Testing và triển khai PCI-DSS v4.0 cho hệ thống core banking. Có track record thực hiện security audit và phát hiện lỗ hổng nghiêm trọng (OWASP Top 10, business logic flaws) trong các hệ thống tài chính Tier 1. Thành thạo tích hợp security controls vào SDLC theo mô hình Shift-left, giúp phát hiện lỗi sớm mà không ảnh hưởng tốc độ phát triển.",
+      "is_available": true,
+      "skills": [
+        "devsecops",
+        "semgrep",
+        "sonarqube",
+        "snyk",
+        "owasp dependency-check",
+        "trivy",
+        "checkmarx",
+        "owasp zap",
+        "burp suite",
+        "sast",
+        "dast",
+        "web app pentest",
+        "api security",
+        "idor",
+        "auth flaws",
+        "cloud security",
+        "aws security hub",
+        "guardduty",
+        "iam policy analysis",
+        "scps",
+        "hashicorp vault",
+        "secrets management",
+        "pci-dss v4.0",
+        "iso 27001",
+        "owasp asvs",
+        "bank security framework",
+        "threat modeling",
+        "stride",
+        "pasta",
+        "attack tree",
+        "mitre attack mapping"
+      ],
+      "certificates": [
+        "oscp – offensive security certified professional (offsec)",
+        "cissp – certified information systems security professional (isc²)",
+        "ceh – certified ethical hacker (ec-council)",
+        "aws certified security – specialty",
+        "hashicorp vault associate",
+        "pci-dss qualified security assessor (qsa) – pci ssc"
+      ],
+      "cultural_tags": [],
+      "education": [
+        {
+          "degree": "BACHELOR",
+          "major": "Cử nhân An toàn Thông tin",
+          "school": "Học viện Kỹ thuật Mật mã",
+          "year": 2016
+        }
+      ],
+      "experience": [
+        {
+          "organization_name": "Công ty Tư vấn Bảo mật SecureEdge",
+          "project_name": "",
+          "role": "Application Security Architect",
+          "tech_stack": [
+            "pci-dss v4.0",
+            "devsecops",
+            "hashicorp vault"
+          ]
+        },
+        {
+          "organization_name": "Ngân hàng Thương mại Cổ phần ABC (In-house)",
+          "project_name": "",
+          "role": "Senior Security Engineer",
+          "tech_stack": [
+            "owasp top 10",
+            "checkmarx"
+          ]
+        },
+        {
+          "organization_name": "Công ty Bảo mật CyberDefend",
+          "project_name": "",
+          "role": "Security Penetration Tester",
+          "tech_stack": [
+            "web application pentest",
+            "api pentest"
+          ]
+        }
+      ]
+    },
+    "private_data": {
+      "contact": {
+        "email": "giakhiem.sec@gmail.com",
+        "phone": "0977556611",
+        "github": "github.com/khiem-appsec",
+        "linkedin": "linkedin.com/in/giak"
+      },
+      "salary_expectation": "4,000 USD / tháng (gross)",
+      "project_technical_secrets": "",
+      "interview_questions_history": [],
+      "blacklist_orgs": [],
+      "evidence_links": [],
+      "additional_information": [
+        {
+          "key": "CTF competitions",
+          "value": ""
+        },
+        {
+          "key": "Đọc research paper về offensive security",
+          "value": ""
+        },
+        {
+          "key": "Ngôn ngữ",
+          "value": "Tiếng Anh (Professional – Technical writing & presentations)"
+        }
+      ]
+    }
+  },
+  {
+    "file": "CV_Trinh_Quang_Vinh.pdf",
+    "public_data": {
+      "full_name": "trinh quang vinh",
+      "professional_summary": "Full-stack engineer 5 năm kinh nghiệm với react, node.js và typescript. Có khả năng độc lập xây dựng toàn bộ hệ thống từ database (postgresql), backend api đến frontend ui mà không cần devops riêng. Thành thạo deploy lên digitalocean droplet với pm2, nginx và ci/cd qua github actions. Ứng tiền môi trường làm việc cân bằng, không yêu cầu ot thứ 7.",
+      "is_available": true,
+      "skills": [
+        "react",
+        "node.js",
+        "typescript",
+        "postgresql",
+        "digitalocean",
+        "github actions",
+        "pm2",
+        "nginx",
+        "rest api",
+        "docker (basic)",
+        "prisma orm",
+        "redis"
+      ],
+      "certificates": [],
+      "cultural_tags": [],
+      "education": [
+        {
+          "degree": "BACHELOR",
+          "major": "Công nghệ Thông tin",
+          "school": "ĐH Khoa học Tự nhiên TP.HCM",
+          "year": 2019
+        }
+      ],
+      "experience": [
+        {
+          "organization_name": "NanoTech Budget Solutions",
+          "project_name": "",
+          "role": "Senior Full-Stack Engineer",
+          "tech_stack": [
+            "postgresql",
+            "node.js",
+            "react",
+            "digitalocean"
+          ]
+        },
+        {
+          "organization_name": "Startups Vietnam Hub",
+          "project_name": "",
+          "role": "Full-Stack Developer",
+          "tech_stack": [
+            "react",
+            "express.js",
+            "mongodb"
+          ]
+        },
+        {
+          "organization_name": "Axon Agency",
+          "project_name": "",
+          "role": "Frontend Developer",
+          "tech_stack": [
+            "react"
+          ]
+        }
+      ]
+    },
+    "private_data": {
+      "contact": {
+        "email": "vinh.fullstack@gmail.com",
+        "phone": "0988 665 544",
+        "github": "github.com/vinh-react",
+        "linkedin": "linkedin.com/in/vinh-trinh"
+      },
+      "salary_expectation": "30,000,000 VND / tháng",
+      "project_technical_secrets": "",
+      "interview_questions_history": [
+        {
+          "question": "Deploy trên Droplet: PM2 + Nginx, quen quản trị Linux server cơ bản",
+          "answer": "",
+          "org": "NanoTech"
+        }
+      ],
+      "blacklist_orgs": [
+        "các startup yêu cầu ot thứ 7"
+      ],
+      "evidence_links": [],
+      "additional_information": [
+        {
+          "key": "Tình trạng làm việc",
+          "value": "Chỉ tìm việc có Work-Life Balance – KHÔNG OT thứ 7"
+        },
+        {
+          "key": "Năng lực đặc biệt",
+          "value": "Tự setup toàn bộ infra (DB→UI) không cần DevOps; CI/CD via GitHub Actions"
+        }
+      ]
+    }
+  },
+  {
+    "file": "CV_Vo_Hoang_Yen.pdf",
+    "public_data": {
+      "full_name": "võ hoàng yên",
+      "professional_summary": "6 năm kinh nghiệm phát triển backend java cho hệ thống ngân hàng cốt lõi (core banking). Thành thạo java ee, spring boot 5, oracle 19c rac và giao thức soap/rest tích hợp với các hệ thống tài chính. Quen thuộc với quy trình cab approval, eod batch job optimization và deployment trong môi trường enterprise banking nghiêm ngặt.",
+      "is_available": true,
+      "skills": [
+        "java ee",
+        "spring boot 5",
+        "hibernate",
+        "jpa",
+        "maven",
+        "gradle",
+        "oracle 19c rac",
+        "pl/sql",
+        "sql tuning",
+        "partitioning",
+        "rac failover",
+        "soap/ws",
+        "rest api",
+        "iso 8583",
+        "swift mt",
+        "mq series",
+        "core banking",
+        "eod processing",
+        "t24 temenos",
+        "flexcube",
+        "jenkins ci/cd",
+        "docker",
+        "linux rhel",
+        "git",
+        "jira"
+      ],
+      "certificates": [
+        "oracle certified professional java se 11 (ocp)",
+        "spring professional certification (vmware)"
+      ],
+      "cultural_tags": [],
+      "education": [
+        {
+          "degree": "BACHELOR",
+          "major": "hệ thống thông tin",
+          "school": "ĐH Kinh tế TP.HCM",
+          "year": 2018
+        }
+      ],
+      "experience": [
+        {
+          "organization_name": "VinaCorp Digital Transformation",
+          "project_name": "",
+          "role": "Senior Backend Engineer",
+          "tech_stack": [
+            "java ee",
+            "spring boot 5",
+            "hibernate",
+            "jpa",
+            "maven",
+            "gradle",
+            "oracle 19c rac",
+            "pl/sql",
+            "sql tuning",
+            "partitioning",
+            "rac failover",
+            "soap/ws",
+            "rest api",
+            "iso 8583",
+            "swift mt",
+            "mq series",
+            "jenkins ci/cd",
+            "docker",
+            "linux rhel",
+            "git",
+            "jira"
+          ]
+        },
+        {
+          "organization_name": "Sacombank",
+          "project_name": "Core Banking",
+          "role": "Backend Developer",
+          "tech_stack": [
+            "java ee",
+            "spring boot 5",
+            "hibernate",
+            "jpa",
+            "maven",
+            "gradle",
+            "oracle 19c rac",
+            "pl/sql",
+            "sql tuning",
+            "partitioning",
+            "rac failover",
+            "soap/ws",
+            "rest api",
+            "iso 8583",
+            "swift mt",
+            "mq series",
+            "jenkins ci/cd",
+            "docker",
+            "linux rhel",
+            "git",
+            "jira"
+          ]
+        },
+        {
+          "organization_name": "FPT Information System",
+          "project_name": "",
+          "role": "Java Developer",
+          "tech_stack": [
+            "java ee",
+            "spring boot 5",
+            "hibernate",
+            "jpa",
+            "maven",
+            "gradle",
+            "oracle 19c rac",
+            "pl/sql",
+            "sql tuning",
+            "partitioning",
+            "rac failover",
+            "soap/ws",
+            "rest api",
+            "iso 8583",
+            "swift mt",
+            "mq series",
+            "jenkins ci/cd",
+            "docker",
+            "linux rhel",
+            "git",
+            "jira"
+          ]
+        }
+      ]
+    },
+    "private_data": {
+      "contact": {
+        "email": "yen.vo.banking@gmail.com",
+        "phone": "0933 778 899",
+        "github": "github.com/hoangyen-java",
+        "linkedin": "linkedin.com/in/yen-vo"
+      },
+      "salary_expectation": "45,000,000 VND / tháng",
+      "project_technical_secrets": "Quen thuộc CAB approval 2 tuần; tối ưu EOD batch job Core Banking",
+      "interview_questions_history": [],
+      "blacklist_orgs": [
+        "VPBank",
+        "Techcombank"
+      ],
+      "evidence_links": [],
+      "additional_information": [
+        {
+          "key": "Số CMND/CCCD",
+          "value": "079123456789"
+        },
+        {
+          "key": "Tình trạng",
+          "value": "Sẵn sàng đi làm sau 1 tháng thông báo"
+        }
+      ]
+    }
+  }
+]
