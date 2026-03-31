@@ -9,6 +9,7 @@ import json
 import time
 import tracemalloc
 import math
+import warnings
 
 # ── Project root on sys.path ─────────────────────────────────────────────────
 PROJECT_ROOT = pathlib.Path(__file__).resolve().parents[2]
@@ -26,38 +27,22 @@ JD_PATH = PROJECT_ROOT / "data_eval" / "jd_dataset.json"
 CACHE_DIR = PROJECT_ROOT / "data_eval"
 
 MODELS = {
-    "phobert_base_v2": {
-        "model_id": "vinai/phobert-base-v2",
-        "dim": 768,
-        "prefix": "",
-    },
-    "multilingual_e5": {
-        "model_id": "intfloat/multilingual-e5-base",
-        "dim": 768,
-        "prefix": "query: ",
-    },
-    "gte_multilingual": {
-        "model_id": "Alibaba-NLP/gte-multilingual-base",
-        "dim": 768,
-        "prefix": "",
-    },
-    "bge_m3": {
-        "model_id": "BAAI/bge-m3",
-        "dim": 1024,
-        "prefix": "",
-    },
+    "phobert_base_v2": {"model_id": "vinai/phobert-base-v2", "dim": 768, "prefix": ""},
+    "multilingual_e5": {"model_id": "intfloat/multilingual-e5-base", "dim": 768, "prefix": "query: "},
+    "gte_multilingual": {"model_id": "Alibaba-NLP/gte-multilingual-base", "dim": 768, "prefix": ""},
+    "bge_m3": {"model_id": "BAAI/bge-m3", "dim": 1024, "prefix": ""},
 }
 
-JD_TEMPLATE = [
-    {
-        "query_id": "jd_001",
-        "jd_text": "Tuyển lập trình viên Python 3 năm kinh nghiệm, biết Django và REST API.",
-        "relevant_personnel_ids": ["P001", "P002"],
-        "category": "backend",
-    },
-]
-
 # ── Helpers ──────────────────────────────────────────────────────────────────
+
+def _load_st_model(model_id: str):
+    """Load SentenceTransformer an toàn, tự động set max_seq_length cho PhoBERT"""
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        model = SentenceTransformer(model_id, trust_remote_code=True)
+        if "phobert" in model_id.lower():
+            model.max_seq_length = 256  # Cứu cánh chống lỗi IndexError
+        return model
 
 def _cosine_similarity(a: list[float], b: list[float]) -> float:
     dot = sum(x * y for x, y in zip(a, b))
@@ -67,13 +52,8 @@ def _cosine_similarity(a: list[float], b: list[float]) -> float:
         return 0.0
     return dot / (norm_a * norm_b)
 
-
 def _rank_corpus(query_emb: list[float], corpus: dict[str, list[float]]) -> list[str]:
-    """Return corpus IDs sorted by descending cosine similarity to query_emb."""
-    scored = [
-        (pid, _cosine_similarity(query_emb, emb))
-        for pid, emb in corpus.items()
-    ]
+    scored = [(pid, _cosine_similarity(query_emb, emb)) for pid, emb in corpus.items()]
     scored.sort(key=lambda x: x[1], reverse=True)
     return [pid for pid, _ in scored]
 
@@ -135,11 +115,7 @@ def _load_corpus_from_neo4j() -> list[dict]:
 def _build_corpus_text(record: dict) -> str:
     return " ".join(record["skills"]) + " " + record["summary"]
 
-def _get_corpus_embeddings(
-    model_name: str,
-    model_cfg: dict,
-    corpus_records: list[dict],
-) -> dict[str, list[float]]:
+def _get_corpus_embeddings(model_name: str, model_cfg: dict, corpus_records: list[dict]) -> dict[str, list[float]]:
     if model_name == "phobert_base_v2":
         return {r["id"]: r["phobert_emb"] for r in corpus_records}
 
@@ -150,16 +126,13 @@ def _get_corpus_embeddings(
             return json.load(f)
 
     print(f"  Encoding corpus with {model_cfg['model_id']}...")
-    st_model = SentenceTransformer(model_cfg["model_id"])
+    st_model = _load_st_model(model_cfg["model_id"])
     prefix = model_cfg["prefix"]
 
     texts = [prefix + _build_corpus_text(r) for r in corpus_records]
     embeddings = st_model.encode(texts, show_progress_bar=True, convert_to_numpy=True)
 
-    result = {
-        corpus_records[i]["id"]: embeddings[i].tolist()
-        for i in range(len(corpus_records))
-    }
+    result = {corpus_records[i]["id"]: embeddings[i].tolist() for i in range(len(corpus_records))}
 
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
     with open(cache_file, "w", encoding="utf-8") as f:
@@ -173,14 +146,14 @@ def _get_corpus_embeddings(
 def _encode_query(model_name: str, model_cfg: dict, text: str, st_model=None):
     prefix = model_cfg["prefix"]
     if st_model is None:
-        st_model = SentenceTransformer(model_cfg["model_id"])
+        st_model = _load_st_model(model_cfg["model_id"])
     emb = st_model.encode([prefix + text], convert_to_numpy=True)
     return emb[0].tolist(), st_model
 
 # ── Efficiency benchmark ────────────────────────────────────────────────────
 
 def _benchmark_efficiency(model_name: str, model_cfg: dict, sample_texts: list[str]):
-    st_model = SentenceTransformer(model_cfg["model_id"])
+    st_model = _load_st_model(model_cfg["model_id"])
     prefix = model_cfg["prefix"]
     texts = [prefix + t for t in sample_texts[:20]]
 
@@ -202,12 +175,8 @@ def _benchmark_efficiency(model_name: str, model_cfg: dict, sample_texts: list[s
 
 def main():
     if not JD_PATH.exists():
-        print(f"JD dataset not found at {JD_PATH}. Writing template...")
-        JD_PATH.parent.mkdir(parents=True, exist_ok=True)
-        with open(JD_PATH, "w", encoding="utf-8") as f:
-            json.dump(JD_TEMPLATE, f, ensure_ascii=False, indent=2)
-        print(f"Template written to {JD_PATH}. Please populate and re-run.")
-        sys.exit(0)
+        print(f"JD dataset not found at {JD_PATH}. Please provide the file.")
+        sys.exit(1)
 
     with open(JD_PATH, "r", encoding="utf-8") as f:
         jd_queries = json.load(f)
@@ -233,8 +202,9 @@ def main():
         mrr5_list, recall5_list, recall10_list, ndcg5_list = [], [], [], []
         st_model = None
 
+        valid_jd_count = 0
+
         for jd in jd_queries:
-            # ---> BẢN VÁ LỖI CẤU TRÚC DỮ LIỆU Ở ĐÂY <---
             if "jd_text" in jd:
                 query_text = jd["jd_text"]
             else:
@@ -244,13 +214,23 @@ def main():
                 desc = input_data.get("job_description", "")
                 query_text = f"{job_title}\n{skills}\n{desc}"
                 
-            relevant_list = jd.get("relevant_personnel_ids", jd.get("target_personnel", []))
+            # Lấy đáp án từ object ground_truth
+            ground_truth_obj = jd.get("ground_truth", {})
+            relevant_list = ground_truth_obj.get("relevant_personnel", [])
+            
+            # Fallback nếu xài mấy format cũ
+            if not relevant_list:
+                relevant_list = jd.get("relevant_personnel_ids", jd.get("target_personnel", []))
+                
             relevant = set(relevant_list)
 
             if not relevant:
-                print(f"⚠️ Cảnh báo: Query {jd.get('query_id', 'unknown')} không có đáp án. Bỏ qua.")
+                # Chỉ in cảnh báo ở model đầu tiên cho đỡ rác màn hình
+                if model_name == "phobert_base_v2":
+                    print(f"⚠️ Cảnh báo: Query {jd.get('query_id', 'unknown')} không có đáp án. Bỏ qua.")
                 continue
-
+            
+            valid_jd_count += 1
             q_emb, st_model = _encode_query(model_name, model_cfg, query_text, st_model)
             ranked = _rank_corpus(q_emb, corpus_embs)
 
@@ -258,6 +238,10 @@ def main():
             recall5_list.append(recall_at_k(ranked, relevant, 5))
             recall10_list.append(recall_at_k(ranked, relevant, 10))
             ndcg5_list.append(ndcg_at_k(ranked, relevant, 5))
+
+        if valid_jd_count == 0:
+            print("❌ LỖI: Không có JD nào có đáp án hợp lệ! Vui lòng cập nhật file JD.")
+            sys.exit(1)
 
         print(f"  Benchmarking efficiency...")
         avg_ms, std_ms, peak_mb = _benchmark_efficiency(model_name, model_cfg, sample_texts)

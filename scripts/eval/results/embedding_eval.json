@@ -1,0 +1,38 @@
+{
+  "phobert_base_v2": {
+    "mrr_at_5": 0.1371,
+    "recall_at_5": 0.105,
+    "recall_at_10": 0.1425,
+    "ndcg_at_5": 0.0846,
+    "avg_time_ms": 175.86,
+    "std_time_ms": 56.5,
+    "peak_memory_mb": 0.22
+  },
+  "multilingual_e5": {
+    "mrr_at_5": 0.7425,
+    "recall_at_5": 0.4125,
+    "recall_at_10": 0.4354,
+    "ndcg_at_5": 0.4756,
+    "avg_time_ms": 144.29,
+    "std_time_ms": 29.61,
+    "peak_memory_mb": 0.04
+  },
+  "gte_multilingual": {
+    "mrr_at_5": 0.7583,
+    "recall_at_5": 0.4208,
+    "recall_at_10": 0.4583,
+    "ndcg_at_5": 0.4855,
+    "avg_time_ms": 226.41,
+    "std_time_ms": 53.49,
+    "peak_memory_mb": 0.07
+  },
+  "bge_m3": {
+    "mrr_at_5": 0.6937,
+    "recall_at_5": 0.3887,
+    "recall_at_10": 0.4513,
+    "ndcg_at_5": 0.4418,
+    "avg_time_ms": 587.52,
+    "std_time_ms": 153.02,
+    "peak_memory_mb": 0.04
+  }
+}

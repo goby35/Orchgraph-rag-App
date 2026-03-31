@@ -1,0 +1,26 @@
+{
+  "node_completeness": {
+    "total": 56,
+    "skills_pct": 100.0,
+    "summary_pct": 100.0,
+    "embedding_pct": 98.21,
+    "availability_pct": 98.21,
+    "name_pct": 100.0
+  },
+  "skill_stats": {
+    "unique_skills": 559,
+    "total_mentions": 1008,
+    "avg_per_person": 22.46
+  },
+  "orphan_rate_pct": 1.79,
+  "relationship_stats": {
+    "total": 10,
+    "accepted": 6,
+    "pending": 4
+  },
+  "skill_normalization": {
+    "before_unique": 559,
+    "after_unique": 555,
+    "reduction_pct": 0.72
+  }
+}

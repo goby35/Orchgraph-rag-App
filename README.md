@@ -346,5 +346,5 @@ score = α × jaccard_graph_score + β × vector_similarity
 ## kích hoạt environment
 .venv\Scripts\activate
 
-## API backend
+## API frontend
 npm run dev
