@@ -32,9 +32,12 @@ class Settings:
     CHUNK_SIZE: int = 250
     CHUNK_OVERLAP: int = 20
 
-    # --- PhoBERT ---
-    PHOBERT_MODEL: str = "vinai/phobert-base-v2"
-    PHOBERT_MAX_TOKENS: int = 256
+    # --- Embedding ---
+    EMBEDDING_MODEL: str = os.getenv("EMBEDDING_MODEL", "Alibaba-NLP/gte-multilingual-base")
+    EMBEDDING_MAX_TOKENS: int = 8192
+
+    # --- GTE ---
+    GTE_MODEL: str = "sentence-transformers/all-MiniLM-L6-v2"
 
     # --- Neo4j ---
     NEO4J_URI: str = os.getenv("NEO4J_URI", "bolt://127.0.0.1:7687")

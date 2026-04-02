@@ -8,23 +8,23 @@ from __future__ import annotations
 import json
 from typing import Any, Dict, List
 import torch
-from pyvi import ViTokenizer
+import torch.nn.functional as F
 from transformers import AutoModel, AutoTokenizer
 
 from pipeline.config import settings, get_logger
 
 logger = get_logger(__name__)
 
-class _PhoBERTEmbedder:
-    """Tải và cache model PhoBERT"""
+class _GTEEmbedder:
+    """Tải và cache model Embedding GTE"""
     def __init__(self) -> None:
         self._tokenizer, self._model, self._device = None, None, None
 
     def _ensure_loaded(self) -> None:
         if self._model is not None: return
-        logger.info("Đang tải PhoBERT...")
-        self._tokenizer = AutoTokenizer.from_pretrained(settings.PHOBERT_MODEL)
-        self._model = AutoModel.from_pretrained(settings.PHOBERT_MODEL)
+        logger.info(f"Đang tải {settings.EMBEDDING_MODEL}...")
+        self._tokenizer = AutoTokenizer.from_pretrained(settings.EMBEDDING_MODEL)
+        self._model = AutoModel.from_pretrained(settings.EMBEDDING_MODEL, trust_remote_code=True)
         self._model.eval()
         self._device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self._model.to(self._device)
@@ -35,22 +35,24 @@ class _PhoBERTEmbedder:
         model = self._model
         device = self._device
         if tokenizer is None or model is None or device is None:
-            raise RuntimeError("PhoBERT model/tokenizer/device chưa được khởi tạo")
+            raise RuntimeError("Embedding model/tokenizer/device chưa được khởi tạo")
 
         if not text or not text.strip():
             return [0.0] * 768
-        segmented = ViTokenizer.tokenize(text)
+
         inputs = tokenizer(
-            segmented, return_tensors="pt", max_length=settings.PHOBERT_MAX_TOKENS,
+            text, return_tensors="pt", max_length=settings.EMBEDDING_MAX_TOKENS,
             truncation=True, padding=True
         )
         inputs = {k: v.to(device) for k, v in inputs.items()}
         with torch.no_grad():
             outputs = model(**inputs)
-            cls_embedding = outputs.last_hidden_state[:, 0, :].cpu().numpy()
+            cls_embedding = outputs.last_hidden_state[:, 0, :]
+            cls_embedding = F.normalize(cls_embedding, p=2, dim=1)
+            cls_embedding = cls_embedding.cpu().numpy()
         return cls_embedding.flatten().tolist()
 
-_embedder = _PhoBERTEmbedder()
+_embedder = _GTEEmbedder()
 
 
 def vectorize_text(text: str) -> List[float]:
