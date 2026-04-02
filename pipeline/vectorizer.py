@@ -15,33 +15,40 @@ from pipeline.config import settings, get_logger
 
 logger = get_logger(__name__)
 
-class _GTEEmbedder:
-    """Tải và cache model Embedding GTE"""
-    def __init__(self) -> None:
-        self._tokenizer, self._model, self._device = None, None, None
+MODEL_FIELD_MAP = {
+    "vinai/phobert-base-v2":             "public_embeddings_phobert",
+    "Alibaba-NLP/gte-multilingual-base": "public_embeddings_gte",
+    "intfloat/multilingual-e5-base":     "public_embeddings_e5",
+    "BAAI/bge-m3":                       "public_embeddings_bge",
+}
 
-    def _ensure_loaded(self) -> None:
-        if self._model is not None: return
-        logger.info(f"Đang tải {settings.EMBEDDING_MODEL}...")
-        self._tokenizer = AutoTokenizer.from_pretrained(settings.EMBEDDING_MODEL)
-        self._model = AutoModel.from_pretrained(settings.EMBEDDING_MODEL, trust_remote_code=True)
-        self._model.eval()
-        self._device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        self._model.to(self._device)
+class _EmbedderHub:
+    def __init__(self):
+        self._models = {}
+        
+    def _get_or_load_embedder(self, model_id: str):
+        if model_id not in self._models:
+            logger.info(f"Đang tải {model_id}...")
+            tokenizer = AutoTokenizer.from_pretrained(model_id)
+            model = AutoModel.from_pretrained(model_id, trust_remote_code=True)
+            model.eval()
+            device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+            model.to(device)
+            self._models[model_id] = (tokenizer, model, device)
+        return self._models[model_id]
 
-    def embed(self, text: str) -> List[float]:
-        self._ensure_loaded()
-        tokenizer = self._tokenizer
-        model = self._model
-        device = self._device
-        if tokenizer is None or model is None or device is None:
-            raise RuntimeError("Embedding model/tokenizer/device chưa được khởi tạo")
+    def embed(self, text: str, model_id: str) -> List[float]:
+        tokenizer, model, device = self._get_or_load_embedder(model_id)
 
         if not text or not text.strip():
-            return [0.0] * 768
+            dim = model.config.hidden_size if hasattr(model.config, 'hidden_size') else 768
+            return [0.0] * dim
+
+        prefix = "query: " if "e5" in model_id.lower() else ""
+        text_w_prefix = prefix + text
 
         inputs = tokenizer(
-            text, return_tensors="pt", max_length=settings.EMBEDDING_MAX_TOKENS,
+            text_w_prefix, return_tensors="pt", max_length=settings.EMBEDDING_MAX_TOKENS,
             truncation=True, padding=True
         )
         inputs = {k: v.to(device) for k, v in inputs.items()}
@@ -52,12 +59,21 @@ class _GTEEmbedder:
             cls_embedding = cls_embedding.cpu().numpy()
         return cls_embedding.flatten().tolist()
 
-_embedder = _GTEEmbedder()
-
+_embedder_hub = _EmbedderHub()
 
 def vectorize_text(text: str) -> List[float]:
-    """Public helper for text embedding to avoid leaking embedder internals."""
-    return _embedder.embed(text)
+    """Public helper for text embedding (active model)."""
+    return _embedder_hub.embed(text, settings.ACTIVE_EMBEDDING_MODEL)
+
+def embed_all_models(text: str) -> dict[str, list[float]]:
+    """Trả về dict {field_name: vector} cho tất cả models được config."""
+    result = {}
+    for model_id in settings.EMBEDDING_MODELS:
+        field_name = MODEL_FIELD_MAP.get(model_id)
+        if not field_name:
+            continue
+        result[field_name] = _embedder_hub.embed(text, model_id)
+    return result
 
 def _stringify_value(val: Any) -> str:
     """Ép chuỗi đệ quy an toàn cho dict / list."""
@@ -132,10 +148,19 @@ def prepare_for_neo4j(node_data: Dict[str, Any]) -> Dict[str, Any]:
         "record_type": record_type,
         "public_data": public_data,
         "private_data": private_data,
-        "public_embeddings_phobert": _embedder.embed(public_text),
-        "private_embeddings_phobert": _embedder.embed(private_text),
         "source_file": node_data.get("source_file", "unknown")
     }
+
+    # Sinh tất cả embeddings
+    public_embs = embed_all_models(public_text)
+    private_embs = embed_all_models(private_text)
+
+    for field_name, vector in public_embs.items():
+        res[field_name] = vector
+    for field_name, vector in private_embs.items():
+        # Field cho private, e.g. "private_embeddings_phobert"
+        priv_field = field_name.replace("public_", "private_")
+        res[priv_field] = vector
     
     logger.info(f"Hoàn tất vectorize Split-Compartment cho node {node_id}")
     return res

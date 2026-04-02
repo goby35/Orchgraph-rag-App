@@ -90,9 +90,12 @@ def _load_corpus_from_neo4j() -> list[dict]:
         auth=(settings.NEO4J_USER, settings.NEO4J_PASSWORD),
     )
     query = """
-    MATCH (p:Personnel) WHERE p.public_embeddings_phobert IS NOT NULL
+    MATCH (p:Personnel) WHERE p.id IS NOT NULL
     RETURN p.id AS id,
            p.public_embeddings_phobert AS phobert_emb,
+           p.public_embeddings_multilingual_e5 AS e5_emb,
+           p.public_embeddings_gte_multilingual AS gte_emb,
+           p.public_embeddings_bge_m3 AS bge_emb,
            coalesce(p.public_skills_flat, []) AS skills,
            coalesce(p.public_professional_summary, '') AS summary
     """
@@ -102,7 +105,10 @@ def _load_corpus_from_neo4j() -> list[dict]:
         for rec in result:
             records.append({
                 "id": rec["id"],
-                "phobert_emb": list(rec["phobert_emb"]),
+                "phobert_base_v2": list(rec["phobert_emb"]) if rec["phobert_emb"] else None,
+                "multilingual_e5": list(rec["e5_emb"]) if rec["e5_emb"] else None,
+                "gte_multilingual": list(rec["gte_emb"]) if rec["gte_emb"] else None,
+                "bge_m3": list(rec["bge_emb"]) if rec["bge_emb"] else None,
                 "skills": list(rec["skills"]) if rec["skills"] else [],
                 "summary": rec["summary"] or "",
             })
@@ -116,8 +122,17 @@ def _build_corpus_text(record: dict) -> str:
     return " ".join(record["skills"]) + " " + record["summary"]
 
 def _get_corpus_embeddings(model_name: str, model_cfg: dict, corpus_records: list[dict]) -> dict[str, list[float]]:
-    if model_name == "phobert_base_v2":
-        return {r["id"]: r["phobert_emb"] for r in corpus_records}
+    precalculated = {}
+    missing_any = False
+    for r in corpus_records:
+        if r.get(model_name):
+            precalculated[r["id"]] = r[model_name]
+        else:
+            missing_any = True
+            
+    if not missing_any and len(precalculated) > 0:
+        print(f"  Loaded precalculated Neo4j vectors for {model_name}")
+        return precalculated
 
     cache_file = CACHE_DIR / f"emb_cache_{model_name}.json"
     if cache_file.exists():

@@ -106,6 +106,9 @@ Bước 2: Trích xuất vào JSON tương ứng.
 
 Quy tắc bắt buộc:
 - Email, SĐT, mức lương cụ thể, secret kỹ thuật -> PHẢI vào private_data.
+- HÌNH THỨC NARRATIVE CV/KHÔNG TIÊU ĐỀ: Đọc sâu từng câu văn (kể cả văn xuôi/prose) để tìm metadata. Email, SĐT, mức lương thường ẩn sát trong nội dung giới thiệu bản thân.
+- RANH GIỚI BẢO MẬT (BOUNDARY): Mọi contact info, mức lương, secret code MẶC ĐỊNH LÀ BÍ MẬT (private_data) cho dù chúng nằm công khai giữa một đoạn giới thiệu chung.
+- CHỐNG ẢO GIÁC (ANTI-HALLUCINATION): TUYỆT ĐỐI KHÔNG BỊA ĐẶT (hallucinate). Nếu văn bản gốc không đề cập, phải để rỗng/omit chứ không suy diễn.
 - Thông tin không khớp schema có sẵn -> nhóm vào private_data.additional_information.
 - Trường thiếu dữ liệu -> chuỗi rỗng "", mảng rỗng [], hoặc object rỗng {}.
 - Tên công nghệ/kỹ năng PHẢI chuẩn hóa lowercase và nhất quán:

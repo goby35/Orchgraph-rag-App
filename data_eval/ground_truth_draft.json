@@ -2805,5 +2805,109 @@
         }
       ]
     }
+  },
+  {
+  "file": "CV_P060_TruongVietHung_DBEngineer.pdf",
+  "public_data": {
+    "full_name": "Trương Việt Hưng",
+    "professional_summary": "Distributed Database Engineer với chuyên môn sâu về TiDB/TiKV và các hệ thống cơ sở dữ liệu phân tán quy mô lớn. Có kinh nghiệm vận hành TiDB cluster trong môi trường production với hàng chục triệu transaction/ngày. Nắm vững Raft consensus protocol, PostgreSQL internals và tối ưu hóa performance ở mức storage engine. Đã giải quyết thành công bài toán write hotspot trên TiKV cho hệ thống bán lẻ lớn thông qua chiến lược phân tán primary key.",
+    "is_available": false,
+    "skills": [
+      "tidb",
+      "tikv",
+      "cockroachdb",
+      "vitess",
+      "postgres",
+      "mysql",
+      "raft protocol",
+      "paxos",
+      "leader election",
+      "log replication",
+      "go",
+      "rust",
+      "python",
+      "sql",
+      "write hotspot mitigation",
+      "shard key design",
+      "index optimization",
+      "kubernetes",
+      "prometheus",
+      "grafana",
+      "pd control (tidb)"
+    ],
+    "certificates": [],
+    "cultural_tags": [],
+    "education": [],
+    "experience": [
+      {
+        "organization_name": "AxonDB Systems",
+        "project_name": "TiDB Cluster Operations & Performance Optimization",
+        "role": "Distributed Database Engineer",
+        "tech_stack": [
+          "tidb",
+          "tikv",
+          "go",
+          "rocksdb",
+          "prometheus",
+          "kubernetes"
+        ]
+      },
+      {
+        "organization_name": "Công ty Thương mại Điện tử VNShop",
+        "project_name": "PostgreSQL Cluster Management – Order & Inventory System",
+        "role": "Senior Database Engineer",
+        "tech_stack": [
+          "postgres",
+          "pgbouncer"
+        ]
+      },
+      {
+        "organization_name": "Công ty Giải pháp Phần mềm ABC",
+        "project_name": "Database Administration – B2B Applications",
+        "role": "Database Administrator",
+        "tech_stack": [
+          "mysql",
+          "postgres"
+        ]
+      },
+      {
+        "organization_name": null,
+        "project_name": "TiKV Hotspot Analyzer (internal tool)",
+        "role": "Author",
+        "tech_stack": [
+          "go",
+          "tidb",
+          "tikv"
+        ]
+      },
+      {
+        "organization_name": null,
+        "project_name": "Raft-go",
+        "role": "Open Source Contributor",
+        "tech_stack": [
+          "go"
+        ]
+      }
+    ]
+  },
+  "private_data": {
+    "contact": {
+      "email": "viethung.db@email.com",
+      "phone": "0934xxxxxx",
+      "github": "",
+      "linkedin": ""
+    },
+    "salary_expectation": "3800 USD / tháng (gross)",
+    "project_technical_secrets": "Giải quyết TiKV write hotspot do primary key tăng dần liên tục – áp dụng shard key phân tán kết hợp SHARD_ROW_ID_BITS để phân bổ đều region leaders trên hệ thống bán lẻ quy mô lớn.",
+    "interview_questions_history": [],
+    "blacklist_orgs": [],
+    "evidence_links": [],
+    "additional_information": [
+      {
+        "key": "Blog Series",
+        "value": "PostgreSQL MVCC deep-dive blog series – Loạt bài kỹ thuật về MVCC, visibility rules và vacuum internals (1,200+ lượt đọc/bài)"
+      }
+    ]
+  }
   }
 ]

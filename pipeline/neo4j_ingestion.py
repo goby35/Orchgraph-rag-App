@@ -276,6 +276,17 @@ class Neo4jIngestion:
             logger.error("Lỗi graph-ingest Personnel %s: %s", personnel_id, exc)
             return False
                 
+    def _build_embedding_set_clause(self, node_data: dict, prefix: str = "n") -> tuple[str, dict]:
+        """Build Cypher SET clause cho nhiều embedding fields."""
+        set_parts = []
+        params = {}
+        for field_name, vector in node_data.items():
+            if field_name.startswith("public_embeddings_") or field_name.startswith("private_embeddings_"):
+                param_key = field_name.replace(".", "_")
+                set_parts.append(f"{prefix}.{field_name} = ${param_key}")
+                params[param_key] = vector
+        return ", ".join(set_parts), params
+
     def ingest_node(
         self,
         node_data: Dict[str, Any],
@@ -324,12 +335,15 @@ class Neo4jIngestion:
             )
             
 
+        emb_set_parts, emb_params = self._build_embedding_set_clause(node_data, prefix="n")
+        emb_set_clause = f", {emb_set_parts}" if emb_set_parts else ""
+
         cypher = f"""
-        MERGE (n:{label} {{id: $node_id}})
+        MERGE (n:{{label}} {{id: $node_id}})
         SET n += $public_props,
-            n.public_embeddings_phobert = $public_embeddings,
             n.source_file = $source_file,
             n.last_updated = timestamp()
+            {emb_set_clause}
         RETURN n
         """
         try:
@@ -338,8 +352,8 @@ class Neo4jIngestion:
                     cypher,
                     node_id=node_id,
                     public_props=flat_props,
-                    public_embeddings=public_embeddings,
                     source_file=source_file,
+                    **emb_params
                 )
                 return res.single()
 

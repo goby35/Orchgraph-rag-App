@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 import sys
 import time
 from pathlib import Path
@@ -48,11 +49,81 @@ _GT_SCHEMA_HINT = json.dumps([{
 
 
 # ---------------------------------------------------------------------------
+# Filename resolution (robust — hỗ trợ nhiều schema khác nhau)
+# ---------------------------------------------------------------------------
+
+def _slugify(s: str) -> str:
+    """Bỏ ký tự đặc biệt, lowercase — dùng để fuzzy-match tên file."""
+    return re.sub(r"[^a-z0-9]", "", s.lower())
+
+
+def _find_pdf_by_id(candidate_id: str) -> Path | None:
+    """
+    Tìm PDF trong CV_DIR theo 3 chiến lược:
+      1. Exact substring  : "P_060"  in  "CV_P060_..."
+      2. Slug match       : "p060"   in  "cvp060..."
+      3. Digits-only      : "060"    in  stem
+    """
+    if not CV_DIR.exists():
+        return None
+
+    cid_lower  = candidate_id.lower()
+    cid_slug   = _slugify(candidate_id)
+    cid_digits = re.sub(r"\D", "", candidate_id)
+
+    for pdf in sorted(CV_DIR.glob("*.pdf")):
+        stem_lower = pdf.stem.lower()
+        stem_slug  = _slugify(pdf.stem)
+
+        if cid_lower  in stem_lower:                return pdf
+        if cid_slug   in stem_slug:                 return pdf
+        if cid_digits and cid_digits in stem_lower: return pdf
+
+    return None
+
+
+def _resolve_pdf_path(entry: dict) -> tuple[str, Path] | None:
+    """
+    Trả về (filename, Path) từ entry, thử theo thứ tự:
+      1. entry["file"]           → tên file trực tiếp
+      2. entry["personnel_id"]   → fuzzy-match trong CV_DIR
+      3. entry["org_id"]         → fuzzy-match trong CV_DIR
+      4. entry["public_data"]["full_name"] → fuzzy-match (last resort)
+
+    Trả về None nếu không tìm được.
+    """
+    # ── Strategy 1: key "file" ────────────────────────────────────────────────
+    if file_val := entry.get("file"):
+        p = CV_DIR / str(file_val)
+        if p.exists():
+            return str(file_val), p
+        # Thử case-insensitive
+        fname_lower = str(file_val).lower()
+        for pdf in CV_DIR.glob("*.pdf"):
+            if pdf.name.lower() == fname_lower:
+                return pdf.name, pdf
+
+    # ── Strategy 2 & 3: personnel_id / org_id ────────────────────────────────
+    for key in ("personnel_id", "org_id"):
+        if cid := entry.get(key):
+            if found := _find_pdf_by_id(str(cid)):
+                return found.name, found
+
+    # ── Strategy 4: full_name từ public_data ─────────────────────────────────
+    pub = entry.get("public_data") or {}
+    if full_name := pub.get("full_name"):
+        if found := _find_pdf_by_id(str(full_name)):
+            return found.name, found
+
+    return None
+
+
+# ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
 
 def _get_nested(obj: dict, dotted_key: str):
-    """Resolve 'contact.email' -> obj['contact']['email'], returns None if missing."""
+    """Resolve 'contact.email' → obj['contact']['email'], returns None if missing."""
     parts = dotted_key.split(".")
     cur = obj
     for part in parts:
@@ -111,9 +182,9 @@ def _hallucination_candidates(predicted: dict, source_text: str) -> int:
 # ---------------------------------------------------------------------------
 
 def main() -> None:
-    # Guard: ground truth must exist (fast check before heavy imports)
+    # Guard: ground truth must exist
     if not GT_PATH.exists():
-        print(f"Create {GT_PATH} first. Schema:")
+        print(f"Create {GT_PATH} first. Schema hint:")
         print(_GT_SCHEMA_HINT)
         sys.exit(0)
 
@@ -124,6 +195,10 @@ def main() -> None:
     with open(GT_PATH, encoding="utf-8") as f:
         ground_truth: list = json.load(f)
 
+    # Chấp nhận cả list lẫn single object
+    if isinstance(ground_truth, dict):
+        ground_truth = [ground_truth]
+
     if not ground_truth:
         print("ground_truth.json is empty.")
         sys.exit(0)
@@ -132,13 +207,25 @@ def main() -> None:
     per_field_hits: dict = {f: 0 for f in PUBLIC_FIELDS + PRIVATE_FIELDS}
 
     for entry in ground_truth:
-        filename: str = entry["file"]
-        pdf_path = CV_DIR / filename
-        if not pdf_path.exists():
-            print(f"[SKIP] {filename} not found in {CV_DIR}")
+        # ── Resolve PDF path (robust, không KeyError) ─────────────────────────
+        resolved = _resolve_pdf_path(entry)
+        if resolved is None:
+            # Log thân thiện: hiện các key có trong entry để debug
+            known_keys = list(entry.keys())
+            fallback_id = (
+                entry.get("file")
+                or entry.get("personnel_id")
+                or entry.get("org_id")
+                or "<unknown>"
+            )
+            print(f"[SKIP] Không tìm được PDF cho entry '{fallback_id}'. "
+                  f"Keys trong entry: {known_keys}. "
+                  f"PDF_DIR: {CV_DIR}")
             continue
 
-        # Parse PDF -> markdown text
+        filename, pdf_path = resolved
+
+        # Parse PDF → markdown text
         source_text = parse_to_markdown(pdf_path)
 
         # Extract via LLM pipeline
@@ -146,21 +233,15 @@ def main() -> None:
         result = extract_knowledge(source_text, file_hint=filename, target_role=None)
         elapsed = round(time.perf_counter() - t0, 3)
 
-        # Unwrap {record_type, data} envelope if present
+        # Unwrap {record_type, data} envelope nếu có
         predicted: dict = result.get("data", result) if isinstance(result, dict) else {}
 
         pub_pred  = predicted.get("public_data",  {}) or {}
         priv_pred = predicted.get("private_data", {}) or {}
 
         # Coverage
-        cov_pub  = _coverage(pub_pred,  PUBLIC_FIELDS)
-        priv_leaf_fields = []
-        for f in PRIVATE_FIELDS:
-            if "." in f:
-                priv_leaf_fields.append(f)   # keep dotted so _get_nested works on priv_pred
-            else:
-                priv_leaf_fields.append(f)
-        cov_priv = _coverage(priv_pred, priv_leaf_fields)
+        cov_pub  = _coverage(pub_pred, PUBLIC_FIELDS)
+        cov_priv = _coverage(priv_pred, PRIVATE_FIELDS)
 
         # Per-field tracking
         for f in PUBLIC_FIELDS:

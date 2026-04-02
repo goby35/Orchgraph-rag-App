@@ -34,7 +34,15 @@ class Settings:
 
     # --- Embedding ---
     EMBEDDING_MODEL: str = os.getenv("EMBEDDING_MODEL", "Alibaba-NLP/gte-multilingual-base")
-    EMBEDDING_MAX_TOKENS: int = 8192
+    EMBEDDING_MAX_TOKENS: int = 256
+
+    EMBEDDING_MODELS: list[str] = [
+        "vinai/phobert-base-v2",
+        "Alibaba-NLP/gte-multilingual-base",
+        "intfloat/multilingual-e5-base",
+        "BAAI/bge-m3",
+    ]
+    ACTIVE_EMBEDDING_MODEL: str = os.getenv("ACTIVE_EMBEDDING_MODEL", "Alibaba-NLP/gte-multilingual-base")
 
     # --- GTE ---
     GTE_MODEL: str = "sentence-transformers/all-MiniLM-L6-v2"
