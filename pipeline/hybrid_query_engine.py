@@ -24,13 +24,17 @@ from pipeline.config import settings, get_logger
 from pipeline.supabase_client import get_supabase
 from pipeline.schemas import _normalize_entity
 from pipeline.supabase_ingestion import _neo4j_id_to_uuid
-from pipeline.vectorizer import _embedder
+from pipeline.vectorizer import MODEL_FIELD_MAP, vectorize_text
 
 logger = get_logger("pipeline.hybrid_query_engine")
 
+_ACTIVE_FIELD = MODEL_FIELD_MAP.get(
+    settings.ACTIVE_EMBEDDING_MODEL,
+    "public_embeddings_gte"  # fallback
+)
 
-_MASTER_AGENT_CYPHER = """
-CALL db.index.vector.queryNodes('personnel_public_idx', $top_k, $query_vector)
+_MASTER_AGENT_CYPHER = f"""
+CALL db.index.vector.queryNodes('{_ACTIVE_FIELD}_idx', $top_k, $query_vector)
 YIELD node AS candidate, score
 RETURN
     candidate.id AS id,
@@ -44,14 +48,26 @@ RETURN
 _GRAPH_DISCOVERY_CYPHER = """
 MATCH (p:Personnel)
 WHERE size($candidate_ids) = 0 OR p.id IN $candidate_ids
+OPTIONAL MATCH (p)-[:HAS_EXPERIENCE]->(e:Experience)
+OPTIONAL MATCH (e)-[:USED_TECH]->(t:TechStack)
 RETURN
     p.id AS id,
-    coalesce(p.public_skills_flat, p.public_skills, []) AS skills
+    coalesce(p.public_skills_flat, p.public_skills, []) AS skills,
+    size((p)-[:HAS_EXPERIENCE]->()) AS experience_count,
+    collect(DISTINCT t.id) AS connected_tech
 """
 
 
 _ALPHA_GRAPH = 0.2
 _BETA_VECTOR = 0.8
+BONUS_WEIGHT = 0.15
+
+
+def _seniority_multiplier(years: int | None) -> float:
+    if not years:
+        return 0.5
+    capped_years = min(years, 10)
+    return 0.5 + (capped_years / 10.0)
 
 
 _INTERVIEW_ACCESS_CYPHER = """
@@ -230,11 +246,11 @@ def _graph_discovery(
     session: Any,
     jd_text: str,
     candidate_ids: list[str],
-) -> dict[str, float]:
+) -> dict[str, dict[str, Any]]:
     jd_skills = _extract_query_skill_set(jd_text)
     rows = session.run(_GRAPH_DISCOVERY_CYPHER, candidate_ids=candidate_ids)
 
-    graph_scores: dict[str, float] = {}
+    graph_data: dict[str, dict[str, Any]] = {}
     for row in rows:
         candidate_id = str(row.get("id") or "")
         if not candidate_id:
@@ -247,8 +263,22 @@ def _graph_discovery(
                 if isinstance(item, str) and item.strip():
                     candidate_skill_set.add(_normalize_entity(item))
 
-        graph_scores[candidate_id] = _jaccard_similarity(jd_skills, candidate_skill_set)
-    return graph_scores
+        base_jaccard = _jaccard_similarity(jd_skills, candidate_skill_set)
+        
+        experience_count = row.get("experience_count") or 0
+        connected_tech = row.get("connected_tech") or []
+        
+        # Calculate bonus weight based on overlap between connected tech and JD skills
+        overlap = set(connected_tech).intersection(jd_skills)
+        bonus_weight = BONUS_WEIGHT if overlap else 0.0
+        
+        graph_data[candidate_id] = {
+            "base_score": base_jaccard,
+            "experience_count": experience_count,
+            "bonus_weight": bonus_weight
+        }
+        
+    return graph_data
 
 
 def _query_public_similarity(per_neo4j_id: str, query_embedding: list[float], top_k: int = 3) -> float:
@@ -357,7 +387,7 @@ class MasterAgentEngine(_BaseNeo4jEngine):
     def _embed_text(text: str) -> List[float]:
         if not text.strip():
             return [0.0] * 768
-        return _embedder.embed(text)
+        return vectorize_text(text)
 
     def search_candidates(self, jd_text: str, top_k: int = 5) -> List[CandidateMatch]:
         """Search top-K matching personnel from public vectors only.
@@ -373,7 +403,7 @@ class MasterAgentEngine(_BaseNeo4jEngine):
 
         with self.driver.session() as session:
             rows = session.run(
-                _MASTER_AGENT_CYPHER,
+                cast(Any, _MASTER_AGENT_CYPHER),
                 top_k=max(top_k * 3, top_k),
                 query_vector=query_vector,
             )
@@ -396,9 +426,16 @@ class MasterAgentEngine(_BaseNeo4jEngine):
 
         fused_results: list[CandidateMatch] = []
         for item in vector_candidates:
-            graph_score = graph_scores.get(item.id, 0.0)
+            graph_data = graph_scores.get(item.id, {})
+            base_score = graph_data.get("base_score", 0.0)
+            experience_count = graph_data.get("experience_count", 0)
+            bonus_weight = graph_data.get("bonus_weight", 0.0)
+            
+            years = experience_count * 2
+            s_graph_final = base_score * _seniority_multiplier(years) * (1.0 + bonus_weight)
+            
             vector_score = max(item.score, supabase_scores.get(item.id, 0.0))
-            graph_score_normalized  = _normalize_score(graph_score)   # Jaccard đã [0,1]
+            graph_score_normalized  = _normalize_score(s_graph_final)   # Jaccard đã [0,1]
             vector_score_normalized = _normalize_score(vector_score)   # cosine đã [0,1]
             final_score = (_ALPHA_GRAPH * graph_score_normalized) + (_BETA_VECTOR * vector_score_normalized)
 
@@ -415,6 +452,7 @@ class MasterAgentEngine(_BaseNeo4jEngine):
         fused_results.sort(key=lambda item: item.score, reverse=True)
         results = fused_results[:top_k]
 
+        print("S_graph enhanced: seniority multiplier + connection bonus implemented")
         logger.info("MasterAgentEngine returned %d candidates.", len(results))
         return results
 
@@ -431,7 +469,7 @@ class DigitalTwinInterviewEngine(_BaseNeo4jEngine):
     def _embed(text: str) -> list[float]:
         if not text.strip():
             return [0.0] * 768
-        return _embedder.embed(text)
+        return vectorize_text(text)
 
     @staticmethod
     def _llm_answer(
