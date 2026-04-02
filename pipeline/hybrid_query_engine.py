@@ -47,7 +47,7 @@ RETURN
 
 _GRAPH_DISCOVERY_CYPHER = """
 MATCH (p:Personnel)
-WHERE size($candidate_ids) = 0 OR p.id IN $candidate_ids
+WHERE COUNT($candidate_ids) = 0 OR p.id IN $candidate_ids
 OPTIONAL MATCH (p)-[:HAS_EXPERIENCE]->(e:Experience)
 OPTIONAL MATCH (e)-[:USED_TECH]->(t:TechStack)
 RETURN
@@ -64,11 +64,31 @@ BONUS_WEIGHT = 0.15
 
 
 def _seniority_multiplier(years: int | None) -> float:
-    if not years:
+    if years is None:
+        return 1.0
+    if years <= 2:
         return 0.5
-    capped_years = min(years, 10)
-    return 0.5 + (capped_years / 10.0)
+    if years <= 5:
+        return 0.8
+    if years <= 9:
+        return 1.2
+    return 1.5
 
+def _connection_bonus(org_id: str, personnel_id: str, session: Any) -> float:
+    try:
+        result = session.run(
+            "MATCH (o:Organization {id: $org_id})-[r:CONNECTED_TO]->(p:Personnel {id: $per_id}) "
+            "RETURN r.status AS status",
+            org_id=org_id, per_id=personnel_id,
+        ).single()
+        if result is None:
+            return 0.0
+        status = str(result.get("status") or "").lower()
+        if status == "accepted": return 0.15
+        if status == "pending":  return 0.05
+        return 0.0
+    except Exception:
+        return 0.0
 
 _INTERVIEW_ACCESS_CYPHER = """
 MATCH (p:Personnel {id: $personnel_id})
