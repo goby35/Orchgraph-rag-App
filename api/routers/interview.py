@@ -23,6 +23,12 @@ class InterviewRequest(BaseModel):
     question: str
 
 
+def _normalize_contexts(value: Any) -> list[str]:
+    if not isinstance(value, list):
+        return []
+    return [str(item).strip() for item in value if str(item).strip()]
+
+
 @router.post("")
 async def interview(
     body: InterviewRequest,
@@ -36,8 +42,9 @@ async def interview(
         )
 
     if isinstance(response, dict):
+        response["contexts"] = _normalize_contexts(response.get("contexts"))
         return response
-    return {"answer": str(response), "is_private_mode": False}
+    return {"answer": str(response), "is_private_mode": False, "contexts": []}
 
 
 @router.websocket("/ws")
@@ -49,6 +56,9 @@ async def interview_ws(websocket: WebSocket) -> None:
         user = await get_current_user(
             HTTPAuthorizationCredentials(scheme="Bearer", credentials=token)
         )
+        session_id = str(data.get("session_id") or "").strip()
+        if not session_id:
+            raise HTTPException(422, "session_id la bat buoc")
 
         with DigitalTwinInterviewEngine() as engine:
             response = engine.answer_interview(
@@ -58,6 +68,7 @@ async def interview_ws(websocket: WebSocket) -> None:
             )
 
         answer = response.get("answer", "") if isinstance(response, dict) else str(response)
+        contexts = _normalize_contexts(response.get("contexts")) if isinstance(response, dict) else []
         for word in answer.split():
             await websocket.send_json({"chunk": word + " "})
 
@@ -69,6 +80,7 @@ async def interview_ws(websocket: WebSocket) -> None:
                 else False,
             }
         )
+        await websocket.send_json({"type": "contexts", "data": contexts})
     except WebSocketDisconnect:
         return
     except Exception as exc:

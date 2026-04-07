@@ -1,61 +1,54 @@
 "use client"
 
-import dagre from "@dagrejs/dagre"
-import { type MouseEvent, useCallback, useEffect, useMemo } from "react"
-import ReactFlow, {
-  Background,
-  Controls,
-  MiniMap,
-  useEdgesState,
-  useNodesState,
-  type Edge,
-  type Node,
-} from "reactflow"
+import { useEffect, useMemo, useRef, useState } from "react"
+import dynamic from "next/dynamic"
 
-import "reactflow/dist/style.css"
+const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
+  ssr: false,
+})
 
-import type { OrgNodeData, PersonnelNodeData } from "@/types"
+type GraphNodeType = "personnel" | "org" | "skill" | string
 
-import OrgNode from "./OrgNode"
-import PersonnelNode from "./PersonnelNode"
-
-const nodeTypes = {
-  personnel: PersonnelNode,
-  org: OrgNode,
+export interface GraphNodeData {
+  label: string
+  type: GraphNodeType
+  summary?: string
+  skills?: string[]
+  availability?: boolean
+  industry?: string
+  [key: string]: unknown
 }
 
-function applyDagreLayout(nodes: Node[], edges: Edge[]): Node[] {
-  const g = new dagre.graphlib.Graph()
-  g.setDefaultEdgeLabel(() => ({}))
-  g.setGraph({ rankdir: "LR", nodesep: 60, ranksep: 100 })
-
-  nodes.forEach((n) => {
-    const w = n.type === "org" ? 120 : 80
-    const h = n.type === "org" ? 52 : 80
-    g.setNode(n.id, { width: w, height: h })
-  })
-  edges.forEach((e) => {
-    g.setEdge(e.source, e.target)
-  })
-  dagre.layout(g)
-
-  return nodes.map((n) => {
-    const pos = g.node(n.id) as { x: number; y: number } | undefined
-    const w = n.type === "org" ? 120 : 80
-    const h = n.type === "org" ? 52 : 80
-    if (!pos) return { ...n, position: { x: 0, y: 0 } }
-    return {
-      ...n,
-      position: { x: pos.x - w / 2, y: pos.y - h / 2 },
-    }
-  })
+export interface GraphNode {
+  id: string
+  label: string
+  type: GraphNodeType
+  data: GraphNodeData
+  x?: number
+  y?: number
+  vx?: number
+  vy?: number
 }
+
+export interface GraphLink {
+  id: string
+  source: string | GraphNode
+  target: string | GraphNode
+  label?: string
+}
+
+export interface GraphData {
+  nodes: GraphNode[]
+  links: GraphLink[]
+}
+
+export type GraphNodeSelection = GraphNode
 
 function buildAcceptedPersonnelSet(edgesRaw: unknown[]): Set<string> {
   const set = new Set<string>()
-  for (const e of edgesRaw) {
-    if (!e || typeof e !== "object") continue
-    const edge = e as Record<string, unknown>
+  for (const edgeRaw of edgesRaw) {
+    if (!edgeRaw || typeof edgeRaw !== "object") continue
+    const edge = edgeRaw as Record<string, unknown>
     if (String(edge.label) === "accepted" && edge.target != null) {
       set.add(String(edge.target))
     }
@@ -63,128 +56,234 @@ function buildAcceptedPersonnelSet(edgesRaw: unknown[]): Set<string> {
   return set
 }
 
-/** Khớp GET /graph (Neo4j → JSON `nodes` / `edges`). */
-export function transformGraphData(raw: unknown): {
-  nodes: Node[]
-  edges: Edge[]
-} {
-  if (!raw || typeof raw !== "object") return { nodes: [], edges: [] }
+export function transformGraphData(raw: unknown): GraphData {
+  if (!raw || typeof raw !== "object") return { nodes: [], links: [] }
+
   const data = raw as Record<string, unknown>
-  const nodesRaw = (data.nodes as unknown[]) ?? []
-  const edgesRaw = (data.edges as unknown[]) ?? []
+  const nodesRaw = Array.isArray(data.nodes) ? data.nodes : []
+  const edgesRaw = Array.isArray(data.edges)
+    ? data.edges
+    : Array.isArray(data.links)
+      ? data.links
+      : []
 
   const accepted = buildAcceptedPersonnelSet(edgesRaw)
 
-  const rfNodes: Node[] = nodesRaw.map((n) => {
-    const node = n as Record<string, unknown>
+  const nodes: GraphNode[] = nodesRaw.map((rawNode) => {
+    const node = rawNode as Record<string, unknown>
     const id = String(node.id ?? "")
-    const nType = String(node.type ?? "")
+    const nodeType = String(node.type ?? "") as GraphNodeType
     const inner = (node.data as Record<string, unknown>) ?? {}
-    const label = String(inner.label ?? id)
+    const personnelFullName =
+      typeof inner.public_full_name === "string"
+        ? inner.public_full_name
+        : typeof inner.full_name === "string"
+          ? inner.full_name
+          : undefined
+    const label = String(
+      nodeType === "personnel"
+        ? personnelFullName ?? inner.label ?? node.label ?? id
+        : inner.label ?? node.label ?? id,
+    )
+    const summary =
+      typeof inner.summary === "string"
+        ? inner.summary
+        : typeof inner.professional_summary === "string"
+          ? inner.professional_summary
+          : typeof inner.public_professional_summary === "string"
+            ? inner.public_professional_summary
+            : undefined
+    const skills = Array.isArray(inner.skills)
+      ? inner.skills.map(String)
+      : []
 
-    if (nType === "org") {
-      const nodeData: OrgNodeData = {
-        id,
-        label,
-        industry:
-          typeof inner.industry === "string" ? inner.industry : undefined,
-      }
-      return {
-        id,
-        type: "org",
-        position: { x: 0, y: 0 },
-        data: nodeData,
-      }
-    }
-
-    const nodeData: PersonnelNodeData = {
+    return {
       id,
       label,
-      availability: accepted.has(id),
-      summary: undefined,
-      skills: undefined,
-    }
-    return {
-      id,
-      type: "personnel",
-      position: { x: 0, y: 0 },
-      data: nodeData,
-    }
-  })
-
-  const rfEdges: Edge[] = edgesRaw.map((e, i) => {
-    const edge = e as Record<string, unknown>
-    const stroke =
-      edge.style &&
-      typeof edge.style === "object" &&
-      edge.style !== null &&
-      "stroke" in edge.style
-        ? String((edge.style as { stroke?: string }).stroke ?? "#94a3b8")
-        : "#94a3b8"
-    return {
-      id: String(edge.id ?? `e-${i}`),
-      source: String(edge.source ?? ""),
-      target: String(edge.target ?? ""),
-      label: String(edge.label ?? ""),
-      type: "smoothstep",
-      style: { stroke },
+      type: nodeType,
+      data: {
+        label,
+        type: nodeType,
+        public_full_name:
+          personnelFullName,
+        summary,
+        skills,
+        availability: accepted.has(id),
+        industry:
+          typeof inner.industry === "string" ? inner.industry : undefined,
+      },
     }
   })
 
-  const laidOut = applyDagreLayout(rfNodes, rfEdges)
-  return { nodes: laidOut, edges: rfEdges }
+  const links: GraphLink[] = edgesRaw.map((rawLink, index) => {
+    const link = rawLink as Record<string, unknown>
+    return {
+      id: String(link.id ?? `link-${index}`),
+      source: String(link.source ?? ""),
+      target: String(link.target ?? ""),
+      label: String(link.label ?? ""),
+    }
+  })
+
+  return { nodes, links }
 }
 
-export interface GraphNodeSelection {
-  id: string
-  type: "personnel" | "org"
-  data: PersonnelNodeData | OrgNodeData
+function useElementSize<T extends HTMLElement>() {
+  const ref = useRef<T | null>(null)
+  const [size, setSize] = useState({ width: 0, height: 0 })
+
+  useEffect(() => {
+    const element = ref.current
+    if (!element) return
+
+    const update = () => {
+      setSize({
+        width: element.clientWidth,
+        height: element.clientHeight,
+      })
+    }
+
+    update()
+
+    const observer = new ResizeObserver(() => {
+      update()
+    })
+    observer.observe(element)
+
+    return () => {
+      observer.disconnect()
+    }
+  }, [])
+
+  return { ref, size }
+}
+
+function initialsFromLabel(label: string): string {
+  const parts = label.trim().split(/\s+/).filter(Boolean)
+  if (parts.length >= 2) {
+    const first = parts[0]?.[0]
+    const last = parts[parts.length - 1]?.[0]
+    return `${first ?? ""}${last ?? ""}`.toUpperCase() || "?"
+  }
+  if (parts.length === 1 && parts[0].length >= 2) {
+    return parts[0].slice(0, 2).toUpperCase()
+  }
+  return parts[0]?.[0]?.toUpperCase() ?? "?"
+}
+
+function nodeRadius(type: GraphNodeType): number {
+  if (type === "personnel") return 8
+  if (type === "org") return 6
+  if (type === "skill") return 3
+  return 5
+}
+
+function nodeColor(type: GraphNodeType): string {
+  if (type === "personnel") return "#1D9E75"
+  if (type === "org") return "#534AB7"
+  if (type === "skill") return "#BA7517"
+  return "#6B7280"
 }
 
 interface GraphCanvasProps {
-  data: unknown
+  graphData: GraphData
   onNodeClick?: (sel: GraphNodeSelection) => void
+  onBackgroundClick?: () => void
+  selectedNodeId?: string | null
 }
 
-export default function GraphCanvas({ data, onNodeClick }: GraphCanvasProps) {
-  const transformed = useMemo(() => transformGraphData(data), [data])
-  const [nodes, setNodes, onNodesChange] = useNodesState(transformed.nodes)
-  const [edges, setEdges, onEdgesChange] = useEdgesState(transformed.edges)
+export default function GraphCanvas({
+  graphData,
+  onNodeClick,
+  onBackgroundClick,
+  selectedNodeId,
+}: GraphCanvasProps) {
+  const graphRef = useRef<{ zoomToFit: (ms?: number, padding?: number) => void } | null>(null)
+  const { ref, size } = useElementSize<HTMLDivElement>()
 
   useEffect(() => {
-    setNodes(transformed.nodes)
-    setEdges(transformed.edges)
-  }, [transformed.nodes, transformed.edges, setNodes, setEdges])
+    if (!graphRef.current || size.width === 0 || size.height === 0) return
+    if (graphData.nodes.length === 0) return
 
-  const handleNodeClick = useCallback(
-    (_: MouseEvent, node: Node) => {
-      const t = node.type
-      if (t !== "personnel" && t !== "org") return
-      const d = node.data as PersonnelNodeData | OrgNodeData
-      onNodeClick?.({ id: node.id, type: t, data: d })
-    },
-    [onNodeClick],
+    const timer = window.setTimeout(() => {
+      graphRef.current?.zoomToFit(450, 48)
+    }, 0)
+
+    return () => window.clearTimeout(timer)
+  }, [graphData.nodes.length, size.height, size.width])
+
+  const nodeCanvasObject = useMemo(
+    () =>
+      (
+        node: GraphNode,
+        ctx: CanvasRenderingContext2D,
+        globalScale: number,
+      ) => {
+        const radius = nodeRadius(node.type)
+        const isSelected = node.id === selectedNodeId
+
+        ctx.save()
+        ctx.beginPath()
+        ctx.arc(node.x ?? 0, node.y ?? 0, radius, 0, Math.PI * 2)
+        ctx.fillStyle = nodeColor(node.type)
+        ctx.fill()
+
+        if (isSelected) {
+          ctx.lineWidth = Math.max(2, 3 / globalScale)
+          ctx.strokeStyle = "rgba(255,255,255,0.95)"
+          ctx.stroke()
+        }
+
+        if (node.type !== "skill" && radius >= 6) {
+          ctx.fillStyle = "#FFFFFF"
+          ctx.font = `${Math.max(8, radius * 0.85) / globalScale}px ui-sans-serif, system-ui, sans-serif`
+          ctx.textAlign = "center"
+          ctx.textBaseline = "middle"
+          ctx.fillText(initialsFromLabel(node.label), node.x ?? 0, node.y ?? 0)
+        }
+
+        ctx.restore()
+      },
+    [selectedNodeId],
   )
 
   return (
-    <div className="border-input h-[min(70vh,600px)] w-full overflow-hidden rounded-lg border">
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        nodeTypes={nodeTypes}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onNodeClick={handleNodeClick}
-        fitView
-        attributionPosition="bottom-right"
-      >
-        <Background />
-        <Controls />
-        <MiniMap
-          nodeColor={(n) => (n.type === "org" ? "#93c5fd" : "#86efac")}
-          maskColor="rgb(0 0 0 / 12%)"
+    <div
+      ref={ref}
+      className="border-input bg-card/40 relative h-[min(70vh,600px)] w-full overflow-hidden rounded-lg border"
+    >
+      {size.width === 0 || size.height === 0 ? null : (
+        <ForceGraph2D
+          ref={graphRef}
+          width={size.width}
+          height={size.height}
+          graphData={graphData}
+          backgroundColor="transparent"
+          nodeLabel={(node) => node.label}
+          nodeRelSize={1}
+          nodeVal={(node) => nodeRadius(node.type)}
+          nodeColor={(node) => nodeColor(node.type)}
+          linkColor={() => "#88878099"}
+          linkWidth={1.2}
+          nodeCanvasObject={nodeCanvasObject}
+          nodeCanvasObjectMode={() => "replace"}
+          onNodeClick={(node: GraphNode) => {
+            onNodeClick?.(node)
+          }}
+          onBackgroundClick={() => {
+            onBackgroundClick?.()
+          }}
+          enableNodeDrag
+          cooldownTicks={120}
+          d3VelocityDecay={0.25}
         />
-      </ReactFlow>
+      )}
+
+      {graphData.nodes.length === 0 ? (
+        <div className="text-muted-foreground pointer-events-none absolute inset-0 flex items-center justify-center text-sm">
+          Chưa có node quan hệ trực tiếp.
+        </div>
+      ) : null}
     </div>
   )
 }

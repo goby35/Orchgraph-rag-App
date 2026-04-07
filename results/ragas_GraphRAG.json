@@ -1,0 +1,22 @@
+{
+  "config": {
+    "name": "GraphRAG",
+    "alpha": 1.0,
+    "beta": 0.0,
+    "graph_mode": "jaccard_only"
+  },
+  "dataset": "data_eval/qa_dataset.json",
+  "judge": {
+    "model": "gpt-4o-mini",
+    "temperature": 0
+  },
+  "runtime_seconds": 610.204,
+  "num_samples": 26,
+  "metrics": {
+    "faithfulness": 0.8832667332667333,
+    "answer_relevancy": 0.6761344016317926,
+    "context_precision": 0.9166666665916666,
+    "context_recall": 0.9615384615384616,
+    "answer_correctness": 0.7052100988274673
+  }
+}

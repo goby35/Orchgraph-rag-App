@@ -1,19 +1,33 @@
 'use client'
-import { use, useState }       from 'react'
+import { use, useMemo, useState }       from 'react'
+import { useSearchParams } from 'next/navigation'
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast }               from "sonner"
-import { useAuthStore }        from '@/store/auth.store'
 import ChatWindow              from '@/components/chat/ChatWindow'
 import BookingModal            from '@/components/scheduling/BookingModal'
 import ConnectionStatusBadge   from '@/components/chat/ConnectionStatusBadge'
 import { getConnectionStatus, sendInterviewRequest, getPersonnelProfile } from "@/lib/api/interview"
 import type { ConnectionStatus } from "@/lib/api/interview"
+import { getSessionFitSummary } from "@/lib/api/chat"
+import { useAuthStore } from '@/store/auth.store'
 import { cn }                  from '@/lib/utils'
 
 export default function InterviewPage({ params }: { params: Promise<{ per_id: string }> }) {
   const { per_id }      = use(params)
+  const searchParams = useSearchParams()
   const [bookingOpen, setBookingOpen] = useState(false)
+  const [activeSessionId, setActiveSessionId] = useState<string | null>(null)
   const queryClient     = useQueryClient()
+  const orgNeoId = useAuthStore((s) => s.neoId) ?? ""
+
+  const rawJobTitle = searchParams.get('jobTitle')?.trim() ?? ''
+  const requestedSessionId = searchParams.get('sessionId')
+  const shouldCreateSession = requestedSessionId === 'new'
+  const requestedSessionIdOrNull = requestedSessionId && requestedSessionId !== "new"
+    ? requestedSessionId
+    : null
+
+  const targetSessionId = activeSessionId || requestedSessionIdOrNull
 
   // Personnel profile
   const { data: profileData } = useQuery({
@@ -23,6 +37,13 @@ export default function InterviewPage({ params }: { params: Promise<{ per_id: st
   })
 
   const displayName = profileData?.name ?? per_id
+  const jobTitle = rawJobTitle || 'Vị trí chưa xác định'
+  const headerTitle = `Phỏng vấn ${displayName} · ${jobTitle}`
+  const subtitle = `Digital Twin Interview · ${new Date().toLocaleDateString('vi-VN', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  })}`
   const initials    = displayName
     .split(" ")
     .filter(Boolean)
@@ -38,6 +59,22 @@ export default function InterviewPage({ params }: { params: Promise<{ per_id: st
     staleTime: 30_000,
   })
   const connectionStatus: ConnectionStatus = connData?.status ?? null
+
+  const fitSummaryQuery = useQuery({
+    queryKey: ["session-fit-summary", orgNeoId, targetSessionId],
+    queryFn: () => getSessionFitSummary(orgNeoId, targetSessionId as string),
+    enabled: Boolean(orgNeoId && targetSessionId),
+    staleTime: 5 * 60 * 1000,
+  })
+
+  const fitSummaryText = useMemo(() => {
+    const text = fitSummaryQuery.data?.fit_summary?.trim()
+    if (text) return text
+    if (!targetSessionId) {
+      return "Summary phù hợp JD sẽ xuất hiện ở đây sau khi phiên phỏng vấn được tạo."
+    }
+    return "Chưa đủ dữ liệu để tạo diễn giải mức độ phù hợp cho phiên này."
+  }, [fitSummaryQuery.data?.fit_summary, targetSessionId])
 
   // Gửi lời mời
   const requestMut = useMutation({
@@ -63,6 +100,15 @@ export default function InterviewPage({ params }: { params: Promise<{ per_id: st
         <div className="flex flex-col items-center gap-2">
           <p className="text-sm font-medium">{displayName}</p>
           <ConnectionStatusBadge status={connectionStatus} />
+        </div>
+
+        <div className="rounded-md border bg-muted/30 p-3">
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+            LLM Fit Summary
+          </p>
+          <p className="mt-1 text-xs leading-5 text-foreground/90">
+            {fitSummaryQuery.isLoading ? "Đang phân tích mức độ phù hợp..." : fitSummaryText}
+          </p>
         </div>
 
         {/* Nút mời phỏng vấn */}
@@ -105,6 +151,12 @@ export default function InterviewPage({ params }: { params: Promise<{ per_id: st
       <div className="flex-1 border rounded-lg overflow-hidden">
         <ChatWindow
           perNeoId={per_id}
+          title={headerTitle}
+          subtitle={subtitle}
+          requestedSessionId={requestedSessionId}
+          createSessionOnMount={shouldCreateSession}
+          initialJobTitle={rawJobTitle}
+          onSessionResolved={setActiveSessionId}
           onBookInterview={
             connectionStatus === "accepted"
               ? () => setBookingOpen(true)

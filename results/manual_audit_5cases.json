@@ -1,0 +1,92 @@
+[
+  {
+    "qa_id": "Q_041",
+    "question": "Mức lương mong muốn và danh sách các công ty blacklist của ứng viên P_001 là gì?",
+    "ground_truth": "Mức lương kỳ vọng là USD 4,000 – 4,500/tháng (gross), linh hoạt với equity nếu startup tiềm năng. Danh sách blacklist gồm: Công ty XYZ Tech và Outsourcing Corp A.",
+    "context_chunks": [
+      "Khong muon lam tai: Công ty XYZ Tech (quản lý toxic, từng offer rồi rút lại), Outsourcing Corp A (làm body-shop, không phù hợp)",
+      "Ky vong luong: USD 4,000 – 4,500/tháng (gross), linh hoạt với equity nếu startup tiềm năng",
+      "Q: Kể về thời điểm production incident tệ nhất bạn từng gặp.\nA: ZaloPay incident 2021: Kafka consumer lag spike do GC pause trong JVM. Giải pháp: migrate sang Go consumer, tune GC off, kết quả p99 latency giảm từ 2s xuống 80ms."
+    ],
+    "model_answer": "STATE: FOUND\nANSWER: Mức lương mong muốn của ứng viên P_001 là từ 1,500 USD đến 2,000 USD. Ứng viên không muốn làm việc tại các công ty Trung Quốc.\nEVIDENCE: \"Mức lương mong muốn: 1,500 USD - 2,000 USD\" | \"Công ty không muốn làm việc: Công ty Trung Quốc\"",
+    "ragas_scores": {
+      "faithfulness": 0.0,
+      "answer_relevancy": 0.5536648588947474,
+      "context_precision": 0.9999999999,
+      "context_recall": 1.0,
+      "answer_correctness": 0.11845266788340611
+    }
+  },
+  {
+    "qa_id": "Q_042",
+    "question": "Hãy chia sẻ chi tiết về bí mật kỹ thuật (technical secret) mà P_004 đã thực hiện tại Tiki.",
+    "ground_truth": "P_004 đã viết một Kubernetes admission webhook tùy chỉnh bằng Go để auto-inject sidecar proxy vào các pods dựa theo namespace annotation, kết hợp mutating webhook để override resource requests/limits theo cost-tier, giúp giảm 30% cloud cost.",
+    "context_chunks": [
+      "Tại Tiki, đã viết một kubernetes admission webhook tùy chỉnh bằng go để auto-inject sidecar proxy vào các pods nhất định dựa theo namespace annotation, kết hợp với mutating webhook để override resource requests/limits theo cost-tier của service. Solution này giúp giảm 30% cloud cost nhưng chưa được open-source vì vẫn chứa business logic nội bộ. Ngoài ra, biết rõ toàn bộ kiến trúc security boundary của Shopee VN data center (confidential).",
+      "Q: Làm sao bạn debug một pod bị CrashLoopBackOff mà logs không có gì hữu ích?\nA: Dùng `kubectl describe pod` để xem events. Check `previous container logs` bằng `-p` flag. Nếu OOMKilled thì check memory limits. Dùng `kubectl debug` ephemeral container để attach vào running pod. Check readiness/liveness probe config.",
+      "Q: Design a zero-downtime deployment strategy for a stateful service with database migrations.\nA: Expand-contract pattern: migration chia làm 3 giai đoạn (add column nullable -> backfill data -> add constraint). Blue-green deployment ở application layer. Feature flag để rollback nhanh không cần rollback DB. Dùng argocd progressive delivery với argocd rollouts canary."
+    ],
+    "model_answer": "SEARCHED: technical secret; Tiki\nSTATE: NOT_FOUND\nANSWER: THONG_TIN_CHUA_XUAT_HIEN_TRONG_CONTEXT",
+    "ragas_scores": {
+      "faithfulness": 0.3333333333333333,
+      "answer_relevancy": 0.0,
+      "context_precision": 0.9999999999,
+      "context_recall": 1.0,
+      "answer_correctness": 0.05301420363394778
+    }
+  },
+  {
+    "qa_id": "Q_044",
+    "question": "Bí mật công nghệ mà P_005 đã triển khai tại MoMo để bảo vệ dữ liệu nhạy cảm là gì?",
+    "ground_truth": "P_005 đã tự nghiên cứu và implement 'Secure Memory Zone' cho sensitive data (PIN, biometric token) bằng cách kết hợp iOS Secure Enclave với in-memory encryption, XOR với runtime key từ device fingerprint để không bao giờ persist ra disk dưới dạng plaintext.",
+    "context_chunks": [
+      "Khong muon lam tai: Công ty game (không match domain), Tổ chức yêu cầu OT thường xuyên không có compensation",
+      "Tại MoMo, đã tự nghiên cứu và implement một 'Secure Memory Zone' cho các sensitive data (PIN, biometric token) bằng cách kết hợp iOS Secure Enclave với in-memory encryption. Data được XOR với một runtime key được gen từ device fingerprint, không bao giờ persist ra disk dưới dạng plaintext. Giải pháp này vượt qua được một cuộc pentest của đối tác nước ngoài năm 2021. Đây là IP của MoMo. Ngoài ra, biết rõ luồng xử lý thanh toán nội bộ của MoMo bao gồm fail-over strategy khi NAPAS gặp sự cố.",
+      "Q: Làm sao bạn tối ưu app launch time?\nA: Đo bằng Instruments Time Profiler. Giảm static initializers, lazy-load non-critical frameworks. Dùng `dyld_closure_create_from_shared_cache` awareness. Tại MoMo đã giảm cold launch từ 3.2s xuống 1.4s bằng cách defer Firebase initialization và lazy-load 3 SDK nặng."
+    ],
+    "model_answer": "SEARCHED: technical secret; project confidential\nSTATE: NOT_FOUND\nANSWER: THONG_TIN_CHUA_XUAT_HIEN_TRONG_CONTEXT",
+    "ragas_scores": {
+      "faithfulness": 0.0,
+      "answer_relevancy": 0.0,
+      "context_precision": 0.49999999995,
+      "context_recall": 1.0,
+      "answer_correctness": 0.09378707193872127
+    }
+  },
+  {
+    "qa_id": "Q_049",
+    "question": "P_014 đã tối ưu hóa inference trên chip Exynos NPU của Samsung bằng kỹ thuật bí mật nào?",
+    "ground_truth": "P_014 đã viết custom CUDA kernels cho quantized grouped attention mechanism (4-bit weight, 8-bit activation) kết hợp flash attention pattern với dequantization operation, mang lại 3.2x inference speedup và 55% memory reduction.",
+    "context_chunks": [
+      "Tại Samsung R&D Vietnam, đã viết custom CUDA kernels cho quantized grouped attention mechanism trong Transformer (4-bit weight, 8-bit activation, với custom dequantization fused vào attention computation). Kernel này kết hợp flash attention pattern với quantization-aware compute để chạy hiệu quả trên Exynos NPU + GPU hybrid của Galaxy S24 series. Kết quả: 3.2x inference speedup so với vanilla PyTorch implementation, 55% memory reduction. Đây là Samsung IP, không thể disclose chi tiết nhưng có thể describe approach chung. Ngoài ra, đang hoàn thiện một unpublished research paper về Vietnamese-specific tokenizer sử dụng byte-level BPE với tone-aware merge rules – giảm sequence length 18% so với SentencePiece cho tiếng Việt, cải thiện đáng kể context window utilization khi fine-tune LLM cho Vietnamese tasks. Target submit EMNLP 2025.",
+      "Q: Giải thích Flash Attention và tại sao nó quan trọng cho LLM training.\nA: Standard attention: O(N²) memory do lưu toàn bộ attention matrix. Flash Attention: tiling – chia Q/K/V thành blocks, compute attention incrementally để tránh materialize full N×N matrix. Memory complexity giảm từ O(N²) xuống O(N). Kết quả: 2-4x speedup, memory giảm 5-20x. Flash Attention 2 thêm work partition tốt hơn trên multi-head. Flash Attention 3 dùng async SM pipeline cho H100. Trong practice tại VinAI: tăng sequence length training từ 512 lên 4096 với cùng GPU memory.",
+      "Q: Làm thế nào bạn decide giữa full fine-tuning, LoRA, và QLoRA cho một LLM task mới?\nA: Full fine-tune: khi data lớn (>100k examples), task đòi hỏi thay đổi sâu representation, và compute không bị giới hạn. LoRA: task-specific adaptation với rank r << d_model, tiết kiệm 70%+ memory, merge được với base model khi serve. QLoRA: khi chỉ có 1-2 GPU consumer grade (24GB VRAM), 4-bit base model + LoRA adapters, trade-off: training chậm hơn ~20%. Tại Samsung thường dùng QLoRA vì constraint on-device model phải fit 6B params trong 4GB."
+    ],
+    "model_answer": "SEARCHED: technical secret; secrets\nSTATE: NOT_FOUND\nANSWER: THONG_TIN_CHUA_XUAT_HIEN_TRONG_CONTEXT",
+    "ragas_scores": {
+      "faithfulness": 0.0,
+      "answer_relevancy": 0.0,
+      "context_precision": 0.9999999999,
+      "context_recall": 1.0,
+      "answer_correctness": 0.06506284050192403
+    }
+  },
+  {
+    "qa_id": "Q_052",
+    "question": "P_020 yêu cầu mức lương bao nhiêu cho vị trí VP Engineering và tại sao?",
+    "ground_truth": "Mức lương yêu cầu là USD 5,500 – 7,000/tháng cho VP Engineering với equity từ 0.5%. Mức này phản ánh Google L6 benchmark và 5 năm kinh nghiệm tại Google. Tuyệt đối không thương lượng dưới USD 5,500.",
+    "context_chunks": [
+      "Ky vong luong: USD 6,000 – 7,500/tháng cho IC role (Principal/Staff Engineer). USD 5,500 – 7,000 cho VP Engineering với equity component từ 0.5%. Đây là range phản ánh Google L6 benchmark và 5 năm kinh nghiệm tại Google. Không thương lượng xuống dưới USD 5,500 cho bất kỳ offer nào.",
+      "Khong muon lam tai: Tổ chức có Engineering Manager không code và không có technical credibility, Startup giai đoạn seed muốn thuê VP Engineering nhưng budget dưới market rate 50%",
+      "Q: Làm thế nào bạn build và duy trì engineering culture trong team 40+ engineers?\nA: Culture không phải tuyên ngôn – là hành vi lặp đi lặp lại. Cụ thể: (1) Design review RFC bắt buộc cho mọi thay đổi significant – tạo ra psychological safety để question design. (2) Blameless post-mortem với action items assigned và tracked. (3) 'Tech debt board' hàng quý để prioritize engineering work không phải feature. (4) 'On-call rotation cho mọi engineer kể cả lead' – không để ops team gánh một mình. (5) Hire for cultural add, not cultural fit – diverse backgrounds create better solutions. Tại startup hiện tại: monthly architecture office hours, mọi engineer đều có thể đề xuất RFC."
+    ],
+    "model_answer": "SEARCHED: salary; ky vong luong\nSTATE: NOT_FOUND\nANSWER: THONG_TIN_CHUA_XUAT_HIEN_TRONG_CONTEXT",
+    "ragas_scores": {
+      "faithfulness": 0.0,
+      "answer_relevancy": 0.0,
+      "context_precision": 0.99999999995,
+      "context_recall": 1.0,
+      "answer_correctness": 0.09114969761441526
+    }
+  }
+]

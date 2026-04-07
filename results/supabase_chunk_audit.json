@@ -1,0 +1,1360 @@
+{
+  "summary": {
+    "input_files": [
+      "orgs_batch1to20.json",
+      "personnel_batch1.json",
+      "personnel_batch2.json",
+      "personnel_batch3.json",
+      "personnel_batch4.json",
+      "personnel_batch5.json",
+      "personnel_batch6.json",
+      "personnel_batch7to10.json",
+      "personnel_p051_p053_org021.json"
+    ],
+    "source_personnel_count": 53,
+    "source_org_count": 21,
+    "supabase_users_count": 77,
+    "supabase_document_chunks_count": 684,
+    "input_users_absent_in_vdme_users": 0,
+    "users_with_no_chunks": 0,
+    "users_with_missing_sections": 46
+  },
+  "input_users_absent_in_vdme_users": [],
+  "users_with_no_chunks": [],
+  "users_with_missing_sections": [
+    {
+      "personnel_id": "P_003",
+      "user_uuid": "0207f063-ffa6-587d-b3f6-04447ddbeaa0",
+      "missing_sections": {
+        "blacklist": {
+          "expected": 1,
+          "actual": 0
+        }
+      },
+      "actual_section_counts": {
+        "summary": 1,
+        "experience": 3,
+        "interview_history": 3,
+        "skills": 1,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1
+      },
+      "expected_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 3,
+        "blacklist": 1
+      }
+    },
+    {
+      "personnel_id": "P_004",
+      "user_uuid": "7a714755-35f9-5472-a46a-75c693cf2263",
+      "missing_sections": {
+        "blacklist": {
+          "expected": 1,
+          "actual": 0
+        }
+      },
+      "actual_section_counts": {
+        "summary": 1,
+        "interview_history": 3,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1
+      },
+      "expected_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 3,
+        "blacklist": 1
+      }
+    },
+    {
+      "personnel_id": "P_006",
+      "user_uuid": "7156f97b-08d7-589b-825a-a8df8443b84e",
+      "missing_sections": {
+        "blacklist": {
+          "expected": 1,
+          "actual": 0
+        }
+      },
+      "actual_section_counts": {
+        "skills": 1,
+        "experience": 3,
+        "education": 2,
+        "salary": 1,
+        "interview_history": 3,
+        "summary": 1,
+        "secrets": 1
+      },
+      "expected_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 2,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 3,
+        "blacklist": 1
+      }
+    },
+    {
+      "personnel_id": "P_007",
+      "user_uuid": "28fc59c2-7152-5394-afc1-446ac0cfc517",
+      "missing_sections": {
+        "blacklist": {
+          "expected": 1,
+          "actual": 0
+        }
+      },
+      "actual_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "salary": 1,
+        "interview_history": 3,
+        "secrets": 1
+      },
+      "expected_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 3,
+        "blacklist": 1
+      }
+    },
+    {
+      "personnel_id": "P_008",
+      "user_uuid": "d049e9bb-000d-537b-a87b-8510e21a26aa",
+      "missing_sections": {
+        "blacklist": {
+          "expected": 1,
+          "actual": 0
+        }
+      },
+      "actual_section_counts": {
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 3,
+        "summary": 1
+      },
+      "expected_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 3,
+        "blacklist": 1
+      }
+    },
+    {
+      "personnel_id": "P_009",
+      "user_uuid": "b82040ca-2488-5fea-bf53-563030480164",
+      "missing_sections": {
+        "blacklist": {
+          "expected": 1,
+          "actual": 0
+        }
+      },
+      "actual_section_counts": {
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "salary": 1,
+        "interview_history": 3,
+        "summary": 1,
+        "secrets": 1
+      },
+      "expected_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 3,
+        "blacklist": 1
+      }
+    },
+    {
+      "personnel_id": "P_010",
+      "user_uuid": "dc09b92b-a10b-596d-946e-eb565441e906",
+      "missing_sections": {
+        "blacklist": {
+          "expected": 1,
+          "actual": 0
+        }
+      },
+      "actual_section_counts": {
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 3,
+        "summary": 1
+      },
+      "expected_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 3,
+        "blacklist": 1
+      }
+    },
+    {
+      "personnel_id": "P_011",
+      "user_uuid": "9774b65a-645b-5aef-be08-8249f809b95e",
+      "missing_sections": {
+        "blacklist": {
+          "expected": 1,
+          "actual": 0
+        }
+      },
+      "actual_section_counts": {
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "salary": 1,
+        "interview_history": 3,
+        "summary": 1,
+        "secrets": 1
+      },
+      "expected_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 3,
+        "blacklist": 1
+      }
+    },
+    {
+      "personnel_id": "P_012",
+      "user_uuid": "3c0c0b80-9007-59df-9517-5e8627ec629e",
+      "missing_sections": {
+        "blacklist": {
+          "expected": 1,
+          "actual": 0
+        }
+      },
+      "actual_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "salary": 1,
+        "interview_history": 3,
+        "secrets": 1
+      },
+      "expected_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 3,
+        "blacklist": 1
+      }
+    },
+    {
+      "personnel_id": "P_013",
+      "user_uuid": "b40dba17-d64d-54bf-b962-3294171a9002",
+      "missing_sections": {
+        "blacklist": {
+          "expected": 1,
+          "actual": 0
+        }
+      },
+      "actual_section_counts": {
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 3,
+        "summary": 1
+      },
+      "expected_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 3,
+        "blacklist": 1
+      }
+    },
+    {
+      "personnel_id": "P_014",
+      "user_uuid": "5fc8406f-ed63-5c97-b270-cb03a8cd0363",
+      "missing_sections": {
+        "blacklist": {
+          "expected": 1,
+          "actual": 0
+        }
+      },
+      "actual_section_counts": {
+        "experience": 3,
+        "education": 1,
+        "salary": 1,
+        "interview_history": 3,
+        "secrets": 1,
+        "summary": 1,
+        "skills": 1
+      },
+      "expected_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 3,
+        "blacklist": 1
+      }
+    },
+    {
+      "personnel_id": "P_015",
+      "user_uuid": "b1970eed-27cb-5139-b878-964ba3efba8e",
+      "missing_sections": {
+        "blacklist": {
+          "expected": 1,
+          "actual": 0
+        }
+      },
+      "actual_section_counts": {
+        "interview_history": 3,
+        "experience": 3,
+        "education": 1,
+        "skills": 1,
+        "summary": 1,
+        "secrets": 1,
+        "salary": 1
+      },
+      "expected_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 3,
+        "blacklist": 1
+      }
+    },
+    {
+      "personnel_id": "P_016",
+      "user_uuid": "e04621c4-3418-5abb-8d3d-96d2f2a9ac77",
+      "missing_sections": {
+        "blacklist": {
+          "expected": 1,
+          "actual": 0
+        }
+      },
+      "actual_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 3
+      },
+      "expected_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 3,
+        "blacklist": 1
+      }
+    },
+    {
+      "personnel_id": "P_017",
+      "user_uuid": "a5e6687f-b483-5903-911e-b4a467fc0baa",
+      "missing_sections": {
+        "blacklist": {
+          "expected": 1,
+          "actual": 0
+        }
+      },
+      "actual_section_counts": {
+        "summary": 1,
+        "secrets": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "salary": 1,
+        "interview_history": 3
+      },
+      "expected_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 3,
+        "blacklist": 1
+      }
+    },
+    {
+      "personnel_id": "P_018",
+      "user_uuid": "5f0039aa-bfb0-5b9a-adf3-c61f9bea9552",
+      "missing_sections": {
+        "blacklist": {
+          "expected": 1,
+          "actual": 0
+        }
+      },
+      "actual_section_counts": {
+        "education": 1,
+        "experience": 3,
+        "secrets": 1,
+        "summary": 1,
+        "skills": 1,
+        "salary": 1,
+        "interview_history": 3
+      },
+      "expected_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 3,
+        "blacklist": 1
+      }
+    },
+    {
+      "personnel_id": "P_019",
+      "user_uuid": "cd8754c3-4f77-5677-90ad-69931cd31348",
+      "missing_sections": {
+        "blacklist": {
+          "expected": 1,
+          "actual": 0
+        }
+      },
+      "actual_section_counts": {
+        "interview_history": 3,
+        "summary": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "skills": 1
+      },
+      "expected_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 3,
+        "blacklist": 1
+      }
+    },
+    {
+      "personnel_id": "P_021",
+      "user_uuid": "30001409-a879-56bf-bc6d-ea5265154e17",
+      "missing_sections": {
+        "blacklist": {
+          "expected": 1,
+          "actual": 0
+        }
+      },
+      "actual_section_counts": {
+        "summary": 1,
+        "interview_history": 3,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1
+      },
+      "expected_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 3,
+        "blacklist": 1
+      }
+    },
+    {
+      "personnel_id": "P_022",
+      "user_uuid": "b62c4e55-96b5-5b0e-9cd9-488adf5f5a69",
+      "missing_sections": {
+        "blacklist": {
+          "expected": 1,
+          "actual": 0
+        }
+      },
+      "actual_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 3
+      },
+      "expected_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 3,
+        "blacklist": 1
+      }
+    },
+    {
+      "personnel_id": "P_023",
+      "user_uuid": "00295c79-4d9c-51ef-977e-17b608e95158",
+      "missing_sections": {
+        "blacklist": {
+          "expected": 1,
+          "actual": 0
+        }
+      },
+      "actual_section_counts": {
+        "summary": 1,
+        "secrets": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "salary": 1,
+        "interview_history": 3
+      },
+      "expected_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 3,
+        "blacklist": 1
+      }
+    },
+    {
+      "personnel_id": "P_024",
+      "user_uuid": "b8637391-705a-5653-acc6-5b1b2fc179d8",
+      "missing_sections": {
+        "blacklist": {
+          "expected": 1,
+          "actual": 0
+        }
+      },
+      "actual_section_counts": {
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "interview_history": 3,
+        "salary": 1,
+        "summary": 1,
+        "secrets": 1
+      },
+      "expected_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 3,
+        "blacklist": 1
+      }
+    },
+    {
+      "personnel_id": "P_025",
+      "user_uuid": "31195a39-e1c1-5ec2-a740-79eb15bd7ca1",
+      "missing_sections": {
+        "blacklist": {
+          "expected": 1,
+          "actual": 0
+        }
+      },
+      "actual_section_counts": {
+        "interview_history": 3,
+        "skills": 1,
+        "experience": 3,
+        "education": 2,
+        "salary": 1,
+        "secrets": 1,
+        "summary": 1
+      },
+      "expected_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 2,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 3,
+        "blacklist": 1
+      }
+    },
+    {
+      "personnel_id": "P_026",
+      "user_uuid": "daca2544-692f-5002-8fce-97083b08f0a6",
+      "missing_sections": {
+        "blacklist": {
+          "expected": 1,
+          "actual": 0
+        }
+      },
+      "actual_section_counts": {
+        "interview_history": 3,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "summary": 1
+      },
+      "expected_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 3,
+        "blacklist": 1
+      }
+    },
+    {
+      "personnel_id": "P_027",
+      "user_uuid": "7a027ff7-10be-5ce6-92ed-65e1885f6310",
+      "missing_sections": {
+        "blacklist": {
+          "expected": 1,
+          "actual": 0
+        }
+      },
+      "actual_section_counts": {
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "salary": 1,
+        "interview_history": 3,
+        "summary": 1,
+        "secrets": 1
+      },
+      "expected_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 3,
+        "blacklist": 1
+      }
+    },
+    {
+      "personnel_id": "P_028",
+      "user_uuid": "05ce050b-0c72-58b9-9375-0d7e3b5334fa",
+      "missing_sections": {
+        "blacklist": {
+          "expected": 1,
+          "actual": 0
+        }
+      },
+      "actual_section_counts": {
+        "interview_history": 3,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "salary": 1,
+        "summary": 1,
+        "secrets": 1
+      },
+      "expected_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 3,
+        "blacklist": 1
+      }
+    },
+    {
+      "personnel_id": "P_029",
+      "user_uuid": "0af74f38-71a5-5b66-b087-416a61cac3a9",
+      "missing_sections": {
+        "blacklist": {
+          "expected": 1,
+          "actual": 0
+        }
+      },
+      "actual_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "salary": 1,
+        "interview_history": 3,
+        "secrets": 1
+      },
+      "expected_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 3,
+        "blacklist": 1
+      }
+    },
+    {
+      "personnel_id": "P_030",
+      "user_uuid": "ab938380-b7af-5bf7-a2c9-e305eb351c31",
+      "missing_sections": {
+        "blacklist": {
+          "expected": 1,
+          "actual": 0
+        }
+      },
+      "actual_section_counts": {
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "salary": 1,
+        "interview_history": 3,
+        "summary": 1,
+        "secrets": 1
+      },
+      "expected_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 3,
+        "blacklist": 1
+      }
+    },
+    {
+      "personnel_id": "P_033",
+      "user_uuid": "a1d17602-4cb2-5fe6-97a1-c8102974c7d2",
+      "missing_sections": {
+        "blacklist": {
+          "expected": 1,
+          "actual": 0
+        }
+      },
+      "actual_section_counts": {
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 2,
+        "summary": 1
+      },
+      "expected_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 2,
+        "blacklist": 1
+      }
+    },
+    {
+      "personnel_id": "P_035",
+      "user_uuid": "132fef0f-8269-50bb-ac40-952f8b55dd3e",
+      "missing_sections": {
+        "blacklist": {
+          "expected": 1,
+          "actual": 0
+        }
+      },
+      "actual_section_counts": {
+        "skills": 1,
+        "experience": 3,
+        "secrets": 1,
+        "education": 1,
+        "salary": 1,
+        "interview_history": 2,
+        "summary": 1
+      },
+      "expected_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 2,
+        "blacklist": 1
+      }
+    },
+    {
+      "personnel_id": "P_036",
+      "user_uuid": "95c0c67d-c5d3-557c-af60-5b2d6c57720d",
+      "missing_sections": {
+        "blacklist": {
+          "expected": 1,
+          "actual": 0
+        }
+      },
+      "actual_section_counts": {
+        "secrets": 1,
+        "interview_history": 2,
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "salary": 1
+      },
+      "expected_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 2,
+        "blacklist": 1
+      }
+    },
+    {
+      "personnel_id": "P_037",
+      "user_uuid": "4316de35-014c-5b0c-9015-54b19a5f76b3",
+      "missing_sections": {
+        "blacklist": {
+          "expected": 1,
+          "actual": 0
+        }
+      },
+      "actual_section_counts": {
+        "interview_history": 2,
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1
+      },
+      "expected_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 2,
+        "blacklist": 1
+      }
+    },
+    {
+      "personnel_id": "P_038",
+      "user_uuid": "b1b0be60-d45e-53e4-807d-bdb564f2a8f2",
+      "missing_sections": {
+        "blacklist": {
+          "expected": 1,
+          "actual": 0
+        }
+      },
+      "actual_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "salary": 1,
+        "interview_history": 2,
+        "secrets": 1
+      },
+      "expected_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 2,
+        "blacklist": 1
+      }
+    },
+    {
+      "personnel_id": "P_039",
+      "user_uuid": "77ebaa56-b48e-51c3-8d4f-b77417d59cfc",
+      "missing_sections": {
+        "blacklist": {
+          "expected": 1,
+          "actual": 0
+        }
+      },
+      "actual_section_counts": {
+        "experience": 3,
+        "interview_history": 2,
+        "summary": 1,
+        "skills": 1,
+        "education": 1,
+        "salary": 1,
+        "secrets": 1
+      },
+      "expected_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 2,
+        "blacklist": 1
+      }
+    },
+    {
+      "personnel_id": "P_040",
+      "user_uuid": "010bc56a-dc0c-5026-b909-30e543ad43b3",
+      "missing_sections": {
+        "blacklist": {
+          "expected": 1,
+          "actual": 0
+        }
+      },
+      "actual_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 2
+      },
+      "expected_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 2,
+        "blacklist": 1
+      }
+    },
+    {
+      "personnel_id": "P_041",
+      "user_uuid": "00af9e39-e8ca-5e67-979b-80d7e6053f12",
+      "missing_sections": {
+        "blacklist": {
+          "expected": 1,
+          "actual": 0
+        }
+      },
+      "actual_section_counts": {
+        "interview_history": 2,
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1
+      },
+      "expected_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 2,
+        "blacklist": 1
+      }
+    },
+    {
+      "personnel_id": "P_042",
+      "user_uuid": "cdd40bd8-34bb-5be7-a766-d25e54dc2c87",
+      "missing_sections": {
+        "blacklist": {
+          "expected": 1,
+          "actual": 0
+        }
+      },
+      "actual_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 2
+      },
+      "expected_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 2,
+        "blacklist": 1
+      }
+    },
+    {
+      "personnel_id": "P_043",
+      "user_uuid": "8c651e60-d5ae-5191-b437-2c564bf0b919",
+      "missing_sections": {
+        "blacklist": {
+          "expected": 1,
+          "actual": 0
+        }
+      },
+      "actual_section_counts": {
+        "experience": 3,
+        "interview_history": 2,
+        "summary": 1,
+        "skills": 1,
+        "education": 1,
+        "salary": 1,
+        "secrets": 1
+      },
+      "expected_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 2,
+        "blacklist": 1
+      }
+    },
+    {
+      "personnel_id": "P_044",
+      "user_uuid": "a8474bad-18a9-565e-a2e9-aa5a4b77e139",
+      "missing_sections": {
+        "blacklist": {
+          "expected": 1,
+          "actual": 0
+        }
+      },
+      "actual_section_counts": {
+        "interview_history": 2,
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "salary": 1,
+        "secrets": 1
+      },
+      "expected_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 2,
+        "blacklist": 1
+      }
+    },
+    {
+      "personnel_id": "P_045",
+      "user_uuid": "6e2ed5b3-a1f3-5e27-9394-cf35577f25a5",
+      "missing_sections": {
+        "blacklist": {
+          "expected": 1,
+          "actual": 0
+        }
+      },
+      "actual_section_counts": {
+        "secrets": 1,
+        "summary": 1,
+        "interview_history": 2,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "salary": 1
+      },
+      "expected_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 2,
+        "blacklist": 1
+      }
+    },
+    {
+      "personnel_id": "P_046",
+      "user_uuid": "602ad8f2-979c-56b7-81bd-34f6298d4467",
+      "missing_sections": {
+        "blacklist": {
+          "expected": 1,
+          "actual": 0
+        }
+      },
+      "actual_section_counts": {
+        "skills": 1,
+        "summary": 1,
+        "secrets": 1,
+        "experience": 3,
+        "education": 1,
+        "salary": 1,
+        "interview_history": 2
+      },
+      "expected_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 2,
+        "blacklist": 1
+      }
+    },
+    {
+      "personnel_id": "P_047",
+      "user_uuid": "d9969b3f-ce5a-5cdb-a195-dd162b852750",
+      "missing_sections": {
+        "blacklist": {
+          "expected": 1,
+          "actual": 0
+        }
+      },
+      "actual_section_counts": {
+        "experience": 3,
+        "interview_history": 2,
+        "summary": 1,
+        "skills": 1,
+        "education": 1,
+        "salary": 1,
+        "secrets": 1
+      },
+      "expected_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 2,
+        "blacklist": 1
+      }
+    },
+    {
+      "personnel_id": "P_048",
+      "user_uuid": "2e234177-8253-5508-86db-54f0feaf466a",
+      "missing_sections": {
+        "blacklist": {
+          "expected": 1,
+          "actual": 0
+        }
+      },
+      "actual_section_counts": {
+        "interview_history": 2,
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1
+      },
+      "expected_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 2,
+        "blacklist": 1
+      }
+    },
+    {
+      "personnel_id": "P_049",
+      "user_uuid": "087f5c4a-6b52-596a-9355-3291a01477bb",
+      "missing_sections": {
+        "blacklist": {
+          "expected": 1,
+          "actual": 0
+        }
+      },
+      "actual_section_counts": {
+        "interview_history": 2,
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1
+      },
+      "expected_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 2,
+        "blacklist": 1
+      }
+    },
+    {
+      "personnel_id": "P_050",
+      "user_uuid": "914500ed-1e93-54c2-bf4e-0671c9df2bcf",
+      "missing_sections": {
+        "blacklist": {
+          "expected": 1,
+          "actual": 0
+        }
+      },
+      "actual_section_counts": {
+        "summary": 1,
+        "secrets": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "salary": 1,
+        "interview_history": 2
+      },
+      "expected_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 2,
+        "blacklist": 1
+      }
+    },
+    {
+      "personnel_id": "P_051",
+      "user_uuid": "d77f656c-741f-5c4d-9860-e290299b6a68",
+      "missing_sections": {
+        "blacklist": {
+          "expected": 1,
+          "actual": 0
+        }
+      },
+      "actual_section_counts": {
+        "summary": 1,
+        "secrets": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "salary": 1,
+        "interview_history": 3
+      },
+      "expected_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 3,
+        "blacklist": 1
+      }
+    },
+    {
+      "personnel_id": "P_052",
+      "user_uuid": "a20d83e6-1af6-5784-964c-2a6481ec6063",
+      "missing_sections": {
+        "blacklist": {
+          "expected": 1,
+          "actual": 0
+        }
+      },
+      "actual_section_counts": {
+        "summary": 1,
+        "secrets": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "salary": 1,
+        "interview_history": 3
+      },
+      "expected_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 3,
+        "blacklist": 1
+      }
+    },
+    {
+      "personnel_id": "P_053",
+      "user_uuid": "03cef176-adf1-5fe3-9347-6fa6cb16345d",
+      "missing_sections": {
+        "blacklist": {
+          "expected": 1,
+          "actual": 0
+        }
+      },
+      "actual_section_counts": {
+        "summary": 1,
+        "secrets": 1,
+        "interview_history": 3,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "salary": 1
+      },
+      "expected_section_counts": {
+        "summary": 1,
+        "skills": 1,
+        "experience": 3,
+        "education": 1,
+        "secrets": 1,
+        "salary": 1,
+        "interview_history": 3,
+        "blacklist": 1
+      }
+    }
+  ]
+}

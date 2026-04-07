@@ -1,0 +1,22 @@
+{
+  "config": {
+    "name": "HybridPlus",
+    "alpha": 0.4,
+    "beta": 0.6,
+    "graph_mode": "enhanced"
+  },
+  "dataset": "data_eval/qa_dataset.json",
+  "judge": {
+    "model": "gpt-4o-mini",
+    "temperature": 0
+  },
+  "runtime_seconds": 619.257,
+  "num_samples": 26,
+  "metrics": {
+    "faithfulness": 0.8803148268735315,
+    "answer_relevancy": 0.747439816051902,
+    "context_precision": 0.9166666665897435,
+    "context_recall": 0.9615384615384616,
+    "answer_correctness": 0.6566513860621909
+  }
+}

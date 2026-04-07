@@ -7,10 +7,34 @@ type InterviewBody =
   paths["/interview"]["post"]["requestBody"]["content"]["application/json"]
 type InterviewResponse =
   paths["/interview"]["post"]["responses"]["200"]["content"]["application/json"]
-type ChatHistoryResponse =
-  paths["/chat/history/{per_neo4j_id}"]["get"]["responses"]["200"]["content"]["application/json"]
-type MessageBody =
-  paths["/chat/message"]["post"]["requestBody"]["content"]["application/json"]
+
+export interface ChatHistoryResponse {
+  messages: ChatHistoryItem[]
+}
+
+export interface SaveChatMessagePayload {
+  personnel_id: string
+  session_id: string
+  role: "user" | "assistant"
+  content: string
+  job_title?: string
+  is_private_mode?: boolean
+  reasoning?: Record<string, unknown>
+}
+
+export interface CreateChatSessionPayload {
+  personnel_id: string
+  org_id: string
+  job_title?: string
+}
+
+export interface ChatSessionItem {
+  session_id: string
+  personnel_id: string
+  job_title?: string | null
+  last_message: string
+  created_at: string
+}
 
 export const sendInterviewMessage = (
   body: InterviewBody,
@@ -18,16 +42,28 @@ export const sendInterviewMessage = (
   apiClient.post<InterviewResponse>("/interview", body).then((r) => r.data)
 
 export const getChatHistory = (
-  perNeoId: string,
+  sessionId: string,
 ): Promise<ChatHistoryResponse> =>
   apiClient
     .get<ChatHistoryResponse>(
-      `/chat/history/${encodeURIComponent(perNeoId)}`,
+      `/chat/history/${encodeURIComponent(sessionId)}`,
     )
     .then((r) => r.data)
 
+export const createChatSession = (
+  payload: CreateChatSessionPayload,
+): Promise<{ session_id: string }> =>
+  apiClient.post<{ session_id: string }>("/chat/sessions", payload).then((r) => r.data)
+
+export const getChatSessions = (
+  orgId: string,
+): Promise<ChatSessionItem[]> =>
+  apiClient
+    .get<ChatSessionItem[]>(`/chat/sessions?org_id=${encodeURIComponent(orgId)}`)
+    .then((r) => r.data)
+
 export const saveChatMessage = (
-  payload: MessageBody,
+  payload: SaveChatMessagePayload,
 ): Promise<
   paths["/chat/message"]["post"]["responses"]["200"]["content"]["application/json"]
 > =>

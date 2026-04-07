@@ -100,7 +100,14 @@ export default function NotificationsPage() {
   const handleClick = (n: NotificationItem) => {
     if (!n.is_read) markReadMut.mutate(n.id)
     const redirectTo = n.payload?.redirect_to
-    if (typeof redirectTo === "string") router.push(redirectTo)
+    if (typeof redirectTo === "string") {
+      router.push(redirectTo)
+      return
+    }
+
+    if (typeof n.type === "string" && n.type.startsWith("schedule_")) {
+      router.push("/schedule")
+    }
   }
 
   const unreadCount = notifications.filter(n => !n.is_read).length

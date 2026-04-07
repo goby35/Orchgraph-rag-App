@@ -1,6 +1,8 @@
 import type { paths } from "@/types/api"
 import type { CandidateResult } from "@/types"
 
+import type { ReasoningSummary } from "./chat"
+
 import { apiClient } from "./client"
 
 type SearchBody =
@@ -30,12 +32,21 @@ export function mapSearchResponseToCandidates(data: unknown): CandidateResult[] 
         : typeof scoreRaw === "string"
           ? Number.parseFloat(scoreRaw)
           : Number(scoreRaw)
+    const skills = Array.isArray(o.skills) ? o.skills.map(String) : []
+    const reasoningSummary: ReasoningSummary = {
+      skills,
+      seniority_years: null,
+      connection_strength: null,
+      match_score: Number.isFinite(score) ? score : 0,
+    }
     return {
       id: String(o.id ?? ""),
       name: String(o.name ?? ""),
       summary: String(o.summary ?? ""),
       score: Number.isFinite(score) ? score : 0,
-      skills: Array.isArray(o.skills) ? o.skills.map(String) : [],
+      skills,
+      personnel_id: String(o.personnel_id ?? o.id ?? ""),
+      reasoning_summary: reasoningSummary,
       context: undefined,
     }
   })

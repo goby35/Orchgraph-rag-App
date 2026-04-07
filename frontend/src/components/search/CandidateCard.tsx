@@ -1,4 +1,7 @@
-import Link from "next/link"
+"use client"
+
+import { useState } from "react"
+import { useRouter } from "next/navigation"
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { buttonVariants } from "@/lib/variants"
@@ -26,9 +29,13 @@ function scoreTone(score: number): "green" | "amber" | "gray" {
 
 interface CandidateCardProps {
   candidate: CandidateResult
+  jobTitle: string
+  onStartInterview?: (candidate: CandidateResult) => void | Promise<void>
 }
 
-export function CandidateCard({ candidate }: CandidateCardProps) {
+export function CandidateCard({ candidate, jobTitle, onStartInterview }: CandidateCardProps) {
+  const router = useRouter()
+  const [starting, setStarting] = useState(false)
   const pct = Math.round(Math.min(1, Math.max(0, candidate.score)) * 100)
   const tone = scoreTone(candidate.score)
   const barClass =
@@ -59,6 +66,31 @@ export function CandidateCard({ candidate }: CandidateCardProps) {
   const maxSkills = 5
   const skills = validSkills.slice(0, maxSkills)
   const more = validSkills.length - skills.length
+  const candidateName = (candidate.name || candidate.id).trim()
+  const personnelId = (candidate as CandidateResult & { personnel_id?: string }).personnel_id || candidate.id
+
+  async function handleInterviewClick() {
+    if (starting) return
+
+    if (onStartInterview) {
+      setStarting(true)
+      try {
+        await onStartInterview(candidate)
+      } catch (error) {
+        console.error("Failed to start interview session", error)
+      } finally {
+        setStarting(false)
+      }
+      return
+    }
+
+    const params = new URLSearchParams({
+      personnelId,
+      jobTitle,
+      sessionId: "new",
+    })
+    router.push(`/interview?${params.toString()}`)
+  }
   // ------------------------------------------
 
   return (
@@ -122,12 +154,14 @@ export function CandidateCard({ candidate }: CandidateCardProps) {
           </div>
         ) : null}
       <div className="mt-4 flex justify-end border-t pt-3">
-        <Link
-          href={`/interview/${encodeURIComponent(candidate.id)}`}
+        <button
+          type="button"
+          onClick={handleInterviewClick}
+          disabled={starting}
           className={buttonVariants({ variant: "default", size: "sm" })}
         >
-          Phỏng vấn
-        </Link>
+          {starting ? "Đang mở..." : `Phỏng vấn ${candidateName}`}
+        </button>
       </div>
     </article>
   )

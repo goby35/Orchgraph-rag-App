@@ -1,7 +1,7 @@
 'use client'
 import { useMutation, useQueries, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import { listSchedules, updateScheduleStatus, rescheduleAppointment } from '@/lib/api/schedule'
+import { listSchedules, updateScheduleStatus } from '@/lib/api/schedule'
 import { getPersonnelProfile } from '@/lib/api/interview'
 import { useAuthStore } from '@/store/auth.store'
 import { formatDate } from '@/lib/utils'
@@ -10,29 +10,40 @@ import { buttonVariants } from '@/lib/variants'
 import { PageSkeleton } from '@/components/shared/PageSkeleton'
 import { ErrorState } from '@/components/shared/ErrorState'
 import { useState } from 'react'
-import type { ScheduleRecord } from '@/types'
-import RescheduleModal from '@/components/scheduling/RescheduleModal'
+import type { ScheduleHistoryEntry, ScheduleRecord } from '@/types'
 
 const STATUS_LABEL: Record<string, string> = {
-  pending:     'Chờ xác nhận',
-  confirmed:   'Đã xác nhận',
-  rescheduled: 'Đề xuất đổi giờ',
-  cancelled:   'Đã hủy',
-  completed:   'Đã hoàn thành',
+  pending: 'Chờ xác nhận',
+  confirmed: 'Đã xác nhận',
+  rescheduled: 'Chờ phản hồi',
+  awaiting_org_response: 'Chờ Org phản hồi',
+  awaiting_personnel_response: 'Chờ ứng viên phản hồi',
+  cancelled: 'Đã hủy',
+  completed: 'Đã hoàn thành',
 }
 
 const STATUS_COLOR: Record<string, string> = {
-  pending:     'bg-amber-100 text-amber-700',
-  confirmed:   'bg-green-100 text-green-700',
+  pending: 'bg-amber-100 text-amber-700',
+  confirmed: 'bg-green-100 text-green-700',
   rescheduled: 'bg-blue-100 text-blue-700',
-  cancelled:   'bg-gray-100 text-gray-500',
-  completed:   'bg-gray-100 text-gray-600',
+  awaiting_org_response: 'bg-blue-100 text-blue-700',
+  awaiting_personnel_response: 'bg-blue-100 text-blue-700',
+  cancelled: 'bg-gray-100 text-gray-500',
+  completed: 'bg-gray-100 text-gray-600',
+}
+
+function getHistoryEntries(schedule: ScheduleRecord): ScheduleHistoryEntry[] {
+  return Array.isArray(schedule.reschedule_history) ? schedule.reschedule_history : []
+}
+
+function describeHistoryEntry(entry: ScheduleHistoryEntry): string {
+  const byLabel = entry.by === 'org' ? 'Org' : 'Ứng viên'
+  return `${byLabel} đề xuất ${formatDate(entry.proposed_time)}${entry.notes ? ` · ${entry.notes}` : ''}`
 }
 
 export default function SchedulePage() {
-  const role    = useAuthStore(s => s.role)
-  const qc      = useQueryClient()
-  const [rescheduleId,    setRescheduleId]    = useState<string | null>(null)
+  const role = useAuthStore((s) => s.role)
+  const qc = useQueryClient()
   const [expandedSummary, setExpandedSummary] = useState<string | null>(null)
 
   const { data: schedules = [], isLoading, error, refetch } = useQuery({
@@ -76,6 +87,41 @@ export default function SchedulePage() {
     if (role === 'organization') return nameMap[s.per_neo4j_id] ?? s.per_neo4j_id
     return s.org_neo4j_id
   }
+
+  function getPendingProposalText(s: ScheduleRecord): string | null {
+    const proposedAt = s.rescheduled_at ?? s.proposed_at
+    if (s.status === 'awaiting_org_response' || s.status === 'rescheduled') {
+      return `Ứng viên đề xuất đổi sang: ${formatDate(proposedAt)}`
+    }
+    if (s.status === 'awaiting_personnel_response') {
+      return `Org đề xuất giờ mới: ${formatDate(proposedAt)}`
+    }
+    return null
+  }
+
+  function renderHistory(s: ScheduleRecord) {
+    const history = getHistoryEntries(s)
+    if (history.length === 0) return null
+
+    return (
+      <div className="border-t pt-2">
+        <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+          Lịch sử đổi lịch
+        </p>
+        <div className="mt-2 space-y-2">
+          {history.slice(-4).map((entry, index) => (
+            <div key={`${entry.timestamp}-${index}`} className="rounded-md bg-muted/40 px-3 py-2 text-xs leading-5">
+              <p className="font-medium text-foreground">{describeHistoryEntry(entry)}</p>
+              <p className="text-muted-foreground">{formatDate(entry.timestamp)}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  const awaitingOrg = (s: ScheduleRecord) => s.status === 'awaiting_org_response' || s.status === 'rescheduled'
+  const awaitingPersonnel = (s: ScheduleRecord) => s.status === 'awaiting_personnel_response'
 
   return (
     <div className="max-w-3xl mx-auto py-8 px-4">
@@ -130,6 +176,12 @@ export default function SchedulePage() {
                 </span>
               </div>
 
+              {getPendingProposalText(s) ? (
+                <div className="rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-xs text-blue-800">
+                  {getPendingProposalText(s)}
+                </div>
+              ) : null}
+
               {/* Chat summary (expandable) */}
               {s.chat_summary && (
                 <div className="border-t pt-2">
@@ -148,21 +200,17 @@ export default function SchedulePage() {
                 </div>
               )}
 
+              {renderHistory(s)}
+
               {/* Actions theo role và status */}
               <div className="flex gap-2 flex-wrap">
-                {role === 'personnel' && s.status === 'pending' && (
+                {role === 'personnel' && (s.status === 'pending' || awaitingPersonnel(s)) && (
                   <>
                     <button
                       onClick={() => updateStatus({ id: s.id, status: 'confirmed' })}
                       className={cn(buttonVariants({ variant: 'default', size: 'sm' }))}
                     >
                       Xác nhận
-                    </button>
-                    <button
-                      onClick={() => setRescheduleId(s.id)}
-                      className={cn(buttonVariants({ variant: 'outline', size: 'sm' }))}
-                    >
-                      Đề xuất giờ khác
                     </button>
                     <button
                       onClick={() => updateStatus({ id: s.id, status: 'cancelled' })}
@@ -173,10 +221,10 @@ export default function SchedulePage() {
                   </>
                 )}
 
-                {s.status === 'rescheduled' && role === 'organization' && (
+                {role === 'organization' && awaitingOrg(s) && (
                   <>
                     <p className="text-xs text-blue-600 w-full">
-                      Giờ mới đề xuất: {formatDate(s.rescheduled_at!)}
+                      Giờ mới đề xuất: {formatDate(s.rescheduled_at ?? s.proposed_at)}
                     </p>
                     <button
                       onClick={() => updateStatus({ id: s.id, status: 'confirmed' })}
@@ -207,11 +255,6 @@ export default function SchedulePage() {
         </div>
       )}
 
-      <RescheduleModal
-        scheduleId={rescheduleId}
-        open={!!rescheduleId}
-        onClose={() => setRescheduleId(null)}
-      />
     </div>
   )
 }

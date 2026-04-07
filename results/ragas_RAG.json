@@ -1,0 +1,22 @@
+{
+  "config": {
+    "name": "RAG",
+    "alpha": 0.0,
+    "beta": 1.0,
+    "graph_mode": "none"
+  },
+  "dataset": "data_eval/qa_dataset.json",
+  "judge": {
+    "model": "gpt-4o-mini",
+    "temperature": 0
+  },
+  "runtime_seconds": 624.346,
+  "num_samples": 26,
+  "metrics": {
+    "faithfulness": 0.8726648351648353,
+    "answer_relevancy": 0.6457828436152695,
+    "context_precision": 0.9102564101791667,
+    "context_recall": 0.9615384615384616,
+    "answer_correctness": 0.6613174120713432
+  }
+}

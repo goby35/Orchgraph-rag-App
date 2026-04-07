@@ -261,6 +261,36 @@ def _extract_payload(extracted: dict[str, Any]) -> dict[str, Any]:
     return extracted
 
 
+def _restore_missing_blacklist_from_source(
+    payload: dict[str, Any],
+    record: dict[str, Any],
+    node_type: str,
+) -> None:
+    """Preserve source blacklist for personnel when LLM extraction drops this field."""
+    if node_type != "personnel":
+        return
+
+    source_priv = record.get("private_data") if isinstance(record.get("private_data"), dict) else {}
+    source_blacklist = source_priv.get("blacklist_orgs") if isinstance(source_priv, dict) else []
+    source_blacklist = source_blacklist if isinstance(source_blacklist, list) else []
+    source_blacklist = [str(item).strip() for item in source_blacklist if str(item).strip()]
+    if not source_blacklist:
+        return
+
+    payload_priv = payload.get("private_data") if isinstance(payload.get("private_data"), dict) else {}
+    extracted_blacklist = payload_priv.get("blacklist_orgs") if isinstance(payload_priv, dict) else []
+    extracted_blacklist = extracted_blacklist if isinstance(extracted_blacklist, list) else []
+    extracted_blacklist = [str(item).strip() for item in extracted_blacklist if str(item).strip()]
+
+    if extracted_blacklist:
+        return
+
+    if not isinstance(payload_priv, dict):
+        payload_priv = {}
+        payload["private_data"] = payload_priv
+    payload_priv["blacklist_orgs"] = source_blacklist
+
+
 # ── FIX 3: đảm bảo ID đúng loại sau extract ─────────────────────────────────
 def _fix_node_id(payload: dict[str, Any], node_type: str, record: dict[str, Any]) -> None:
     """
@@ -331,6 +361,7 @@ def _process_one_inner(
 
     # FIX 3: đảm bảo ID đúng loại sau extract
     _fix_node_id(payload, node_type, record)
+    _restore_missing_blacklist_from_source(payload, record, node_type)
 
     # FIX 2: kiểm tra neo4j_id không rỗng trước khi validate
     node = RecruitmentNode.model_validate(payload)

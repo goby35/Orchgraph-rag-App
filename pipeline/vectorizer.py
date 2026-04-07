@@ -19,7 +19,7 @@ MODEL_FIELD_MAP = {
     "vinai/phobert-base-v2":             "public_embeddings_phobert",
     "Alibaba-NLP/gte-multilingual-base": "public_embeddings_gte",
     "intfloat/multilingual-e5-base":     "public_embeddings_e5",
-    "BAAI/bge-m3":                       "public_embeddings_bge",
+    "BAAI/bge-base-en-v1.5":             "public_embeddings_bge",
 }
 
 class _EmbedderHub:
@@ -64,6 +64,11 @@ _embedder_hub = _EmbedderHub()
 def vectorize_text(text: str) -> List[float]:
     """Public helper for text embedding (active model)."""
     return _embedder_hub.embed(text, settings.ACTIVE_EMBEDDING_MODEL)
+
+
+def vectorize_text_for_model(text: str, model_id: str) -> List[float]:
+    """Public helper for text embedding with an explicit model id."""
+    return _embedder_hub.embed(text, model_id)
 
 def embed_all_models(text: str) -> dict[str, list[float]]:
     """Trả về dict {field_name: vector} cho tất cả models được config."""

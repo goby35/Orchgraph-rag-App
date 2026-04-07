@@ -1,0 +1,42 @@
+{
+  "phobert_base_v2": {
+    "context_precision": 0.4462,
+    "context_recall": 0.75,
+    "mrr": 0.9231,
+    "hit_at_1": 0.8462,
+    "avg_query_time_ms": 793.56,
+    "n_evaluated": 26,
+    "queries_skipped_no_ground_truth": 0,
+    "queries_skipped_pending": 0
+  },
+  "multilingual_e5": {
+    "context_precision": 0.4,
+    "context_recall": 0.6795,
+    "mrr": 0.9423,
+    "hit_at_1": 0.9231,
+    "avg_query_time_ms": 723.78,
+    "n_evaluated": 26,
+    "queries_skipped_no_ground_truth": 0,
+    "queries_skipped_pending": 0
+  },
+  "gte_multilingual": {
+    "context_precision": 0.4692,
+    "context_recall": 0.7949,
+    "mrr": 0.9359,
+    "hit_at_1": 0.8846,
+    "avg_query_time_ms": 730.07,
+    "n_evaluated": 26,
+    "queries_skipped_no_ground_truth": 0,
+    "queries_skipped_pending": 0
+  },
+  "bge_m3": {
+    "context_precision": 0.2231,
+    "context_recall": 0.3782,
+    "mrr": 0.4622,
+    "hit_at_1": 0.2692,
+    "avg_query_time_ms": 736.09,
+    "n_evaluated": 26,
+    "queries_skipped_no_ground_truth": 0,
+    "queries_skipped_pending": 0
+  }
+}

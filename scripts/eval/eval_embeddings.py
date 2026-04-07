@@ -10,6 +10,8 @@ import time
 import tracemalloc
 import math
 import warnings
+import argparse
+import re
 
 # ── Project root on sys.path ─────────────────────────────────────────────────
 PROJECT_ROOT = pathlib.Path(__file__).resolve().parents[2]
@@ -19,19 +21,35 @@ from neo4j import GraphDatabase
 from sentence_transformers import SentenceTransformer
 
 from pipeline.config import settings
+from pipeline.supabase_client import get_supabase
+from pipeline.supabase_ingestion import _neo4j_id_to_uuid
 from scripts.eval.utils import save_json, mean, std, print_table
 
 # ── Constants ────────────────────────────────────────────────────────────────
 
 JD_PATH = PROJECT_ROOT / "data_eval" / "jd_dataset.json"
+QA_PATH = PROJECT_ROOT / "data_eval" / "qa_dataset.json"
 CACHE_DIR = PROJECT_ROOT / "data_eval"
+TASK_B_TOP_K = 5
 
 MODELS = {
-    "phobert_base_v2": {"model_id": "vinai/phobert-base-v2", "dim": 768, "prefix": ""},
-    "multilingual_e5": {"model_id": "intfloat/multilingual-e5-base", "dim": 768, "prefix": "query: "},
-    "gte_multilingual": {"model_id": "Alibaba-NLP/gte-multilingual-base", "dim": 768, "prefix": ""},
-    "bge_m3": {"model_id": "BAAI/bge-m3", "dim": 1024, "prefix": ""},
+    "phobert_base_v2": {"model_id": "vinai/phobert-base-v2", "dim": 768, "prefix": "", "rpc_dim": 768},
+    "multilingual_e5": {"model_id": "intfloat/multilingual-e5-base", "dim": 768, "prefix": "query: ", "rpc_dim": 768},
+    "gte_multilingual": {"model_id": "Alibaba-NLP/gte-multilingual-base", "dim": 768, "prefix": "", "rpc_dim": 768},
+    "bge_m3": {"model_id": "BAAI/bge-m3", "dim": 1024, "prefix": "", "rpc_dim": 768},
 }
+
+COLUMN_MAP = {
+    "phobert_base_v2": "embedding_phobert",
+    "multilingual_e5": "embedding_e5",
+    "gte_multilingual": "embedding_gte",
+    "bge_m3": "embedding_bge",
+}
+
+UUID_RE = re.compile(
+    r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+    re.IGNORECASE,
+)
 
 # ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -56,6 +74,196 @@ def _rank_corpus(query_emb: list[float], corpus: dict[str, list[float]]) -> list
     scored = [(pid, _cosine_similarity(query_emb, emb)) for pid, emb in corpus.items()]
     scored.sort(key=lambda x: x[1], reverse=True)
     return [pid for pid, _ in scored]
+
+
+def _vector_literal(values: list[float]) -> str:
+    return "[" + ",".join(str(float(v)) for v in values) + "]"
+
+
+def _normalize_text(text: str) -> str:
+    return " ".join(str(text or "").lower().strip().split())
+
+
+def _extract_relevant_ids(qa_row: dict) -> list[str]:
+    raw_ids = qa_row.get("relevant_chunk_ids")
+    if not isinstance(raw_ids, list):
+        return []
+    cleaned = [str(chunk_id).strip() for chunk_id in raw_ids if str(chunk_id).strip()]
+    return [chunk_id for chunk_id in cleaned if UUID_RE.match(chunk_id)]
+
+
+def _extract_relevant_chunks(qa_row: dict) -> list[str]:
+    chunks = qa_row.get("relevant_chunks")
+    if isinstance(chunks, list):
+        cleaned = [str(c).strip() for c in chunks if str(c).strip()]
+        if cleaned:
+            return cleaned
+
+    ground_truth = str(qa_row.get("ground_truth") or "").strip()
+    if not ground_truth:
+        return []
+    return [s.strip() for s in ground_truth.split(".") if s.strip()]
+
+
+def _count_chunk_matches(
+    relevant_chunks: list[str],
+    retrieved_chunks: list[str],
+    model_cfg: dict,
+    st_model: SentenceTransformer | None,
+    similarity_threshold: float = 0.6,
+) -> tuple[int, int]:
+    if not relevant_chunks or not retrieved_chunks:
+        return 0, 0
+
+    normalized_relevant = [_normalize_text(c) for c in relevant_chunks if _normalize_text(c)]
+    normalized_retrieved = [_normalize_text(c) for c in retrieved_chunks if _normalize_text(c)]
+
+    matched_relevant_indices = set()
+    matched_retrieved_indices = set()
+
+    # First pass: lexical containment for exact/near-exact chunk overlap.
+    for r_idx, rel in enumerate(normalized_relevant):
+        for t_idx, got in enumerate(normalized_retrieved):
+            if rel in got or got in rel:
+                matched_relevant_indices.add(r_idx)
+                matched_retrieved_indices.add(t_idx)
+
+    # Second pass: semantic overlap to handle paraphrased or reformatted chunks.
+    if st_model is not None and (len(matched_relevant_indices) < len(normalized_relevant) or len(matched_retrieved_indices) < len(normalized_retrieved)):
+        prefix = model_cfg.get("prefix", "")
+        try:
+            rel_embs = st_model.encode([prefix + text for text in normalized_relevant], convert_to_numpy=True)
+            ret_embs = st_model.encode([prefix + text for text in normalized_retrieved], convert_to_numpy=True)
+
+            for r_idx, rel_emb in enumerate(rel_embs):
+                best = max((_cosine_similarity(rel_emb.tolist(), ret_emb.tolist()) for ret_emb in ret_embs), default=0.0)
+                if best >= similarity_threshold:
+                    matched_relevant_indices.add(r_idx)
+
+            for t_idx, ret_emb in enumerate(ret_embs):
+                best = max((_cosine_similarity(ret_emb.tolist(), rel_emb.tolist()) for rel_emb in rel_embs), default=0.0)
+                if best >= similarity_threshold:
+                    matched_retrieved_indices.add(t_idx)
+        except Exception:
+            pass
+
+    return len(matched_retrieved_indices), len(matched_relevant_indices)
+
+
+def _search_top_k_chunks_supabase(
+    model_name: str,
+    query_emb: list[float],
+    personnel_neo4j_id: str,
+    top_k: int,
+    embedding_col: str | None = None,
+) -> list[dict]:
+    embedding_col = embedding_col or COLUMN_MAP.get(model_name)
+
+    target_user_id = _neo4j_id_to_uuid(personnel_neo4j_id)
+    sb = get_supabase().schema("vdme")
+
+    # Keep query dimension aligned with RPC vector column expectation.
+    rpc_dim = int(MODELS.get(model_name, {}).get("rpc_dim") or len(query_emb))
+    if len(query_emb) > rpc_dim:
+        query_emb = query_emb[:rpc_dim]
+
+    base_params = {
+        "query_embedding": _vector_literal(query_emb),
+        "target_user_id": target_user_id,
+        "match_count": top_k,
+        "embedding_col": embedding_col,
+    }
+
+    last_error = None
+    if not embedding_col:
+        print(f"  [WARN] No embedding column mapping for model {model_name}")
+        return []
+
+    rows: list[dict] = []
+    for rpc_name in ("match_private_chunks_dynamic", "match_public_chunks_dynamic"):
+        try:
+            raw = sb.rpc(rpc_name, base_params).execute().data
+            if not isinstance(raw, list):
+                continue
+            for row in raw:
+                if not isinstance(row, dict):
+                    continue
+                row_id = str(row.get("id") or "").strip()
+                content = str(row.get("content") or "").strip()
+                similarity = row.get("similarity")
+                if not row_id or not content:
+                    continue
+                try:
+                    if isinstance(similarity, (int, float, str)):
+                        sim = float(similarity)
+                    else:
+                        sim = 0.0
+                except (TypeError, ValueError):
+                    sim = 0.0
+                rows.append({"id": row_id, "content": content, "similarity": sim})
+        except Exception as exc:
+            last_error = exc
+
+    if rows:
+        rows.sort(key=lambda r: float(r.get("similarity") or 0.0), reverse=True)
+        unique_rows: list[dict] = []
+        seen_ids: set[str] = set()
+        for row in rows:
+            row_id = str(row.get("id") or "")
+            if row_id in seen_ids:
+                continue
+            seen_ids.add(row_id)
+            unique_rows.append({"id": row_id, "content": str(row.get("content") or "")})
+            if len(unique_rows) >= top_k:
+                break
+        return unique_rows
+
+    if last_error:
+        print(f"  [WARN] Supabase RPC failed for {model_name}/{personnel_neo4j_id}: {last_error}")
+    return []
+
+
+def _compute_id_metrics(
+    retrieved: list[dict],
+    relevant_ids: list[str],
+    k: int = 5,
+) -> dict:
+    """Precision@k and recall based on chunk IDs without semantic matching bias."""
+    if not relevant_ids:
+        return {
+            "precision": None,
+            "recall": None,
+            "mrr": None,
+            "hit_at_1": None,
+            "note": "no_ground_truth",
+        }
+
+    top_k = [
+        str(row.get("id"))
+        for row in retrieved[:k]
+        if isinstance(row, dict) and str(row.get("id") or "").strip()
+    ]
+    rel_set = set(relevant_ids)
+    tp = len(set(top_k) & rel_set)
+
+    rr = 0.0
+    for rank, chunk_id in enumerate(top_k, start=1):
+        if chunk_id in rel_set:
+            rr = 1.0 / rank
+            break
+
+    hit_at_1 = 1.0 if top_k and top_k[0] in rel_set else 0.0
+
+    return {
+        "precision": round(tp / k, 4) if k > 0 else 0.0,
+        "recall": round(tp / len(rel_set), 4),
+        "mrr": round(rr, 4),
+        "hit_at_1": hit_at_1,
+        "tp": tp,
+        "k": k,
+        "n_relevant": len(rel_set),
+        "note": "ok",
+    }
 
 # ── Metrics ──────────────────────────────────────────────────────────────────
 
@@ -186,9 +394,96 @@ def _benchmark_efficiency(model_name: str, model_cfg: dict, sample_texts: list[s
 
     return mean(times), std(times), peak / (1024 * 1024)
 
+
+def eval_task_b(model_name: str, model_cfg: dict, qa_pairs: list[dict], top_k: int = TASK_B_TOP_K) -> dict:
+    context_precision_list: list[float] = []
+    context_recall_list: list[float] = []
+    mrr_scores: list[float] = []
+    hit_at_1_list: list[float] = []
+    query_time_ms: list[float] = []
+
+    st_model = None
+    valid_queries = 0
+    skipped_no_ground_truth = 0
+    skipped_pending = 0
+
+    for qa in qa_pairs:
+        question = str(qa.get("question") or "").strip()
+        targets = qa.get("targets") or []
+        target_personnel = str(targets[0]).strip() if targets else ""
+        chunk_source = str(qa.get("chunk_source") or "").strip().lower()
+        relevant_ids = _extract_relevant_ids(qa)
+
+        if chunk_source == "pending":
+            qa_id = str(qa.get("qa_id") or "unknown")
+            print(f"  [WARN] Skip {qa_id}: chunk_source=pending")
+            skipped_pending += 1
+            continue
+
+        if chunk_source in {"not_found", "skipped"} or not relevant_ids:
+            skipped_no_ground_truth += 1
+            continue
+
+        if not question or not target_personnel:
+            continue
+
+        q_emb, st_model = _encode_query(model_name, model_cfg, question, st_model)
+
+        rpc_dim = int(model_cfg.get("rpc_dim") or len(q_emb))
+        if len(q_emb) > rpc_dim:
+            q_emb = q_emb[:rpc_dim]
+
+        start = time.perf_counter()
+        retrieved_rows = _search_top_k_chunks_supabase(
+            model_name=model_name,
+            query_emb=q_emb,
+            personnel_neo4j_id=target_personnel,
+            top_k=top_k,
+        )
+        elapsed_ms = (time.perf_counter() - start) * 1000
+
+        metrics = _compute_id_metrics(retrieved_rows, relevant_ids, k=top_k)
+        if metrics.get("note") != "ok":
+            skipped_no_ground_truth += 1
+            continue
+        context_precision = float(metrics.get("precision") or 0.0)
+        context_recall = float(metrics.get("recall") or 0.0)
+        mrr = float(metrics.get("mrr") or 0.0)
+        hit_at_1 = float(metrics.get("hit_at_1") or 0.0)
+
+        context_precision_list.append(context_precision)
+        context_recall_list.append(context_recall)
+        mrr_scores.append(mrr)
+        hit_at_1_list.append(hit_at_1)
+        query_time_ms.append(elapsed_ms)
+        valid_queries += 1
+
+    if valid_queries == 0:
+        return {
+            "context_precision": 0.0,
+            "context_recall": 0.0,
+            "mrr": 0.0,
+            "hit_at_1": 0.0,
+            "avg_query_time_ms": 0.0,
+            "n_evaluated": 0,
+            "queries_skipped_no_ground_truth": skipped_no_ground_truth,
+            "queries_skipped_pending": skipped_pending,
+        }
+
+    return {
+        "context_precision": round(mean(context_precision_list), 4),
+        "context_recall": round(mean(context_recall_list), 4),
+        "mrr": round(mean(mrr_scores), 4),
+        "hit_at_1": round(mean(hit_at_1_list), 4),
+        "avg_query_time_ms": round(mean(query_time_ms), 2),
+        "n_evaluated": valid_queries,
+        "queries_skipped_no_ground_truth": skipped_no_ground_truth,
+        "queries_skipped_pending": skipped_pending,
+    }
+
 # ── Main ─────────────────────────────────────────────────────────────────────
 
-def main():
+def run_task_a() -> None:
     if not JD_PATH.exists():
         print(f"JD dataset not found at {JD_PATH}. Please provide the file.")
         sys.exit(1)
@@ -282,7 +577,7 @@ def main():
             "mem_mb": model_result["peak_memory_mb"],
         })
 
-    save_json(all_results, "embedding_eval.json")
+    output_path = save_json(all_results, "embedding_eval_updated.json")
 
     print(f"\n{'='*80}")
     print("EMBEDDING EVALUATION RESULTS")
@@ -291,6 +586,72 @@ def main():
         table_rows,
         columns=["model", "mrr_at_5", "recall_at_5", "recall_at_10", "ndcg_at_5", "time_ms", "mem_mb"],
     )
+    print(f"\nSaved results to: {output_path}")
+
+
+def run_task_b(top_k: int = TASK_B_TOP_K) -> None:
+    if not QA_PATH.exists():
+        print(f"QA dataset not found at {QA_PATH}. Please provide the file.")
+        sys.exit(1)
+
+    with open(QA_PATH, "r", encoding="utf-8") as f:
+        qa_pairs = json.load(f)
+
+    print(f"Loaded {len(qa_pairs)} QA pairs for Task B.")
+
+    all_results: dict[str, dict] = {}
+    table_rows: list[dict[str, str | float]] = []
+
+    for model_name, model_cfg in MODELS.items():
+        print(f"\n{'='*60}")
+        print(f"Task B evaluating: {model_name} ({model_cfg['model_id']})")
+        print(f"{'='*60}")
+
+        result = eval_task_b(model_name, model_cfg, qa_pairs, top_k=top_k)
+        all_results[model_name] = result
+
+        table_rows.append({
+            "Model": model_name,
+            "Precision@5": result["context_precision"],
+            "Context Recall": result["context_recall"],
+            "MRR": result["mrr"],
+            "Hit@1": result["hit_at_1"],
+            "Avg Query Time (ms)": result["avg_query_time_ms"],
+        })
+
+    output_path = save_json(all_results, "embedding_eval_taskB_v2.json")
+
+    print(f"\n{'='*80}")
+    print("TASK B EMBEDDING EVALUATION RESULTS")
+    print(f"{'='*80}")
+    print_table(
+        table_rows,
+        columns=["Model", "Precision@5", "Context Recall", "MRR", "Hit@1", "Avg Query Time (ms)"],
+    )
+    print(f"\nSaved results to: {output_path}")
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Evaluate embedding models for Task A (JD retrieval) and Task B (chunk retrieval).")
+    parser.add_argument(
+        "--task",
+        choices=["a", "b", "both"],
+        default="both",
+        help="Choose evaluation task: a=JD retrieval, b=Digital Twin chunk retrieval, both=run both tasks.",
+    )
+    parser.add_argument(
+        "--top-k",
+        type=int,
+        default=TASK_B_TOP_K,
+        help="Top-k chunks for Task B context metrics.",
+    )
+    args = parser.parse_args()
+
+    if args.task in ("a", "both"):
+        run_task_a()
+
+    if args.task in ("b", "both"):
+        run_task_b(top_k=args.top_k)
 
 if __name__ == "__main__":
     main()

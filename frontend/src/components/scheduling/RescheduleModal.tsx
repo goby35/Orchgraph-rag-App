@@ -1,8 +1,6 @@
 'use client'
-import { useState } from 'react'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
-import { rescheduleAppointment } from '@/lib/api/schedule'
 import { cn } from '@/lib/utils'
 import { buttonVariants } from '@/lib/variants'
 
@@ -10,24 +8,47 @@ interface RescheduleModalProps {
   scheduleId: string | null
   open:       boolean
   onClose:    () => void
+  title?:     string
+  description?: string
+  confirmLabel?: string
+  onSubmit:   (proposedTime: string, notes?: string) => Promise<void>
 }
 
-export default function RescheduleModal({ scheduleId, open, onClose }: RescheduleModalProps) {
+export default function RescheduleModal({
+  scheduleId,
+  open,
+  onClose,
+  title = 'Đề xuất giờ mới',
+  description,
+  confirmLabel = 'Đề xuất',
+  onSubmit,
+}: RescheduleModalProps) {
   const [datetime, setDatetime] = useState('')
   const [notes,    setNotes]    = useState('')
-  const qc = useQueryClient()
+  const [isPending, setIsPending] = useState(false)
 
-  const { mutate, isPending } = useMutation({
-    mutationFn: () => rescheduleAppointment(scheduleId!, datetime, notes || undefined),
-    onSuccess: () => {
-      toast.success('Đã đề xuất giờ mới')
-      qc.invalidateQueries({ queryKey: ['schedules'] })
-      onClose()
-    },
-    onError: () => toast.error('Thất bại — thử lại'),
-  })
+  useEffect(() => {
+    if (!open) return
+    setDatetime('')
+    setNotes('')
+    setIsPending(false)
+  }, [open, scheduleId])
 
   if (!open) return null
+
+  const handleSubmit = async () => {
+    if (!scheduleId || !datetime) return
+    setIsPending(true)
+    try {
+      await onSubmit(datetime, notes || undefined)
+      toast.success('Đã gửi đề xuất')
+      onClose()
+    } catch {
+      toast.error('Thất bại — thử lại')
+    } finally {
+      setIsPending(false)
+    }
+  }
 
   return (
     <div
@@ -35,7 +56,10 @@ export default function RescheduleModal({ scheduleId, open, onClose }: Reschedul
       onClick={e => { if (e.target === e.currentTarget) onClose() }}
     >
       <div className="bg-background rounded-xl border shadow-lg w-full max-w-sm p-4 space-y-4">
-        <h2 className="font-semibold">Đề xuất giờ mới</h2>
+        <h2 className="font-semibold">{title}</h2>
+        {description ? (
+          <p className="text-xs text-muted-foreground leading-5">{description}</p>
+        ) : null}
 
         <div className="space-y-2">
           <label className="text-sm text-muted-foreground">Thời gian mới</label>
@@ -65,11 +89,11 @@ export default function RescheduleModal({ scheduleId, open, onClose }: Reschedul
             Hủy
           </button>
           <button
-            onClick={() => mutate()}
+            onClick={() => { void handleSubmit() }}
             disabled={!datetime || isPending}
             className={cn(buttonVariants({ variant: 'default' }), 'flex-1')}
           >
-            {isPending ? 'Đang gửi...' : 'Đề xuất'}
+            {isPending ? 'Đang gửi...' : confirmLabel}
           </button>
         </div>
       </div>

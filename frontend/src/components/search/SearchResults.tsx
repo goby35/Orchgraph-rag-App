@@ -8,10 +8,12 @@ import { CandidateCard } from "./CandidateCard"
 
 interface SearchResultsProps {
   results: CandidateResult[]
+  jobTitle: string
   loading: boolean
   error: unknown
   searched: boolean
   onRetry?: () => void
+  onStartInterview?: (candidate: CandidateResult) => void | Promise<void>
 }
 
 function errorMessage(err: unknown): string {
@@ -26,10 +28,12 @@ function errorMessage(err: unknown): string {
 
 export function SearchResults({
   results,
+  jobTitle,
   loading,
   error,
   searched,
   onRetry,
+  onStartInterview,
 }: SearchResultsProps) {
   if (loading) {
     return <PageSkeleton variant="card-list" />
@@ -63,7 +67,12 @@ export function SearchResults({
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
       {results.map((c) => (
-        <CandidateCard key={c.id} candidate={c} />
+        <CandidateCard
+          key={c.id}
+          candidate={c}
+          jobTitle={jobTitle}
+          onStartInterview={onStartInterview}
+        />
       ))}
     </div>
   )

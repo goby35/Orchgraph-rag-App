@@ -2,12 +2,16 @@
 
 import { useMutation } from "@tanstack/react-query"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
+import { toast } from "sonner"
 
-import { SearchBar } from "@/components/search/SearchBar"
+import { SearchBar, type SearchFormValues } from "@/components/search/SearchBar"
 import { SearchResults } from "@/components/search/SearchResults"
+import { createInterviewSession, type ReasoningSummary } from "@/lib/api/chat"
 import { mapSearchResponseToCandidates, searchCandidates } from "@/lib/api"
 import { cn } from "@/lib/utils"
+import { useAuthStore } from "@/store/auth.store"
 import type { CandidateResult } from "@/types"
 
 // ── Search history (localStorage) ────────────────────────────────────────────
@@ -15,6 +19,7 @@ import type { CandidateResult } from "@/types"
 interface SearchHistoryEntry {
   id:        string
   query:     string
+  jobTitle:  string
   timestamp: number
   results:   CandidateResult[]
 }
@@ -22,10 +27,49 @@ interface SearchHistoryEntry {
 const HISTORY_KEY = "org_search_history"
 const MAX_HISTORY = 5
 
+function extractJobTitleFromJd(jdText: string): string {
+  const normalized = jdText.replace(/\r/g, "").trim()
+  if (!normalized) return ""
+
+  const lines = normalized
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean)
+
+  const linePattern = /^(?:v[iị]\s*tr[ií]|position|job\s*title)\s*[:\-]\s*(.+)$/i
+  for (const line of lines.slice(0, 8)) {
+    const match = line.match(linePattern)
+    if (match?.[1]) {
+      return match[1].trim().slice(0, 120)
+    }
+  }
+
+  const inlinePattern = /(?:v[iị]\s*tr[ií]|position|job\s*title)\s*[:\-]\s*([^\n\r]+)/i
+  const inlineMatch = normalized.match(inlinePattern)
+  if (inlineMatch?.[1]) {
+    return inlineMatch[1].trim().slice(0, 120)
+  }
+
+  const firstLine = lines[0]?.replace(/^[-*#\s]+/, "") ?? ""
+  if (firstLine) {
+    return firstLine.slice(0, 120)
+  }
+
+  return normalized.length > 50
+    ? `${normalized.slice(0, 50).trim()}...`
+    : normalized
+}
+
 function loadHistory(): SearchHistoryEntry[] {
   try {
     const raw = typeof window !== "undefined" ? localStorage.getItem(HISTORY_KEY) : null
-    return raw ? (JSON.parse(raw) as SearchHistoryEntry[]) : []
+    const parsed = raw ? (JSON.parse(raw) as Partial<SearchHistoryEntry>[]) : []
+    return parsed
+      .filter((entry): entry is SearchHistoryEntry => Boolean(entry?.id && entry.query && entry.timestamp && entry.results))
+      .map((entry) => ({
+        ...entry,
+        jobTitle: entry.jobTitle?.trim() ? entry.jobTitle : extractJobTitleFromJd(entry.query),
+      }))
   } catch {
     return []
   }
@@ -95,10 +139,17 @@ function RecentSearchHistory({ history }: { history: SearchHistoryEntry[] }) {
                   {entry.results.map(c => {
                     const pct  = Math.round(Math.min(1, Math.max(0, c.score)) * 100)
                     const tone = pct >= 70 ? "green" : pct >= 40 ? "amber" : "gray"
+                      const jobTitle = entry.jobTitle || extractJobTitleFromJd(entry.query)
+                    const personnelId = (c as CandidateResult & { personnel_id?: string }).personnel_id || c.id
+                    const params = new URLSearchParams({
+                      personnelId,
+                      jobTitle,
+                      sessionId: "new",
+                    })
                     return (
                       <Link
                         key={c.id}
-                        href={`/interview/${encodeURIComponent(c.id)}`}
+                        href={`/interview?${params.toString()}`}
                         className="flex items-center justify-between gap-3 px-3 py-2 rounded-md hover:bg-muted/60 transition-colors"
                       >
                         <span className="truncate text-sm">{c.name || c.id}</span>
@@ -132,27 +183,32 @@ function RecentSearchHistory({ history }: { history: SearchHistoryEntry[] }) {
 // ── Main Page ─────────────────────────────────────────────────────────────────
 
 export default function OrgSearchPage() {
+  const router = useRouter()
+  const orgNeoId = useAuthStore((state) => state.neoId)
   const [results,   setResults]   = useState<CandidateResult[]>([])
   const [searched,  setSearched]  = useState(false)
-  const [lastQuery, setLastQuery] = useState("")
   const [history,   setHistory]   = useState<SearchHistoryEntry[]>([])
+  const [submittedJobTitle, setSubmittedJobTitle] = useState("")
+  const [lastForm, setLastForm] = useState<SearchFormValues | null>(null)
 
   useEffect(() => {
     setHistory(loadHistory())
   }, [])
 
   const mutation = useMutation({
-    mutationFn: (query: string) =>
-      searchCandidates({ query, top_k: 10 }),
-    onSuccess: (data, query) => {
+    mutationFn: (form: SearchFormValues) =>
+      searchCandidates({ query: buildSearchQuery(form), top_k: 5 }),
+    onSuccess: (data, form) => {
       const candidates = mapSearchResponseToCandidates(data)
       setResults(candidates)
       setSearched(true)
+      setSubmittedJobTitle(form.job_title)
 
       if (candidates.length > 0) {
         const entry: SearchHistoryEntry = {
           id:        crypto.randomUUID(),
-          query,
+          query:     buildSearchQuery(form),
+          jobTitle:  form.job_title,
           timestamp: Date.now(),
           results:   candidates,
         }
@@ -162,9 +218,66 @@ export default function OrgSearchPage() {
     },
   })
 
-  function handleSearch(query: string) {
-    setLastQuery(query)
-    mutation.mutate(query)
+  function buildSearchQuery(form: SearchFormValues): string {
+    const parts: string[] = []
+
+    parts.push(form.job_title.trim())
+
+    if (form.seniority_level) {
+      parts.push(`Cấp độ: ${form.seniority_level}`)
+    }
+
+    if (form.must_have_skills.length > 0) {
+      parts.push(`Kỹ năng bắt buộc: ${form.must_have_skills.join(', ')}`)
+    }
+
+    if (form.job_description?.trim()) {
+      parts.push(form.job_description.trim())
+    }
+
+    return parts.join('. ')
+  }
+
+  function handleSearch(form: SearchFormValues) {
+    setLastForm(form)
+    setSubmittedJobTitle(form.job_title)
+    mutation.mutate(form)
+  }
+
+  async function handleStartInterview(candidate: CandidateResult) {
+    if (!orgNeoId) {
+      toast.error("Không tìm thấy tổ chức hiện tại.")
+      return
+    }
+
+    try {
+      const reasoningSummary: ReasoningSummary | undefined = candidate.reasoning_summary
+        ? candidate.reasoning_summary
+        : {
+            skills: candidate.skills ?? [],
+            seniority_years: null,
+            connection_strength: null,
+            match_score: candidate.score,
+          }
+
+      const session = await createInterviewSession({
+        personnel_id: candidate.personnel_id || candidate.id,
+        org_id: orgNeoId,
+        job_title: submittedJobTitle || "Vị trí chưa xác định",
+        reasoning_summary: reasoningSummary,
+      })
+
+      const params = new URLSearchParams({
+        personnelId: candidate.personnel_id || candidate.id,
+        jobTitle: submittedJobTitle || "Vị trí chưa xác định",
+        sessionId: session.session_id,
+      })
+
+      router.push(`/interview?${params.toString()}`)
+    } catch (error) {
+      console.error("Failed to create interview session", error)
+      toast.error("Không thể mở phiên phỏng vấn. Thử lại sau.")
+    }
   }
 
   return (
@@ -184,12 +297,14 @@ export default function OrgSearchPage() {
 
       <SearchResults
         results={results}
+        jobTitle={submittedJobTitle}
         loading={mutation.isPending}
         error={mutation.error}
         searched={searched}
+        onStartInterview={handleStartInterview}
         onRetry={
-          lastQuery
-            ? () => { mutation.mutate(lastQuery) }
+          lastForm
+            ? () => { mutation.mutate(lastForm) }
             : undefined
         }
       />

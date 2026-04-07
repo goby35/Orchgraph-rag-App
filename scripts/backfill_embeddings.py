@@ -1,89 +1,146 @@
-from neo4j import GraphDatabase
-from pipeline.vectorizer import embed_all_models
-from pipeline.config import settings
+from __future__ import annotations
 
-ALLOWED_FIELDS = {
+import argparse
+import os
+import sys
+from typing import Any
+
+# Path bootstrap for direct script execution.
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+from pipeline.supabase_client import get_supabase
+from pipeline.vectorizer import embed_all_models
+
+SCHEMA_NAME = "vdme"
+CHUNKS_TABLE = "document_chunks"
+EXPECTED_DIM = 768
+
+ALLOWED_SOURCE_FIELDS = {
     "public_embeddings_gte",
     "public_embeddings_bge",
-    "public_embeddings_minilm",
     "public_embeddings_e5",
     "public_embeddings_phobert",
 }
 
-def backfill_missing_embeddings():
-    with GraphDatabase.driver(settings.NEO4J_URI, auth=(settings.NEO4J_USER, settings.NEO4J_PASSWORD)) as driver:
-        with driver.session() as session:
-            # Bước 1: Tìm các Node Personnel bị thiếu model mới (retry cho partial writes)
-            # Đồng thời kéo luôn phần text tóm tắt (summary) về để vectorize
-            query_get = """
-            MATCH (p:Personnel)
-            WHERE (
-                p.public_embeddings_gte IS NULL
-                OR p.public_embeddings_bge IS NULL
-                OR p.public_embeddings_minilm IS NULL
-            )
-              AND p.public_professional_summary IS NOT NULL
-            RETURN p.id AS id, p.public_professional_summary AS text
-            """
-            records = session.run(query_get).data()
+SOURCE_TO_TARGET_FIELD = {
+    "public_embeddings_gte": "embedding_gte",
+    "public_embeddings_bge": "embedding_bge",
+    "public_embeddings_e5": "embedding_e5",
+}
 
-            print(f"Tìm thấy {len(records)} ứng viên cần update embeddings.")
+ALLOWED_TARGET_FIELDS = {
+    "embedding_gte",
+    "embedding_bge",
+    "embedding_e5",
+}
 
-            batch_rows = []
-            failed_ids = []
 
-            for record in records:
-                p_id = record['id']
-                text = record['text']
+def _as_dict(value: Any) -> dict[str, Any]:
+    return value if isinstance(value, dict) else {}
 
-                print(f"Đang xử lý vector cho ID: {p_id}...")
 
-                try:
-                    # Bước 2: Chạy tính toán vector cho tất cả models
-                    embeddings_dict = embed_all_models(text)
+def _vector_literal(values: list[float]) -> str:
+    return "[" + ",".join(str(float(v)) for v in values) + "]"
 
-                    # Alias tương thích: e5 được dùng làm nguồn cho field minilm đích
-                    if "public_embeddings_minilm" not in embeddings_dict and "public_embeddings_e5" in embeddings_dict:
-                        embeddings_dict["public_embeddings_minilm"] = embeddings_dict["public_embeddings_e5"]
 
-                    # WHITELIST: chỉ cho phép các field đã định nghĩa
-                    unexpected = [key for key in embeddings_dict.keys() if key not in ALLOWED_FIELDS]
-                    if unexpected:
-                        raise ValueError(f"Unexpected embedding fields for {p_id}: {unexpected}")
+def _update_chunk_embeddings(schema_client: Any, chunk_id: str, payload: dict[str, str]) -> None:
+    (
+        schema_client
+        .table(CHUNKS_TABLE)
+        .update(payload)
+        .eq("id", chunk_id)
+        .execute()
+    )
 
-                    # Bước 3: Build batch row cho update 1 lần bằng UNWIND
-                    row = {
-                        "id": p_id,
-                        "public_embeddings_gte": embeddings_dict.get("public_embeddings_gte"),
-                        "public_embeddings_bge": embeddings_dict.get("public_embeddings_bge"),
-                        "public_embeddings_minilm": embeddings_dict.get("public_embeddings_minilm"),
-                    }
-                    batch_rows.append(row)
-                    print(f"✅ Đã update thành công ID: {p_id}")
-                except Exception as exc:
-                    failed_ids.append(p_id)
-                    print(f"❌ Lỗi khi xử lý ID {p_id}: {exc}")
 
-            updated_count = 0
-            if batch_rows:
-                set_query = """
-                UNWIND $batch AS row
-                MATCH (p:Personnel {id: row.id})
-                SET p.public_embeddings_gte = coalesce(row.public_embeddings_gte, p.public_embeddings_gte),
-                    p.public_embeddings_bge = coalesce(row.public_embeddings_bge, p.public_embeddings_bge),
-                    p.public_embeddings_minilm = coalesce(row.public_embeddings_minilm, p.public_embeddings_minilm),
-                    p.last_updated = timestamp()
-                RETURN count(p) AS updated_count
-                """
-                result = session.run(set_query, batch=batch_rows).single()
-                updated_count = int(result["updated_count"]) if result and result.get("updated_count") is not None else 0
+def _to_vector_literal_if_valid(vector: Any, chunk_id: str, target_field: str) -> str | None:
+    if not isinstance(vector, list) or not vector:
+        return None
+    if len(vector) != EXPECTED_DIM:
+        print(
+            f"[WARN] Skip field {target_field} for chunk {chunk_id}: "
+            f"expected {EXPECTED_DIM} dims, got {len(vector)}"
+        )
+        return None
+    return _vector_literal(vector)
 
-            print(f"Batch write hoàn tất: {updated_count}/{len(batch_rows)} records được ghi.")
-            if failed_ids:
-                print(f"⚠️ Tổng số records lỗi: {len(failed_ids)}")
-                print("⚠️ Failed IDs:", ", ".join(failed_ids))
-            else:
-                print("Không có record lỗi.")
+
+def backfill_missing_embeddings(missing_field: str = "embedding_gte") -> None:
+    if missing_field not in ALLOWED_TARGET_FIELDS:
+        raise ValueError(f"Unsupported missing_field: {missing_field}")
+
+    sb = get_supabase()
+    schema_client = sb.schema(SCHEMA_NAME)
+
+    # Update-only flow: process existing rows that still miss the selected embedding field.
+    chunks = (
+        schema_client
+        .table(CHUNKS_TABLE)
+        .select("id, content, embedding_gte, embedding_bge, embedding_e5")
+        .is_(missing_field, "null")
+        .not_.is_("content", "null")
+        .neq("content", "")
+        .execute()
+    ).data or []
+
+    print(f"Found {len(chunks)} chunks requiring {missing_field} backfill.")
+
+    updated_total = 0
+    failed_ids: list[str] = []
+
+    for raw_chunk in chunks:
+        chunk = _as_dict(raw_chunk)
+        chunk_id = str(chunk.get("id") or "").strip()
+        content = str(chunk.get("content") or "").strip()
+
+        if not chunk_id or not content:
+            continue
+
+        try:
+            embeddings_dict = embed_all_models(content)
+
+            unexpected = [key for key in embeddings_dict.keys() if key not in ALLOWED_SOURCE_FIELDS]
+            if unexpected:
+                raise ValueError(f"Unexpected embedding fields for chunk {chunk_id}: {unexpected}")
+
+            payload: dict[str, str] = {}
+            for source_field, target_field in SOURCE_TO_TARGET_FIELD.items():
+                if target_field not in ALLOWED_TARGET_FIELDS:
+                    raise ValueError(f"Target field not whitelisted: {target_field}")
+
+                # Write only missing embedding columns on existing rows.
+                if chunk.get(target_field) is not None:
+                    continue
+
+                vector = embeddings_dict.get(source_field)
+                literal = _to_vector_literal_if_valid(vector, chunk_id, target_field)
+                if literal is not None:
+                    payload[target_field] = literal
+
+            if not payload:
+                continue
+
+            _update_chunk_embeddings(schema_client, chunk_id, payload)
+            updated_total += 1
+            if updated_total % 50 == 0:
+                print(f"Updated {updated_total} chunks so far...")
+        except Exception as exc:
+            failed_ids.append(chunk_id)
+            print(f"[WARN] Failed chunk {chunk_id}: {exc}")
+
+    print(f"Backfill complete: {updated_total} chunks updated.")
+    if failed_ids:
+        print(f"[WARN] Failed chunks: {len(failed_ids)}")
+        print(", ".join(failed_ids))
+
 
 if __name__ == "__main__":
-    backfill_missing_embeddings()
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--missing-field",
+        choices=sorted(ALLOWED_TARGET_FIELDS),
+        default="embedding_gte",
+        help="Select which missing embedding column to target.",
+    )
+    args = parser.parse_args()
+    backfill_missing_embeddings(missing_field=args.missing_field)

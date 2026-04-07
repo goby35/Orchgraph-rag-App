@@ -22,11 +22,13 @@ class Settings:
     NUTRIENT_BASE_URL: str = os.getenv("NUTRIENT_BASE_URL", "https://api.nutrient.io/build")
     CEREBRAS_API_KEY: str = os.getenv("CEREBRAS_API_KEY", "")
     OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "")
+    ANTHROPIC_API_KEY: str = os.getenv("ANTHROPIC_API_KEY", "")
     GROQ_API_KEY: str = os.getenv("GROQ_API_KEY", "")
 
     # --- LLM Models ---
     CEREBRAS_MODEL: str = os.getenv("CEREBRAS_MODEL", "llama3.1-8b")
     OPENAI_MODEL: str = "gpt-4o"
+    ANTHROPIC_MODEL: str = os.getenv("ANTHROPIC_MODEL", "claude-sonnet-4-6")
 
     # --- Chunking ---
     CHUNK_SIZE: int = 250
@@ -40,7 +42,7 @@ class Settings:
         "vinai/phobert-base-v2",
         "Alibaba-NLP/gte-multilingual-base",
         "intfloat/multilingual-e5-base",
-        "BAAI/bge-m3",
+        "BAAI/bge-base-en-v1.5",
     ]
     ACTIVE_EMBEDDING_MODEL: str = os.getenv("ACTIVE_EMBEDDING_MODEL", "Alibaba-NLP/gte-multilingual-base")
 
@@ -48,7 +50,7 @@ class Settings:
     GTE_MODEL: str = "sentence-transformers/all-MiniLM-L6-v2"
 
     # --- Neo4j ---
-    NEO4J_URI: str = os.getenv("NEO4J_URI", "bolt://127.0.0.1:7687")
+    NEO4J_URI: str = os.getenv("NEO4J_URI", "neo4j+s://xxx.databases.neo4j.io")
     NEO4J_USER: str = os.getenv("NEO4J_USER", "neo4j")
     NEO4J_PASSWORD: str = os.getenv("NEO4J_PASSWORD", "password123")
 
@@ -105,3 +107,4 @@ def get_logger(name: str) -> logging.Logger:
         logger.addHandler(handler)
     logger.setLevel(getattr(logging, settings.LOG_LEVEL.upper(), logging.INFO))
     return logger
+

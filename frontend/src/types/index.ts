@@ -1,4 +1,5 @@
 import type { components } from "./api"
+import type { ReasoningSummary } from "@/lib/api/chat"
 
 export type { components, paths } from "./api"
 
@@ -44,6 +45,8 @@ export interface CandidateResult {
   summary: string
   score: number
   skills: string[]
+  personnel_id?: string
+  reasoning_summary?: ReasoningSummary | null
   context?: string[]
 }
 
@@ -78,6 +81,8 @@ export type ScheduleStatus =
   | 'pending'
   | 'confirmed'
   | 'rescheduled'
+  | 'awaiting_org_response'
+  | 'awaiting_personnel_response'
   | 'cancelled'
   | 'completed'
 
@@ -95,6 +100,14 @@ export interface ScheduleRecord {
   location:         string | null
   status:           ScheduleStatus
   chat_summary:     string | null
+  reschedule_history?: ScheduleHistoryEntry[] | null
   email_sent:       boolean
   created_at:       string
+}
+
+export interface ScheduleHistoryEntry {
+  by: 'org' | 'personnel'
+  proposed_time: string
+  timestamp: string
+  notes?: string | null
 }

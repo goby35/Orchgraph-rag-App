@@ -1,7 +1,7 @@
 # api/models/scheduling.py
 from __future__ import annotations
 from datetime import datetime, date
-from typing import Any
+from typing import Any, Literal
 from pydantic import BaseModel, Field
 
 
@@ -63,6 +63,7 @@ class ScheduleResponse(BaseModel):
     location:        str | None
     status:          str
     chat_summary:    str | None
+    reschedule_history: list[dict[str, Any]] | None = None
     email_sent:      bool
     created_at:      datetime
 
@@ -72,8 +73,13 @@ class ScheduleReschedule(BaseModel):
     notes:          str | None = None
 
 
+class ScheduleCounterPropose(BaseModel):
+    proposed_time: datetime
+    notes:         str | None = None
+
+
 class ScheduleStatusUpdate(BaseModel):
-    status: str   # "confirmed" | "cancelled"
+    status: Literal["confirmed", "cancelled"]
     notes:  str | None = None
 
 

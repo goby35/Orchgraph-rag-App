@@ -1,0 +1,26 @@
+{
+  "phobert_base_v2": {
+    "context_precision": 1.0,
+    "context_recall": 0.9808,
+    "avg_query_time_ms": 841.17,
+    "queries_evaluated": 26
+  },
+  "multilingual_e5": {
+    "context_precision": 1.0,
+    "context_recall": 1.0,
+    "avg_query_time_ms": 692.19,
+    "queries_evaluated": 26
+  },
+  "gte_multilingual": {
+    "context_precision": 0.4077,
+    "context_recall": 0.5705,
+    "avg_query_time_ms": 688.1,
+    "queries_evaluated": 26
+  },
+  "bge_m3": {
+    "context_precision": 0.0385,
+    "context_recall": 0.0962,
+    "avg_query_time_ms": 710.32,
+    "queries_evaluated": 26
+  }
+}

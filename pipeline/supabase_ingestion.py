@@ -166,7 +166,7 @@ def _make_chunks(node: RecruitmentNode, user_id: str) -> list[dict[str, Any]]:
             {
                 "user_id": user_id,
                 "is_public": False,
-                "content": priv.project_technical_secrets,
+                "content": f"[Bí mật kỹ thuật] {priv.project_technical_secrets}",
                 "metadata": {"section": "secrets"},
             }
         )
@@ -176,7 +176,7 @@ def _make_chunks(node: RecruitmentNode, user_id: str) -> list[dict[str, Any]]:
             {
                 "user_id": user_id,
                 "is_public": False,
-                "content": f"Ky vong luong: {priv.salary_expectation}",
+                "content": f"[Lương kỳ vọng] {priv.salary_expectation}",
                 "metadata": {"section": "salary"},
             }
         )
@@ -197,7 +197,7 @@ def _make_chunks(node: RecruitmentNode, user_id: str) -> list[dict[str, Any]]:
             {
                 "user_id": user_id,
                 "is_public": False,
-                "content": "Khong muon lam tai: " + ", ".join(priv.blacklist_orgs),
+                "content": "[Blacklist] " + ", ".join(priv.blacklist_orgs),
                 "metadata": {"section": "blacklist"},
             }
         )

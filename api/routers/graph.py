@@ -1,7 +1,11 @@
 from __future__ import annotations
+
 import json
+from typing import Any
+
 from fastapi import APIRouter, Depends, Query
 from neo4j import GraphDatabase
+
 from api.deps import get_current_user
 from pipeline.config import settings
 
@@ -22,13 +26,63 @@ def _parse_json_field(value: object) -> list[str]:
     return []
 
 
+def _normalize_node_type(labels: list[str]) -> str:
+    preferred = {"personnel", "org", "organization", "skill"}
+    for label in labels:
+        lowered = label.lower()
+        if lowered in preferred:
+            return "org" if lowered == "organization" else lowered
+    return labels[0].lower() if labels else "unknown"
+
+
+def _build_node_payload(node: Any) -> dict[str, object] | None:
+    if node is None:
+        return None
+
+    node_id = node.get("id") or str(node.element_id)
+    labels = list(node.labels)
+    node_type = _normalize_node_type(labels)
+    personnel_full_name = (
+        node.get("public_full_name")
+        or node.get("full_name")
+        or node.get("public_name")
+    )
+    label = (
+        personnel_full_name
+        or node.get("public_name")
+        or node.get("name")
+        or node.get("title")
+        or node.get("label")
+        or node_id
+    )
+
+    node_data: dict[str, object] = {
+        "label": label,
+        "type": node_type,
+    }
+
+    if node_type == "personnel":
+        node_data["public_full_name"] = personnel_full_name or node_id
+        node_data["skills"] = _parse_json_field(node.get("public_skills"))
+        node_data["summary"] = node.get("public_professional_summary", "")
+        node_data["availability"] = bool(node.get("public_is_available", False))
+
+    return {
+        "id": node_id,
+        "type": node_type,
+        "data": node_data,
+    }
+
+
 @router.get("")
 async def get_graph(
     show_all: bool = Query(False),
+    focus_id: str | None = Query(None),
+    focus_node_id: str | None = Query(None),
     user: dict = Depends(get_current_user),
 ) -> dict[str, list[dict[str, object]]]:
-    # 1. Trích xuất ID của user đang đăng nhập (Tùy JWT của Sếp lưu ở field nào)
     user_id = user.get("neo4j_id") or user.get("sub") or user.get("id")
+    target_id = focus_id or focus_node_id or user_id
 
     driver = GraphDatabase.driver(
         settings.NEO4J_URI,
@@ -37,18 +91,17 @@ async def get_graph(
 
     try:
         with driver.session() as session:
+            params: dict[str, Any]
             if show_all:
-                # Lấy giới hạn để không lag browser nếu admin muốn xem toàn cảnh
                 query = "MATCH (n)-[r]->(m) RETURN n, r, m LIMIT 200"
                 params = {}
             else:
-                # FIX TIER 1: Ego-Graph. Chỉ lấy chính user đó và các quan hệ 1 bước nhảy
                 query = """
-                MATCH (n {id: $user_id})
-                OPTIONAL MATCH (n)-[r]-(m)
-                RETURN n, r, m
+                MATCH (focus {id: $focus_id})
+                OPTIONAL MATCH p = (focus)-[*1..1]-(other)
+                RETURN focus, p
                 """
-                params = {"user_id": user_id}
+                params = {"focus_id": target_id}
 
             records = session.run(query, **params)
 
@@ -57,64 +110,77 @@ async def get_graph(
             seen_nodes = set()
             seen_edges = set()
 
-            # Hàm con xử lý Động (Dynamic Parsing) cho bất kỳ loại Node nào
-            def add_node(node):
-                if node is None: return
-                
-                # Trích xuất ID (neo4j driver trả về object Node)
-                node_id = node.get("id") or str(node.element_id)
-                if node_id in seen_nodes: return
-                
-                labels = list(node.labels)
-                node_type = labels[0].lower() if labels else "unknown"
-                
-                # Ưu tiên lấy tên hiển thị (tương thích cho mọi loại Node)
-                label = node.get("public_name") or node.get("name") or node.get("title") or node_id
-                
-                node_data = {
-                    "label": label,
-                    "type": node_type,
-                }
-                
-                # Giữ nguyên cấu trúc riêng nếu là Personnel để UI không bị vỡ
-                if node_type == "personnel":
-                    node_data["skills"] = _parse_json_field(node.get("public_skills"))
-                    node_data["summary"] = node.get("public_professional_summary", "")
-                    node_data["availability"] = bool(node.get("public_is_available", False))
-                    
+            def add_node(node: object):
+                payload = _build_node_payload(node)
+                if payload is None:
+                    return
+
+                node_id = str(payload["id"])
+                if node_id in seen_nodes:
+                    return
+
                 nodes.append({
-                    "id": node_id,
-                    "type": node_type, # Quan trọng để React Flow biết dùng Custom Node nào
-                    "data": node_data,
-                    "position": {"x": 0, "y": 0}
+                    **payload,
+                    "position": {"x": 0, "y": 0},
                 })
                 seen_nodes.add(node_id)
 
-            for record in records:
-                n = record.get("n")
-                r = record.get("r")
-                m = record.get("m")
+            if show_all:
+                for record in records:
+                    n = record.get("n")
+                    r = record.get("r")
+                    m = record.get("m")
 
-                # Parse cả 2 đầu của đồ thị
-                add_node(n)
-                add_node(m)
+                    add_node(n)
+                    add_node(m)
 
-                # Parse Cạnh (Edges)
-                if r is not None:
+                    if r is None:
+                        continue
+
                     source_id = r.start_node.get("id") or str(r.start_node.element_id)
                     target_id = r.end_node.get("id") or str(r.end_node.element_id)
                     rel_type = r.type
                     edge_id = f"{source_id}-{rel_type}-{target_id}"
-                    
-                    if edge_id not in seen_edges:
-                        # Ưu tiên hiển thị status (VD: accepted), nếu không thì hiện Tên quan hệ (VD: HAS_SKILL)
-                        rel_status = r.get("status") or rel_type
+
+                    if edge_id in seen_edges:
+                        continue
+
+                    rel_status = r.get("status") or rel_type
+                    edges.append({
+                        "id": edge_id,
+                        "source": source_id,
+                        "target": target_id,
+                        "label": rel_status,
+                        "style": {"stroke": "#22C55E" if rel_status == "accepted" else "#9CA3AF"},
+                    })
+                    seen_edges.add(edge_id)
+            else:
+                for record in records:
+                    add_node(record.get("focus"))
+
+                    path = record.get("p")
+                    if path is None:
+                        continue
+
+                    for path_node in path.nodes:
+                        add_node(path_node)
+
+                    for rel in path.relationships:
+                        source_id = rel.start_node.get("id") or str(rel.start_node.element_id)
+                        target_id = rel.end_node.get("id") or str(rel.end_node.element_id)
+                        rel_type = rel.type
+                        edge_id = f"{source_id}-{rel_type}-{target_id}"
+
+                        if edge_id in seen_edges:
+                            continue
+
+                        rel_status = rel.get("status") or rel_type
                         edges.append({
                             "id": edge_id,
                             "source": source_id,
                             "target": target_id,
                             "label": rel_status,
-                            "style": {"stroke": "#22C55E" if rel_status == "accepted" else "#9CA3AF"}
+                            "style": {"stroke": "#22C55E" if rel_status == "accepted" else "#9CA3AF"},
                         })
                         seen_edges.add(edge_id)
 

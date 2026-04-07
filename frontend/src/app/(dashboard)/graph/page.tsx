@@ -1,23 +1,28 @@
 "use client"
 
 import { useQuery } from "@tanstack/react-query"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 
 import { ErrorState } from "@/components/shared/ErrorState"
 import { PageSkeleton } from "@/components/shared/PageSkeleton"
 import GraphCanvas, {
+  transformGraphData,
   type GraphNodeSelection,
 } from "@/components/graph/GraphCanvas"
 import { NodeDetailPanel } from "@/components/graph/NodeDetailPanel"
 import { getGraph } from "@/lib/api"
+import { useAuthStore } from "@/store/auth.store"
 
 export default function OrgGraphPage() {
   const [selected, setSelected] = useState<GraphNodeSelection | null>(null)
+  const neoId = useAuthStore((state) => state.neoId)
 
   const { data, isLoading, error, refetch, isFetching } = useQuery({
-    queryKey: ["graph"],
-    queryFn: () => getGraph(true),
+    queryKey: ["graph", neoId],
+    queryFn: () => getGraph(false, neoId),
   })
+
+  const graphData = useMemo(() => transformGraphData(data), [data])
 
   if (isLoading) {
     return (
@@ -51,7 +56,7 @@ export default function OrgGraphPage() {
           Đồ thị quan hệ
         </h1>
         <p className="text-muted-foreground mt-1 text-sm">
-          Organization ↔ Personnel (CONNECTED_TO). Click node để xem chi tiết.
+          Chỉ hiển thị bạn và các node có quan hệ trực tiếp với bạn.
         </p>
       </div>
       <div className="flex flex-col gap-4 lg:flex-row">
@@ -62,15 +67,20 @@ export default function OrgGraphPage() {
             </div>
           ) : null}
           <GraphCanvas
-            data={data}
+            graphData={graphData}
             onNodeClick={(sel) => {
               setSelected(sel)
             }}
+            onBackgroundClick={() => {
+              setSelected(null)
+            }}
+            selectedNodeId={selected?.id ?? null}
           />
         </div>
         {selected ? (
           <NodeDetailPanel
             selection={selected}
+            graphData={graphData}
             onClose={() => {
               setSelected(null)
             }}

@@ -1,0 +1,51 @@
+{
+  "configs": [
+    "RAG",
+    "GraphRAG",
+    "Hybrid",
+    "Hybrid+"
+  ],
+  "metrics": {
+    "faithfulness": [
+      0.8726648351648353,
+      0.8832667332667333,
+      0.8612707805015497,
+      0.8803148268735315
+    ],
+    "answer_relevancy": [
+      0.6457828436152695,
+      0.6761344016317926,
+      0.7461900472923865,
+      0.747439816051902
+    ],
+    "context_precision": [
+      0.9102564101791667,
+      0.9166666665916666,
+      0.9102564101810897,
+      0.9166666665897435
+    ],
+    "context_recall": [
+      0.9615384615384616,
+      0.9615384615384616,
+      0.9615384615384616,
+      0.9615384615384616
+    ],
+    "answer_correctness": [
+      0.6613174120713432,
+      0.7052100988274673,
+      0.63776407189185,
+      0.6566513860621909
+    ]
+  },
+  "ablation_notes": {
+    "graph_contribution": "Hybrid vs RAG",
+    "graph_complexity_contribution": "Hybrid+ vs Hybrid",
+    "pure_graph_vs_hybrid": "GraphRAG vs Hybrid"
+  },
+  "runtime_seconds": {
+    "RAG": 624.346,
+    "GraphRAG": 610.204,
+    "Hybrid": 602.867,
+    "HybridPlus": 619.257
+  }
+}

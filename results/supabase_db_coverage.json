@@ -1,0 +1,30 @@
+{
+  "summary": {
+    "users_total": 77,
+    "chunks_total": 684,
+    "users_no_chunks": 3,
+    "users_no_public_chunks": 0,
+    "users_no_private_chunks": 0,
+    "users_with_embedding_issues": 0
+  },
+  "users_no_chunks": [
+    {
+      "neo4j_id": "0a6638b7-77da-4008-a084-9cd26b3145e3",
+      "role": "ORGANIZATION",
+      "full_name": "Trần Thị Hồng Ngọc"
+    },
+    {
+      "neo4j_id": "a27f1b9a-ca59-4aa9-a7e7-3217804d3a7f",
+      "role": "PERSONNEL",
+      "full_name": "Trần Thị Việt trinh"
+    },
+    {
+      "neo4j_id": "0329f8b1-eb71-4746-884c-11b1a4f0e279",
+      "role": "PERSONNEL",
+      "full_name": "Demo"
+    }
+  ],
+  "users_no_public_chunks": [],
+  "users_no_private_chunks": [],
+  "users_with_embedding_issues": []
+}

@@ -126,6 +126,85 @@ def _build_html_body(
     """
 
 
+def _send_html_email(subject: str, html_body: str, recipients: list[str]) -> None:
+    if not SENDER_EMAIL or not SENDER_PASSWORD:
+        logger.warning("[email] DEMO_SENDER_EMAIL / DEMO_SENDER_APP_PASSWORD chưa được set")
+        return
+
+    clean_recipients = [email.strip() for email in recipients if str(email or "").strip()]
+    if not clean_recipients:
+        clean_recipients = [RECIPIENT_EMAIL] if RECIPIENT_EMAIL else []
+    if not clean_recipients:
+        logger.warning("[email] Không có người nhận hợp lệ")
+        return
+
+    msg = MIMEMultipart("alternative")
+    msg["From"] = SENDER_EMAIL
+    msg["To"] = ", ".join(clean_recipients)
+    msg["Subject"] = subject
+    msg.attach(MIMEText(html_body, "html", "utf-8"))
+
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
+        smtp.login(SENDER_EMAIL, SENDER_PASSWORD)
+        smtp.sendmail(SENDER_EMAIL, clean_recipients, msg.as_string())
+
+
+def send_schedule_notification_email(
+    *,
+    subject: str,
+    headline: str,
+    message: str,
+    org_neo4j_id: str,
+    per_neo4j_id: str,
+    recipient_role: str,
+) -> None:
+    """Gửi email ngắn cho các mốc phản hồi lịch hẹn."""
+    org_name = org_neo4j_id
+    per_name = per_neo4j_id
+
+    try:
+        from pipeline.supabase_client import get_supabase
+
+        sb = get_supabase()
+        per_row: str = sb_val(
+            sb.schema("vdme").table("users")
+            .select("full_name").eq("neo4j_id", per_neo4j_id).maybe_single().execute(),
+            "full_name"
+        )
+        org_row: str = sb_val(
+            sb.schema("vdme").table("users")
+            .select("full_name").eq("neo4j_id", org_neo4j_id).maybe_single().execute(),
+            "full_name"
+        )
+        if per_row:
+            per_name = per_row
+        if org_row:
+            org_name = org_row
+    except Exception:
+        pass
+
+    html_body = f"""
+    <html><body style="font-family: Arial, sans-serif; max-width: 600px; margin: auto;">
+      <div style="background:#0D1219;padding:20px;border-radius:8px;margin-bottom:20px;">
+        <h2 style="color:#00C9B8;margin:0;">Digital Twin Recruitment</h2>
+        <p style="color:#8E99AE;margin:4px 0 0;">{headline}</p>
+      </div>
+      <p>{message}</p>
+      <p style="color:#999;font-size:12px;margin-top:30px;">
+        Tự động gửi từ hệ thống Digital Twin Recruitment.
+      </p>
+    </body></html>
+    """
+
+    recipient = RECIPIENT_EMAIL
+    if recipient_role == "organization":
+        recipient = RECIPIENT_EMAIL
+    elif recipient_role == "personnel":
+        recipient = RECIPIENT_EMAIL
+
+    _send_html_email(subject, html_body, [recipient])
+
+
 def send_schedule_email(
     schedule_id:  str,
     org_neo4j_id: str,

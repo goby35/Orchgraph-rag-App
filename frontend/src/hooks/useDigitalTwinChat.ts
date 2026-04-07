@@ -1,42 +1,287 @@
 'use client'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { getChatHistory, saveChatMessage } from '@/lib/api/interview'
+import {
+  createInterviewSession,
+  getInterviewHistory,
+  getInterviewSessions,
+  saveInterviewMessage,
+} from '@/lib/api/chat'
 import type { ChatMessage, ChatHistoryItem, WsStatus, WsChunk } from '@/types'
 
 interface Options {
   perNeoId: string
   orgNeoId: string
+  requestedSessionId?: string | null
+  sessionId?: string | null
+  createSessionOnMount?: boolean
+  initialJobTitle?: string | null
 }
 
-export function useDigitalTwinChat({ perNeoId, orgNeoId }: Options) {
+export function useDigitalTwinChat({
+  perNeoId,
+  orgNeoId,
+  requestedSessionId,
+  sessionId: externalSessionId,
+  createSessionOnMount = false,
+  initialJobTitle,
+}: Options) {
   const wsRef                = useRef<WebSocket | null>(null)
   // Accumulates assistant chunks so we can persist the full response on 'done'
   const assistantContentRef  = useRef<string>('')
+  const sessionIdRef         = useRef<string | null>(null)
+  const creatingSessionRef   = useRef<Promise<string> | null>(null)
+  const localStorageKey      = `dt_chat_session:${orgNeoId}:${perNeoId}`
+  const transcriptStorageKey = `${localStorageKey}:messages`
   const [messages,      setMessages]      = useState<ChatMessage[]>([])
   const [status,        setStatus]        = useState<WsStatus>('open')
   const [historyLoaded, setHistoryLoaded] = useState(false)
   const [isStreaming,   setIsStreaming]   = useState(false)
+  const [currentSessionId, setSessionId]   = useState<string | null>(null)
+  const activeSessionId = (externalSessionId ?? requestedSessionId ?? null)?.trim() || null
+
+  useEffect(() => {
+    sessionIdRef.current = currentSessionId
+  }, [currentSessionId])
+
+  useEffect(() => {
+    const currentSessionId = sessionIdRef.current
+    if (!currentSessionId) return
+
+    localStorage.setItem(
+      transcriptStorageKey,
+      JSON.stringify({ sessionId: currentSessionId, messages }),
+    )
+  }, [messages, transcriptStorageKey])
+
+  const ensureSessionId = useCallback(async (jobTitleOverride?: string | null): Promise<string> => {
+    if (activeSessionId && activeSessionId !== 'new') {
+      sessionIdRef.current = activeSessionId
+      setSessionId(activeSessionId)
+      return activeSessionId
+    }
+
+    const current = sessionIdRef.current
+    if (current) return current
+
+    if (creatingSessionRef.current) {
+      return creatingSessionRef.current
+    }
+
+    const pending = createInterviewSession({
+      personnel_id: perNeoId,
+      org_id: orgNeoId,
+      job_title: jobTitleOverride || initialJobTitle || 'Vị trí chưa xác định',
+    }).then((created) => {
+      const nextId = created.session_id
+      sessionIdRef.current = nextId
+      setSessionId(nextId)
+      localStorage.setItem(localStorageKey, nextId)
+      return nextId
+    }).finally(() => {
+      creatingSessionRef.current = null
+    })
+
+    creatingSessionRef.current = pending
+    return pending
+  }, [activeSessionId, initialJobTitle, localStorageKey, orgNeoId, perNeoId])
 
   // Load lịch sử khi mount
   useEffect(() => {
-    getChatHistory(perNeoId)
-      .then((history: unknown) => {
-        const items = Array.isArray(history)
-          ? history
-          : ((history as { messages?: ChatHistoryItem[] })?.messages ?? [])
+    let cancelled = false
 
-        setMessages(
-          (items as ChatHistoryItem[]).map(h => ({
-            id:      h.id ?? crypto.randomUUID(),
-            role:    h.role,
-            content: h.content,
-          }))
-        )
-      })
-      .catch(() => {})
-      .finally(() => setHistoryLoaded(true))
-  }, [perNeoId])
+    const closeCurrentSocket = () => {
+      try {
+        wsRef.current?.close()
+      } catch {
+      }
+      wsRef.current = null
+    }
+
+    const load = async () => {
+      closeCurrentSocket()
+      assistantContentRef.current = ''
+      setIsStreaming(false)
+      setStatus('open')
+      setMessages([])
+      sessionIdRef.current = null
+      setSessionId(null)
+
+      if (!orgNeoId || !perNeoId) {
+        setHistoryLoaded(true)
+        return
+      }
+
+      try {
+        setHistoryLoaded(false)
+
+        if (createSessionOnMount || activeSessionId === 'new') {
+          const nextSessionId = await ensureSessionId(initialJobTitle)
+          if (cancelled) return
+
+          setMessages([])
+          localStorage.setItem(localStorageKey, nextSessionId)
+          localStorage.setItem(
+            transcriptStorageKey,
+            JSON.stringify({ sessionId: nextSessionId, messages: [] }),
+          )
+          return
+        }
+
+        if (activeSessionId && activeSessionId !== 'new') {
+          const history = await getInterviewHistory(activeSessionId)
+          if (cancelled) return
+
+          const items = history?.messages ?? []
+          setSessionId(activeSessionId)
+          sessionIdRef.current = activeSessionId
+          localStorage.setItem(localStorageKey, activeSessionId)
+          localStorage.setItem(
+            transcriptStorageKey,
+            JSON.stringify({
+              sessionId: activeSessionId,
+              messages: items,
+            }),
+          )
+          setMessages(items)
+          return
+        }
+
+        const storedTranscriptRaw = localStorage.getItem(transcriptStorageKey)
+        if (storedTranscriptRaw) {
+          try {
+            const storedTranscript = JSON.parse(storedTranscriptRaw) as {
+              sessionId?: string
+              messages?: ChatMessage[]
+            }
+            const storedTranscriptSessionId = String(storedTranscript.sessionId ?? '').trim()
+            const storedTranscriptMessages = Array.isArray(storedTranscript.messages)
+              ? storedTranscript.messages
+              : []
+
+            if (storedTranscriptSessionId && storedTranscriptMessages.length > 0) {
+              setSessionId(storedTranscriptSessionId)
+              sessionIdRef.current = storedTranscriptSessionId
+              localStorage.setItem(localStorageKey, storedTranscriptSessionId)
+              setMessages(storedTranscriptMessages)
+              return
+            }
+          } catch {
+          }
+        }
+
+        if (requestedSessionId && requestedSessionId !== 'new') {
+          const history = await getInterviewHistory(requestedSessionId)
+          if (cancelled) return
+
+          setSessionId(requestedSessionId)
+          sessionIdRef.current = requestedSessionId
+          localStorage.setItem(localStorageKey, requestedSessionId)
+          localStorage.setItem(
+            transcriptStorageKey,
+            JSON.stringify({
+              sessionId: requestedSessionId,
+              messages: (history?.messages ?? []).map(h => ({
+                id:      h.id ?? crypto.randomUUID(),
+                role:    h.role,
+                content: h.content,
+              })),
+            }),
+          )
+          setMessages(
+            (history?.messages ?? []).map(h => ({
+              id:      h.id ?? crypto.randomUUID(),
+              role:    h.role,
+              content: h.content,
+            }))
+          )
+          return
+        }
+
+        const storedSession = localStorage.getItem(localStorageKey)
+        if (storedSession) {
+          const history = await getInterviewHistory(storedSession)
+          if (cancelled) return
+
+          const items = history?.messages ?? []
+          setSessionId(storedSession)
+          sessionIdRef.current = storedSession
+          localStorage.setItem(
+            transcriptStorageKey,
+            JSON.stringify({
+              sessionId: storedSession,
+              messages: items.map(h => ({
+                id:      h.id ?? crypto.randomUUID(),
+                role:    h.role,
+                content: h.content,
+              })),
+            }),
+          )
+          setMessages(
+            (items as ChatHistoryItem[]).map(h => ({
+              id:      h.id ?? crypto.randomUUID(),
+              role:    h.role,
+              content: h.content,
+            }))
+          )
+          return
+        }
+
+        // Fallback: load newest session from backend for this org/personnel pair.
+        const sessions = await getInterviewSessions(orgNeoId)
+        if (cancelled) return
+
+        const matched = (sessions || [])
+          .filter(s => s.personnel_id === perNeoId)
+          .sort((a, b) => +new Date(b.created_at) - +new Date(a.created_at))[0]
+
+        if (matched?.session_id) {
+          const history = await getInterviewHistory(matched.session_id)
+          if (cancelled) return
+
+          setSessionId(matched.session_id)
+          sessionIdRef.current = matched.session_id
+          localStorage.setItem(localStorageKey, matched.session_id)
+          localStorage.setItem(
+            transcriptStorageKey,
+            JSON.stringify({
+              sessionId: matched.session_id,
+              messages: (history?.messages ?? []).map(h => ({
+                id:      h.id ?? crypto.randomUUID(),
+                role:    h.role,
+                content: h.content,
+              })),
+            }),
+          )
+          setMessages(
+            (history?.messages ?? []).map(h => ({
+              id:      h.id ?? crypto.randomUUID(),
+              role:    h.role,
+              content: h.content,
+            }))
+          )
+        }
+      } catch {
+      } finally {
+        if (!cancelled) setHistoryLoaded(true)
+      }
+    }
+
+    load()
+    return () => {
+      cancelled = true
+      closeCurrentSocket()
+    }
+  }, [
+    createSessionOnMount,
+    ensureSessionId,
+    initialJobTitle,
+    localStorageKey,
+    orgNeoId,
+    perNeoId,
+    requestedSessionId,
+    activeSessionId,
+  ])
 
   const send = useCallback(async (question: string) => {
     if (isStreaming) return
@@ -44,6 +289,7 @@ export function useDigitalTwinChat({ perNeoId, orgNeoId }: Options) {
     const supabase = createClient()
     const { data: { session } } = await supabase.auth.getSession()
     if (!session?.access_token) return
+    const resolvedSessionId = await ensureSessionId()
 
     // Reset accumulator for this turn
     assistantContentRef.current = ''
@@ -58,6 +304,15 @@ export function useDigitalTwinChat({ perNeoId, orgNeoId }: Options) {
     setIsStreaming(true)
     setStatus('connecting')
 
+    saveInterviewMessage({
+      personnel_id:    perNeoId,
+      session_id:      resolvedSessionId,
+      role:            'user',
+      content:         question,
+      job_title:       initialJobTitle || undefined,
+      is_private_mode: false,
+    }).catch(() => {})
+
     // 2. Mở WS mới cho mỗi câu hỏi
     const wsUrl = `${process.env.NEXT_PUBLIC_WS_URL}/interview/ws`
     const ws    = new WebSocket(wsUrl)
@@ -70,6 +325,7 @@ export function useDigitalTwinChat({ perNeoId, orgNeoId }: Options) {
       ws.send(JSON.stringify({
         token:        session.access_token,
         personnel_id: perNeoId,
+        session_id:   resolvedSessionId,
         question,
       }))
     }
@@ -114,20 +370,14 @@ export function useDigitalTwinChat({ perNeoId, orgNeoId }: Options) {
         setIsStreaming(false)
         setStatus('open')
 
-        // Persist user message
-        saveChatMessage({
-          per_neo4j_id:    perNeoId,
-          role:            'user',
-          content:         question,
-          is_private_mode: false,
-        }).catch(() => {})
-
         // Persist assistant response (the missing piece)
         if (assistantContent) {
-          saveChatMessage({
-            per_neo4j_id:    perNeoId,
+          saveInterviewMessage({
+            personnel_id:    perNeoId,
+            session_id:      resolvedSessionId,
             role:            'assistant',
             content:         assistantContent,
+            job_title:       initialJobTitle || undefined,
             is_private_mode: isPrivate,
           }).catch(() => {})
         }
@@ -160,7 +410,7 @@ export function useDigitalTwinChat({ perNeoId, orgNeoId }: Options) {
       if (status !== 'error') setStatus('open')
     }
 
-  }, [perNeoId, isStreaming, status])
+  }, [ensureSessionId, initialJobTitle, isStreaming, perNeoId, status])
 
-  return { messages, status, historyLoaded, isStreaming, send }
+  return { messages, status, historyLoaded, isStreaming, send, sessionId: currentSessionId }
 }

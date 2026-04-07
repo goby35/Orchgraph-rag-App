@@ -258,6 +258,136 @@
       "relevant_personnel": ["P_022"],
       "reasoning": "P_022 là chuyên gia cực kỳ hiếm hoi tại Việt Nam thành thạo cả C/FreeRTOS truyền thống lẫn hệ sinh thái Embedded Rust (sử dụng embassy framework), từng tự viết custom DMA-driven SPI driver bằng Rust tối ưu zero-copy buffer [25-27]."
     }
-  }
+  },
+  {
+    "query_id": "JD_061",
+    "input_data": {
+      "job_title": "Principal SRE / eBPF Networking Specialist",
+      "seniority_level": "Principal",
+      "must_have_skills": ["eBPF / XDP", "Linux kernel networking", "Cilium", "Go / C"],
+      "job_description": "Chuyên gia tối ưu hóa mạng ở tầng sâu nhất của hệ điều hành. Yêu cầu thiết kế data plane bằng eBPF/XDP chạy trực tiếp tại kernel space để bypass kube-proxy và iptables, xử lý packet tốc độ cao. Có kinh nghiệm kiến trúc mạng Kubernetes CNI (Cilium) và xử lý độ trễ nội bộ cho microservices."
+    },
+    "ground_truth": {
+      "relevant_personnel": ["P_019"],
+      "reasoning": "P_019 là SRE hiếm hoi có chuyên môn cực sâu về Linux kernel networking và eBPF/XDP, từng tự thiết kế XDP-based load balancer chạy trong kernel space tại Shopee để giảm latency p99 từ 8ms xuống 1.2ms [1-3]."
+    }
+  },
+  {
+    "query_id": "JD_062",
+    "input_data": {
+      "job_title": "Application Security Architect",
+      "seniority_level": "Senior",
+      "must_have_skills": ["Threat modeling", "SAST / DAST", "PCI-DSS", "Kubernetes security"],
+      "job_description": "Thiết kế kiến trúc bảo mật cho các hệ thống tài chính/fintech. Đảm nhiệm xây dựng quy trình DevSecOps, threat modeling cho hàng trăm microservices, tích hợp SAST/DAST vào pipeline, rà soát lỗ hổng IDOR, và đảm bảo tuân thủ tiêu chuẩn PCI-DSS v4.0."
+    },
+    "ground_truth": {
+      "relevant_personnel": ["P_009"],
+      "reasoning": "P_009 có 7 năm kinh nghiệm Application Security, từng xây dựng AppSec program từ đầu tại Shopee (threat modeling 120+ microservices) và đảm bảo tuân thủ PCI-DSS v4.0 tại VNPAY, có thành tích phát hiện lỗ hổng IDOR cực kỳ nguy hiểm [4-6]."
+    }
+  },
+  {
+    "query_id": "JD_063",
+    "input_data": {
+      "job_title": "Internal Developer Platform Engineer",
+      "seniority_level": "Senior",
+      "must_have_skills": ["Go", "Kubernetes Operator", "Backstage", "Istio"],
+      "job_description": "Xây dựng Internal Developer Portal (IDP) bằng framework Backstage (CNCF) để tăng năng suất cho đội ngũ kỹ sư. Đòi hỏi kỹ năng lập trình Go để viết các custom Kubernetes operators nhằm tự động cấp phát môi trường dev cô lập, đồng thời có kinh nghiệm vận hành Service Mesh (Istio)."
+    },
+    "ground_truth": {
+      "relevant_personnel": ["P_010"],
+      "reasoning": "P_010 là chuyên gia Platform Engineering từng xây dựng self-service portal trên nền Backstage tại Lazada và tự viết custom Kubernetes operator bằng Go để cấp phát môi trường dev tự động trong 30 giây [7-9]."
+    }
+  },
+  {
+    "query_id": "JD_064",
+    "input_data": {
+      "job_title": "LLM Optimization / AI Hardware Engineer",
+      "seniority_level": "Senior",
+      "must_have_skills": ["CUDA C++", "Model quantization", "TensorRT", "HuggingFace"],
+      "job_description": "Tối ưu hóa inference cho các Mô hình ngôn ngữ lớn (LLM) để chạy trên thiết bị edge/NPU phần cứng giới hạn. Bắt buộc có kỹ năng viết custom CUDA kernels cho các thuật toán quantized attention (4-bit/8-bit), tích hợp TensorRT, và am hiểu cơ chế Flash Attention."
+    },
+    "ground_truth": {
+      "relevant_personnel": ["P_014"],
+      "reasoning": "P_014 có nền tảng từ VinAI và Samsung R&D, chuyên sâu viết custom CUDA kernels cho quantized grouped attention mechanism chạy trên NPU/GPU hybrid, giúp tăng 3.2x tốc độ inference và giảm 55% bộ nhớ cho LLM [10-12]."
+    }
+  },
+  {
+    "query_id": "JD_065",
+    "input_data": {
+      "job_title": "Frontend Design System & Accessibility Lead",
+      "seniority_level": "Lead",
+      "must_have_skills": ["React 18", "Storybook", "WCAG 2.1 AA", "Design tokens"],
+      "job_description": "Lãnh đạo phát triển hệ thống Design System phục vụ nhiều product teams. Trọng tâm là quản trị hàng trăm UI components qua Storybook, đồng bộ hóa Design Tokens từ Figma, và đảm bảo sản phẩm tuân thủ khắt khe tiêu chuẩn tiếp cận Web Accessibility (WCAG 2.1 AA)."
+    },
+    "ground_truth": {
+      "relevant_personnel": ["P_044"],
+      "reasoning": "P_044 là người trực tiếp xây dựng MoMo Design System (hơn 500 components), đồng thời sở hữu chứng chỉ quốc tế WAS chuyên về Accessibility, đã đưa MoMo đạt chuẩn WCAG 2.1 AA [13-15]."
+    }
+  },
+  {
+    "query_id": "JD_066",
+    "input_data": {
+      "job_title": "Cloud FinOps & Cloud Economics Lead",
+      "seniority_level": "Lead",
+      "must_have_skills": ["AWS Cost Explorer", "Athena", "CUR analysis", "Savings Plans"],
+      "job_description": "Kiểm soát và tối ưu hóa chi phí đám mây (Cloud FinOps) trên môi trường AWS quy mô lớn. Yêu cầu khả năng phân tích AWS Cost and Usage Report (CUR) bằng Athena, xây dựng Cost Intelligence Dashboard để tính toán unit economics, và hoạch định chiến lược mua Savings Plans / Spot."
+    },
+    "ground_truth": {
+      "relevant_personnel": ["P_040"],
+      "reasoning": "P_040 là chuyên gia Cloud FinOps từng giúp các khách hàng AWS giảm 26% chi phí và đã tự xây dựng Cost Intelligence Dashboard cho Viettel Digital với hóa đơn 800k USD/tháng để tính unit cost cực kỳ chính xác [16-18]."
+    }
+  },
+  {
+    "query_id": "JD_067",
+    "input_data": {
+      "job_title": "Compiler & Static Analysis Engineer",
+      "seniority_level": "Senior",
+      "must_have_skills": ["LLVM IR", "C++", "Z3 SMT Solver", "Static Analysis"],
+      "job_description": "Kỹ sư hệ thống ngách chuyên về trình biên dịch (Compiler) và phân tích tĩnh. Yêu cầu lập trình C++ chuyên sâu, viết các custom optimization/analysis passes trên LLVM IR, áp dụng data flow analysis và Z3 SMT Solver để phát hiện lỗi Undefined Behavior trong codebase lớn."
+    },
+    "ground_truth": {
+      "relevant_personnel": ["P_041"],
+      "reasoning": "P_041 (Cao Minh Khoa) là một Compiler Engineer hiếm hoi am hiểu LLVM framework, từng tự xây dựng custom LLVM pass sử dụng data flow analysis kết hợp Z3 SMT solver để bắt lỗi Undefined Behavior cho dự án C++ 500k LOC tại KMS [19-21]."
+    }
+  },
+  {
+    "query_id": "JD_068",
+    "input_data": {
+      "job_title": "Game Backend & Real-time Systems Engineer",
+      "seniority_level": "Senior",
+      "must_have_skills": ["Go / C++", "ECS architecture", "UDP / QUIC", "Rollback netcode"],
+      "job_description": "Thiết kế hạ tầng máy chủ thời gian thực cho game multiplayer toàn cầu. Yêu cầu am hiểu kiến trúc Entity Component System (ECS), lập trình giao thức UDP/QUIC, giải quyết state synchronization, và khả năng tự thiết kế Rollback Netcode để đồng bộ trạng thái cực nhanh."
+    },
+    "ground_truth": {
+      "relevant_personnel": ["P_027"],
+      "reasoning": "P_027 có kinh nghiệm thiết kế game server chịu tải hàng triệu người chơi (Free Fire tại Garena), hiểu sâu kiến trúc ECS và đặc biệt là từng tự implement rollback netcode (GGPO-style) bằng Go [22-24]."
+    }
+  },
+  {
+    "query_id": "JD_069",
+    "input_data": {
+      "job_title": "Threat Intelligence & SOC Analyst",
+      "seniority_level": "Senior",
+      "must_have_skills": ["Splunk SIEM", "SOAR Automation", "MITRE ATT&CK", "Threat Hunting"],
+      "job_description": "Chuyên gia phòng thủ tại Trung tâm điều hành an ninh mạng (SOC). Đảm trách phân tích log nâng cao bằng Splunk, săn lùng mối đe dọa (threat hunting) qua framework MITRE ATT&CK, điều tra tấn công APT, và tự động hóa quy trình bằng SOAR playbooks (Python)."
+    },
+    "ground_truth": {
+      "relevant_personnel": ["P_043"],
+      "reasoning": "P_043 có 5 năm làm việc tại SOC của Viettel Cyber Security, trực tiếp săn lùng APT campaign, viết SOAR playbooks bằng Python và tự build 47 YARA rules để phát hiện các malware families nhắm vào Việt Nam [25-27]."
+    }
+  },
+  {
+    "query_id": "JD_070",
+    "input_data": {
+      "job_title": "Privacy-Preserving Computing Engineer",
+      "seniority_level": "Principal",
+      "must_have_skills": ["Differential Privacy", "Homomorphic Encryption", "Azure Confidential Computing", "Python / C#"],
+      "job_description": "Xây dựng các giải pháp phân tích dữ liệu bảo vệ quyền riêng tư (PETs). Yêu cầu kinh nghiệm thực tiễn triển khai Differential Privacy (DP-SGD, Opacus) và Homomorphic Encryption (SEAL) trên nền tảng Confidential VMs để khai thác data mà không lộ raw data."
+    },
+    "ground_truth": {
+      "relevant_personnel": ["P_025"],
+      "reasoning": "P_025 là Principal Engineer tại Microsoft Research, đồng tác giả 3 patents về PETs, từng phát triển kỹ thuật 'doubly-blind analytics' kết hợp Differential Privacy và Homomorphic Encryption chạy trên Azure Confidential VMs [28-30]."
+    }
+  }  
 ]
 

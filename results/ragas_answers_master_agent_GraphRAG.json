@@ -1,0 +1,182 @@
+[
+  {
+    "qa_id": "JD_041",
+    "question": "CTO / Principal Engineer (Legacy Modernization)\nTìm kiếm lãnh đạo kỹ thuật dạn dày kinh nghiệm để dẫn dắt quá trình chuyển đổi hệ thống từ Monolith (Java/COBOL) sang Cloud-native Microservices. Cần có khả năng thiết kế kiến trúc phân tán (Event Sourcing, Saga), am hiểu Technical Debt, thiết lập quy trình RFC/ADR và trực tiếp báo cáo cho C-Level/Board of Directors về ROI công nghệ.",
+    "answer": "",
+    "contexts": [
+      "No context retrieved"
+    ],
+    "ground_truth": "P_050 là ứng viên hoàn hảo, từng làm Engineering Director tại Viettel chuyển đổi hệ thống billing 90 triệu user bằng Strangler Fig Pattern. P_020 (VP Engineering, cựu Google L6) cũng rất mạnh trong việc thiết lập văn hóa kỹ thuật (RFC/ADR) và lãnh đạo tổ chức kỹ thuật quy mô lớn."
+  },
+  {
+    "qa_id": "JD_042",
+    "question": "ML Infrastructure / MLOps Engineer\nXây dựng nền tảng phục vụ huấn luyện (training) và triển khai (serving) các mô hình Machine Learning quy mô lớn. Yêu cầu kinh nghiệm quản lý GPU cluster trên Kubernetes, tối ưu hóa quá trình batching bằng Triton, hiểu sâu về phân bổ tài nguyên GPU (Volcano, MPS) và thiết lập automated ML pipelines.",
+    "answer": "",
+    "contexts": [
+      "No context retrieved"
+    ],
+    "ground_truth": "P_023 là chuyên gia ML Infra, từng tối ưu GPU Fractional Sharing bằng MPS và K8s cho Shopee AI Lab. P_046 có kinh nghiệm vững chắc về MLOps pipeline, model compression (TensorRT) tại Samsung. P_006 am hiểu sâu việc deploy model bằng Triton với SLA khắt khe."
+  },
+  {
+    "qa_id": "JD_043",
+    "question": "Privacy Tech / Cryptographic Security Engineer\nKỹ sư chuyên sâu về bảo mật mật mã học. Yêu cầu có kinh nghiệm làm việc với Hardware Security Modules (HSM), quản lý vòng đời chứng chỉ số (PKI), và nghiên cứu các giải pháp tính toán bảo vệ quyền riêng tư (Privacy-Enhancing Technologies) như Differential Privacy hay Zero-Knowledge Proofs.",
+    "answer": "",
+    "contexts": [
+      "No context retrieved"
+    ],
+    "ground_truth": "P_025 là chuyên gia hàng đầu (Principal tại Microsoft) về Differential Privacy và Homomorphic Encryption. P_018 (ZaloPay) có kinh nghiệm thực chiến cực kỳ hiếm về vận hành HSM cluster và kiến trúc HashiCorp Vault PKI."
+  },
+  {
+    "qa_id": "JD_044",
+    "question": "Real-time Media / WebRTC Infrastructure Engineer\nXây dựng và tối ưu cụm máy chủ Selective Forwarding Unit (SFU) cho hệ thống Video Conferencing. Cần hiểu sâu về Network Congestion Control (GCC), xử lý packet loss (NACK, PLI), và có khả năng xây dựng pipeline transcoding bằng FFmpeg để lưu trữ video chất lượng cao.",
+    "answer": "",
+    "contexts": [
+      "No context retrieved"
+    ],
+    "ground_truth": "P_038 là kỹ sư nòng cốt xây dựng SFU Media Server từ đầu bằng Go tại Stringee, am hiểu GCC và RTP. P_045 bổ trợ hoàn hảo với kinh nghiệm xây dựng FFmpeg transcoding pipeline và đo lường VMAF/QoE cũng tại Stringee."
+  },
+  {
+    "qa_id": "JD_045",
+    "question": "Blockchain Systems / Rust Backend Engineer\nPhát triển hệ thống backend hiệu năng cao và độ trễ cực thấp cho thị trường Web3. Yêu cầu thành thạo Rust (async/await với Tokio), hiểu sâu cấu trúc dữ liệu on-chain, cơ chế hoạt động của mempool, ZK/Optimistic Rollup và khả năng trích xuất dữ liệu giao dịch ở tần số cao.",
+    "answer": "",
+    "contexts": [
+      "No context retrieved"
+    ],
+    "ground_truth": "P_048 có kinh nghiệm thực chiến dùng Rust viết Mempool Monitor tốc độ cực cao để săn MEV tại Sea Capital. P_031 rành về Solidity, ZK-Rollup và trading engine. P_012 từng viết lại blockchain indexer bằng Rust cho Sky Mavis xử lý concurrency triệt để."
+  },
+  {
+    "qa_id": "JD_046",
+    "question": "Formal Methods / Distributed Consensus Engineer\nVị trí cực kỳ ngách yêu cầu ứng dụng các phương pháp hình thức (như TLA+) để chứng minh tính đúng đắn của các giao thức phân tán (consensus protocols) trước khi implement bằng Go/Java. Yêu cầu hiểu sâu về edge cases của Raft, ZAB, và split-brain scenarios.",
+    "answer": "",
+    "contexts": [
+      "No context retrieved"
+    ],
+    "ground_truth": "P_020 từng dùng TLA+ tại Google để verify multi-paxos variant cho routing cache. P_047 có kinh nghiệm thực tế implement Raft consensus algorithm bằng Go từ đầu và am hiểu cực sâu về ZooKeeper/etcd operations."
+  },
+  {
+    "qa_id": "JD_047",
+    "question": "Compiler & Static Analysis Engineer\nXây dựng các công cụ phân tích mã nguồn (SAST) và trình biên dịch nội bộ. Cần kinh nghiệm lập trình C++ chuyên sâu, viết các custom optimization passes trên LLVM IR, thực hiện taint tracking, data flow analysis và có kiến thức về SMT Solvers (như Z3).",
+    "answer": "",
+    "contexts": [
+      "No context retrieved"
+    ],
+    "ground_truth": "P_041 là ứng viên duy nhất trong tập dữ liệu có background nghiên cứu chuyên sâu về Compiler Engineering, am hiểu LLVM IR, từng viết custom pass phát hiện Undefined Behavior dùng Z3 SMT solver cho client automotive."
+  },
+  {
+    "qa_id": "JD_048",
+    "question": "Mobile Performance Optimization Expert\nChuyên gia tối ưu hóa hiệu năng cho các siêu ứng dụng di động. Yêu cầu khả năng đào sâu vào kiến trúc nền tảng (như React Native New Architecture JSI, Flutter rendering pipeline), giải quyết vấn đề cold start, ANR, và shader compilation jank bằng Instruments hoặc DevTools.",
+    "answer": "",
+    "contexts": [
+      "No context retrieved"
+    ],
+    "ground_truth": "P_013 tối ưu React Native qua JSI và Hermes (MoMo Mini App). P_034 giải quyết shader jank trong Flutter bằng SkSL. P_007 và P_005 là các chuyên gia tối ưu Native (ANR Android và Cold Start iOS)."
+  },
+  {
+    "qa_id": "JD_049",
+    "question": "Cloud FinOps Architect\nChịu trách nhiệm tối ưu hóa chi phí điện toán đám mây cho các hệ thống enterprise. Yêu cầu phân tích Cost and Usage Report (CUR) bằng SQL/Athena, tự động hoá việc theo dõi unit cost, đề xuất chiến lược mua Savings Plans / Spot Instances và quản trị Multi-account.",
+    "answer": "",
+    "contexts": [
+      "No context retrieved"
+    ],
+    "ground_truth": "P_040 xây dựng toàn bộ FinOps practice và Cost Intelligence Dashboard tại Viettel Digital. P_015 là cựu AWS Solutions Architect từng giúp 40+ doanh nghiệp giảm trung bình 28% cloud spend qua FinOps framework."
+  },
+  {
+    "qa_id": "JD_050",
+    "question": "Low-level Network / eBPF Engineer\nCan thiệp sâu vào kernel space để tối ưu hóa networking cho hạ tầng cloud. Cần khả năng lập trình eBPF/XDP để xử lý packet tốc độ cao, bypass iptables, debug độ trễ mạng cực đoan, và hiểu biết vững chắc về kiến trúc Kubernetes CNI (Cilium).",
+    "answer": "",
+    "contexts": [
+      "No context retrieved"
+    ],
+    "ground_truth": "P_019 là SRE hiếm hoi từng viết custom XDP load balancer bằng eBPF tại Shopee. P_010 có kinh nghiệm debug eBPF bytecode cho Cilium network policy. P_004 có kỹ năng về eBPF/Cilium networking."
+  },
+  {
+    "qa_id": "JD_051",
+    "question": "Principal Chaos Engineering Specialist\nXây dựng nền tảng Chaos Engineering nội bộ để tự động hóa việc tiêm lỗi (fault injection). Trọng tâm là thiết kế cơ chế 'Blast Radius Control' dựa trên metrics SLO từ Prometheus nhằm đảm bảo an toàn, kết hợp với văn hóa Blameless Post-mortem.",
+    "answer": "",
+    "contexts": [
+      "No context retrieved"
+    ],
+    "ground_truth": "P_026 đã tự build nền tảng Hypothesis-driven Chaos Engineering từ đầu bằng Go tại MoMo. P_035 là SRE giàu kinh nghiệm từ Viettel, thành thạo thiết lập SLO/SLI và on-call runbooks."
+  },
+  {
+    "qa_id": "JD_052",
+    "question": "Game Server / Real-time Multiplayer Backend\nThiết kế backend cho game multiplayer chịu tải hàng triệu người chơi. Yêu cầu hiểu sâu kiến trúc deterministic ECS, lập trình giao thức custom UDP/QUIC, và đặc biệt là khả năng implement 'Rollback Netcode' để đồng bộ state realtime mượt mà.",
+    "answer": "",
+    "contexts": [
+      "No context retrieved"
+    ],
+    "ground_truth": "P_027 có 5 năm kinh nghiệm game server tại Garena (Free Fire), hiểu sâu về ECS và đặc biệt đã từng tự implement Rollback Netcode (GGPO-style) bằng Go."
+  },
+  {
+    "qa_id": "JD_053",
+    "question": "Distributed Database Storage Engineer\nVận hành và tối ưu kiến trúc cơ sở dữ liệu phân tán quy mô lớn. Ứng viên cần hiểu sâu về MVCC, transaction isolation, xử lý write hotspot trên TiKV (Raft groups), và có khả năng thiết kế chiến lược sharding/migration không downtime cho hàng tỷ records.",
+    "answer": "",
+    "contexts": [
+      "No context retrieved"
+    ],
+    "ground_truth": "P_029 am hiểu sâu sắc PostgreSQL internals và từng debug tận gốc lỗi TiKV write hotspot tại Shopee. P_047 có nền tảng phân tán vững vàng, chuyên trị Zookeeper/etcd cluster storage."
+  },
+  {
+    "qa_id": "JD_054",
+    "question": "Analytics Engineer / Data Modeler\nLàm việc tại giao điểm giữa Data Engineer và BI, thiết kế data warehouse chuẩn Kimball. Yêu cầu viết model dbt phức tạp, quản lý dependencies, thiết lập Data Quality tests bằng Great Expectations, và giao tiếp mượt mà với business stakeholders.",
+    "answer": "",
+    "contexts": [
+      "No context retrieved"
+    ],
+    "ground_truth": "P_008 là Analytics Engineer làm việc trực tiếp với product và business stakeholders, thành thạo dbt và Kimball methodology [1, 2]. P_033 có kinh nghiệm sâu sắc về Data Quality, trực tiếp implement Great Expectations và dbt cho Data Mesh platform [3, 4]. P_002 am hiểu sâu về việc xây dựng data pipeline với Airflow, dbt và áp dụng Great Expectations [5, 6]."
+  },
+  {
+    "qa_id": "JD_055",
+    "question": "Lead Data Scientist (Causal Inference & Forecasting)\nSử dụng Machine Learning để giải quyết các bài toán kinh doanh như Dự báo nhu cầu (Demand Forecasting) và Dynamic Pricing. Yêu cầu kiến thức về Causal Inference (Difference-in-Differences, Propensity Scoring) để đo lường ROI của các chiến dịch thay vì chỉ A/B testing truyền thống.",
+    "answer": "",
+    "contexts": [
+      "No context retrieved"
+    ],
+    "ground_truth": "P_042 là chuyên gia Data Science ngành FMCG/Retail, đã áp dụng Causal Inference (Difference-in-Differences) cho dynamic pricing và forecasting tại VinCommerce và Masan [7, 8]. P_017 am hiểu sâu về Causal ML, debiasing và thiết kế holdout experiments phức tạp tại Shopee [9, 10]."
+  },
+  {
+    "qa_id": "JD_056",
+    "question": "Threat Intel & SOC Analyst\nChuyên gia phòng thủ tại Trung tâm Điều hành An ninh (SOC). Trách nhiệm điều tra các chiến dịch APT, sử dụng framework MITRE ATT&CK, viết các quy tắc phát hiện mã độc (YARA/Sigma), và tự động hóa quy trình phản ứng sự cố bằng SOAR (Python).",
+    "answer": "",
+    "contexts": [
+      "No context retrieved"
+    ],
+    "ground_truth": "P_043 là ứng viên hoàn hảo với 5 năm kinh nghiệm tại Viettel Cyber Security, chuyên điều tra các chiến dịch APT, thành thạo Threat Hunting với MITRE ATT&CK, và có khả năng tự viết SOAR playbooks bằng Python [11, 12]."
+  },
+  {
+    "qa_id": "JD_057",
+    "question": "Design System / Accessibility Frontend Engineer\nDẫn dắt phát triển Component Library nội bộ dùng chung cho toàn bộ hệ sinh thái sản phẩm. Yêu cầu kinh nghiệm thiết lập Design Tokens, Visual Regression Testing (Chromatic), và đặc biệt đảm bảo chuẩn tiếp cận WCAG 2.1 AA (ARIA, axe-core).",
+    "answer": "",
+    "contexts": [
+      "No context retrieved"
+    ],
+    "ground_truth": "P_044 là chuyên gia Design System hiếm hoi tại Việt Nam có chứng chỉ quốc tế về Accessibility (WAS), từng dẫn dắt MoMo đạt chuẩn WCAG 2.1 AA và quản lý thư viện 500+ components với Storybook [13, 14]. P_003 cũng có kinh nghiệm xây dựng component library và quan tâm sâu sắc đến Web Performance/UX [15, 16]."
+  },
+  {
+    "qa_id": "JD_058",
+    "question": "High-Performance Frontend Engineer (WASM/WebGL)\nPhá vỡ giới hạn hiệu năng của trình duyệt. Ứng viên cần giải quyết các bài toán render phức tạp không block main thread (sử dụng Web Workers / SharedArrayBuffer) và có khả năng tích hợp WebAssembly (Rust/C++) vào các dự án web chuyên sâu.",
+    "answer": "",
+    "contexts": [
+      "No context retrieved"
+    ],
+    "ground_truth": "P_039 từng implement particle system bằng WebGL trong Web Worker giao tiếp qua SharedArrayBuffer, phục vụ mượt mà 100k viewers tại Tiki Live [17, 18]. P_024 có kinh nghiệm thực chiến với WebAssembly, biên dịch CPython sang WASM chạy trực tiếp trên browser [19, 20]."
+  },
+  {
+    "qa_id": "JD_059",
+    "question": "QA Automation Lead / TCoE Architect\nXây dựng Trung tâm Kiểm thử Xuất sắc (Testing Center of Excellence). Yêu cầu thiết lập Framework tự động hóa E2E, Contract Testing (Pact), chấm điểm Test Effectiveness, kiểm soát Flaky tests và shift-left testing trực tiếp trong quy trình DevOps.",
+    "answer": "",
+    "contexts": [
+      "No context retrieved"
+    ],
+    "ground_truth": "P_049 sở hữu chứng chỉ ISTQB Test Manager, đã trực tiếp thiết lập TCoE tại Nashtech, chuẩn hóa framework và quality metrics quy mô lớn [21, 22]. P_011 là chuyên gia thực chiến xuất sắc về Playwright E2E, Pact (Contract Testing), k6 và tích hợp QA gates vào CI/CD pipeline tại Tiki [23, 24]."
+  },
+  {
+    "qa_id": "JD_060",
+    "question": "Embedded Rust / Firmware Engineer\nLập trình nhúng sử dụng ngôn ngữ C/C++ và đặc biệt là Rust (an toàn bộ nhớ). Yêu cầu kinh nghiệm viết Board Support Package (BSP), làm việc với RTOS, tối ưu hóa giao tiếp ngoại vi (SPI/I2C với DMA), và thiết kế hệ thống Bootloader/OTA an toàn.",
+    "answer": "",
+    "contexts": [
+      "No context retrieved"
+    ],
+    "ground_truth": "P_022 là chuyên gia cực kỳ hiếm hoi tại Việt Nam thành thạo cả C/FreeRTOS truyền thống lẫn hệ sinh thái Embedded Rust (sử dụng embassy framework), từng tự viết custom DMA-driven SPI driver bằng Rust tối ưu zero-copy buffer [25-27]."
+  }
+]
