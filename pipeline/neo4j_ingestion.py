@@ -8,26 +8,31 @@ from __future__ import annotations
 
 import json
 import re
+from datetime import datetime, timezone
 from typing import Any, Dict
-from neo4j import GraphDatabase
 
 from pipeline.config import settings, get_logger
+from pipeline.neo4j_client import get_neo4j_driver
 from pipeline.schemas import RecruitmentNode, _normalize_entity
 
 logger = get_logger(__name__)
 
 class Neo4jIngestion:
     def __init__(self):
-        self._uri = settings.NEO4J_URI
-        self._user = settings.NEO4J_USER
-        self._password = settings.NEO4J_PASSWORD
-        self._driver = GraphDatabase.driver(self._uri, auth=(self._user, self._password))
+        self._uri = settings.neo4j_uri
+        self._user = settings.neo4j_user
+        self._password = settings.neo4j_password
+        self._driver = get_neo4j_driver(
+            uri=self._uri,
+            user=self._user,
+            password=self._password,
+        )
         
     def close(self):
         self._driver.close()
 
     def _execute_write(self, func, *args, **kwargs):
-        with self._driver.session() as session:
+        with self._driver.session(database=settings.neo4j_database) as session:
             if hasattr(session, "execute_write"):
                 return session.execute_write(func, *args, **kwargs)
             write_tx = getattr(session, "write_transaction", None)
@@ -377,3 +382,174 @@ class Neo4jIngestion:
             logger.error(f"Lỗi khi ingest node {node_id}: {e}")
 
 neo4j_service = Neo4jIngestion()
+
+
+def _iso_utc_now() -> str:
+    return datetime.now(timezone.utc).isoformat()
+
+
+def check_existing_relationship(personnel_id: str, org_id: str) -> dict[str, Any] | None:
+    """Kiểm tra CONNECTED_TO hiện có giữa org và personnel."""
+    cypher = """
+    MATCH (o:Organization)-[r:CONNECTED_TO]->(p:Personnel)
+    WHERE (o.id = $org_id OR o.org_id = $org_id)
+      AND (p.id = $personnel_id OR p.personnel_id = $personnel_id)
+    RETURN r.status as status,
+           r.match_score as match_score,
+           r.job_title as job_title,
+           r.auto_connected as auto_connected
+    LIMIT 1
+    """
+
+    try:
+        with neo4j_service._driver.session(database=settings.neo4j_database) as session:
+            row = session.run(cypher, org_id=org_id, personnel_id=personnel_id).single()
+            if not row:
+                return None
+            return {
+                "status": row.get("status"),
+                "match_score": row.get("match_score"),
+                "job_title": row.get("job_title"),
+                "auto_connected": row.get("auto_connected"),
+            }
+    except Exception as exc:
+        logger.error("check_existing_relationship failed: %s", exc)
+        return None
+
+
+def create_neo4j_relationship(
+    personnel_id: str,
+    org_id: str,
+    status: str,
+    match_score: float,
+    job_title: str,
+    auto_connected: bool,
+    connected_at: str | None = None,
+    requested_at: str | None = None,
+) -> dict[str, Any] | None:
+    """Tạo hoặc cập nhật CONNECTED_TO relationship trong Neo4j."""
+    cypher = """
+    MATCH (p:Personnel)
+    WHERE p.id = $personnel_id OR p.personnel_id = $personnel_id
+    MATCH (o:Organization)
+    WHERE o.id = $org_id OR o.org_id = $org_id
+    MERGE (o)-[r:CONNECTED_TO]->(p)
+    SET r.status = $status,
+        r.match_score = $match_score,
+        r.job_title = $job_title,
+        r.auto_connected = $auto_connected,
+        r.connected_at = CASE
+            WHEN $connected_at IS NOT NULL THEN $connected_at
+            ELSE r.connected_at
+        END,
+        r.requested_at = CASE
+            WHEN $requested_at IS NOT NULL THEN $requested_at
+            ELSE r.requested_at
+        END,
+        r.updated_at = $updated_at,
+        r.org_id = o.id,
+        r.personnel_id = p.id
+    RETURN p.id as personnel_id,
+           o.id as org_id,
+           r.status as status,
+           r.job_title as job_title,
+           r.match_score as match_score,
+           r.auto_connected as auto_connected,
+           r.connected_at as connected_at,
+           r.requested_at as requested_at,
+           r.updated_at as updated_at
+    """
+
+    try:
+        with neo4j_service._driver.session(database=settings.neo4j_database) as session:
+            row = session.run(
+                cypher,
+                personnel_id=personnel_id,
+                org_id=org_id,
+                status=status,
+                match_score=match_score,
+                job_title=job_title,
+                auto_connected=auto_connected,
+                connected_at=connected_at,
+                requested_at=requested_at,
+                updated_at=_iso_utc_now(),
+            ).single()
+            return dict(row) if row else None
+    except Exception as exc:
+        logger.error("create_neo4j_relationship failed: %s", exc)
+        return None
+
+
+def respond_connection_relationship(personnel_id: str, org_id: str, action: str) -> dict[str, Any] | None:
+    """Cập nhật pending request thành accepted/declined."""
+    new_status = "accepted" if action == "accept" else "declined"
+    connected_at = _iso_utc_now() if new_status == "accepted" else None
+    cypher = """
+    MATCH (o:Organization)-[r:CONNECTED_TO]->(p:Personnel)
+    WHERE (o.id = $org_id OR o.org_id = $org_id)
+      AND (p.id = $personnel_id OR p.personnel_id = $personnel_id)
+      AND r.status = 'pending'
+    SET r.status = $status,
+        r.connected_at = CASE
+            WHEN $connected_at IS NOT NULL THEN $connected_at
+            ELSE r.connected_at
+        END,
+        r.updated_at = $updated_at
+    RETURN p.id as personnel_id,
+           o.id as org_id,
+           r.status as status,
+           r.job_title as job_title,
+           r.match_score as match_score
+    """
+
+    try:
+        with neo4j_service._driver.session(database=settings.neo4j_database) as session:
+            row = session.run(
+                cypher,
+                personnel_id=personnel_id,
+                org_id=org_id,
+                status=new_status,
+                connected_at=connected_at,
+                updated_at=_iso_utc_now(),
+            ).single()
+            return dict(row) if row else None
+    except Exception as exc:
+        logger.error("respond_connection_relationship failed: %s", exc)
+        return None
+
+
+def get_connection_statuses_batch(personnel_ids: list[str], org_id: str) -> dict[str, str]:
+    """Lấy trạng thái kết nối theo batch để tránh N+1 query."""
+    if not personnel_ids:
+        return {}
+
+    cypher = """
+    MATCH (o:Organization)-[r:CONNECTED_TO]->(p:Personnel)
+    WHERE (o.id = $org_id OR o.org_id = $org_id)
+      AND (p.id IN $personnel_ids OR p.personnel_id IN $personnel_ids)
+    RETURN p.id as personnel_id, p.personnel_id as personnel_code, r.status as status
+    """
+
+    mapping = {
+        "accepted": "accepted",
+        "pending": "pending_sent",
+        "declined": "declined",
+        "cancelled": "declined",
+    }
+    status_map: dict[str, str] = {pid: "not_connected" for pid in personnel_ids}
+
+    try:
+        with neo4j_service._driver.session(database=settings.neo4j_database) as session:
+            rows = session.run(cypher, org_id=org_id, personnel_ids=personnel_ids)
+            for row in rows:
+                status = mapping.get(str(row.get("status") or "").lower(), "not_connected")
+                pid = str(row.get("personnel_id") or "").strip()
+                code = str(row.get("personnel_code") or "").strip()
+                if pid:
+                    status_map[pid] = status
+                if code and code in status_map:
+                    status_map[code] = status
+    except Exception as exc:
+        logger.error("get_connection_statuses_batch failed: %s", exc)
+
+    return status_map

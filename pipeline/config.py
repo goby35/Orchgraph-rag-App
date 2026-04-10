@@ -9,9 +9,10 @@ from dotenv import load_dotenv
 from cerebras.cloud.sdk import Cerebras
 from openai import OpenAI as _OpenAI
 
-# Load .env từ thư mục gốc của project
-_ENV_PATH = Path(__file__).resolve().parent.parent / ".env"
-load_dotenv(_ENV_PATH)
+# Load .env từ thư mục gốc của project bằng path tường minh (không phụ thuộc CWD)
+_ROOT = Path(__file__).resolve().parent.parent
+_ENV_FILE = _ROOT / ".env"
+load_dotenv(_ENV_FILE, override=False)
 
 
 class Settings:
@@ -50,9 +51,35 @@ class Settings:
     GTE_MODEL: str = "sentence-transformers/all-MiniLM-L6-v2"
 
     # --- Neo4j ---
-    NEO4J_URI: str = os.getenv("NEO4J_URI", "neo4j+s://xxx.databases.neo4j.io")
+    NEO4J_URI: str = os.getenv("NEO4J_URI", "bolt://localhost:7687")
     NEO4J_USER: str = os.getenv("NEO4J_USER", "neo4j")
-    NEO4J_PASSWORD: str = os.getenv("NEO4J_PASSWORD", "password123")
+    NEO4J_PASSWORD: str = os.getenv("NEO4J_PASSWORD", "password")
+    NEO4J_AURA_URI: str | None = os.getenv("NEO4J_AURA_URI")
+    NEO4J_AURA_USERNAME: str | None = os.getenv("NEO4J_AURA_USERNAME")
+    NEO4J_AURA_PASSWORD: str | None = os.getenv("NEO4J_AURA_PASSWORD")
+    NEO4J_AURA_DATABASE: str = os.getenv("NEO4J_AURA_DATABASE", "neo4j")
+
+    @property
+    def neo4j_uri(self) -> str:
+        return self.NEO4J_AURA_URI if self.NEO4J_AURA_URI else self.NEO4J_URI
+
+    @property
+    def neo4j_user(self) -> str:
+        return self.NEO4J_AURA_USERNAME if self.NEO4J_AURA_USERNAME else self.NEO4J_USER
+
+    @property
+    def neo4j_password(self) -> str:
+        return self.NEO4J_AURA_PASSWORD if self.NEO4J_AURA_PASSWORD else self.NEO4J_PASSWORD
+
+    @property
+    def neo4j_database(self) -> str:
+        if self.NEO4J_AURA_URI:
+            return self.NEO4J_AURA_DATABASE
+        return "neo4j"
+
+    @property
+    def is_aura(self) -> bool:
+        return bool(self.NEO4J_AURA_URI)
 
     # --- ChromaDB ---
     CHROMADB_HOST: str = os.getenv("CHROMADB_HOST", "localhost")

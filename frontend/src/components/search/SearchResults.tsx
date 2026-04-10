@@ -12,8 +12,10 @@ interface SearchResultsProps {
   loading: boolean
   error: unknown
   searched: boolean
+  connectingId?: string | null
   onRetry?: () => void
   onStartInterview?: (candidate: CandidateResult) => void | Promise<void>
+  onConnectCandidate?: (candidate: CandidateResult) => void | Promise<void>
 }
 
 function errorMessage(err: unknown): string {
@@ -32,8 +34,10 @@ export function SearchResults({
   loading,
   error,
   searched,
+  connectingId,
   onRetry,
   onStartInterview,
+  onConnectCandidate,
 }: SearchResultsProps) {
   if (loading) {
     return <PageSkeleton variant="card-list" />
@@ -71,6 +75,8 @@ export function SearchResults({
           key={c.id}
           candidate={c}
           jobTitle={jobTitle}
+          isConnecting={connectingId === (c.personnel_id || c.id)}
+          onConnect={onConnectCandidate}
           onStartInterview={onStartInterview}
         />
       ))}

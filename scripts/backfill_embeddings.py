@@ -3,10 +3,16 @@ from __future__ import annotations
 import argparse
 import os
 import sys
+from pathlib import Path
 from typing import Any
 
-# Path bootstrap for direct script execution.
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+from dotenv import load_dotenv
+
+_ROOT = Path(__file__).resolve().parent.parent
+if str(_ROOT) not in sys.path:
+    sys.path.insert(0, str(_ROOT))
+
+load_dotenv(_ROOT / ".env", override=False)
 
 from pipeline.supabase_client import get_supabase
 from pipeline.vectorizer import embed_all_models

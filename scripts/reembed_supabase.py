@@ -1,7 +1,17 @@
 from __future__ import annotations
 
 import argparse
+import sys
+from pathlib import Path
 from typing import Any
+
+from dotenv import load_dotenv
+
+_ROOT = Path(__file__).resolve().parent.parent
+if str(_ROOT) not in sys.path:
+    sys.path.insert(0, str(_ROOT))
+
+load_dotenv(_ROOT / ".env", override=False)
 
 from pipeline.config import get_logger
 from pipeline.supabase_client import get_supabase

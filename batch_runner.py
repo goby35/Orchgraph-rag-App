@@ -20,11 +20,20 @@ from __future__ import annotations
 
 import argparse
 import logging
+import os
 import sys
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import List
+
+from dotenv import load_dotenv
+
+_ROOT = Path(__file__).resolve().parent
+if str(_ROOT) not in sys.path:
+    sys.path.insert(0, str(_ROOT))
+
+load_dotenv(_ROOT / ".env", override=False)
 
 from pipeline.config import settings, get_logger
 from pipeline.main import process_single_file, save_neo4j_ready, _SUPPORTED_EXTS

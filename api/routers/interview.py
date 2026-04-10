@@ -161,13 +161,17 @@ async def accept_interview_request(
     if user.get("role") != "personnel":
         raise HTTPException(403, "Chỉ Personnel mới có thể chấp nhận lời mời")
 
-    from neo4j import GraphDatabase
     from pipeline.config import settings
-    driver = GraphDatabase.driver(
-        settings.NEO4J_URI, auth=(settings.NEO4J_USER, settings.NEO4J_PASSWORD)
+    from pipeline.neo4j_client import get_neo4j_driver
+
+    driver = get_neo4j_driver(
+        uri=settings.neo4j_uri,
+        user=settings.neo4j_user,
+        password=settings.neo4j_password,
     )
     try:
-        with driver.session() as session:
+        session_kwargs = {"database": settings.neo4j_database} if settings.neo4j_database else {}
+        with driver.session(**session_kwargs) as session:
             rows = session.run(
                 """
                 MATCH (o:Organization)-[r:CONNECTED_TO]->(p:Personnel {id: $per_id})
@@ -211,13 +215,17 @@ async def reject_interview_request(
     if user.get("role") != "personnel":
         raise HTTPException(403, "Chỉ Personnel mới có thể từ chối lời mời")
 
-    from neo4j import GraphDatabase
     from pipeline.config import settings
-    driver = GraphDatabase.driver(
-        settings.NEO4J_URI, auth=(settings.NEO4J_USER, settings.NEO4J_PASSWORD)
+    from pipeline.neo4j_client import get_neo4j_driver
+
+    driver = get_neo4j_driver(
+        uri=settings.neo4j_uri,
+        user=settings.neo4j_user,
+        password=settings.neo4j_password,
     )
     try:
-        with driver.session() as session:
+        session_kwargs = {"database": settings.neo4j_database} if settings.neo4j_database else {}
+        with driver.session(**session_kwargs) as session:
             rows = session.run(
                 """
                 MATCH (o:Organization)-[r:CONNECTED_TO]->(p:Personnel {id: $per_id})
@@ -258,13 +266,17 @@ async def get_personnel_profile(
     user: dict = Depends(get_current_user),
 ) -> dict[str, Any]:
     """Return public profile data for a Personnel node."""
-    from neo4j import GraphDatabase
     from pipeline.config import settings
-    driver = GraphDatabase.driver(
-        settings.NEO4J_URI, auth=(settings.NEO4J_USER, settings.NEO4J_PASSWORD)
+    from pipeline.neo4j_client import get_neo4j_driver
+
+    driver = get_neo4j_driver(
+        uri=settings.neo4j_uri,
+        user=settings.neo4j_user,
+        password=settings.neo4j_password,
     )
     try:
-        with driver.session() as session:
+        session_kwargs = {"database": settings.neo4j_database} if settings.neo4j_database else {}
+        with driver.session(**session_kwargs) as session:
             row = session.run(
                 """
                 MATCH (p:Personnel {id: $id})

@@ -1,6 +1,7 @@
 "use client"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useRouter }   from "next/navigation"
+import { useState }    from "react"
 import { toast }       from "sonner"
 import { useAuthStore } from "@/store/auth.store"
 import {
@@ -8,6 +9,7 @@ import {
   markNotificationRead,
   markAllNotificationsRead,
 } from "@/lib/api/notification"
+import { respondConnection } from "@/lib/api/connect"
 import { acceptInterviewRequest, rejectInterviewRequest } from "@/lib/api/interview"
 import { useRealtimeNotifications } from "@/hooks/useRealtimeNotifications"
 import { formatDate } from "@/lib/utils"
@@ -70,6 +72,7 @@ export default function NotificationsPage() {
   const router      = useRouter()
   const queryClient = useQueryClient()
   const neoId       = useAuthStore(s => s.neoId)
+  const [respondingId, setRespondingId] = useState<string | null>(null)
 
   // Realtime subscription
   useRealtimeNotifications(neoId)
@@ -107,6 +110,44 @@ export default function NotificationsPage() {
 
     if (typeof n.type === "string" && n.type.startsWith("schedule_")) {
       router.push("/schedule")
+    }
+  }
+
+  const handleRespondConnection = async (
+    notification: NotificationItem,
+    action: "accept" | "decline",
+  ) => {
+    if (!neoId) {
+      toast.error("Khong tim thay tai khoan hien tai")
+      return
+    }
+    const orgId = String(notification.payload?.org_id ?? "")
+    if (!orgId) {
+      toast.error("Thieu org_id trong notification")
+      return
+    }
+
+    setRespondingId(notification.id)
+    try {
+      await respondConnection({
+        org_id: orgId,
+        personnel_id: neoId,
+        action,
+      })
+
+      await markNotificationRead(notification.id)
+      queryClient.invalidateQueries({ queryKey: ["notifications"] })
+      queryClient.invalidateQueries({ queryKey: ["unread-count"] })
+
+      if (action === "accept") {
+        toast.success("Da chap nhan ket noi")
+      } else {
+        toast.success("Da tu choi ket noi")
+      }
+    } catch {
+      toast.error("Khong the phan hoi ket noi")
+    } finally {
+      setRespondingId(null)
     }
   }
 
@@ -223,8 +264,39 @@ export default function NotificationsPage() {
                         {n.body}
                       </p>
                     )}
-                    {n.type === "interview_request" &&  ( // !n.is_read &&
+                    {n.type === "interview_request" &&  (
                       <InterviewRequestActions notification={n} />
+                    )}
+                    {n.type === "connection_request" && (
+                      <div className="mt-2 flex gap-2">
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            void handleRespondConnection(n, "accept")
+                          }}
+                          disabled={respondingId === n.id}
+                          className="text-xs px-3 py-1.5 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
+                        >
+                          {respondingId === n.id ? "Dang xu ly..." : "Chap nhan"}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            void handleRespondConnection(n, "decline")
+                          }}
+                          disabled={respondingId === n.id}
+                          className="text-xs px-3 py-1.5 rounded-md border hover:bg-muted disabled:opacity-50"
+                        >
+                          {respondingId === n.id ? "Dang xu ly..." : "Tu choi"}
+                        </button>
+                      </div>
+                    )}
+                    {n.type === "auto_connected" && (
+                      <p className="text-sm text-muted-foreground mt-1">
+                        Ket noi da duoc thiet lap tu dong dua tren do phu hop cao.
+                      </p>
                     )}
                   </div>
 

@@ -30,20 +30,31 @@ function scoreTone(score: number): "green" | "amber" | "gray" {
 interface CandidateCardProps {
   candidate: CandidateResult
   jobTitle: string
+  isConnecting?: boolean
+  onConnect?: (candidate: CandidateResult) => void | Promise<void>
   onStartInterview?: (candidate: CandidateResult) => void | Promise<void>
 }
 
-export function CandidateCard({ candidate, jobTitle, onStartInterview }: CandidateCardProps) {
+export function CandidateCard({
+  candidate,
+  jobTitle,
+  isConnecting = false,
+  onConnect,
+  onStartInterview,
+}: CandidateCardProps) {
   const router = useRouter()
   const [starting, setStarting] = useState(false)
-  const pct = Math.round(Math.min(1, Math.max(0, candidate.score)) * 100)
-  const tone = scoreTone(candidate.score)
+  const matchScore =
+    typeof candidate.match_score === "number" ? candidate.match_score : candidate.score
+  const pct = Math.round(Math.min(1, Math.max(0, matchScore)) * 100)
+  const tone = scoreTone(matchScore)
   const barClass =
     tone === "green"
       ? "bg-green-500"
       : tone === "amber"
         ? "bg-amber-500"
         : "bg-muted-foreground/50"
+  const connectionStatus = candidate.connection_status ?? "not_connected"
 
 // --- FIX TIER 1: Dọn sạch rác LLM và lỗi Array ---
   let rawSkills = candidate.skills || []
@@ -90,6 +101,60 @@ export function CandidateCard({ candidate, jobTitle, onStartInterview }: Candida
       sessionId: "new",
     })
     router.push(`/interview?${params.toString()}`)
+  }
+
+  async function handleConnectClick() {
+    if (!onConnect || isConnecting) return
+    await onConnect(candidate)
+  }
+
+  function renderConnectButton() {
+    if (connectionStatus === "pending_sent") {
+      return (
+        <button
+          type="button"
+          disabled
+          className={buttonVariants({ variant: "outline", size: "sm" })}
+        >
+          Dang cho phan hoi...
+        </button>
+      )
+    }
+
+    if (connectionStatus === "accepted") {
+      return (
+        <button
+          type="button"
+          disabled
+          className={cn(buttonVariants({ variant: "ghost", size: "sm" }), "text-green-600")}
+        >
+          ✓ Da ket noi
+        </button>
+      )
+    }
+
+    if (connectionStatus === "declined") {
+      return (
+        <button
+          type="button"
+          disabled
+          className={cn(buttonVariants({ variant: "ghost", size: "sm" }), "text-muted-foreground")}
+        >
+          Da tu choi
+        </button>
+      )
+    }
+
+    return (
+      <button
+        type="button"
+        disabled={isConnecting || !onConnect}
+        onClick={handleConnectClick}
+        className={buttonVariants({ variant: "outline", size: "sm" })}
+      >
+        {isConnecting ? "Dang ket noi..." : "Ket noi"}
+      </button>
+    )
   }
   // ------------------------------------------
 
@@ -153,15 +218,26 @@ export function CandidateCard({ candidate, jobTitle, onStartInterview }: Candida
             ) : null}
           </div>
         ) : null}
-      <div className="mt-4 flex justify-end border-t pt-3">
-        <button
-          type="button"
-          onClick={handleInterviewClick}
-          disabled={starting}
-          className={buttonVariants({ variant: "default", size: "sm" })}
-        >
-          {starting ? "Đang mở..." : `Phỏng vấn ${candidateName}`}
-        </button>
+      <p className="text-muted-foreground mt-2 text-xs">
+        Match {pct}% ·{" "}
+        {matchScore > 0.6 ? (
+          <span className="text-green-600">Ket noi tu dong</span>
+        ) : (
+          <span className="text-amber-600">Can ung vien xac nhan</span>
+        )}
+      </p>
+      <div className="mt-4 flex items-center justify-end gap-2 border-t pt-3">
+        {renderConnectButton()}
+        {connectionStatus === "accepted" && (
+          <button
+            type="button"
+            onClick={handleInterviewClick}
+            disabled={starting}
+            className={buttonVariants({ variant: "default", size: "sm" })}
+          >
+            {starting ? "Dang mo..." : `Phong van ${candidateName}`}
+          </button>
+        )}
       </div>
     </article>
   )

@@ -5,6 +5,7 @@ from pydantic import BaseModel, Field
 
 from api.deps import get_current_user
 from pipeline.hybrid_query_engine import MasterAgentEngine, _explain_fit
+from pipeline.neo4j_ingestion import get_connection_statuses_batch
 
 router = APIRouter()
 
@@ -26,17 +27,24 @@ async def search_candidates(
     with MasterAgentEngine() as engine:
         results = engine.search_candidates(body.query, top_k=body.top_k)
 
+    org_id = str(user.get("neo4j_id") or "")
+    personnel_ids = [str(item.id) for item in results]
+    connection_statuses = get_connection_statuses_batch(personnel_ids, org_id)
+
     output_rows: list[dict[str, object]] = []
     for item in results:
         fit_explanation = _explain_fit(item, body.query) if body.include_explanation else None
         output_rows.append(
             {
                 "id": item.id,
+                "personnel_id": item.id,
                 "name": item.name,
                 "score": item.score,
+                "match_score": item.score,
                 "skills": item.skills,
                 "summary": item.summary,
                 "fit_explanation": fit_explanation,
+                "connection_status": connection_statuses.get(str(item.id), "not_connected"),
             }
         )
 

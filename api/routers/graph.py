@@ -4,10 +4,9 @@ import json
 from typing import Any
 
 from fastapi import APIRouter, Depends, Query
-from neo4j import GraphDatabase
-
 from api.deps import get_current_user
 from pipeline.config import settings
+from pipeline.neo4j_client import get_neo4j_driver
 
 router = APIRouter()
 
@@ -84,13 +83,15 @@ async def get_graph(
     user_id = user.get("neo4j_id") or user.get("sub") or user.get("id")
     target_id = focus_id or focus_node_id or user_id
 
-    driver = GraphDatabase.driver(
-        settings.NEO4J_URI,
-        auth=(settings.NEO4J_USER, settings.NEO4J_PASSWORD),
+    driver = get_neo4j_driver(
+        uri=settings.neo4j_uri,
+        user=settings.neo4j_user,
+        password=settings.neo4j_password,
     )
 
     try:
-        with driver.session() as session:
+        session_kwargs = {"database": settings.neo4j_database} if settings.neo4j_database else {}
+        with driver.session(**session_kwargs) as session:
             params: dict[str, Any]
             if show_all:
                 query = "MATCH (n)-[r]->(m) RETURN n, r, m LIMIT 200"

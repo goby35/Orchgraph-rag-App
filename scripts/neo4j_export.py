@@ -2,9 +2,18 @@ from __future__ import annotations
 
 import json
 import os
+import sys
 from pathlib import Path
 
-from neo4j import GraphDatabase
+from dotenv import load_dotenv
+
+_ROOT = Path(__file__).resolve().parent.parent
+if str(_ROOT) not in sys.path:
+    sys.path.insert(0, str(_ROOT))
+
+load_dotenv(_ROOT / ".env", override=False)
+
+from pipeline.neo4j_client import get_neo4j_driver
 
 DEFAULT_URI = "bolt://localhost:7687"
 DEFAULT_USER = os.getenv("NEO4J_USER", "neo4j")
@@ -13,10 +22,7 @@ DEFAULT_OUTPUT = Path(__file__).resolve().parents[1] / "neo4j_export.json"
 
 
 def export_graph(output_path: Path) -> tuple[int, int]:
-    driver = GraphDatabase.driver(
-        DEFAULT_URI,
-        auth=(DEFAULT_USER, DEFAULT_PASSWORD),
-    )
+    driver = get_neo4j_driver(uri=DEFAULT_URI, user=DEFAULT_USER, password=DEFAULT_PASSWORD)
 
     try:
         with driver.session() as session:

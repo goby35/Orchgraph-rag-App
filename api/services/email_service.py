@@ -13,10 +13,16 @@ from email.mime.base import MIMEBase
 from email import encoders
 
 from pipeline.config import get_logger
-from icalendar import Calendar, Event, vText
 from datetime import timezone
 import uuid as _uuid
 from api.utils.supabase_helpers import sb_val
+
+try:
+    from icalendar import Calendar, Event, vText
+except ModuleNotFoundError:
+    Calendar = None
+    Event = None
+    vText = None
 
 logger = get_logger(__name__)
 
@@ -37,6 +43,25 @@ def _build_ics(
     summary_text: str,
 ) -> bytes:
     from datetime import timedelta
+
+    if Calendar is None or Event is None or vText is None:
+        dt_start = datetime.fromisoformat(proposed_at).replace(tzinfo=timezone.utc)
+        dt_end = dt_start + timedelta(minutes=duration)
+        return (
+            "BEGIN:VCALENDAR\n"
+            "VERSION:2.0\n"
+            "PRODID:-//Digital Twin Recruitment//VI\n"
+            "METHOD:REQUEST\n"
+            "BEGIN:VEVENT\n"
+            f"UID:{schedule_id}\n"
+            f"SUMMARY:Phỏng vấn: {org_name} × {per_name}\n"
+            f"DTSTART:{dt_start.strftime('%Y%m%dT%H%M%SZ')}\n"
+            f"DTEND:{dt_end.strftime('%Y%m%dT%H%M%SZ')}\n"
+            f"DESCRIPTION:Hình thức: {'Online' if fmt == 'online' else 'Offline'}\\nĐịa điểm: {location}\\n\\nTóm tắt cuộc trò chuyện:\\n{summary_text}\n"
+            f"LOCATION:{location or ('Google Meet' if fmt == 'online' else 'Văn phòng')}\n"
+            "END:VEVENT\n"
+            "END:VCALENDAR\n"
+        ).encode("utf-8")
 
     cal = Calendar()
     cal.add("prodid", "-//Digital Twin Recruitment//VI")
@@ -203,6 +228,26 @@ def send_schedule_notification_email(
         recipient = RECIPIENT_EMAIL
 
     _send_html_email(subject, html_body, [recipient])
+
+
+def send_connection_request_email(*, to_email: str, org_name: str, job_title: str) -> None:
+        """Gửi email khi Org tạo request kết nối cần personnel xác nhận."""
+        subject = f"[Digital Twin] {org_name} muốn kết nối với bạn"
+        html_body = f"""
+        <html><body style="font-family: Arial, sans-serif; max-width: 600px; margin: auto;">
+            <div style="background:#0D1219;padding:20px;border-radius:8px;margin-bottom:20px;">
+                <h2 style="color:#00C9B8;margin:0;">Digital Twin Recruitment</h2>
+                <p style="color:#8E99AE;margin:4px 0 0;">Yêu cầu kết nối mới</p>
+            </div>
+            <p>Xin chào,</p>
+            <p><strong>{org_name}</strong> muốn kết nối với bạn cho vị trí <strong>{job_title}</strong>.</p>
+            <p>Vui lòng vào hệ thống và phản hồi yêu cầu trong mục thông báo.</p>
+            <p style="color:#999;font-size:12px;margin-top:30px;">
+                Email này được gửi tự động từ hệ thống Digital Twin Recruitment.
+            </p>
+        </body></html>
+        """
+        _send_html_email(subject, html_body, [to_email])
 
 
 def send_schedule_email(

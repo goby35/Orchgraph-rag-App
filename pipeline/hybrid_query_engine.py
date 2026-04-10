@@ -1215,9 +1215,9 @@ class _BaseNeo4jEngine:
         user: Optional[str] = None,
         password: Optional[str] = None,
     ) -> None:
-        self._uri = uri or settings.NEO4J_URI
-        self._user = user or settings.NEO4J_USER
-        self._password = password or settings.NEO4J_PASSWORD
+        self._uri = uri or settings.neo4j_uri
+        self._user = user or settings.neo4j_user
+        self._password = password or settings.neo4j_password
         self._driver: Optional[Driver] = None
 
     def connect(self) -> None:

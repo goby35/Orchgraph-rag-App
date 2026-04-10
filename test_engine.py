@@ -15,15 +15,25 @@ Flow:
 from __future__ import annotations
 
 import json
+import os
+import sys
 import textwrap
 from dataclasses import dataclass
 from enum import Enum
+from pathlib import Path
 from typing import Any
 
-from neo4j import GraphDatabase
+from dotenv import load_dotenv
+
+_ROOT = Path(__file__).resolve().parent
+if str(_ROOT) not in sys.path:
+    sys.path.insert(0, str(_ROOT))
+
+load_dotenv(_ROOT / ".env", override=False)
 
 from pipeline.config import get_logger, settings
 from pipeline.hybrid_query_engine import DigitalTwinInterviewEngine
+from pipeline.neo4j_client import get_neo4j_driver
 
 logger = get_logger("test_engine")
 
@@ -321,11 +331,7 @@ def run_access_control_test() -> None:
     print(f"  Org: {ORG_TEST_ID}  |  Per: {PER_TEST_ID}")
     print("═" * 60)
 
-    driver = GraphDatabase.driver(
-        settings.NEO4J_URI,
-        auth=(settings.NEO4J_USER, settings.NEO4J_PASSWORD),
-    )
-    driver.verify_connectivity()
+    driver = get_neo4j_driver()
     logger.info("Kết nối Neo4j thành công.")
 
     results: list[TestResult] = []

@@ -38,14 +38,22 @@ export type WsChunk =
   | { done: true; is_private_mode: boolean }
   | { error: string }
 
+export type ConnectionStatus =
+  | "not_connected"
+  | "pending_sent"
+  | "accepted"
+  | "declined"
+
 /** Kết quả tìm kiếm ứng viên (POST /search → `results[]`) */
 export interface CandidateResult {
   id: string
   name: string
   summary: string
   score: number
+  match_score?: number
   skills: string[]
   personnel_id?: string
+  connection_status?: ConnectionStatus
   reasoning_summary?: ReasoningSummary | null
   context?: string[]
 }

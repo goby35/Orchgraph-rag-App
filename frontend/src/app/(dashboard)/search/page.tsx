@@ -9,10 +9,11 @@ import { toast } from "sonner"
 import { SearchBar, type SearchFormValues } from "@/components/search/SearchBar"
 import { SearchResults } from "@/components/search/SearchResults"
 import { createInterviewSession, type ReasoningSummary } from "@/lib/api/chat"
+import { connectToPersonnel } from "@/lib/api/connect"
 import { mapSearchResponseToCandidates, searchCandidates } from "@/lib/api"
 import { cn } from "@/lib/utils"
 import { useAuthStore } from "@/store/auth.store"
-import type { CandidateResult } from "@/types"
+import type { CandidateResult, ConnectionStatus } from "@/types"
 
 // ── Search history (localStorage) ────────────────────────────────────────────
 
@@ -190,6 +191,7 @@ export default function OrgSearchPage() {
   const [history,   setHistory]   = useState<SearchHistoryEntry[]>([])
   const [submittedJobTitle, setSubmittedJobTitle] = useState("")
   const [lastForm, setLastForm] = useState<SearchFormValues | null>(null)
+  const [connectingId, setConnectingId] = useState<string | null>(null)
 
   useEffect(() => {
     setHistory(loadHistory())
@@ -280,6 +282,50 @@ export default function OrgSearchPage() {
     }
   }
 
+  function updateCandidateStatus(personnelId: string, status: ConnectionStatus) {
+    setResults((prev) =>
+      prev.map((item) =>
+        (item.personnel_id || item.id) === personnelId
+          ? { ...item, connection_status: status }
+          : item,
+      ),
+    )
+  }
+
+  async function handleConnect(candidate: CandidateResult) {
+    if (!orgNeoId) {
+      toast.error("Khong tim thay to chuc hien tai.")
+      return
+    }
+
+    const personnelId = candidate.personnel_id || candidate.id
+    const matchScore =
+      typeof candidate.match_score === "number" ? candidate.match_score : candidate.score
+    const jobTitle = submittedJobTitle || "Vi tri chua xac dinh"
+
+    setConnectingId(personnelId)
+    try {
+      const result = await connectToPersonnel({
+        personnel_id: personnelId,
+        org_id: orgNeoId,
+        match_score: matchScore,
+        job_title: jobTitle,
+      })
+
+      if (result.status === "accepted") {
+        toast.success(result.message)
+        updateCandidateStatus(personnelId, "accepted")
+      } else {
+        toast.info(result.message)
+        updateCandidateStatus(personnelId, "pending_sent")
+      }
+    } catch {
+      toast.error("Khong the ket noi. Vui long thu lai.")
+    } finally {
+      setConnectingId(null)
+    }
+  }
+
   return (
     <div className="flex flex-col gap-8">
       <div>
@@ -301,6 +347,8 @@ export default function OrgSearchPage() {
         loading={mutation.isPending}
         error={mutation.error}
         searched={searched}
+        connectingId={connectingId}
+        onConnectCandidate={handleConnect}
         onStartInterview={handleStartInterview}
         onRetry={
           lastForm

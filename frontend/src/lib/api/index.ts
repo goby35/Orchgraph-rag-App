@@ -1,4 +1,5 @@
 export * from "./client"
+export * from "./connect"
 export * from "./graph"
 export * from "./ingest"
 export * from "./interview"
