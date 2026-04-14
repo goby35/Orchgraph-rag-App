@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import { cn } from '@/lib/utils'
 import type { ChatMessage } from '@/types'
 
@@ -7,17 +8,21 @@ interface ChatBubbleProps {
 
 export default function ChatBubble({ message }: ChatBubbleProps) {
   const isUser = message.role === 'user'
+  const avatarSrc = isUser ? '/image/cat.png' : '/image/rat.png'
+  const avatarAlt = isUser ? 'User avatar' : 'AI avatar'
 
   return (
     <div className={cn('flex gap-3 mb-4', isUser && 'flex-row-reverse')}>
       {/* Avatar */}
-      <div className={cn(
-        'w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-semibold',
-        isUser
-          ? 'bg-primary text-primary-foreground'
-          : 'bg-muted text-muted-foreground border',
-      )}>
-        {isUser ? 'U' : 'AI'}
+      <div className="h-8 w-8 flex-shrink-0 overflow-hidden bg-transparent">
+        <Image
+          src={avatarSrc}
+          alt={avatarAlt}
+          width={32}
+          height={32}
+          className="h-full w-full object-contain"
+          priority={false}
+        />
       </div>
 
       {/* Bubble */}

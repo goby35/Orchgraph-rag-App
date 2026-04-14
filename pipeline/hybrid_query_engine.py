@@ -48,13 +48,13 @@ RETURN
 
 _GRAPH_DISCOVERY_CYPHER = """
 MATCH (p:Personnel)
-WHERE size($candidate_ids) = 0 OR p.id IN $candidate_ids
+WHERE COUNT($candidate_ids) = 0 OR p.id IN $candidate_ids
 OPTIONAL MATCH (p)-[:HAS_EXPERIENCE]->(e:Experience)
 OPTIONAL MATCH (e)-[:USED_TECH]->(t:TechStack)
 RETURN
     p.id AS id,
     coalesce(p.public_skills_flat, p.public_skills, []) AS skills,
-    COUNT { (p)-[:HAS_EXPERIENCE]->() } AS experience_count,
+    size((p)-[:HAS_EXPERIENCE]->()) AS experience_count,
     collect(DISTINCT t.id) AS connected_tech
 """
 
@@ -1719,8 +1719,8 @@ def create_connection_request(
     status: str = "pending",
 ) -> tuple[bool, str]:  # <--- FIX 1: Đổi type hint thành tuple chứa bool và str
     driver = GraphDatabase.driver(
-        settings.NEO4J_URI,
-        auth=(settings.NEO4J_USER, settings.NEO4J_PASSWORD),
+        settings.neo4j_uri,
+        auth=(settings.neo4j_user, settings.neo4j_password),
     )
     try:
         with driver.session() as session:
@@ -1754,21 +1754,24 @@ def get_connection_status(org_id: str, personnel_id: str) -> str | None:
     Trả về: "pending" | "accepted" | "cancelled" | None (không có relationship)
     """
     driver = GraphDatabase.driver(
-        settings.NEO4J_URI,
-        auth=(settings.NEO4J_USER, settings.NEO4J_PASSWORD),
+        settings.neo4j_uri,
+        auth=(settings.neo4j_user, settings.neo4j_password),
     )
     try:
-        with driver.session() as session:
+        session_kwargs = {"database": settings.neo4j_database} if settings.neo4j_database else {}
+        with driver.session(**session_kwargs) as session:
             result = session.run(
                 """
-                MATCH (o:Organization {id: $org_id})-[r:CONNECTED_TO]->(p:Personnel {id: $personnel_id})
-                RETURN r.status AS status
+                MATCH (o:Organization)-[r:CONNECTED_TO]->(p:Personnel)
+                WHERE (o.id = $org_id OR o.org_id = $org_id)
+                  AND (p.id = $personnel_id OR p.personnel_id = $personnel_id)
+                RETURN coalesce(toLower(r.status), 'accepted') AS status
                 """,
                 org_id=org_id,
                 personnel_id=personnel_id,
             )
             row = result.single()
-            return str(row["status"]).lower() if row else None
+            return str(row["status"]).strip().lower() if row and row.get("status") is not None else None
     except Exception as exc:
         logger.error("get_connection_status failed: %s", exc)
         return None

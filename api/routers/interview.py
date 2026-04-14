@@ -23,6 +23,10 @@ class InterviewRequest(BaseModel):
     question: str
 
 
+class ConnectionStatusesRequest(BaseModel):
+    personnel_ids: list[str]
+
+
 def _normalize_contexts(value: Any) -> list[str]:
     if not isinstance(value, list):
         return []
@@ -104,7 +108,99 @@ async def get_org_connection_status(
         org_id=org_id,
         personnel_id=per_neo4j_id,
     )
+    if status is None:
+        try:
+            sb = get_supabase()
+            resp = (
+                sb.schema("vdme")
+                .table("chat_sessions")
+                .select("session_id")
+                .eq("org_id", str(org_id))
+                .eq("personnel_id", str(per_neo4j_id))
+                .limit(1)
+                .maybe_single()
+                .execute()
+            )
+            row = getattr(resp, "data", None)
+            if row:
+                status = "accepted"
+        except Exception as exc:
+            logger.warning("Fallback chat_sessions lookup failed: %s", exc)
     return {"status": status}  # None | "pending" | "accepted" | "cancelled"
+
+
+@router.post("/connection-statuses")
+async def get_org_connection_statuses(
+    body: ConnectionStatusesRequest,
+    user: dict = Depends(get_current_user),
+) -> dict[str, dict[str, str | None]]:
+    """Org lấy trạng thái kết nối theo batch để tránh N+1 query từ frontend."""
+    org_id = str(user.get("neo4j_id") or "").strip()
+    if not org_id:
+        raise HTTPException(400, "Không tìm thấy org_id")
+
+    personnel_ids = [str(pid).strip() for pid in body.personnel_ids if str(pid).strip()]
+    unique_ids = list(dict.fromkeys(personnel_ids))
+    if not unique_ids:
+        return {"statuses": {}}
+
+    from pipeline.config import settings
+    from pipeline.neo4j_client import get_neo4j_driver
+
+    driver = get_neo4j_driver(
+        uri=settings.neo4j_uri,
+        user=settings.neo4j_user,
+        password=settings.neo4j_password,
+    )
+
+    status_map: dict[str, str | None] = {pid: None for pid in unique_ids}
+    try:
+        session_kwargs = {"database": settings.neo4j_database} if settings.neo4j_database else {}
+        with driver.session(**session_kwargs) as session:
+            rows = session.run(
+                """
+                MATCH (o:Organization)-[r:CONNECTED_TO]->(p:Personnel)
+                WHERE (o.id = $org_id OR o.org_id = $org_id)
+                  AND (p.id IN $personnel_ids OR p.personnel_id IN $personnel_ids)
+                RETURN p.id AS personnel_id,
+                       p.personnel_id AS personnel_code,
+                       coalesce(toLower(r.status), 'accepted') AS status
+                """,
+                org_id=org_id,
+                personnel_ids=unique_ids,
+            )
+            for row in rows:
+                status = str(row.get("status") or "").strip() or "accepted"
+                pid = str(row.get("personnel_id") or "").strip()
+                pcode = str(row.get("personnel_code") or "").strip()
+                if pid in status_map:
+                    status_map[pid] = status
+                if pcode in status_map:
+                    status_map[pcode] = status
+    finally:
+        driver.close()
+
+    missing_ids = [pid for pid, status in status_map.items() if status is None]
+    if missing_ids:
+        try:
+            sb = get_supabase()
+            session_rows = (
+                sb.schema("vdme")
+                .table("chat_sessions")
+                .select("personnel_id")
+                .eq("org_id", org_id)
+                .in_("personnel_id", missing_ids)
+                .execute()
+            ).data or []
+
+            for row in session_rows:
+                pid = str(row.get("personnel_id") or "").strip() if isinstance(row, dict) else ""
+                if pid and pid in status_map and status_map[pid] is None:
+                    status_map[pid] = "accepted"
+        except Exception as exc:
+            logger.warning("Batch fallback chat_sessions lookup failed: %s", exc)
+
+    return {"statuses": status_map}
 
 
 # api/routers/interview.py — thêm endpoint gửi request kết nối

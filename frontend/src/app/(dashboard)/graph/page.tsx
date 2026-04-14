@@ -27,7 +27,7 @@ export default function OrgGraphPage() {
   if (isLoading) {
     return (
       <div className="flex flex-col gap-6">
-        <h1 className="text-2xl font-semibold tracking-tight">
+        <h1 className="text-2xl font-bold tracking-tight lg:text-[1.7rem]">
           Đồ thị quan hệ
         </h1>
         <PageSkeleton variant="graph" />
@@ -38,7 +38,7 @@ export default function OrgGraphPage() {
   if (error) {
     return (
       <div className="flex flex-col gap-6">
-        <h1 className="text-2xl font-semibold tracking-tight">
+        <h1 className="text-2xl font-bold tracking-tight lg:text-[1.7rem]">
           Đồ thị quan hệ
         </h1>
         <ErrorState
@@ -52,17 +52,17 @@ export default function OrgGraphPage() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">
+        <h1 className="text-2xl font-bold tracking-tight lg:text-[1.7rem]">
           Đồ thị quan hệ
         </h1>
-        <p className="text-muted-foreground mt-1 text-sm">
-          Chỉ hiển thị bạn và các node có quan hệ trực tiếp với bạn.
+        <p className="text-muted-foreground mt-1.5 text-sm leading-6">
+          Hiển thị bạn, các personnel đã kết nối và các node liên quan trực tiếp của họ.
         </p>
       </div>
       <div className="flex flex-col gap-4 lg:flex-row">
         <div className="min-w-0 flex-1">
           {isFetching && !isLoading ? (
-            <div className="text-muted-foreground mb-2 text-xs">
+            <div className="text-muted-foreground mb-2 text-xs font-medium">
               Đang làm mới…
             </div>
           ) : null}
@@ -86,7 +86,7 @@ export default function OrgGraphPage() {
             }}
           />
         ) : (
-          <div className="text-muted-foreground hidden w-72 shrink-0 rounded-lg border border-dashed p-4 text-sm lg:block">
+          <div className="text-muted-foreground hidden w-72 shrink-0 rounded-2xl border border-dashed border-border/80 bg-card/70 p-5 text-sm leading-6 lg:block">
             Chọn một node trên đồ thị để xem chi tiết.
           </div>
         )}

@@ -124,17 +124,17 @@ export default function SchedulePage() {
   const awaitingPersonnel = (s: ScheduleRecord) => s.status === 'awaiting_personnel_response'
 
   return (
-    <div className="max-w-3xl mx-auto py-8 px-4">
-      <h1 className="text-xl font-semibold mb-6">Lịch hẹn phỏng vấn</h1>
+    <div className="mx-auto max-w-4xl px-4 py-8">
+      <h1 className="mb-6 text-2xl font-bold tracking-tight">Lịch hẹn phỏng vấn</h1>
 
       {schedules.length === 0 ? (
-        <p className="text-sm text-muted-foreground text-center py-12">
+        <p className="py-12 text-center text-sm text-muted-foreground">
           Chưa có lịch hẹn nào
         </p>
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-3.5">
           {(schedules as ScheduleRecord[]).map(s => (
-            <div key={s.id} className="border rounded-lg p-4 space-y-3">
+            <div key={s.id} className="space-y-3 rounded-2xl border border-border/70 bg-card/90 p-4 shadow-sm">
 
               {/* Header row */}
               <div className="flex items-start justify-between gap-3">
@@ -146,7 +146,7 @@ export default function SchedulePage() {
                       {getCounterpartLabel(s)}
                     </p>
                     {s.email_sent && (
-                      <span className="text-[11px] text-green-700 bg-green-50 border border-green-200 rounded px-1.5 py-0.5 shrink-0">
+                      <span className="shrink-0 rounded-md border border-green-300/60 bg-green-100/60 px-1.5 py-0.5 text-[11px] text-green-700">
                         ✉ Email đã gửi
                       </span>
                     )}
@@ -156,20 +156,20 @@ export default function SchedulePage() {
                   <p className="text-xs text-muted-foreground">
                     {formatDate(s.rescheduled_at ?? s.proposed_at)}
                     {' · '}{s.duration_minutes} phút
-                    {' · '}{s.format === 'online' ? '🌐 Online' : '📍 Offline'}
+                    {' · '}{s.format === 'online' ? ' Online' : ' Offline'}
                     {s.location ? ` · ${s.location}` : ''}
                   </p>
 
                   {/* Confirmed timestamp */}
                   {s.status === 'confirmed' && s.confirmed_at && (
-                    <p className="text-[11px] text-green-600">
+                    <p className="text-[11px] font-medium text-green-600">
                       Xác nhận lúc: {formatDate(s.confirmed_at)}
                     </p>
                   )}
                 </div>
 
                 <span className={cn(
-                  'text-xs px-2 py-1 rounded-full flex-shrink-0',
+                  'flex-shrink-0 rounded-full px-2 py-1 text-xs font-medium',
                   STATUS_COLOR[s.status] ?? 'bg-gray-100',
                 )}>
                   {STATUS_LABEL[s.status] ?? s.status}
@@ -177,23 +177,23 @@ export default function SchedulePage() {
               </div>
 
               {getPendingProposalText(s) ? (
-                <div className="rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-xs text-blue-800">
+                <div className="rounded-xl border border-blue-300/60 bg-blue-100/55 px-3 py-2 text-xs text-blue-800">
                   {getPendingProposalText(s)}
                 </div>
               ) : null}
 
               {/* Chat summary (expandable) */}
               {s.chat_summary && (
-                <div className="border-t pt-2">
+                <div className="border-t border-border/70 pt-2">
                   <button
                     onClick={() => setExpandedSummary(expandedSummary === s.id ? null : s.id)}
-                    className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors"
+                    className="flex items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
                   >
                     Tóm tắt phỏng vấn AI
                     <span>{expandedSummary === s.id ? '▲' : '▼'}</span>
                   </button>
                   {expandedSummary === s.id && (
-                    <p className="mt-2 text-xs text-muted-foreground bg-muted/50 rounded-md p-3 whitespace-pre-line leading-relaxed">
+                    <p className="mt-2 whitespace-pre-line rounded-xl bg-muted/45 p-3 text-xs leading-relaxed text-muted-foreground">
                       {s.chat_summary}
                     </p>
                   )}

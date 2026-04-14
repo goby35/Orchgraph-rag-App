@@ -73,7 +73,7 @@ function SidebarNav({
         : []
 
   return (
-    <nav className={cn("flex flex-col gap-1 p-2", className)}>
+    <nav className={cn("flex flex-col gap-1.5 p-3", className)}>
       {items.map(({ label, href, icon: Icon }) => {
         const active = navActive(pathname, href)
         return (
@@ -83,8 +83,9 @@ function SidebarNav({
             onClick={onNavigate}
             className={cn(
               buttonVariants({ variant: "ghost", size: "default" }),
-              "h-10 w-full justify-start gap-2 px-3",
-              active && "bg-accent text-accent-foreground",
+              "h-10 w-full justify-start gap-2.5 px-3.5 text-muted-foreground hover:text-foreground",
+              active &&
+                "border border-primary/20 bg-primary/12 text-primary shadow-sm hover:bg-primary/15",
             )}
           >
             <Icon className="size-4 shrink-0" aria-hidden />
@@ -130,13 +131,13 @@ function UserSection() {
   }
 
   return (
-    <div className="border-t p-3">
-      <div className="mb-3 flex items-center gap-3">
+    <div className="border-t border-sidebar-border/80 p-4">
+      <div className="mb-4 flex items-center gap-3">
         <Avatar className="size-9">
-          <AvatarFallback className="text-xs">{initials}</AvatarFallback>
+          <AvatarFallback className="bg-primary/15 text-xs text-primary">{initials}</AvatarFallback>
         </Avatar>
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-medium">{fullName}</p>
+          <p className="truncate text-sm font-semibold">{fullName}</p>
           {roleLabel ? (
             <p className="text-muted-foreground truncate text-xs">{roleLabel}</p>
           ) : null}
@@ -159,10 +160,10 @@ function UserSection() {
 
 function SidebarChrome({ onNavigate }: { onNavigate?: () => void }) {
   return (
-    <div className="flex h-full flex-col">
-      <div className="flex items-center justify-between gap-2 border-b px-3 py-3">
-        <span className="truncate text-sm font-semibold">
-          Digital Twin
+    <div className="flex h-full flex-col bg-sidebar/95">
+      <div className="flex items-center justify-between gap-2 border-b border-sidebar-border/80 bg-linear-to-r from-primary/10 via-transparent to-transparent px-4 py-3.5">
+        <span className="truncate text-sm font-bold tracking-tight">
+          ORCHGRAPH-RAG
         </span>
         <NotificationBell />
       </div>
@@ -188,7 +189,7 @@ export default function AppSidebar() {
 
   return (
     <>
-      <header className="bg-background fixed top-0 right-0 left-0 z-40 flex h-14 items-center justify-between gap-2 border-b px-3 md:hidden">
+      <header className="fixed top-0 right-0 left-0 z-40 flex h-14 items-center justify-between gap-2 border-b border-border/70 bg-background/90 px-3 backdrop-blur-sm md:hidden">
         <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
           <SheetTrigger
             type="button"
@@ -200,7 +201,7 @@ export default function AppSidebar() {
           >
             <Menu className="size-5" />
           </SheetTrigger>
-          <SheetContent side="left" className="w-[min(100%,280px)] p-0">
+          <SheetContent side="left" className="w-[min(100%,300px)] p-0">
             <SheetHeader className="sr-only">
               <SheetTitle>Menu điều hướng</SheetTitle>
             </SheetHeader>
@@ -216,7 +217,7 @@ export default function AppSidebar() {
         </div>
       </header>
 
-      <aside className="bg-background fixed inset-y-0 left-0 z-30 hidden w-60 flex-col border-r md:flex">
+      <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r border-sidebar-border/80 bg-sidebar/90 transition-[width,transform] duration-300 ease-in-out md:flex">
         <SidebarChrome />
       </aside>
     </>

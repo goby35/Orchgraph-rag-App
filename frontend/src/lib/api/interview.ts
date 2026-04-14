@@ -85,10 +85,17 @@ export const getPersonnelChatHistory = (perNeoId: string): Promise<ChatConversat
 
 // Thêm vào cuối src/lib/api/interview.ts
 
-export type ConnectionStatus = "pending" | "accepted" | "cancelled" | null
+export type ConnectionStatus = "pending" | "accepted" | "cancelled" | "declined" | null
 
 export const getConnectionStatus = (perNeoId: string): Promise<{ status: ConnectionStatus }> =>
   apiClient.get(`/interview/connection-status/${perNeoId}`).then(r => r.data)
+
+export const getConnectionStatuses = (
+  personnelIds: string[],
+): Promise<{ statuses: Record<string, ConnectionStatus> }> =>
+  apiClient
+    .post("/interview/connection-statuses", { personnel_ids: personnelIds })
+    .then((r) => r.data)
 
 export const sendInterviewRequest = (perNeoId: string): Promise<{ status: string; message: string }> =>
   apiClient.post(`/interview/request/${perNeoId}`).then((r) => r.data)

@@ -18,6 +18,23 @@ interface Options {
   initialJobTitle?: string | null
 }
 
+function formatAssistantText(raw: string): string {
+  if (!raw) return ""
+
+  let text = raw
+    .replace(/^\s*STATE\s*:\s*FOUND\s*ANSWER\s*:\s*/i, "")
+    .replace(/^\s*FOUND\s*ANSWER\s*:\s*/i, "")
+    .replace(/^\s*ANSWER\s*:\s*/i, "")
+
+  // UI chưa render markdown nên strip marker để tránh lộ **text**.
+  text = text.replace(/\*\*(.*?)\*\*/g, "$1").replace(/__(.*?)__/g, "$1")
+
+  // Tách bullet thành dòng riêng nếu model trả về inline list.
+  text = text.replace(/\s+-\s+/g, "\n- ")
+
+  return text.replace(/\n{3,}/g, "\n\n").trim()
+}
+
 export function useDigitalTwinChat({
   perNeoId,
   orgNeoId,
@@ -192,7 +209,7 @@ export function useDigitalTwinChat({
             (history?.messages ?? []).map(h => ({
               id:      h.id ?? crypto.randomUUID(),
               role:    h.role,
-              content: h.content,
+              content: h.role === 'assistant' ? formatAssistantText(h.content) : h.content,
             }))
           )
           return
@@ -257,7 +274,7 @@ export function useDigitalTwinChat({
             (history?.messages ?? []).map(h => ({
               id:      h.id ?? crypto.randomUUID(),
               role:    h.role,
-              content: h.content,
+              content: h.role === 'assistant' ? formatAssistantText(h.content) : h.content,
             }))
           )
         }
@@ -341,26 +358,27 @@ export function useDigitalTwinChat({
       if ('chunk' in data) {
         // Track full assistant content for persistence
         assistantContentRef.current += data.chunk
+        const formattedContent = formatAssistantText(assistantContentRef.current)
 
         setMessages(prev => {
           const last = prev[prev.length - 1]
           if (last?.streaming && last.id === assistantId) {
             return [
               ...prev.slice(0, -1),
-              { ...last, content: last.content + data.chunk },
+              { ...last, content: formattedContent },
             ]
           }
           return [...prev, {
             id:        assistantId,
             role:      'assistant' as const,
-            content:   (data as { chunk: string }).chunk,
+            content:   formattedContent,
             streaming: true,
           }]
         })
       }
 
       if ('done' in data) {
-        const assistantContent  = assistantContentRef.current
+        const assistantContent  = formatAssistantText(assistantContentRef.current)
         const isPrivate         = data.is_private_mode
         assistantContentRef.current = ''
 

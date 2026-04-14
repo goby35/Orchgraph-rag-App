@@ -26,19 +26,19 @@ export default function ProfilePage() {
     .toUpperCase()
 
   return (
-    <div className="max-w-2xl mx-auto py-8 px-4 space-y-6">
-      <h1 className="text-xl font-semibold">Hồ sơ của tôi</h1>
+    <div className="mx-auto max-w-3xl space-y-6 px-4 py-8">
+      <h1 className="text-2xl font-bold tracking-tight">Hồ sơ của tôi</h1>
 
       {/* ── Section 1: Thông tin cơ bản ── */}
-      <section className="border rounded-lg p-6 flex items-center gap-5">
-        <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+      <section className="flex items-center gap-5 rounded-2xl border border-border/70 bg-card/90 p-6 shadow-sm">
+        <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-primary/12">
           <span className="text-lg font-semibold text-primary">{initials}</span>
         </div>
         <div className="space-y-1 min-w-0">
-          <p className="font-semibold text-base truncate">{fullName}</p>
-          <p className="text-sm text-muted-foreground truncate">{email}</p>
+          <p className="truncate text-base font-semibold tracking-tight">{fullName}</p>
+          <p className="truncate text-sm text-muted-foreground">{email}</p>
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-xs rounded-full px-2.5 py-0.5 font-medium bg-blue-100 text-blue-700">
+            <span className="rounded-full border border-primary/20 bg-primary/12 px-2.5 py-0.5 text-xs font-medium text-primary">
               Ứng viên
             </span>
             {neoId && (
@@ -51,7 +51,7 @@ export default function ProfilePage() {
       </section>
 
       {/* ── Section 2: Upload CV ── */}
-      <section className="border rounded-lg p-6 space-y-3">
+      <section className="space-y-3 rounded-2xl border border-border/70 bg-card/90 p-6 shadow-sm">
         <div>
           <h2 className="text-base font-semibold">Upload hồ sơ</h2>
           <p className="text-sm text-muted-foreground mt-1">
@@ -65,7 +65,7 @@ export default function ProfilePage() {
       {neoId !== null && <SkillsSummarySection neoId={neoId} />}
 
       {/* ── Placeholder: Chat history — thêm sau khi confirm API ── */}
-      <ChatHistorySection neoId={neoId} />
+      {/* <ChatHistorySection neoId={neoId} /> */}
     </div>
   )
 }
@@ -88,7 +88,7 @@ function SkillsSummarySection({ neoId }: { neoId: string }) {
   const summary: string = typeof rawSummary === "string" ? rawSummary : ""
 
   return (
-    <section className="border rounded-lg p-6 space-y-4">
+      <section className="space-y-4 rounded-2xl border border-border/70 bg-card/90 p-6 shadow-sm">
       <h2 className="text-base font-semibold">Skills & Giới thiệu</h2>
 
       {isLoading ? (
@@ -120,7 +120,7 @@ function SkillsSummarySection({ neoId }: { neoId: string }) {
                 {skills.map(skill => (
                   <span
                     key={skill}
-                    className="text-xs bg-secondary text-secondary-foreground rounded-full px-2.5 py-0.5"
+                    className="rounded-full border border-border/70 bg-secondary/75 px-2.5 py-0.5 text-xs text-secondary-foreground"
                   >
                     {skill}
                   </span>
@@ -142,7 +142,7 @@ function SkillsSummarySection({ neoId }: { neoId: string }) {
 function ChatHistorySection({ neoId }: { neoId: string | null }) {
   if (!neoId) return null
   return (
-    <section className="border rounded-lg p-6 space-y-3 opacity-50">
+    <section className="space-y-3 rounded-2xl border border-border/70 bg-card/80 p-6 opacity-60 shadow-sm">
       <h2 className="text-base font-semibold">Lịch sử cuộc trò chuyện</h2>
       <p className="text-sm text-muted-foreground">
         Đang chờ xác nhận API endpoint...

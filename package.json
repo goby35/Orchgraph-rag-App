@@ -1,0 +1,18 @@
+{
+  "name": "orchgraph-rag",
+  "version": "1.0.0",
+  "description": "GraphRAG Production Launcher",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd . && .venv\\Scripts\\activate && uvicorn api.main:app --reload --port 8000",
+    "dev:frontend": "cd frontend && npm run dev",
+    "prod": "concurrently \"npm run prod:backend\" \"npm run prod:frontend\"",
+    "prod:backend": "cd . && .venv\\Scripts\\activate && uvicorn api.main:app --port 8000",
+    "prod:frontend": "cd frontend && npm run build && npm run start",
+    "build:frontend": "cd frontend && npm run build",
+    "start:frontend": "cd frontend && npm run start"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

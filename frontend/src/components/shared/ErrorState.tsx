@@ -17,7 +17,7 @@ export function ErrorState({
   return (
     <div
       data-slot="error-state"
-      className="flex min-h-[200px] flex-col items-center justify-center gap-4 rounded-lg border border-destructive/30 bg-destructive/5 px-6 py-10 text-center"
+      className="flex min-h-[200px] flex-col items-center justify-center gap-4 rounded-2xl border border-destructive/25 bg-destructive/5 px-6 py-10 text-center shadow-sm"
     >
       <AlertTriangle
         className="text-destructive size-10 shrink-0"

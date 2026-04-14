@@ -2,9 +2,9 @@ import { Skeleton } from "@/components/ui/skeleton"
 
 export default function GraphLoading() {
   return (
-    <div className="max-w-6xl mx-auto py-8 px-4 space-y-4">
+    <div className="mx-auto max-w-6xl space-y-4 px-4 py-8">
       <Skeleton className="h-7 w-48" />
-      <div className="border rounded-lg overflow-hidden h-[600px] relative bg-muted/20">
+      <div className="relative h-[600px] overflow-hidden rounded-2xl border border-border/70 bg-muted/20">
         {/* Simulate nodes */}
         {[
           { top: "20%", left: "15%" },
@@ -31,13 +31,13 @@ export default function GraphLoading() {
         ].map((pos, i) => (
           <Skeleton
             key={`org-${i}`}
-            className="absolute h-10 w-28 rounded-lg"
+            className="absolute h-10 w-28 rounded-xl"
             style={{ top: pos.top, left: pos.left }}
           />
         ))}
         {/* Loading text center */}
         <div className="absolute inset-0 flex items-center justify-center">
-          <p className="text-sm text-muted-foreground animate-pulse">
+          <p className="animate-pulse text-sm font-medium text-muted-foreground">
             Đang tải đồ thị...
           </p>
         </div>

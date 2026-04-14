@@ -54,7 +54,7 @@ export function SearchResults({
 
   if (!searched) {
     return (
-      <p className="text-muted-foreground text-center text-sm">
+      <p className="text-muted-foreground text-center text-sm leading-6">
         Nhập mô tả công việc để tìm ứng viên phù hợp.
       </p>
     )
@@ -62,7 +62,7 @@ export function SearchResults({
 
   if (results.length === 0) {
     return (
-      <p className="text-muted-foreground text-center text-sm">
+      <p className="text-muted-foreground text-center text-sm leading-6">
         Không tìm thấy ứng viên phù hợp.
       </p>
     )

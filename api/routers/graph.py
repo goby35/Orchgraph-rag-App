@@ -98,7 +98,10 @@ async def get_graph(
                 params = {}
             else:
                 query = """
-                MATCH (focus {id: $focus_id})
+                MATCH (focus)
+                WHERE focus.id = $focus_id
+                   OR focus.personnel_id = $focus_id
+                   OR focus.org_id = $focus_id
                 OPTIONAL MATCH p = (focus)-[*1..1]-(other)
                 RETURN focus, p
                 """
@@ -125,6 +128,32 @@ async def get_graph(
                     "position": {"x": 0, "y": 0},
                 })
                 seen_nodes.add(node_id)
+
+            def add_path(path: Any):
+                if path is None:
+                    return
+
+                for path_node in path.nodes:
+                    add_node(path_node)
+
+                for rel in path.relationships:
+                    source_id = rel.start_node.get("id") or str(rel.start_node.element_id)
+                    target_id = rel.end_node.get("id") or str(rel.end_node.element_id)
+                    rel_type = rel.type
+                    edge_id = f"{source_id}-{rel_type}-{target_id}"
+
+                    if edge_id in seen_edges:
+                        continue
+
+                    rel_status = rel.get("status") or rel_type
+                    edges.append({
+                        "id": edge_id,
+                        "source": source_id,
+                        "target": target_id,
+                        "label": rel_status,
+                        "style": {"stroke": "#22C55E" if rel_status == "accepted" else "#9CA3AF"},
+                    })
+                    seen_edges.add(edge_id)
 
             if show_all:
                 for record in records:
@@ -158,32 +187,23 @@ async def get_graph(
             else:
                 for record in records:
                     add_node(record.get("focus"))
+                    add_path(record.get("p"))
 
-                    path = record.get("p")
-                    if path is None:
-                        continue
-
-                    for path_node in path.nodes:
-                        add_node(path_node)
-
-                    for rel in path.relationships:
-                        source_id = rel.start_node.get("id") or str(rel.start_node.element_id)
-                        target_id = rel.end_node.get("id") or str(rel.end_node.element_id)
-                        rel_type = rel.type
-                        edge_id = f"{source_id}-{rel_type}-{target_id}"
-
-                        if edge_id in seen_edges:
-                            continue
-
-                        rel_status = rel.get("status") or rel_type
-                        edges.append({
-                            "id": edge_id,
-                            "source": source_id,
-                            "target": target_id,
-                            "label": rel_status,
-                            "style": {"stroke": "#22C55E" if rel_status == "accepted" else "#9CA3AF"},
-                        })
-                        seen_edges.add(edge_id)
+                related_query = """
+                MATCH (focus)
+                WHERE (focus.id = $focus_id
+                   OR focus.personnel_id = $focus_id
+                   OR focus.org_id = $focus_id)
+                  AND any(label IN labels(focus) WHERE toLower(label) IN ["org", "organization"])
+                MATCH (focus)-[*1..1]-(per)
+                WHERE any(label IN labels(per) WHERE toLower(label) = "personnel")
+                OPTIONAL MATCH p = (per)-[*1..1]-(related)
+                WHERE related <> focus
+                RETURN p
+                """
+                related_records = session.run(related_query, **params)
+                for record in related_records:
+                    add_path(record.get("p"))
 
     finally:
         driver.close()

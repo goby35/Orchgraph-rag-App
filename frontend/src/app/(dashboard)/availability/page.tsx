@@ -54,9 +54,9 @@ export default function AvailabilityPage() {
   })
 
   return (
-    <div className="max-w-lg mx-auto py-8 px-4">
-      <h1 className="text-xl font-semibold mb-1">Lịch rảnh của bạn</h1>
-      <p className="text-sm text-muted-foreground mb-6">
+    <div className="mx-auto max-w-xl px-4 py-8">
+      <h1 className="mb-1 text-2xl font-bold tracking-tight">Lịch rảnh của bạn</h1>
+      <p className="mb-6 text-sm leading-6 text-muted-foreground">
         Tổ chức sẽ chọn giờ phỏng vấn từ khung giờ này.
       </p>
 
@@ -65,7 +65,7 @@ export default function AvailabilityPage() {
       <button
         onClick={() => save()}
         disabled={isPending}
-        className={cn(buttonVariants({ variant: 'default' }), 'w-full mt-6')}
+        className={cn(buttonVariants({ variant: 'default' }), 'mt-6 w-full')}
       >
         {isPending ? 'Đang lưu...' : 'Lưu lịch rảnh'}
       </button>

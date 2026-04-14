@@ -1,14 +1,14 @@
 "use client"
 
 import { useMemo, useState } from "react"
-import { useQueries, useQuery } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 import { Search } from "lucide-react"
 import Link from "next/link"
 
 import { Skeleton } from "@/components/ui/skeleton"
 import { Input } from "@/components/ui/input"
 import { getInterviewSessions, type InterviewSession } from "@/lib/api/chat"
-import { getConnectionStatus } from "@/lib/api/interview"
+import { getConnectionStatuses } from "@/lib/api/interview"
 import { cn } from "@/lib/utils"
 
 interface SessionSidebarProps {
@@ -94,23 +94,19 @@ export function SessionSidebar({
     [filteredSessions],
   )
 
-  const connectionQueries = useQueries({
-    queries: personnelIds.map((personnelId) => ({
-      queryKey: ["connection-status", currentOrgId, personnelId],
-      queryFn: () => getConnectionStatus(personnelId),
-      enabled: Boolean(personnelId),
-      staleTime: 30_000,
-    })),
+  const connectionBatchQuery = useQuery({
+    queryKey: ["connection-statuses", currentOrgId, personnelIds],
+    queryFn: () => getConnectionStatuses(personnelIds),
+    enabled: personnelIds.length > 0,
+    staleTime: 30_000,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: true,
   })
 
   const connectionByPersonId = useMemo(() => {
-    return new Map(
-      personnelIds.map((personnelId, index) => [
-        personnelId,
-        connectionQueries[index]?.data?.status ?? null,
-      ]),
-    )
-  }, [connectionQueries, personnelIds])
+    const statuses = connectionBatchQuery.data?.statuses ?? {}
+    return new Map(personnelIds.map((personnelId) => [personnelId, statuses[personnelId] ?? null]))
+  }, [connectionBatchQuery.data?.statuses, personnelIds])
 
   const handleSessionClick = async (session: InterviewSession) => {
     await onSessionSelect(session)

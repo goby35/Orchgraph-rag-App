@@ -56,8 +56,8 @@ export function SearchBar({ onSearch, loading }: SearchBarProps) {
   })
 
   return (
-    <form onSubmit={submit} className="flex w-full max-w-4xl flex-col gap-5">
-      <div className="grid gap-4 rounded-2xl border bg-card p-4 shadow-sm md:p-6">
+    <form onSubmit={submit} className="flex w-full max-w-4xl flex-col gap-5 lg:gap-6">
+      <div className="grid gap-4 rounded-2xl border border-border/70 bg-card/90 p-4 shadow-sm md:p-6">
         <div className="grid gap-2">
           <Label htmlFor="job_title">Vị trí tuyển dụng</Label>
           <Input
@@ -81,8 +81,8 @@ export function SearchBar({ onSearch, loading }: SearchBarProps) {
             id="seniority_level"
             disabled={loading}
             className={cn(
-              "h-8 w-full rounded-lg border border-input bg-background px-2.5 py-1 text-sm outline-none transition-colors",
-              "focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50",
+              "h-9 w-full rounded-xl border border-input/85 bg-background/90 px-3 py-1 text-sm outline-none transition-all duration-200",
+              "focus-visible:border-primary/70 focus-visible:ring-3 focus-visible:ring-primary/20 disabled:cursor-not-allowed disabled:opacity-50",
             )}
             {...register("seniority_level")}
           >

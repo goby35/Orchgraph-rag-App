@@ -92,11 +92,11 @@ function RecentSearchHistory({ history }: { history: SearchHistoryEntry[] }) {
   if (history.length === 0) return null
 
   return (
-    <div className="border rounded-lg overflow-hidden text-sm">
+    <div className="overflow-hidden rounded-2xl border border-border/70 bg-card/90 text-sm shadow-sm">
       {/* Header toggle */}
       <button
         onClick={() => setOpen(v => !v)}
-        className="w-full flex items-center justify-between px-4 py-3 font-medium hover:bg-muted/50 transition-colors"
+        className="flex w-full items-center justify-between px-4 py-3.5 font-semibold tracking-tight transition-colors hover:bg-muted/45"
       >
         <span>Tìm kiếm gần đây</span>
         <span className="text-xs text-muted-foreground">
@@ -105,14 +105,14 @@ function RecentSearchHistory({ history }: { history: SearchHistoryEntry[] }) {
       </button>
 
       {open && (
-        <div className="divide-y border-t">
+        <div className="divide-y divide-border/70 border-t border-border/70">
           {history.map(entry => (
-            <div key={entry.id} className="px-4 py-3 space-y-2">
+            <div key={entry.id} className="space-y-2 px-4 py-3.5">
 
               {/* Search header — click to expand candidates */}
               <button
                 onClick={() => setExpanded(expanded === entry.id ? null : entry.id)}
-                className="w-full text-left"
+                className="w-full text-left rounded-lg"
               >
                 <div className="flex items-start justify-between gap-3">
                   <p className="text-xs text-muted-foreground line-clamp-2 flex-1">
@@ -136,7 +136,7 @@ function RecentSearchHistory({ history }: { history: SearchHistoryEntry[] }) {
 
               {/* Candidate list */}
               {expanded === entry.id && (
-                <div className="space-y-1 pt-1">
+                <div className="space-y-1.5 pt-1">
                   {entry.results.map(c => {
                     const pct  = Math.round(Math.min(1, Math.max(0, c.score)) * 100)
                     const tone = pct >= 70 ? "green" : pct >= 40 ? "amber" : "gray"
@@ -151,7 +151,7 @@ function RecentSearchHistory({ history }: { history: SearchHistoryEntry[] }) {
                       <Link
                         key={c.id}
                         href={`/interview?${params.toString()}`}
-                        className="flex items-center justify-between gap-3 px-3 py-2 rounded-md hover:bg-muted/60 transition-colors"
+                        className="flex items-center justify-between gap-3 rounded-xl border border-transparent px-3 py-2.5 transition-all duration-200 hover:border-border/70 hover:bg-muted/45"
                       >
                         <span className="truncate text-sm">{c.name || c.id}</span>
                         <div className="flex items-center gap-2 shrink-0">
@@ -164,7 +164,7 @@ function RecentSearchHistory({ history }: { history: SearchHistoryEntry[] }) {
                             {pct}%
                           </span>
                           {/* Relationship status: not available without extra API call */}
-                          <span className="text-[11px] text-muted-foreground border rounded px-1.5 py-0.5">
+                          <span className="rounded-md border border-border/70 px-1.5 py-0.5 text-[11px] text-muted-foreground">
                             —
                           </span>
                         </div>
@@ -327,12 +327,12 @@ export default function OrgSearchPage() {
   }
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-8 lg:gap-9">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">
+        <h1 className="text-2xl font-bold tracking-tight lg:text-[1.7rem]">
           Tìm kiếm ứng viên
         </h1>
-        <p className="text-muted-foreground mt-1 text-sm">
+        <p className="text-muted-foreground mt-1.5 text-sm leading-6">
           Dán hoặc nhập mô tả công việc (JD), sau đó nhấn Tìm ứng viên.
         </p>
       </div>

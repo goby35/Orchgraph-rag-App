@@ -159,7 +159,7 @@ export function CandidateCard({
   // ------------------------------------------
 
   return (
-    <article className="bg-card flex flex-col rounded-xl border p-4 shadow-sm">
+    <article className="flex flex-col rounded-2xl border border-border/70 bg-card/95 p-4 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md">
       <div className="flex gap-3">
         <Avatar className="size-11 shrink-0">
           <AvatarFallback className="text-xs">
@@ -171,7 +171,7 @@ export function CandidateCard({
             <h3 className="truncate font-semibold">{candidate.name}</h3>
             <span
               className={cn(
-                "rounded-full px-2 py-0.5 text-xs font-medium",
+                "rounded-full px-2.5 py-0.5 text-xs font-medium",
                 tone === "green" && "bg-green-500/15 text-green-700 dark:text-green-400",
                 tone === "amber" &&
                   "bg-amber-500/15 text-amber-800 dark:text-amber-300",
@@ -190,7 +190,7 @@ export function CandidateCard({
               <span className="text-muted-foreground">Match</span>
               <span className="font-medium tabular-nums">{pct}%</span>
             </div>
-            <div className="bg-muted h-2 w-full overflow-hidden rounded-full">
+            <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
               <div
                 className={cn("h-full rounded-full transition-all", barClass)}
                 style={{ width: `${pct}%` }}
@@ -208,7 +208,7 @@ export function CandidateCard({
             {skills.map((s, index) => (
               <span
                 key={`${s}-${index}`} 
-                className="bg-muted text-muted-foreground rounded-md px-2 py-0.5 text-xs"
+                className="rounded-lg border border-border/60 bg-muted/55 px-2 py-0.5 text-xs text-muted-foreground"
               >
                 {s}
               </span>
@@ -226,7 +226,7 @@ export function CandidateCard({
           <span className="text-amber-600">Can ung vien xac nhan</span>
         )}
       </p>
-      <div className="mt-4 flex items-center justify-end gap-2 border-t pt-3">
+      <div className="mt-4 flex items-center justify-end gap-2 border-t border-border/70 pt-3">
         {renderConnectButton()}
         {connectionStatus === "accepted" && (
           <button

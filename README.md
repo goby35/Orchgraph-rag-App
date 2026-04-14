@@ -409,6 +409,84 @@ python scripts/reextract_and_ingest.py --type personnel
 python scripts/reextract_and_ingest.py --type org
 ```
 
+### 6. Deploy backend lên Modal
+
+```bash
+# Tạo secret group (chạy 1 lần)
+modal secret create orchgraph-secrets \
+    NEO4J_URI=... \
+    NEO4J_USER=... \
+    NEO4J_PASSWORD=... \
+    SUPABASE_URL=... \
+    SUPABASE_SERVICE_KEY=... \
+    OPENAI_API_KEY=... \
+    ANTHROPIC_API_KEY=... \
+    CEREBRAS_API_KEY=... \
+    LLAMA_CLOUD_API_KEY=... \
+    DEMO_SENDER_EMAIL=... \
+    DEMO_SENDER_APP_PASSWORD=...
+
+# Lần đầu: cache models
+modal run modal_app.py::download_models
+
+# Deploy
+modal deploy modal_app.py
+
+# Xem logs
+modal app logs orchgraph-rag
+
+# Health check sau deploy
+python check_modal_health.py https://<username>--orchgraph-rag.modal.run
+```
+
+### WebSocket Test (sau deploy)
+
+```python
+# test_ws.py (chạy từ client)
+import asyncio
+import json
+import websockets
+
+async def test_interview_ws():
+    """Test WebSocket streaming interview endpoint."""
+    modal_url = input("Nhập Modal URL (e.g., https://username--orchgraph-rag.modal.run): ").strip()
+    ws_url = modal_url.replace("https://", "wss://").replace("http://", "ws://")
+    ws_url += "/interview/ws"
+    
+    try:
+        async with websockets.connect(ws_url, ping_interval=20) as websocket:
+            print("✓ WebSocket connected")
+            
+            # Gửi yêu cầu interview (định dạng phụ thuộc api/routers/interview.py)
+            interview_request = {
+                "personnel_neo4j_id": "p001",
+                "jd_text": "Senior Python Engineer seeking 5+ years experience"
+            }
+            
+            await websocket.send(json.dumps(interview_request))
+            print("→ Request sent")
+            
+            # Nhận streaming response
+            while True:
+                try:
+                    response = await asyncio.wait_for(websocket.recv(), timeout=30)
+                    print(f"← {response[:100]}...")  # Print first 100 chars
+                except asyncio.TimeoutError:
+                    print("(No more messages - stream ended)")
+                    break
+                    
+    except Exception as e:
+        print(f"✗ Connection error: {e}")
+
+if __name__ == "__main__":
+    asyncio.run(test_interview_ws())
+```
+
+```bash
+# Hoặc dùng wscat (npm install -g wscat)
+wscat -c wss://<username>--orchgraph-rag.modal.run/interview/ws
+```
+
 ---
 
 ## Biến môi trường
@@ -549,7 +627,16 @@ Bộ đánh giá hoàn chỉnh trong `scripts/eval/`, chạy qua `run_all.py`:
 ```bash
 # Backend
 .venv\Scripts\activate
+uvicorn api.main:app --reload --port 8000
 
 # Frontend
 cd frontend && npm run dev
 ```
+npm run build
+npm run start
+
+Lệnh	Mục đích
+npm run prod	Production: Build + run frontend, run backend
+npm run dev	Development: Frontend dev server + backend reload
+npm run prod:backend	Chỉ chạy backend production
+npm run prod:frontend	Chỉ build + chạy frontend production

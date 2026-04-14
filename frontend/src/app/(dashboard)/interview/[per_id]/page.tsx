@@ -57,6 +57,8 @@ export default function InterviewPage({ params }: { params: Promise<{ per_id: st
     queryKey: ["connection-status", per_id],
     queryFn:  () => getConnectionStatus(per_id),
     staleTime: 30_000,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: true,
   })
   const connectionStatus: ConnectionStatus = connData?.status ?? null
 
@@ -87,22 +89,22 @@ export default function InterviewPage({ params }: { params: Promise<{ per_id: st
   })
 
   return (
-    <div className="flex h-[calc(100vh-3.5rem)] gap-4">
+    <div className="flex h-[calc(100vh-3.5rem)] gap-4 lg:gap-5">
 
       {/* Profile panel */}
-      <div className="hidden md:flex w-72 flex-shrink-0 flex-col border rounded-lg p-4 gap-3">
+      <div className="hidden w-72 flex-shrink-0 flex-col gap-3 rounded-2xl border border-border/70 bg-card/90 p-4 shadow-sm md:flex">
         {/* Avatar */}
-        <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center text-xl font-semibold mx-auto">
+        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/12 text-xl font-semibold text-primary">
           {initials}
         </div>
 
         {/* ID + connection badge */}
         <div className="flex flex-col items-center gap-2">
-          <p className="text-sm font-medium">{displayName}</p>
+          <p className="text-sm font-semibold tracking-tight">{displayName}</p>
           <ConnectionStatusBadge status={connectionStatus} />
         </div>
 
-        <div className="rounded-md border bg-muted/30 p-3">
+        <div className="rounded-xl border border-border/70 bg-muted/30 p-3">
           <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
             LLM Fit Summary
           </p>
@@ -118,7 +120,7 @@ export default function InterviewPage({ params }: { params: Promise<{ per_id: st
               onClick={() => requestMut.mutate()}
               disabled={requestMut.isPending}
               className={cn(
-                "w-full text-sm px-3 py-2 rounded-md font-medium transition-colors",
+                "w-full rounded-xl px-3 py-2 text-sm font-medium transition-all duration-200",
                 "bg-primary text-primary-foreground hover:bg-primary/90",
                 "disabled:opacity-50 disabled:cursor-not-allowed",
               )}
@@ -137,7 +139,7 @@ export default function InterviewPage({ params }: { params: Promise<{ per_id: st
             <button
               onClick={() => setBookingOpen(true)}
               className={cn(
-                "w-full text-sm px-3 py-2 rounded-md font-medium transition-colors",
+                "w-full rounded-xl px-3 py-2 text-sm font-medium transition-all duration-200",
                 "bg-primary text-primary-foreground hover:bg-primary/90",
               )}
             >
@@ -148,7 +150,7 @@ export default function InterviewPage({ params }: { params: Promise<{ per_id: st
       </div>
 
       {/* Chat */}
-      <div className="flex-1 border rounded-lg overflow-hidden">
+      <div className="flex-1 overflow-hidden rounded-2xl border border-border/70 bg-card/85 shadow-sm">
         <ChatWindow
           perNeoId={per_id}
           title={headerTitle}

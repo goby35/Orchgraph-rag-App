@@ -2,9 +2,9 @@ import { Skeleton } from "@/components/ui/skeleton"
 
 export default function InterviewLoading() {
   return (
-    <div className="flex h-[calc(100vh-4rem)] gap-0">
+    <div className="flex h-[calc(100vh-4rem)] gap-4">
       {/* Profile panel */}
-      <div className="w-80 border-r p-6 space-y-5 hidden md:block">
+      <div className="hidden w-80 space-y-5 rounded-2xl border border-border/70 p-6 md:block">
         <div className="flex items-center gap-3">
           <Skeleton className="h-14 w-14 rounded-full" />
           <div className="space-y-2 flex-1">
@@ -25,7 +25,7 @@ export default function InterviewLoading() {
       </div>
 
       {/* Chat panel */}
-      <div className="flex-1 flex flex-col p-4 space-y-4">
+      <div className="flex flex-1 flex-col space-y-4 rounded-2xl border border-border/70 bg-card/80 p-4">
         {/* Messages */}
         <div className="flex-1 space-y-4 overflow-hidden">
           {/* Assistant bubble */}
@@ -45,7 +45,7 @@ export default function InterviewLoading() {
           </div>
         </div>
         {/* Input */}
-        <Skeleton className="h-12 w-full rounded-lg" />
+        <Skeleton className="h-12 w-full rounded-xl" />
       </div>
     </div>
   )

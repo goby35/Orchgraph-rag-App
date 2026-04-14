@@ -19,11 +19,12 @@ export default function ConnectionStatusBadge({
       "text-xs rounded-full px-2.5 py-0.5 font-medium",
       status === "accepted"   && "bg-green-100 text-green-700",
       status === "pending"    && "bg-amber-100 text-amber-700",
-      status === "cancelled"  && "bg-red-100 text-red-600",
+      (status === "cancelled" || status === "declined") && "bg-red-100 text-red-600",
     )}>
       {status === "accepted"  && "Đã kết nối"}
       {status === "pending"   && "Chờ chấp nhận"}
       {status === "cancelled" && "Đã hủy"}
+      {status === "declined"  && "Đã từ chối"}
     </span>
   )
 }

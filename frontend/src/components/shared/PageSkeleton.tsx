@@ -4,7 +4,7 @@ interface PageSkeletonProps {
   variant: "card-list" | "graph" | "chat" | "form" | "table"
 }
 
-const cardRow = "space-y-2 rounded-lg border p-4"
+const cardRow = "space-y-2 rounded-2xl border border-border/70 p-4"
 const line = "h-4 w-full rounded-md"
 const shortLine = "h-4 w-2/3 rounded-md"
 
@@ -17,7 +17,7 @@ function CardListSkeleton() {
           <Skeleton className={line} />
           <Skeleton className={line} />
           <Skeleton className={shortLine} />
-          <Skeleton className="mt-4 h-8 w-24 rounded-md" />
+          <Skeleton className="mt-4 h-8 w-24 rounded-xl" />
         </div>
       ))}
     </div>
@@ -62,7 +62,7 @@ function FormSkeleton() {
       {[0, 1, 2, 3].map((i) => (
         <div key={i} className="space-y-2">
           <Skeleton className="h-4 w-24" />
-          <Skeleton className="h-10 w-full rounded-md" />
+          <Skeleton className="h-10 w-full rounded-xl" />
         </div>
       ))}
     </div>

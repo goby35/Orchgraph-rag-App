@@ -170,14 +170,14 @@ export default function NotificationsPage() {
   )
 
   return (
-    <div className="max-w-2xl mx-auto py-8 px-4 space-y-6">
+    <div className="mx-auto max-w-3xl space-y-6 px-4 py-8">
 
       {/* Header */}
       <div className="flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-semibold">Thông báo</h1>
+          <h1 className="text-2xl font-bold tracking-tight">Thông báo</h1>
           {unreadCount > 0 && (
-            <p className="text-sm text-muted-foreground mt-0.5">
+            <p className="mt-0.5 text-sm text-muted-foreground">
               {unreadCount} chưa đọc
             </p>
           )}
@@ -186,7 +186,7 @@ export default function NotificationsPage() {
           <button
             onClick={() => markAllMut.mutate()}
             disabled={markAllMut.isPending}
-            className="text-sm text-primary hover:underline disabled:opacity-50"
+            className="rounded-lg px-2 py-1 text-sm font-medium text-primary transition-colors hover:bg-primary/10 disabled:opacity-50"
           >
             {markAllMut.isPending ? "Đang xử lý..." : "Đánh dấu tất cả đã đọc"}
           </button>
@@ -197,7 +197,7 @@ export default function NotificationsPage() {
       {isLoading && (
         <div className="space-y-3">
           {[1, 2, 3].map(i => (
-            <div key={i} className="border rounded-lg p-4 space-y-2 animate-pulse">
+            <div key={i} className="animate-pulse space-y-2 rounded-2xl border border-border/70 bg-card/80 p-4">
               <div className="h-4 bg-muted rounded w-1/2" />
               <div className="h-3 bg-muted rounded w-3/4" />
             </div>
@@ -207,9 +207,9 @@ export default function NotificationsPage() {
 
       {/* Empty state */}
       {!isLoading && notifications.length === 0 && (
-        <div className="flex flex-col items-center justify-center py-16 space-y-3">
+        <div className="flex flex-col items-center justify-center space-y-3 rounded-2xl border border-border/70 bg-card/85 py-16">
           {/* Bell icon */}
-          <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted/70">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-6 w-6 text-muted-foreground"
@@ -238,17 +238,17 @@ export default function NotificationsPage() {
                 key={n.id}
                 onClick={() => handleClick(n)}
                 className={cn(
-                  "w-full text-left rounded-lg border px-4 py-3",
-                  "transition-colors hover:bg-muted/50",
+                  "w-full rounded-2xl border px-4 py-3 text-left",
+                  "transition-all duration-200 hover:shadow-sm",
                   n.is_read
-                    ? "bg-background border-border"
-                    : "bg-primary/5 border-primary/20",
+                    ? "border-border/70 bg-card/85 hover:bg-muted/35"
+                    : "border-primary/25 bg-primary/8 hover:bg-primary/12",
                 )}
               >
                 <div className="flex items-start gap-3">
                   {/* Unread dot */}
-                  <span className={cn(
-                    "mt-1.5 h-2 w-2 rounded-full shrink-0",
+                    <span className={cn(
+                      "mt-1.5 h-2 w-2 shrink-0 rounded-full",
                     n.is_read ? "bg-transparent" : "bg-primary",
                   )} />
 
@@ -276,7 +276,7 @@ export default function NotificationsPage() {
                             void handleRespondConnection(n, "accept")
                           }}
                           disabled={respondingId === n.id}
-                          className="text-xs px-3 py-1.5 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
+                          className="rounded-xl bg-primary px-3 py-1.5 text-xs text-primary-foreground transition-all duration-200 hover:scale-[1.02] hover:bg-primary/92 active:scale-[0.98] disabled:opacity-50"
                         >
                           {respondingId === n.id ? "Dang xu ly..." : "Chap nhan"}
                         </button>
@@ -287,7 +287,7 @@ export default function NotificationsPage() {
                             void handleRespondConnection(n, "decline")
                           }}
                           disabled={respondingId === n.id}
-                          className="text-xs px-3 py-1.5 rounded-md border hover:bg-muted disabled:opacity-50"
+                          className="rounded-xl border border-border/80 px-3 py-1.5 text-xs transition-all duration-200 hover:scale-[1.02] hover:bg-muted/55 active:scale-[0.98] disabled:opacity-50"
                         >
                           {respondingId === n.id ? "Dang xu ly..." : "Tu choi"}
                         </button>
@@ -300,7 +300,7 @@ export default function NotificationsPage() {
                     )}
                   </div>
 
-                  <span className="text-[11px] text-muted-foreground whitespace-nowrap shrink-0 mt-0.5">
+                  <span className="mt-0.5 shrink-0 whitespace-nowrap text-[11px] text-muted-foreground">
                     {formatDate(n.created_at)}
                   </span>
                 </div>

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import re
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import traceback as _traceback
@@ -15,6 +16,7 @@ from pipeline.neo4j_client import get_neo4j_driver
 logger = get_logger(__name__)
 
 app = FastAPI(title="Digital Twin Recruitment API", version="2.0")
+VERCEL_ORIGIN_REGEX = re.compile(r"^https://.*\.vercel\.app$")
 
 
 def _ensure_vector_indexes() -> None:
@@ -63,6 +65,7 @@ if frontend_url and frontend_url not in CORS_ORIGINS:
 app.add_middleware(
     CORSMiddleware,
     allow_origins=CORS_ORIGINS,
+    allow_origin_regex=r"https://.*\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -88,7 +91,8 @@ async def health() -> dict[str, str]:
 async def _debug_handler(request: Request, exc: Exception) -> JSONResponse:
     print(_traceback.format_exc())
     request_origin = request.headers.get("origin", "")
-    allow_origin = request_origin if request_origin in CORS_ORIGINS else "http://localhost:3000"
+    is_vercel_origin = bool(VERCEL_ORIGIN_REGEX.match(request_origin))
+    allow_origin = request_origin if request_origin in CORS_ORIGINS or is_vercel_origin else "http://localhost:3000"
     return JSONResponse(
         status_code=500,
         content={"detail": str(exc)},

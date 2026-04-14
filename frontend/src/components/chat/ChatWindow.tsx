@@ -58,12 +58,13 @@ export default function ChatWindow({
   }) => {
     const params = new URLSearchParams({
       sessionId: session.session_id,
-      personnelId: session.personnel_id,
       jobTitle: session.job_title || 'Vị trí chưa xác định',
     })
 
-    router.push(`/interview?${params.toString()}`, { scroll: false })
+    router.push(`/interview/${encodeURIComponent(session.personnel_id)}?${params.toString()}`, { scroll: false })
   }
+
+  const hasStreamingBubble = messages.some((msg) => msg.role === 'assistant' && msg.streaming)
 
   return (
     <div className="flex h-full min-h-0 flex-col lg:flex-row">
@@ -108,7 +109,23 @@ export default function ChatWindow({
               </p>
             </div>
           ) : (
-            messages.map(msg => <ChatBubble key={msg.id} message={msg} />)
+            <>
+              {messages.map(msg => <ChatBubble key={msg.id} message={msg} />)}
+              {isStreaming && !hasStreamingBubble ? (
+                <div className="mb-4 flex gap-3">
+                  <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border bg-muted text-xs font-semibold text-muted-foreground">
+                    AI
+                  </div>
+                  <div className="rounded-2xl rounded-tl-sm bg-muted px-4 py-2.5">
+                    <div className="flex items-center gap-1">
+                      <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-foreground/70 [animation-delay:-0.2s]" />
+                      <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-foreground/70 [animation-delay:-0.1s]" />
+                      <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-foreground/70" />
+                    </div>
+                  </div>
+                </div>
+              ) : null}
+            </>
           )}
           <div ref={endRef} />
         </div>

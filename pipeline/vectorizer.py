@@ -6,6 +6,7 @@ Sinh ra 2 vector embedding: public_embeddings và private_embeddings dựa trên
 from __future__ import annotations
 
 import json
+import os
 from typing import Any, Dict, List
 import torch
 import torch.nn.functional as F
@@ -25,12 +26,17 @@ MODEL_FIELD_MAP = {
 class _EmbedderHub:
     def __init__(self):
         self._models = {}
+
+    def _resolve_cache_dir(self) -> str | None:
+        # In Modal runtime we mount model weights in /models; fallback to default HF cache locally.
+        return "/models" if os.path.isdir("/models") else None
         
     def _get_or_load_embedder(self, model_id: str):
         if model_id not in self._models:
             logger.info(f"Đang tải {model_id}...")
-            tokenizer = AutoTokenizer.from_pretrained(model_id)
-            model = AutoModel.from_pretrained(model_id, trust_remote_code=True)
+            cache_dir = self._resolve_cache_dir()
+            tokenizer = AutoTokenizer.from_pretrained(model_id, cache_dir=cache_dir)
+            model = AutoModel.from_pretrained(model_id, trust_remote_code=True, cache_dir=cache_dir)
             model.eval()
             device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
             model.to(device)

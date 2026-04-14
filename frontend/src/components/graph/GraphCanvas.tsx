@@ -198,7 +198,7 @@ export default function GraphCanvas({
   onBackgroundClick,
   selectedNodeId,
 }: GraphCanvasProps) {
-  const graphRef = useRef<{ zoomToFit: (ms?: number, padding?: number) => void } | null>(null)
+  const graphRef = useRef<any>(null)
   const { ref, size } = useElementSize<HTMLDivElement>()
 
   useEffect(() => {
@@ -215,17 +215,18 @@ export default function GraphCanvas({
   const nodeCanvasObject = useMemo(
     () =>
       (
-        node: GraphNode,
+        node: any,
         ctx: CanvasRenderingContext2D,
         globalScale: number,
       ) => {
-        const radius = nodeRadius(node.type)
-        const isSelected = node.id === selectedNodeId
+        const gnode = node as GraphNode
+        const radius = nodeRadius(gnode.type)
+        const isSelected = gnode.id === selectedNodeId
 
         ctx.save()
         ctx.beginPath()
-        ctx.arc(node.x ?? 0, node.y ?? 0, radius, 0, Math.PI * 2)
-        ctx.fillStyle = nodeColor(node.type)
+        ctx.arc(gnode.x ?? 0, gnode.y ?? 0, radius, 0, Math.PI * 2)
+        ctx.fillStyle = nodeColor(gnode.type)
         ctx.fill()
 
         if (isSelected) {
@@ -234,12 +235,12 @@ export default function GraphCanvas({
           ctx.stroke()
         }
 
-        if (node.type !== "skill" && radius >= 6) {
+        if (gnode.type !== "skill" && radius >= 6) {
           ctx.fillStyle = "#FFFFFF"
           ctx.font = `${Math.max(8, radius * 0.85) / globalScale}px ui-sans-serif, system-ui, sans-serif`
           ctx.textAlign = "center"
           ctx.textBaseline = "middle"
-          ctx.fillText(initialsFromLabel(node.label), node.x ?? 0, node.y ?? 0)
+          ctx.fillText(initialsFromLabel(gnode.label), gnode.x ?? 0, gnode.y ?? 0)
         }
 
         ctx.restore()
@@ -257,18 +258,18 @@ export default function GraphCanvas({
           ref={graphRef}
           width={size.width}
           height={size.height}
-          graphData={graphData}
+          graphData={graphData as any}
           backgroundColor="transparent"
-          nodeLabel={(node) => node.label}
+          nodeLabel={(node: any) => (node as GraphNode).label}
           nodeRelSize={1}
-          nodeVal={(node) => nodeRadius(node.type)}
-          nodeColor={(node) => nodeColor(node.type)}
+          nodeVal={(node: any) => nodeRadius((node as GraphNode).type)}
+          nodeColor={(node: any) => nodeColor((node as GraphNode).type)}
           linkColor={() => "#88878099"}
           linkWidth={1.2}
           nodeCanvasObject={nodeCanvasObject}
           nodeCanvasObjectMode={() => "replace"}
-          onNodeClick={(node: GraphNode) => {
-            onNodeClick?.(node)
+          onNodeClick={(node: any) => {
+            onNodeClick?.(node as GraphNode)
           }}
           onBackgroundClick={() => {
             onBackgroundClick?.()

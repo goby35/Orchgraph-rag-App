@@ -38,22 +38,22 @@ export default function WeeklySlotPicker({ value, onChange }: WeeklySlotPickerPr
   }
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2.5">
       {DAYS.map(day => {
         const slot   = value[day]
         const active = !!slot
 
         return (
           <div key={day} className={cn(
-            'flex items-center gap-3 rounded-lg border p-3 transition-colors',
-            active ? 'bg-background' : 'bg-muted/40',
+            'flex items-center gap-3 rounded-xl border border-border/70 p-3 transition-all duration-200',
+            active ? 'bg-card/90 shadow-sm' : 'bg-muted/35',
           )}>
             {/* Toggle checkbox */}
             <button
               type="button"
               onClick={() => toggle(day)}
               className={cn(
-                'w-5 h-5 rounded border-2 flex-shrink-0 transition-colors',
+                'h-5 w-5 flex-shrink-0 rounded border-2 transition-colors',
                 active
                   ? 'bg-primary border-primary'
                   : 'border-muted-foreground',
@@ -81,14 +81,14 @@ export default function WeeklySlotPicker({ value, onChange }: WeeklySlotPickerPr
                   type="time"
                   value={slot[0]}
                   onChange={e => updateTime(day, 0, e.target.value)}
-                  className="border rounded px-2 py-1 text-sm bg-background"
+                  className="rounded-lg border border-input/80 bg-background/90 px-2 py-1 text-sm"
                 />
                 <span className="text-muted-foreground text-sm">—</span>
                 <input
                   type="time"
                   value={slot[1]}
                   onChange={e => updateTime(day, 1, e.target.value)}
-                  className="border rounded px-2 py-1 text-sm bg-background"
+                  className="rounded-lg border border-input/80 bg-background/90 px-2 py-1 text-sm"
                 />
               </div>
             ) : (

@@ -22,9 +22,9 @@ export default function SlotCalendar({
   })
 
   if (isLoading) return <PageSkeleton variant="form" />
-  if (error)     return <p className="text-sm text-red-500">Không thể tải lịch</p>
+  if (error)     return <p className="text-sm font-medium text-red-500">Không thể tải lịch</p>
   if (!slots.length) return (
-    <p className="text-sm text-muted-foreground text-center py-8">
+    <p className="py-8 text-center text-sm text-muted-foreground">
       Ứng viên chưa thiết lập lịch rảnh
     </p>
   )
@@ -38,10 +38,10 @@ export default function SlotCalendar({
   }, {})
 
   return (
-    <div className="space-y-4 max-h-80 overflow-y-auto pr-1">
+    <div className="max-h-80 space-y-4 overflow-y-auto pr-1">
       {Object.entries(grouped).map(([date, daySlots]) => (
         <div key={date}>
-          <p className="text-xs font-medium text-muted-foreground mb-2">
+          <p className="mb-2 text-xs font-semibold text-muted-foreground">
             {new Date(date).toLocaleDateString('vi-VN', {
               weekday: 'long', day: '2-digit', month: '2-digit',
             })}
@@ -54,10 +54,10 @@ export default function SlotCalendar({
                   key={slot.start}
                   onClick={() => onSelectSlot(slot)}
                   className={cn(
-                    'px-3 py-1.5 text-xs rounded-lg border transition-colors',
+                    'rounded-xl border px-3 py-1.5 text-xs font-medium transition-all duration-200',
                     isSelected
-                      ? 'bg-primary text-primary-foreground border-primary'
-                      : 'hover:border-primary hover:text-primary',
+                      ? 'border-primary bg-primary text-primary-foreground shadow-sm'
+                      : 'border-border/80 bg-card/80 hover:border-primary/60 hover:text-primary',
                   )}
                 >
                   {new Date(slot.start).toLocaleTimeString('vi-VN', {
