@@ -11,7 +11,7 @@ export default function HomePage() {
     <div className="flex flex-1 flex-col items-center justify-center gap-8 px-4 py-16">
       <div className="max-w-lg text-center">
         <h1 className="text-3xl font-semibold tracking-tight">
-          Digital Twin Recruitment
+          Orchgraph-rag
         </h1>
         <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
           Đăng nhập để tiếp tục, hoặc tạo tài khoản mới.

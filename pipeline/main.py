@@ -450,7 +450,7 @@ def delete_account(node_id: str, role: str, hard_delete: bool = False):
         raise
 
 def main():
-    logger.info("Khởi động Digital Twin Recruitment GraphRAG Pipeline...")
+    logger.info("Khởi động orchgraph-rag pipeline...")
     
     if not neo4j_service.verify_connection():
          return

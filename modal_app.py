@@ -6,6 +6,7 @@ app = modal.App("orchgraph-rag")
 image = (
     modal.Image.debian_slim(python_version="3.12")
     .pip_install_from_requirements("requirements.txt")
+    .add_local_python_source("api", "pipeline")
 )
 
 # Shared volume for model cache to avoid repeated downloads on cold start

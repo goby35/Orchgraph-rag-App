@@ -42,7 +42,7 @@ logger = get_logger(__name__)
 
 
 st.set_page_config(
-    page_title="Digital Twin Recruitment",
+    page_title="orchgraph-rag",
     page_icon="🤖",
     layout="wide",
     initial_sidebar_state="collapsed",
