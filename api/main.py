@@ -56,6 +56,8 @@ CORS_ORIGINS = [
     "http://localhost:3001",
     "http://127.0.0.1:3000",
     "http://127.0.0.1:3001",
+    "https://digitaltwin-project.vercel.app"
+    
 ]
 
 frontend_url = os.getenv("FRONTEND_URL", "").strip()

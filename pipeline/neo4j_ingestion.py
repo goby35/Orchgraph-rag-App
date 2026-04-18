@@ -344,7 +344,7 @@ class Neo4jIngestion:
         emb_set_clause = f", {emb_set_parts}" if emb_set_parts else ""
 
         cypher = f"""
-        MERGE (n:{{label}} {{id: $node_id}})
+        MERGE (n:{label} {{id: $node_id}})
         SET n += $public_props,
             n.source_file = $source_file,
             n.last_updated = timestamp()

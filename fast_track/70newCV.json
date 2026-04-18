@@ -1,0 +1,1886 @@
+[
+  {
+    "personnel_id": "P_061",
+    "full_name": "Lâm Quang Vũ",
+    "target_role": "Backend Engineer – Transaction Core",
+    "related_org": {
+      "org_id": "ORG_001",
+      "org_name": "NexPay Financial Technology",
+      "relationship": "Từng là kỹ sư cốt lõi xây dựng transaction engine cho hệ thống thanh toán cross-border của NexPay."
+    },
+    "core_skills_to_include": ["Go", "Java", "Saga Pattern", "Distributed Transactions", "Kafka", "PostgreSQL"],
+    "private_data_to_include": {
+      "salary_expectation": "3500 USD",
+      "contact": {
+        "email": "quangvu.backend@gmail.com",
+        "phone": "0912334455",
+        "github": "https://github.com/quangvu-be",
+        "linkedin": "https://linkedin.com/in/lamquangvu"
+      },
+      "blacklist_orgs": ["MoMo", "VNPAY"],
+      "technical_secrets": "Từng xử lý triệt để vấn đề duplicate messages trong Kafka pipeline bằng cách kết hợp idempotent consumer và deduplication table trên PostgreSQL, đảm bảo exactly-once semantics cho luồng tiền.",
+      "interview_questions_history": [
+        {
+          "question": "Làm thế nào để đảm bảo tính nhất quán dữ liệu giữa nhiều microservices khi giao dịch thất bại?",
+          "answer": "Sử dụng Saga Pattern (Orchestration). Khi một bước fail, coordinator sẽ trigger các compensating transactions theo chiều ngược lại để rollback trạng thái hệ thống.",
+          "org": "ORG_001"
+        }
+      ]
+    },
+    "full_fields_instructions": "Viết CV chuẩn mực. Yêu cầu hiển thị rõ ràng phần kỹ năng và kinh nghiệm khớp với vị trí Backend Transaction Core. Thêm thông tin 'Môn thể thao: Cầu lông' để kiểm tra bộ lọc additional_information."
+  },
+  {
+    "personnel_id": "P_062",
+    "full_name": "Mai Phương Thảo",
+    "target_role": "Senior QA Engineer / SDET",
+    "related_org": {
+      "org_id": "ORG_013",
+      "org_name": "GlobalDev Outsourcing Vietnam",
+      "relationship": "Phụ trách tự động hóa kiểm thử cho dự án bảo hiểm của khách hàng Nhật Bản tại GlobalDev."
+    },
+    "core_skills_to_include": ["Selenium WebDriver", "TestNG", "Java", "CI/CD Jenkins", "Postman API Testing", "Appium"],
+    "private_data_to_include": {
+      "salary_expectation": "30,000,000 VND",
+      "contact": {
+        "email": "phuongthao.qa@gmail.com",
+        "phone": "0988776655",
+        "github": "https://github.com/thaomai-sdet",
+        "linkedin": "https://linkedin.com/in/phuongthaoqa"
+      },
+      "blacklist_orgs": ["FPT Software"],
+      "technical_secrets": "Tự động hóa hơn 2000 test cases manual của hệ thống bảo hiểm Nhật Bản (legacy system), giảm thời gian regression test từ 1 tuần xuống còn 4 giờ.",
+      "interview_questions_history": [
+        {
+          "question": "Bạn xử lý các synchronization issues trong Selenium như thế nào?",
+          "answer": "Ưu tiên dùng Explicit Wait kết hợp Fluent Wait cho các element render chậm thay vì dùng Thread.sleep() cứng.",
+          "org": "ORG_013"
+        }
+      ]
+    },
+    "full_fields_instructions": "Thiết kế CV chuẩn QA Engineer. Thêm phần Tôn giáo hoặc Sở thích (Đọc sách trinh thám) để hệ thống parser đưa vào túi ba gang (additional_information)."
+  },
+  {
+    "personnel_id": "P_063",
+    "full_name": "Đinh Trọng Khải",
+    "target_role": "Data Platform Engineer",
+    "related_org": {
+      "org_id": "ORG_008",
+      "org_name": "DataBridge Analytics",
+      "relationship": "Khách hàng cũ, từng đánh giá hệ thống của DataBridge và tự xây dựng data warehouse bằng stack tương tự."
+    },
+    "core_skills_to_include": ["Apache Spark", "Apache Flink", "dbt Core", "Airflow", "Great Expectations", "BigQuery"],
+    "private_data_to_include": {
+      "salary_expectation": "3200 USD",
+      "contact": {
+        "email": "trongkhai.data@gmail.com",
+        "phone": "0901223344",
+        "github": "https://github.com/khaidinh-data",
+        "linkedin": "https://linkedin.com/in/trongkhai"
+      },
+      "blacklist_orgs": ["Các công ty không có budget cho cloud"],
+      "technical_secrets": "Thiết lập cấu hình giới hạn tài nguyên cấp độ worker node (cgroups/namespace) để ngăn chặn các dynamic DAGs của khách hàng A làm sập tiến trình của khách hàng B trong Airflow.",
+      "interview_questions_history": [
+        {
+          "question": "Data quality test nên được đặt ở giai đoạn nào trong pipeline?",
+          "answer": "Nên dùng Great Expectations ngay tại bước raw data ingestion (staging) để chặn data rác, và sau khi transform qua dbt để đảm bảo business logic đúng.",
+          "org": "ORG_008"
+        }
+      ]
+    },
+    "full_fields_instructions": "Trình bày chuẩn CV kỹ thuật dữ liệu, đầy đủ các trường schema. Phải liệt kê chứng chỉ bơi lội hoặc chứng chỉ cứu hộ để ép Pydantic đẩy vào additional_information."
+  },
+  {
+    "personnel_id": "P_064",
+    "full_name": "Nguyễn Tuấn Đạt",
+    "target_role": "Site Reliability Engineer",
+    "related_org": {
+      "org_id": "ORG_006",
+      "org_name": "LogiNext Vietnam",
+      "relationship": "Rất quan tâm đến bài toán vận hành hệ thống logistics xử lý 2 triệu đơn hàng/ngày của LogiNext."
+    },
+    "core_skills_to_include": ["Kubernetes", "Terraform", "ArgoCD", "Prometheus", "Datadog", "SLO/SLI Design"],
+    "private_data_to_include": {
+      "salary_expectation": "40,000,000 VND",
+      "contact": {
+        "email": "tuandat.sre@gmail.com",
+        "phone": "0944556677",
+        "github": "https://github.com/dat-sre-ops",
+        "linkedin": "https://linkedin.com/in/tuandatsre"
+      },
+      "blacklist_orgs": ["Giao Hàng Tiết Kiệm (GHTK)"],
+      "technical_secrets": "Từng viết một custom Terraform provider nội bộ để handle các API rate limits cực đoan của AWS khi scale up hệ thống đột ngột trong đợt sale 11.11.",
+      "interview_questions_history": [
+        {
+          "question": "Bạn phản ứng thế nào khi nhận cảnh báo alert lúc 2 giờ sáng?",
+          "answer": "Kiểm tra runbook trước. Mở dashboard Prometheus xem SLI nào đang bị vi phạm. Phân lập lỗi (network, DB, hay app layer) và rollback release gần nhất nếu cần thiết để cứu uptime.",
+          "org": "ORG_006"
+        }
+      ]
+    },
+    "full_fields_instructions": "CV 100% chuẩn, đặc biệt làm rõ các chứng chỉ CKA và AWS SysOps. Chèn dòng chữ 'Thú cưng: Nuôi một chú mèo tên là Node' để kiểm tra bóc tách dữ liệu."
+  },
+  {
+    "personnel_id": "P_065",
+    "full_name": "Phạm Hoàng Yến",
+    "target_role": "Technical Product Manager",
+    "related_org": {
+      "org_id": "ORG_030",
+      "org_name": "FinFlow Tech (Công ty giả định)",
+      "relationship": "Từng là Senior PM định hình chiến lược sản phẩm cốt lõi tại FinFlow Tech."
+    },
+    "core_skills_to_include": ["Agile/Scrum", "Product Roadmap", "API Design for PMs", "SQL", "Mixpanel", "Stakeholder Management"],
+    "private_data_to_include": {
+      "salary_expectation": "2500 USD",
+      "contact": {
+        "email": "hoangyen.pm@gmail.com",
+        "phone": "0977889900",
+        "github": "",
+        "linkedin": "https://linkedin.com/in/hoangyen-pm"
+      },
+      "blacklist_orgs": ["Các agency outsourcing"],
+      "technical_secrets": "Phát hiện sai lầm trong mô hình thu phí cũ, trực tiếp thiết kế lại pricing API tiering giúp công ty tiết kiệm 2 triệu USD burn rate trong 6 tháng.",
+      "interview_questions_history": []
+    },
+    "full_fields_instructions": "Viết CV thiên hướng Business/Product nhưng vẫn có hàm lượng Tech cao. Thêm thông tin 'Tính cách MBTI: ENFJ' để đẩy vào phần thông tin mở rộng."
+  },
+  {
+    "personnel_id": "P_066",
+    "full_name": "Châu Gia Huy",
+    "target_role": "Frontend UI/UX Engineer",
+    "related_org": {
+      "org_id": "ORG_031",
+      "org_name": "CreativeUI Studio",
+      "relationship": "Đang làm việc tại đây, chịu trách nhiệm các hiệu ứng WebGL phức tạp."
+    },
+    "core_skills_to_include": ["Vue 3", "Nuxt.js", "TailwindCSS", "WebGL", "Framer Motion", "TypeScript"],
+    "private_data_to_include": {
+      "salary_expectation": "45,000,000 VND",
+      "contact": {
+        "email": "giahuy.frontend@gmail.com",
+        "phone": "0966778899",
+        "github": "https://github.com/huy-creative-fe",
+        "linkedin": "https://linkedin.com/in/giahuy-fe"
+      },
+      "blacklist_orgs": ["Các dự án maintain code legacy jQuery"],
+      "technical_secrets": "Tối ưu hóa render model 3D trên trình duyệt di động cấu hình thấp bằng kỹ thuật dynamic resolution scaling và occlusion culling tự viết bằng vanilla JS.",
+      "interview_questions_history": []
+    },
+    "full_fields_instructions": "CV dạng Creative Developer, trình bày sáng tạo nhưng cố tình thiếu mục Chứng chỉ (Certificates) để test tính năng điền mảng rỗng tự động."
+  },
+  {
+    "personnel_id": "P_067",
+    "full_name": "Lương Ngọc Hải",
+    "target_role": "DevSecOps Engineer",
+    "related_org": {
+      "org_id": "ORG_032",
+      "org_name": "SecureTech VN",
+      "relationship": "Là chuyên gia bảo mật CI/CD pipeline tại SecureTech."
+    },
+    "core_skills_to_include": ["CI/CD Security", "SAST/DAST", "Checkmarx", "HashiCorp Vault", "AWS Security", "Docker Security"],
+    "private_data_to_include": {
+      "salary_expectation": "3500 USD",
+      "contact": {
+        "email": "ngochai.secops@gmail.com",
+        "phone": "0911998877",
+        "github": "https://github.com/hai-secops",
+        "linkedin": "https://linkedin.com/in/luongngochai"
+      },
+      "blacklist_orgs": [],
+      "technical_secrets": "Sử dụng custom script để scan toàn bộ commit history của legacy repo và phát hiện một root AWS IAM key bị hardcode từ năm 2018, giúp ngăn chặn một thảm họa bảo mật chực chờ.",
+      "interview_questions_history": []
+    },
+    "full_fields_instructions": "Định dạng CV bảo mật chuyên sâu. Liệt kê đủ tất cả các trường. Yêu cầu thêm phần 'Ngoại ngữ: Tiếng Trung N2' để LLM xử lý vào additional_information."
+  },
+  {
+    "personnel_id": "P_068",
+    "full_name": "Bùi Thanh Trúc",
+    "target_role": "Backend Engineer (Node.js)",
+    "related_org": {
+      "org_id": "ORG_033",
+      "org_name": "E-com Express",
+      "relationship": "Phát triển hệ thống microservices quản lý giỏ hàng tại E-com Express."
+    },
+    "core_skills_to_include": ["Node.js", "NestJS", "MongoDB", "Redis", "RabbitMQ", "GraphQL"],
+    "private_data_to_include": {
+      "salary_expectation": "1500 USD",
+      "contact": {
+        "email": "thanhtruc.node@gmail.com",
+        "phone": "0988001122",
+        "github": "https://github.com/truc-nodejs",
+        "linkedin": "https://linkedin.com/in/thanhtruc-bui"
+      },
+      "blacklist_orgs": ["Các startup Web3 không có sản phẩm thật"],
+      "technical_secrets": "Tối ưu hóa triệt để vấn đề N+1 queries trong hệ thống GraphQL bằng cách áp dụng DataLoader kết hợp với memory caching qua Redis.",
+      "interview_questions_history": []
+    },
+    "full_fields_instructions": "CV dạng Standard Developer. Cần làm rõ các framework NestJS và GraphQL. Giữ cho các trường đầy đủ, cấu trúc rõ ràng."
+  },
+  {
+    "personnel_id": "P_069",
+    "full_name": "Vũ Tiến Đạt",
+    "target_role": "Data Scientist (NLP)",
+    "related_org": {
+      "org_id": "ORG_034",
+      "org_name": "NLP Tech Lab",
+      "relationship": "Nghiên cứu viên nòng cốt xây dựng RAG pipelines tại NLP Tech Lab."
+    },
+    "core_skills_to_include": ["Python", "TensorFlow", "spaCy", "LangChain", "RAG Architecture", "Pinecone Vector DB"],
+    "private_data_to_include": {
+      "salary_expectation": "4000 USD",
+      "contact": {
+        "email": "tiendat.ai@gmail.com",
+        "phone": "0933112233",
+        "github": "https://github.com/dat-ai-nlp",
+        "linkedin": "https://linkedin.com/in/vutiendat"
+      },
+      "blacklist_orgs": [],
+      "technical_secrets": "Fine-tune một mô hình LLM mã nguồn mở nhỏ (7B parameters) bằng LoRA để chuyên trị ngữ liệu pháp lý Việt Nam, đạt độ chính xác nhỉnh hơn cả GPT-3.5 trong tác vụ trích xuất thông tin hợp đồng.",
+      "interview_questions_history": []
+    },
+    "full_fields_instructions": "Viết CV kiểu học thuật. Đảm bảo phải có link arXiv hoặc link bài báo ở phần evidence_links. Đầy đủ các trường public/private."
+  },
+  {
+    "personnel_id": "P_070",
+    "full_name": "Trần Thanh Tâm",
+    "target_role": "iOS Developer",
+    "related_org": {
+      "org_id": "ORG_035",
+      "org_name": "AppMakers VN",
+      "relationship": "Đang làm lập trình viên iOS chính, gánh vác 3 ứng dụng của công ty."
+    },
+    "core_skills_to_include": ["Swift", "SwiftUI", "Combine", "CoreData", "XCTest", "Fastlane"],
+    "private_data_to_include": {
+      "salary_expectation": "30,000,000 VND",
+      "contact": {
+        "email": "thanhtam.ios@gmail.com",
+        "phone": "0909887766",
+        "github": "https://github.com/tam-swift",
+        "linkedin": "https://linkedin.com/in/tranthanhtam"
+      },
+      "blacklist_orgs": ["Các dự án phải code bằng Objective-C cũ"],
+      "technical_secrets": "Dịch ngược (reverse-engineer) thành công một mã nguồn API bị obfuscate để tích hợp cổng thanh toán nội địa không có tài liệu SDK chính thức vào ứng dụng iOS.",
+      "interview_questions_history": []
+    },
+    "full_fields_instructions": "Trình bày chuyên nghiệp. Yêu cầu thêm phần 'Sở thích: Leo núi trong nhà' để Pydantic ném vào ngăn chứa thông tin mở rộng."
+  },
+  {
+    "personnel_id": "P_071",
+    "full_name": "Đinh Thành Đạt",
+    "target_role": "Backend Game Systems Engineer",
+    "related_org": {
+      "org_id": "ORG_002",
+      "org_name": "PixelForge Interactive",
+      "relationship": "Từng phỏng vấn vị trí Backend Game Systems tại PixelForge nhưng chưa chốt do chênh lệch kỳ vọng lương."
+    },
+    "core_skills_to_include": ["Rust", "UDP Networking", "ECS Architecture", "Redis", "AWS GameLift", "PostgreSQL"],
+    "private_data_to_include": {
+      "salary_expectation": "3800 USD",
+      "contact": {
+        "email": "thanhdat.gamebackend@gmail.com",
+        "phone": "0988771122",
+        "github": "https://github.com/dat-game-rust",
+        "linkedin": "https://linkedin.com/in/thanhdat-dinh"
+      },
+      "blacklist_orgs": ["VNG Game Studios"],
+      "technical_secrets": "Tối ưu hóa lock-free data structures bằng Rust cho game state sync, giúp backend server chịu tải được 50,000 CCU trên một node duy nhất mà không bị drop tick rate.",
+      "interview_questions_history": [
+        {
+          "question": "Tại sao lại chọn Rust thay vì C++ cho game server?",
+          "answer": "Rust loại bỏ hoàn toàn các lỗi memory safety (data race, use-after-free) ở compile time thông qua borrow checker, trong khi vẫn giữ hiệu năng tương đương C++ cho game loop.",
+          "org": "ORG_002"
+        }
+      ]
+    },
+    "full_fields_instructions": "Viết CV 100% chuẩn xác. Đảm bảo có phần Liên hệ, Tóm tắt, Kỹ năng, Học vấn. Thêm 'Nhóm máu: O' để kiểm tra tính năng bóc tách additional_information của Pydantic."
+  },
+  {
+    "personnel_id": "P_072",
+    "full_name": "Lê Phương Nam",
+    "target_role": "Senior WebRTC Infrastructure Engineer",
+    "related_org": {
+      "org_id": "ORG_009",
+      "org_name": "VoiceConnect Vietnam",
+      "relationship": "Là ứng viên lý tưởng cho VoiceConnect, từng build hệ thống SFU tương đương."
+    },
+    "core_skills_to_include": ["WebRTC", "C++", "mediasoup", "RTP/RTCP", "GStreamer", "Go"],
+    "private_data_to_include": {
+      "salary_expectation": "3200 USD",
+      "contact": {
+        "email": "phuongnam.webrtc@gmail.com",
+        "phone": "0911223344",
+        "github": "https://github.com/nam-webrtc",
+        "linkedin": "https://linkedin.com/in/phuongnam-le"
+      },
+      "blacklist_orgs": ["Các dự án chỉ dùng Agora SDK có sẵn"],
+      "technical_secrets": "Tự implement một adaptive bitrate control module riêng dựa trên GCC (Google Congestion Control) để tối ưu chất lượng video calls cho điều kiện mạng 4G/3G chập chờn ở nông thôn Việt Nam.",
+      "interview_questions_history": [
+        {
+          "question": "Giải quyết packet loss trong WebRTC thế nào?",
+          "answer": "Sử dụng NACK (Negative Acknowledgment) để yêu cầu gửi lại packet nếu RTT thấp. Nếu RTT cao, yêu cầu PLI/FIR để gửi lại keyframe (I-frame) nhằm reset video stream.",
+          "org": "ORG_009"
+        }
+      ]
+    },
+    "full_fields_instructions": "Trình bày CV rành mạch, đi sâu vào kỹ thuật streaming. Yêu cầu thêm phần 'Chiều cao: 1m75' để LLM xử lý thông tin cá nhân mở rộng."
+  },
+  {
+    "personnel_id": "P_073",
+    "full_name": "Trần Thanh Huyền",
+    "target_role": "Principal Platform Engineer – Chaos Engineering",
+    "related_org": {
+      "org_id": "ORG_019",
+      "org_name": "ResilienceOps Platform",
+      "relationship": "Rất quan tâm đến sản phẩm SaaS Chaos Engineering của ResilienceOps."
+    },
+    "core_skills_to_include": ["Chaos Mesh", "Kubernetes Operator", "Go", "Prometheus", "SRE", "ArgoCD"],
+    "private_data_to_include": {
+      "salary_expectation": "4000 USD",
+      "contact": {
+        "email": "thanhhuyen.sre@gmail.com",
+        "phone": "0909556677",
+        "github": "https://github.com/huyen-chaos",
+        "linkedin": "https://linkedin.com/in/thanhhuyen-tran"
+      },
+      "blacklist_orgs": [],
+      "technical_secrets": "Build một custom validating webhook tự động rollback hoặc hủy các chaos experiments (tiêm lỗi) nếu Prometheus alert báo SLO drop dưới 99.9% để không làm sập production.",
+      "interview_questions_history": [
+        {
+          "question": "Làm thế nào để scale chaos experiments an toàn?",
+          "answer": "Bắt đầu với game days có kiểm soát trong giờ hành chính, define blast radius cực nhỏ, sau đó tự động hóa tích hợp vào CI/CD pipeline chạy trên staging trước.",
+          "org": "ORG_019"
+        }
+      ]
+    },
+    "full_fields_instructions": "CV dạng SRE Expert. Phải chèn link repo GitHub về Chaos Engineering vào evidence_links. Thêm 'Màu yêu thích: Xanh dương' để test."
+  },
+  {
+    "personnel_id": "P_074",
+    "full_name": "Phạm Trọng Trí",
+    "target_role": "Compiler / Static Analysis Engineer",
+    "related_org": {
+      "org_id": "ORG_012",
+      "org_name": "CodeCraft Developer Tools",
+      "relationship": "Từng tham gia đóng góp cho Clang/LLVM, khớp hoàn hảo với JD của CodeCraft."
+    },
+    "core_skills_to_include": ["LLVM", "Clang AST", "C++17", "Static Analysis", "Abstract Interpretation", "Python"],
+    "private_data_to_include": {
+      "salary_expectation": "3500 USD",
+      "contact": {
+        "email": "trongtri.compiler@gmail.com",
+        "phone": "0944112233",
+        "github": "https://github.com/tri-llvm",
+        "linkedin": "https://linkedin.com/in/trongtri-pham"
+      },
+      "blacklist_orgs": ["Công ty outsourcing làm app web thông thường"],
+      "technical_secrets": "Tự viết một custom Clang static analyzer checker để tìm ra memory leak trong một open source library lớn bằng cách track state transition của C++ smart pointers.",
+      "interview_questions_history": [
+        {
+          "question": "Data flow analysis thực hiện ở tầng AST hay IR?",
+          "answer": "Nên thực hiện ở tầng LLVM IR vì nó đã được chuẩn hóa qua SSA form, dễ dàng tracking use-def chains hơn là làm trên source-level AST phức tạp của C++.",
+          "org": "ORG_012"
+        }
+      ]
+    },
+    "full_fields_instructions": "Tạo CV học thuật sâu, chú trọng vào C++ và Compiler. 100% full fields. Cố ý chèn 'Cân nặng: 65kg' để parser gom vào additional_information."
+  },
+  {
+    "personnel_id": "P_075",
+    "full_name": "Nguyễn Bảo Châu",
+    "target_role": "Computer Vision Engineer",
+    "related_org": {
+      "org_id": "ORG_050",
+      "org_name": "AILab Solutions",
+      "relationship": "Xây dựng các mô hình nhận diện khuôn mặt và biển số xe tại AILab Solutions."
+    },
+    "core_skills_to_include": ["Computer Vision", "PyTorch", "YOLOv8", "TensorRT", "MLOps", "ClearML"],
+    "private_data_to_include": {
+      "salary_expectation": "40,000,000 VND",
+      "contact": {
+        "email": "baochau.cv@gmail.com",
+        "phone": "0933445566",
+        "github": "https://github.com/chau-cv-ml",
+        "linkedin": "https://linkedin.com/in/baochau-nguyen"
+      },
+      "blacklist_orgs": ["Startup không có sẵn data để train AI"],
+      "technical_secrets": "Ép xung mô hình YOLOv8 chạy real-time 60fps trên Jetson Nano bằng cách tối ưu TensorRT FP16 quantization mà không giảm độ chính xác mAP.",
+      "interview_questions_history": []
+    },
+    "full_fields_instructions": "Viết CV AI Engineer thông thường. Danh sách interview_questions rỗng. Thêm 'Sở thích: Trồng cây cảnh' vào cuối CV."
+  },
+  {
+    "personnel_id": "P_076",
+    "full_name": "Vũ Đình Phong",
+    "target_role": "Senior Android Developer",
+    "related_org": {
+      "org_id": "ORG_051",
+      "org_name": "FinMobile App",
+      "relationship": "Phát triển core features cho ví điện tử FinMobile."
+    },
+    "core_skills_to_include": ["Kotlin", "Coroutines", "Jetpack Compose", "Clean Architecture", "MVVM", "Dagger/Hilt"],
+    "private_data_to_include": {
+      "salary_expectation": "2000 USD",
+      "contact": {
+        "email": "dinhphong.android@gmail.com",
+        "phone": "0988001122",
+        "github": "https://github.com/phong-android",
+        "linkedin": "https://linkedin.com/in/dinhphong-vu"
+      },
+      "blacklist_orgs": ["Các dự án maintain code Java cũ"],
+      "technical_secrets": "Tách một monolith Android app thành 15 dynamic feature modules, giảm build time CI từ 45 phút xuống còn 8 phút.",
+      "interview_questions_history": []
+    },
+    "full_fields_instructions": "CV dạng Mobile Developer chuyên nghiệp. Yêu cầu có link GitHub ở phần evidence_links. Thêm 'Số đo giày: size 42' để xem parser Pydantic."
+  },
+  {
+    "personnel_id": "P_077",
+    "full_name": "Bùi Cẩm Tú",
+    "target_role": "Full-stack Developer (Vue.js/Node.js)",
+    "related_org": {
+      "org_id": "ORG_052",
+      "org_name": "EduTech VN",
+      "relationship": "Làm việc tại hệ thống quản lý học tập (LMS) của EduTech VN."
+    },
+    "core_skills_to_include": ["Vue 3", "Node.js", "Express", "MongoDB", "TailwindCSS", "Pinia"],
+    "private_data_to_include": {
+      "salary_expectation": "25,000,000 VND",
+      "contact": {
+        "email": "camtu.fullstack@gmail.com",
+        "phone": "0977223344",
+        "github": "https://github.com/camtu-vue",
+        "linkedin": "https://linkedin.com/in/camtu-bui"
+      },
+      "blacklist_orgs": [],
+      "technical_secrets": "Thiết kế hệ thống real-time quiz dựa trên WebSocket và Redis Pub/Sub, cho phép 10,000 học sinh làm bài thi trắc nghiệm đồng thời không bị lag.",
+      "interview_questions_history": []
+    },
+    "full_fields_instructions": "CV Full-stack Developer tiêu chuẩn, không có quá nhiều phức tạp. Đảm bảo đầy đủ Public Data. Chèn 'Sở thích: Nghe nhạc Lofi'."
+  },
+  {
+    "personnel_id": "P_078",
+    "full_name": "Hồ Sỹ Đăng",
+    "target_role": "DevOps Engineer",
+    "related_org": {
+      "org_id": "ORG_053",
+      "org_name": "CloudSec Provider",
+      "relationship": "Chuyên trách tự động hóa CI/CD và infrastructure cho CloudSec."
+    },
+    "core_skills_to_include": ["AWS", "Terraform", "GitLab CI", "Docker", "Kubernetes", "Bash"],
+    "private_data_to_include": {
+      "salary_expectation": "2500 USD",
+      "contact": {
+        "email": "sydang.devops@gmail.com",
+        "phone": "0911887766",
+        "github": "https://github.com/dang-devops",
+        "linkedin": "https://linkedin.com/in/sydang-ho"
+      },
+      "blacklist_orgs": ["Các startup không có team dev cứng"],
+      "technical_secrets": "Tự động hóa hoàn toàn quy trình renew SSL certificate và secrets rotation trên Kubernetes cluster dùng HashiCorp Vault, loại bỏ hoàn toàn manual work.",
+      "interview_questions_history": []
+    },
+    "full_fields_instructions": "Trình bày rõ ràng kinh nghiệm DevOps/Cloud. 100% full fields. Thêm 'Ngoại ngữ: IELTS 7.0' vào phần cuối CV."
+  },
+  {
+    "personnel_id": "P_079",
+    "full_name": "Trần Quỳnh Hương",
+    "target_role": "Senior Product Manager",
+    "related_org": {
+      "org_id": "ORG_054",
+      "org_name": "EcomNext Startups",
+      "relationship": "Quản lý lộ trình sản phẩm cho sàn thương mại điện tử EcomNext."
+    },
+    "core_skills_to_include": ["Agile Framework", "Jira", "Product Roadmap", "A/B Testing", "User Interviews", "SQL"],
+    "private_data_to_include": {
+      "salary_expectation": "2800 USD",
+      "contact": {
+        "email": "quynhhuong.pm@gmail.com",
+        "phone": "0909554433",
+        "github": "",
+        "linkedin": "https://linkedin.com/in/quynhhuong-tran"
+      },
+      "blacklist_orgs": ["Công ty coi PM chỉ là người viết ticket"],
+      "technical_secrets": "Điều chỉnh UX flow dựa trên Funnel Analytics từ Mixpanel, phát hiện bước drop-off cao ở trang thanh toán và tăng conversion rate lên 15%.",
+      "interview_questions_history": []
+    },
+    "full_fields_instructions": "CV thiên hướng Business / Product Management. Thêm 'Tính cách: ENFP' để LLM xử lý thông tin cá nhân mở rộng."
+  },
+  {
+    "personnel_id": "P_080",
+    "full_name": "Lâm Gia Kiệt",
+    "target_role": "Backend Engineer (Python)",
+    "related_org": {
+      "org_id": "ORG_055",
+      "org_name": "DataScale Technologies",
+      "relationship": "Kỹ sư xử lý dữ liệu backend tại DataScale."
+    },
+    "core_skills_to_include": ["Python", "FastAPI", "Celery", "PostgreSQL", "Redis", "Elasticsearch"],
+    "private_data_to_include": {
+      "salary_expectation": "2200 USD",
+      "contact": {
+        "email": "giakiet.python@gmail.com",
+        "phone": "0988334455",
+        "github": "https://github.com/kiet-python-be",
+        "linkedin": "https://linkedin.com/in/giakiet-lam"
+      },
+      "blacklist_orgs": [],
+      "technical_secrets": "Tối ưu hóa các API endpoints search bằng cách index dữ liệu từ PostgreSQL sang Elasticsearch qua Logstash, giảm query time từ 3 giây xuống dưới 100ms.",
+      "interview_questions_history": []
+    },
+    "full_fields_instructions": "Viết CV Backend Engineer tiêu chuẩn. Phải đủ 100% schema công khai và riêng tư. Bỏ thêm 'Thích ăn chay' vào nội dung để ép vào additional_information."
+  },
+  {
+    "personnel_id": "P_101",
+    "full_name": "Vũ Hoàng Quân",
+    "target_role": "Senior Backend Engineer – Transaction Core",
+    "related_org": {
+      "org_id": "ORG_001",
+      "org_name": "NexPay Financial Technology",
+      "relationship": "Rất phù hợp với bài toán transaction engine của NexPay, từng xử lý hệ thống thanh toán cross-border."
+    },
+    "core_skills_to_include": ["Go", "Java", "Kafka", "Distributed Transactions", "Saga Pattern", "PostgreSQL"],
+    "private_data_to_include": {
+      "salary_expectation": "3800 USD",
+      "contact": {
+        "email": "hoangquan.backend@gmail.com",
+        "phone": "0988112233",
+        "github": "https://github.com/hquan-transaction",
+        "linkedin": "https://linkedin.com/in/hoangquan-vu"
+      },
+      "blacklist_orgs": ["VNPay", "ZaloPay"],
+      "technical_secrets": "Thiết kế cơ chế distributed lock kết hợp Redis và etcd để đảm bảo exactly-once semantics cho luồng chuyển tiền xuyên biên giới, giảm tỷ lệ collision xuống 40%.",
+      "interview_questions_history": [
+        {
+          "question": "Xử lý partial failure trong distributed transaction như thế nào?",
+          "answer": "Áp dụng Orchestration Saga, kết hợp Dead-letter queue cho các step không thể auto-rollback để nhân sự đối soát (reconciliation) xử lý thủ công.",
+          "org": "ORG_001"
+        }
+      ]
+    },
+    "full_fields_instructions": "Trình bày CV chuyên nghiệp, tập trung vào Backend và System Design. Thêm trường 'Chiều cao: 1m80' vào phần thông tin để kiểm tra bộ parser đẩy vào additional_information."
+  },
+  {
+    "personnel_id": "P_102",
+    "full_name": "Lê Ngọc Trâm",
+    "target_role": "Automation QA Engineer",
+    "related_org": {
+      "org_id": "ORG_013",
+      "org_name": "GlobalDev Outsourcing Vietnam",
+      "relationship": "Đang làm việc tại GlobalDev, phụ trách automation cho dự án bảo hiểm của Úc."
+    },
+    "core_skills_to_include": ["Selenium WebDriver", "TestNG", "Java", "Appium", "Jenkins", "API Testing"],
+    "private_data_to_include": {
+      "salary_expectation": "28,000,000 VND",
+      "contact": {
+        "email": "ngoctram.qa@gmail.com",
+        "phone": "0909445566",
+        "github": "https://github.com/ngoctram-qa",
+        "linkedin": "https://linkedin.com/in/ngoctram-le"
+      },
+      "blacklist_orgs": ["Các dự án chỉ làm manual testing"],
+      "technical_secrets": "Tự xây dựng một hybrid automation framework kết hợp keyword-driven và data-driven, giảm 50% thời gian maintain script mỗi khi UI khách hàng thay đổi.",
+      "interview_questions_history": [
+        {
+          "question": "Sự khác biệt giữa Page Object Model và Page Factory là gì?",
+          "answer": "POM là design pattern để tách biệt UI elements và test logic. Page Factory là class hỗ trợ sẵn của Selenium để khởi tạo các elements đó một cách gọn gàng bằng annotation @FindBy.",
+          "org": "ORG_013"
+        }
+      ]
+    },
+    "full_fields_instructions": "CV dạng QA Engineer. Khai báo 100% schema. Chèn thêm 'Màu sắc yêu thích: Vàng' để Pydantic xử lý vào túi ba gang."
+  },
+  {
+    "personnel_id": "P_103",
+    "full_name": "Huỳnh Tuấn Phát",
+    "target_role": "Senior Data Engineer – Platform Core",
+    "related_org": {
+      "org_id": "ORG_008",
+      "org_name": "DataBridge Analytics",
+      "relationship": "Ứng viên lý tưởng cho DataBridge, có chuyên môn sâu về multi-tenant data processing."
+    },
+    "core_skills_to_include": ["Apache Spark", "dbt Core", "Apache Airflow", "Snowflake", "Great Expectations", "BigQuery"],
+    "private_data_to_include": {
+      "salary_expectation": "3200 USD",
+      "contact": {
+        "email": "tuanphat.data@gmail.com",
+        "phone": "0933998877",
+        "github": "https://github.com/phat-data-eng",
+        "linkedin": "https://linkedin.com/in/tuanphat-huynh"
+      },
+      "blacklist_orgs": ["Công ty không có data pipeline rõ ràng"],
+      "technical_secrets": "Đã migrate hơn 500 batch jobs hàng ngày từ legacy cron sang Airflow dynamic DAGs, thiết lập cô lập tài nguyên cho từng tenant để tránh ảnh hưởng chéo.",
+      "interview_questions_history": [
+        {
+          "question": "So sánh Snowflake và Delta Lake.",
+          "answer": "Snowflake là managed DWH cung cấp compute và storage chung một platform, dễ dùng nhưng tốn kém. Delta Lake là open storage format cung cấp ACID transactions trực tiếp trên data lake (S3/GCS), linh hoạt hơn khi kết hợp với Spark.",
+          "org": "ORG_008"
+        }
+      ]
+    },
+    "full_fields_instructions": "Viết CV Data Engineer chuyên nghiệp. Cover đầy đủ public và private data. Đưa link một bài viết Medium về data engineering vào evidence_links."
+  },
+  {
+    "personnel_id": "P_104",
+    "full_name": "Đặng Quỳnh Như",
+    "target_role": "Cloud Solutions Architect",
+    "related_org": {
+      "org_id": "ORG_016",
+      "org_name": "Vietcombank Digital Division",
+      "relationship": "Từng tư vấn kiến trúc landing zone an toàn cho mảng digital banking."
+    },
+    "core_skills_to_include": ["AWS Organizations", "EKS", "Terraform", "PCI-DSS", "Cloud Governance", "AWS IAM"],
+    "private_data_to_include": {
+      "salary_expectation": "4500 USD",
+      "contact": {
+        "email": "quynhnhu.cloud@gmail.com",
+        "phone": "0911223344",
+        "github": "https://github.com/nhu-cloud-arch",
+        "linkedin": "https://linkedin.com/in/quynhnhu-dang"
+      },
+      "blacklist_orgs": ["Các môi trường không tôn trọng Infrastructure as Code"],
+      "technical_secrets": "Phát hiện và vá một cấu hình sai nghiêm trọng trong AWS IAM cross-account roles, ngăn chặn nguy cơ leo thang đặc quyền (privilege escalation) trong nội bộ hệ thống ngân hàng.",
+      "interview_questions_history": [
+        {
+          "question": "Làm sao để thiết kế multi-account architecture an toàn cho ngân hàng?",
+          "answer": "Sử dụng AWS Control Tower để thiết lập landing zone chuẩn, áp dụng nghiêm ngặt các Service Control Policies (SCPs) và tập trung toàn bộ GuardDuty/CloudTrail log về một security account riêng biệt.",
+          "org": "ORG_016"
+        }
+      ]
+    },
+    "full_fields_instructions": "CV dạng Cloud Architect cấp cao. Nhấn mạnh vào Security và Governance. Thêm phần 'Ngôn ngữ: Tiếng Pháp JLPT N4' (cố tình nhầm lẫn JLPT) để xem LLM xử lý."
+  },
+  {
+    "personnel_id": "P_105",
+    "full_name": "Trịnh Hải Đăng",
+    "target_role": "Technical Product Manager",
+    "related_org": {
+      "org_id": "ORG_056",
+      "org_name": "NextGen Ecom Startups",
+      "relationship": "Đang quản lý lộ trình sản phẩm cho sàn thương mại điện tử NextGen Ecom."
+    },
+    "core_skills_to_include": ["Agile/Scrum", "Product Roadmap", "A/B Testing", "Mixpanel", "JIRA", "SQL Analytics"],
+    "private_data_to_include": {
+      "salary_expectation": "2500 USD",
+      "contact": {
+        "email": "haidang.pm@gmail.com",
+        "phone": "0977556611",
+        "github": "",
+        "linkedin": "https://linkedin.com/in/haidang-trinh"
+      },
+      "blacklist_orgs": ["Công ty coi PM là thư ký ghi chép requirement"],
+      "technical_secrets": "Thay đổi chiến lược sản phẩm (pivot) dựa trên các chỉ số drop-off ẩn trong Mixpanel, tái thiết kế luồng checkout giúp tăng tỷ lệ chuyển đổi mua hàng lên 20% trong 2 tháng.",
+      "interview_questions_history": [
+        {
+          "question": "Bạn sử dụng framework nào để prioritize features?",
+          "answer": "Tôi thường dùng RICE score (Reach, Impact, Confidence, Effort) cho roadmap dài hạn và kết hợp MoSCoW để lên kế hoạch chiến thuật cho từng sprint.",
+          "org": "ORG_056"
+        }
+      ]
+    },
+    "full_fields_instructions": "Viết CV thiên hướng Business/Product nhưng am hiểu Data. Không điền link Github. Thêm thông tin 'Tính cách: Cẩn thận, chi tiết' vào phần cuối."
+  },
+  {
+    "personnel_id": "P_106",
+    "full_name": "Ngô Thanh Mai",
+    "target_role": "Senior Frontend Engineer",
+    "related_org": {
+      "org_id": "ORG_057",
+      "org_name": "WebTech Studio",
+      "relationship": "Lead team frontend tại WebTech Studio, chịu trách nhiệm kiến trúc SPA."
+    },
+    "core_skills_to_include": ["React 18", "Next.js", "TypeScript", "TailwindCSS", "Zustand", "React Query"],
+    "private_data_to_include": {
+      "salary_expectation": "35,000,000 VND",
+      "contact": {
+        "email": "thanhmai.fe@gmail.com",
+        "phone": "0908112244",
+        "github": "https://github.com/mai-react",
+        "linkedin": "https://linkedin.com/in/thanhmai-ngo"
+      },
+      "blacklist_orgs": ["Các dự án jQuery cũ"],
+      "technical_secrets": "Tự phát triển một custom virtual scroller thay vì dùng thư viện có sẵn để hiển thị bảng dữ liệu (data grid) 100,000 dòng, đảm bảo 60fps mà không bị drop frame trên các máy yếu.",
+      "interview_questions_history": [
+        {
+          "question": "React Server Components mang lại lợi ích gì?",
+          "answer": "Giúp chuyển việc fetch data và render lên server, giảm đáng kể kích thước JS bundle tải xuống client và cho phép giữ các secret keys an toàn ở phía server.",
+          "org": "ORG_057"
+        }
+      ]
+    },
+    "full_fields_instructions": "CV dạng Frontend chuyên nghiệp. 100% full schema. Chèn thêm 'Sở thích: Nấu ăn và chụp ảnh phim' để test."
+  },
+  {
+    "personnel_id": "P_107",
+    "full_name": "Lương Vĩnh Thái",
+    "target_role": "DevSecOps Engineer",
+    "related_org": {
+      "org_id": "ORG_058",
+      "org_name": "CyberSafe VN",
+      "relationship": "Phụ trách pipeline bảo mật và DevSecOps tại CyberSafe."
+    },
+    "core_skills_to_include": ["CI/CD Security", "SonarQube", "Trivy", "HashiCorp Vault", "GitLab CI", "Open Policy Agent (OPA)"],
+    "private_data_to_include": {
+      "salary_expectation": "3200 USD",
+      "contact": {
+        "email": "vinhthai.secops@gmail.com",
+        "phone": "0933778899",
+        "github": "https://github.com/thai-devsecops",
+        "linkedin": "https://linkedin.com/in/vinhthai-luong"
+      },
+      "blacklist_orgs": [],
+      "technical_secrets": "Viết và triển khai một automated secret-scanning pre-receive hook trên GitLab, chặn đứng 15 vụ rò rỉ credential tiềm ẩn ra public repository trong năm qua.",
+      "interview_questions_history": [
+        {
+          "question": "Các bước cơ bản để bảo mật một Docker image là gì?",
+          "answer": "Sử dụng distroless base images, quét lỗ hổng liên tục bằng Trivy, thiết lập chạy container với quyền non-root và drop toàn bộ các Linux capabilities không cần thiết.",
+          "org": "ORG_058"
+        }
+      ]
+    },
+    "full_fields_instructions": "Viết CV tập trung vào mảng Security & Operations. Đảm bảo đủ các trường private/public. Thêm 'Số đo quần áo: Size L' để ép hệ thống đưa vào phần additional_information."
+  },
+  {
+    "personnel_id": "P_108",
+    "full_name": "Đoàn Bảo Thy",
+    "target_role": "Senior iOS Engineer",
+    "related_org": {
+      "org_id": "ORG_007",
+      "org_name": "PocketApp Vietnam",
+      "relationship": "Từng vượt qua vòng kỹ thuật tại PocketApp nhưng từ chối offer vì muốn remote 100%."
+    },
+    "core_skills_to_include": ["Swift", "SwiftUI", "Combine", "XCTest", "Instruments Profiling", "iOS Performance Tuning"],
+    "private_data_to_include": {
+      "salary_expectation": "40,000,000 VND",
+      "contact": {
+        "email": "baothy.ios@gmail.com",
+        "phone": "0988665544",
+        "github": "https://github.com/thy-ios-dev",
+        "linkedin": "https://linkedin.com/in/baothy-doan"
+      },
+      "blacklist_orgs": ["Các công ty không cho phép remote"],
+      "technical_secrets": "Tối ưu hóa app startup time giảm 2.5 giây bằng cách defer các third-party SDKs và heavy singletons, load chúng dưới dạng background tasks thay vì synchronous lúc khởi động.",
+      "interview_questions_history": [
+        {
+          "question": "Quản lý state trong SwiftUI khác gì với UIKit?",
+          "answer": "SwiftUI theo hướng declarative. Sử dụng @StateObject cho các reference type do view sở hữu, @ObservedObject cho data truyền từ ngoài vào, và @EnvironmentObject cho các state mang tính global của ứng dụng.",
+          "org": "ORG_007"
+        }
+      ]
+    },
+    "full_fields_instructions": "CV dạng Mobile Developer chuyên nghiệp. Yêu cầu có link một ứng dụng App Store ở phần evidence_links. Đầy đủ các trường schema."
+  },
+  {
+    "personnel_id": "P_109",
+    "full_name": "Nguyễn Đức Trí",
+    "target_role": "Senior ML Engineer – Medical Imaging",
+    "related_org": {
+      "org_id": "ORG_010",
+      "org_name": "HealthAI Technologies",
+      "relationship": "Rất phù hợp với JD HealthAI, có kinh nghiệm tối ưu model y tế."
+    },
+    "core_skills_to_include": ["PyTorch", "MONAI", "TensorRT", "Object Detection", "Medical Imaging", "Model Compression"],
+    "private_data_to_include": {
+      "salary_expectation": "3800 USD",
+      "contact": {
+        "email": "ductri.medai@gmail.com",
+        "phone": "0911559988",
+        "github": "https://github.com/tri-med-cv",
+        "linkedin": "https://linkedin.com/in/ductri-nguyen"
+      },
+      "blacklist_orgs": ["Startup AI chạy theo trend không có data thật"],
+      "technical_secrets": "Đạt được các chỉ số validation ở cấp độ 510(k) FDA bằng cách tự phát triển một pipeline augmentation tạo dữ liệu tổng hợp (synthetic data) cho các dị tật phổi hiếm gặp.",
+      "interview_questions_history": [
+        {
+          "question": "Bạn xử lý ảnh y tế 3D (như CT/MRI) trong deep learning như thế nào?",
+          "answer": "Sử dụng các mạng 3D CNN như 3D U-Net hoặc V-Net. Do giới hạn VRAM của GPU, tôi thường áp dụng kỹ thuật patch-based training, cắt ảnh 3D thành các khối nhỏ (patches) thay vì feed toàn bộ volume.",
+          "org": "ORG_010"
+        }
+      ]
+    },
+    "full_fields_instructions": "Viết CV hàn lâm, chuyên gia AI ngành Y. Yêu cầu 100% schema. Bắt buộc liệt kê 2 bài báo nghiên cứu ở evidence_links. Thêm 'Nhóm máu: AB' để test parsing."
+  },
+  {
+    "personnel_id": "P_110",
+    "full_name": "Trần Thanh Phong",
+    "target_role": "Site Reliability Engineer",
+    "related_org": {
+      "org_id": "ORG_059",
+      "org_name": "InfraScale Systems",
+      "relationship": "Đang vận hành cụm Kubernetes với hàng ngàn node tại InfraScale."
+    },
+    "core_skills_to_include": ["Kubernetes", "Prometheus", "Grafana", "Terraform", "SLO/SLI Design", "Incident Management"],
+    "private_data_to_include": {
+      "salary_expectation": "3000 USD",
+      "contact": {
+        "email": "thanhphong.sre@gmail.com",
+        "phone": "0909001122",
+        "github": "https://github.com/phong-sre",
+        "linkedin": "https://linkedin.com/in/thanhphong-tran"
+      },
+      "blacklist_orgs": ["Công ty coi SRE là trực tổng đài"],
+      "technical_secrets": "Tự động hóa hoàn toàn runbook xử lý sự cố cấp độ P0 bằng cách dùng Python kết hợp Slack API, giúp hệ thống tự cô lập lỗi và giảm Mean Time To Recovery (MTTR) xuống 40%.",
+      "interview_questions_history": [
+        {
+          "question": "Xử lý thế nào khi có một đợt traffic spike tăng đột biến (DDoS hoặc flash sale)?",
+          "answer": "Kết hợp HPA (Horizontal Pod Autoscaler) và Cluster Autoscaler để mở rộng tài nguyên. Đồng thời, thiết lập rate-limiting cứng ở tầng API Gateway để loại bỏ các request vượt tải (load shedding) bảo vệ core database.",
+          "org": "ORG_059"
+        }
+      ]
+    },
+    "full_fields_instructions": "Viết CV chuyên gia SRE chuẩn mực. 100% thông tin public và private. Thêm 'Thú cưng: Chó Poodle' vào giữa dòng văn bản để ép đẩy vào additional_information."
+  },
+  {
+    "personnel_id": "P_111",
+    "full_name": "Đặng Trần Phương",
+    "target_role": "GPU/NPU Software Engineer",
+    "related_org": {
+      "org_id": "ORG_003",
+      "org_name": "VinAI Semiconductor Lab",
+      "relationship": "Khớp hoàn hảo với JD GPU/NPU Software Engineer, từng tối ưu kernel cho custom accelerator."
+    },
+    "core_skills_to_include": ["CUDA C++", "Python", "Quantization", "Transformer Attention Mechanisms", "Nsight Profiling"],
+    "private_data_to_include": {
+      "salary_expectation": "4500 USD",
+      "contact": {
+        "email": "tranphuong.gpu@gmail.com",
+        "phone": "0911882233",
+        "github": "https://github.com/phuong-cuda-npu",
+        "linkedin": "https://linkedin.com/in/dangtranphuong"
+      },
+      "blacklist_orgs": ["Các lab chỉ dùng API có sẵn không đụng tới hardware"],
+      "technical_secrets": "Tự implement một fused attention kernel cho int4 quantized transformer, xử lý triệt để bottleneck về memory bandwidth trên kiến trúc NPU nội bộ.",
+      "interview_questions_history": [
+        {
+          "question": "Làm thế nào để tránh uncoalesced memory access trong CUDA?",
+          "answer": "Sử dụng shared memory để sắp xếp lại (rearrange) các data access pattern của thread block trước khi ghi xuống global memory, đảm bảo các threads truy cập các địa chỉ bộ nhớ liên tiếp.",
+          "org": "ORG_003"
+        }
+      ]
+    },
+    "full_fields_instructions": "Trình bày chuẩn CV AI Hardware Engineer. Điền đầy đủ schema. Chèn thêm câu 'Sở thích: Sưu tầm bàn phím cơ custom' để ép Pydantic đưa vào additional_information."
+  },
+  {
+    "personnel_id": "P_112",
+    "full_name": "Vũ Trường Giang",
+    "target_role": "Distributed Database Engineer",
+    "related_org": {
+      "org_id": "ORG_011",
+      "org_name": "AxonDB Systems",
+      "relationship": "Ứng viên lý tưởng cho đội ngũ maintain managed TiDB service tại AxonDB."
+    },
+    "core_skills_to_include": ["TiDB", "TiKV", "Go", "Raft consensus", "PostgreSQL internals", "Distributed SQL"],
+    "private_data_to_include": {
+      "salary_expectation": "3800 USD",
+      "contact": {
+        "email": "truonggiang.db@gmail.com",
+        "phone": "0988001144",
+        "github": "https://github.com/giang-distributed-db",
+        "linkedin": "https://linkedin.com/in/vutruonggiang"
+      },
+      "blacklist_orgs": ["Công ty chỉ dùng DB như một blackbox"],
+      "technical_secrets": "Thiết kế chiến lược pre-split Region trong TiKV kết hợp với SHARD_ROW_ID_BITS để triệt tiêu hoàn toàn write hotspot cho các bảng có auto-increment ID với traffic 50k TPS.",
+      "interview_questions_history": [
+        {
+          "question": "Trong TiKV, PD (Placement Driver) đóng vai trò gì?",
+          "answer": "PD là 'bộ não' của cluster: lưu trữ metadata của các Regions, cấp phát Timestamp (TSO) cho các transaction phân tán, và tự động load balance/schedule các Raft replicas giữa các TiKV nodes.",
+          "org": "ORG_011"
+        }
+      ]
+    },
+    "full_fields_instructions": "CV dạng DBA/Systems Engineer cấp cao. Đảm bảo đầy đủ 100% public và private data. Bắt buộc có dòng 'Tử vi: Cung Song Tử' để kiểm tra tính năng parser mở rộng."
+  },
+  {
+    "personnel_id": "P_113",
+    "full_name": "Lý Bích Ngọc",
+    "target_role": "WebAssembly Runtime Engineer",
+    "related_org": {
+      "org_id": "ORG_018",
+      "org_name": "WASMEdge Platform",
+      "relationship": "Đã có kinh nghiệm đóng góp cho các WASM runtime mã nguồn mở, match JD của WASMEdge."
+    },
+    "core_skills_to_include": ["Rust", "WASM/WASI", "Memory models", "Systems programming", "C++", "V8 internals"],
+    "private_data_to_include": {
+      "salary_expectation": "3200 USD",
+      "contact": {
+        "email": "bichngoc.wasm@gmail.com",
+        "phone": "0933557799",
+        "github": "https://github.com/ngoc-wasm-runtime",
+        "linkedin": "https://linkedin.com/in/lybichngoc"
+      },
+      "blacklist_orgs": ["Các dự án web front-end truyền thống"],
+      "technical_secrets": "Tối ưu hóa WASI networking syscall overhead giảm 8 lần bằng cách sử dụng zero-copy memory mapping giữa host và WASM linear memory.",
+      "interview_questions_history": [
+        {
+          "question": "WASM linear memory có nhược điểm bảo mật gì không?",
+          "answer": "Vì linear memory là một mảng byte liên tục không có page protection nội bộ, buffer overflow ở một biến có thể overwrite các biến khác trong cùng memory space mà runtime không detect được. Tuy nhiên, nó không thể thoát ra khỏi sandbox để tấn công host.",
+          "org": "ORG_018"
+        }
+      ]
+    },
+    "full_fields_instructions": "CV phong cách Systems Programmer. Tập trung mạnh vào Rust và WebAssembly. Điền đủ 100% data. Nhét thêm trường 'Màu may mắn: Xanh lá' để parser test."
+  },
+  {
+    "personnel_id": "P_114",
+    "full_name": "Hồ Đăng Khoa",
+    "target_role": "Site Reliability Engineer",
+    "related_org": {
+      "org_id": "ORG_006",
+      "org_name": "LogiNext Vietnam",
+      "relationship": "Phù hợp để đảm nhiệm vai trò SRE quản lý hạ tầng chịu tải 2M orders/ngày cho LogiNext."
+    },
+    "core_skills_to_include": ["Kubernetes", "Terraform", "Datadog", "SLO/SLI Design", "Incident Response", "ArgoCD"],
+    "private_data_to_include": {
+      "salary_expectation": "3500 USD",
+      "contact": {
+        "email": "dangkhoa.sre@gmail.com",
+        "phone": "0966113355",
+        "github": "https://github.com/khoa-sre-ops",
+        "linkedin": "https://linkedin.com/in/hodangkhoa"
+      },
+      "blacklist_orgs": ["Ninja Van"],
+      "technical_secrets": "Xây dựng cơ chế automated failover multi-region bằng Route53 health checks và async replication, đảm bảo không rớt một order nào khi AWS ap-southeast-1 bị sự cố AZ năm ngoái.",
+      "interview_questions_history": [
+        {
+          "question": "Làm sao để balance giữa độ tin cậy (reliability) và tốc độ ra tính năng mới (velocity)?",
+          "answer": "Sử dụng Error Budgets. Miễn là SLO chưa bị vi phạm (còn error budget), dev team cứ việc push code. Khi error budget cạn, tự động freeze code changes và ưu tiên các task về stability.",
+          "org": "ORG_006"
+        }
+      ]
+    },
+    "full_fields_instructions": "CV dạng Ops/SRE chuyên nghiệp. Không được thiếu trường nào. Thêm câu 'Món ăn dị ứng: Đậu phộng' để ép Pydantic đẩy vào túi ba gang."
+  },
+  {
+    "personnel_id": "P_115",
+    "full_name": "Mai Thị Yến",
+    "target_role": "Data Platform Engineer",
+    "related_org": {
+      "org_id": "ORG_060",
+      "org_name": "DataStream Tech",
+      "relationship": "Data engineer chủ chốt vận hành hệ thống CDC pipeline thời gian thực."
+    },
+    "core_skills_to_include": ["Apache Kafka", "Apache Flink", "Apache Iceberg", "dbt Core", "Python", "Kubernetes"],
+    "private_data_to_include": {
+      "salary_expectation": "40,000,000 VND",
+      "contact": {
+        "email": "maiyen.data@gmail.com",
+        "phone": "0944112233",
+        "github": "https://github.com/yen-data-platform",
+        "linkedin": "https://linkedin.com/in/maithiyen"
+      },
+      "blacklist_orgs": [],
+      "technical_secrets": "Tự phát triển một custom Change Data Capture (CDC) pipeline dựa trên Kafka Connect và Debezium, xử lý mượt mà 500GB dữ liệu thay đổi mỗi ngày từ database legacy lên Data Lake Iceberg.",
+      "interview_questions_history": []
+    },
+    "full_fields_instructions": "Viết CV Data Engineer 100% chuẩn, đầy đủ Public và Private Data. Chèn phần 'Ngoại ngữ phụ: Tiếng Hàn N4' để kiểm tra bóc tách thông tin mở rộng."
+  },
+  {
+    "personnel_id": "P_116",
+    "full_name": "Phùng Quang Dũng",
+    "target_role": "Senior QA Automation Engineer",
+    "related_org": {
+      "org_id": "ORG_061",
+      "org_name": "QualityFirst Solutions",
+      "relationship": "Phụ trách chất lượng tự động cho toàn bộ sản phẩm SaaS của công ty."
+    },
+    "core_skills_to_include": ["Cypress", "Playwright", "Java", "k6 Performance", "Pact Contract Testing", "CI/CD Pipelines"],
+    "private_data_to_include": {
+      "salary_expectation": "35,000,000 VND",
+      "contact": {
+        "email": "quangdung.qa@gmail.com",
+        "phone": "0977889900",
+        "github": "https://github.com/dung-qa-auto",
+        "linkedin": "https://linkedin.com/in/phungquangdung"
+      },
+      "blacklist_orgs": ["Các dự án 100% manual testing"],
+      "technical_secrets": "Tạo ra một kịch bản 'auto-healing' cho UI automation tests: khi DOM element thay đổi ID hoặc Class, thuật toán tự động quét cây DOM xung quanh để tìm element tương tự và pass test mà không báo false negative.",
+      "interview_questions_history": []
+    },
+    "full_fields_instructions": "CV dạng QA/SDET chuyên sâu. Đầy đủ các trường. Cố ý viết thêm 'Chiều cao: 172cm' vào dòng mô tả để parser JSON lọc thông tin cá nhân."
+  },
+  {
+    "personnel_id": "P_117",
+    "full_name": "Tạ Phương Trinh",
+    "target_role": "Technical Product Manager",
+    "related_org": {
+      "org_id": "ORG_062",
+      "org_name": "Finovate VN",
+      "relationship": "Quản lý chiến lược sản phẩm (Product Strategy) cho nền tảng ví điện tử của Finovate."
+    },
+    "core_skills_to_include": ["Product Roadmap", "Agile/Scrum", "API Design", "JIRA", "SQL Analytics", "Stakeholder Management"],
+    "private_data_to_include": {
+      "salary_expectation": "2700 USD",
+      "contact": {
+        "email": "phuongtrinh.pm@gmail.com",
+        "phone": "0911556677",
+        "github": "",
+        "linkedin": "https://linkedin.com/in/taphuongtrinh"
+      },
+      "blacklist_orgs": ["Công ty gia đình siêu nhỏ"],
+      "technical_secrets": "Sử dụng Mixpanel drop-off analytics phát hiện điểm mù trong luồng KYC, quyết định pivot sản phẩm loại bỏ bớt 2 bước xác thực dư thừa giúp công ty tiết kiệm 50k USD burn rate mỗi tháng.",
+      "interview_questions_history": []
+    },
+    "full_fields_instructions": "CV dạng Product Manager (có tư duy kỹ thuật). Đầy đủ các trường cần thiết. Thêm dòng 'Thói quen: Uống 2 ly cà phê mỗi ngày' để xem LLM đẩy vào túi ba gang thế nào."
+  },
+  {
+    "personnel_id": "P_118",
+    "full_name": "Trương Quang Vinh",
+    "target_role": "Senior Frontend Engineer",
+    "related_org": {
+      "org_id": "ORG_063",
+      "org_name": "VisualWeb Studio",
+      "relationship": "Trưởng nhóm xử lý các hiệu ứng đồ họa 3D phức tạp trên web."
+    },
+    "core_skills_to_include": ["Vue 3", "Nuxt", "TailwindCSS", "WebGL", "Three.js", "TypeScript"],
+    "private_data_to_include": {
+      "salary_expectation": "40,000,000 VND",
+      "contact": {
+        "email": "quangvinh.fe@gmail.com",
+        "phone": "0988223344",
+        "github": "https://github.com/vinh-vue-webgl",
+        "linkedin": "https://linkedin.com/in/truongquangvinh"
+      },
+      "blacklist_orgs": ["Các công ty không cho remote hybrid"],
+      "technical_secrets": "Tối ưu hóa việc load model 3D trên mobile browser bằng kỹ thuật progressive decimation: load bản low-poly trước, sau đó fetch data High-poly qua stream giúp trang đạt TTI (Time to Interactive) dưới 2 giây.",
+      "interview_questions_history": []
+    },
+    "full_fields_instructions": "CV dạng Creative Frontend Engineer. Không thiếu bất kỳ trường thông tin public hay private nào. Thêm 'Nuôi thú cưng: Kỳ nhông' vào phần thông tin mở rộng."
+  },
+  {
+    "personnel_id": "P_119",
+    "full_name": "Châu Nhật Minh",
+    "target_role": "DevSecOps Engineer",
+    "related_org": {
+      "org_id": "ORG_064",
+      "org_name": "ShieldOps Inc",
+      "relationship": "Thiết lập tường lửa và hệ thống pipeline DevSecOps tự động hóa."
+    },
+    "core_skills_to_include": ["GitLab CI", "SonarQube", "Trivy", "HashiCorp Vault", "AWS Security", "Checkmarx"],
+    "private_data_to_include": {
+      "salary_expectation": "3000 USD",
+      "contact": {
+        "email": "nhatminh.secops@gmail.com",
+        "phone": "0909554433",
+        "github": "https://github.com/minh-devsecops",
+        "linkedin": "https://linkedin.com/in/chaunhatminh"
+      },
+      "blacklist_orgs": [],
+      "technical_secrets": "Ngăn chặn một vụ tấn công supply chain quy mô lớn trong nội bộ bằng cách tự code một Kubernetes Admission Controller webhook để block mọi container image không có chữ ký số xác thực (signed by Cosign).",
+      "interview_questions_history": []
+    },
+    "full_fields_instructions": "CV tập trung mảng Security / CI-CD. Liệt kê tối thiểu 2 chứng chỉ bảo mật. Yêu cầu chèn thêm thông tin 'Nhóm máu: B' vào dòng bất kỳ để ép vào additional_information."
+  },
+  {
+    "personnel_id": "P_120",
+    "full_name": "Nguyễn Cát Tiên",
+    "target_role": "Backend Engineer (Node.js)",
+    "related_org": {
+      "org_id": "ORG_065",
+      "org_name": "EcomTech SEA",
+      "relationship": "Phát triển microservices giỏ hàng (cart engine) cho sàn EcomTech."
+    },
+    "core_skills_to_include": ["Node.js", "NestJS", "MongoDB", "Redis", "RabbitMQ", "GraphQL"],
+    "private_data_to_include": {
+      "salary_expectation": "2000 USD",
+      "contact": {
+        "email": "cattien.backend@gmail.com",
+        "phone": "0933776655",
+        "github": "https://github.com/tien-node-graphql",
+        "linkedin": "https://linkedin.com/in/nguyencattien"
+      },
+      "blacklist_orgs": ["Các startup Web3 rác"],
+      "technical_secrets": "Khắc phục triệt để lỗi N+1 queries nguy hiểm trong hệ thống GraphQL API bằng dataloader batching, kéo API response time từ 2000ms xuống chỉ còn 150ms dưới tải nặng.",
+      "interview_questions_history": []
+    },
+    "full_fields_instructions": "Viết CV Backend (Node.js) chuẩn xác. Đầy đủ các trường 100%. Thêm 'Môn thể thao yêu thích: Chạy marathon' để kiểm tra tính năng parser additional_information."
+  },
+   {
+    "personnel_id": "P_121",
+    "full_name": "Đặng Tấn Khoa",
+    "target_role": "Principal Privacy Engineer",
+    "related_org": {
+      "org_id": "ORG_005",
+      "org_name": "TrustLayer Privacy Technology",
+      "relationship": "Ứng viên lý tưởng cho TrustLayer, có kinh nghiệm triển khai Differential Privacy trên production."
+    },
+    "core_skills_to_include": ["Differential Privacy", "Homomorphic Encryption", "Python", "Rust", "Federated Learning", "C++"],
+    "private_data_to_include": {
+      "salary_expectation": "5000 USD",
+      "contact": {
+        "email": "tankhoa.privacy@gmail.com",
+        "phone": "0911887766",
+        "github": "https://github.com/khoa-dp-crypto",
+        "linkedin": "https://linkedin.com/in/dangtankhoa"
+      },
+      "blacklist_orgs": ["Các startup Web3 không có core tech", "CMC"],
+      "technical_secrets": "Tự tay implement một privacy budget accounting tracker cho pipeline huấn luyện mô hình y tế, giúp cân bằng giữa độ nhiễu (noise) và tính hữu dụng của dữ liệu (utility target).",
+      "interview_questions_history": [
+        {
+          "question": "Bạn so sánh Opacus và Google DP library như thế nào trong thực tế?",
+          "answer": "Opacus tích hợp cực tốt với PyTorch và dễ implement DP-SGD per-sample gradient clipping. Tuy nhiên, Google DP library cung cấp nhiều primitives tốt hơn cho các tác vụ analytics truyền thống như tính mean/sum với Laplace mechanism.",
+          "org": "ORG_005"
+        }
+      ]
+    },
+    "full_fields_instructions": "Viết CV ở cấp độ chuyên gia (Principal). 100% full fields. Bắt buộc chèn thêm thông tin 'Nhạc cụ yêu thích: Đàn Piano' vào giữa đoạn văn bản để ép Pydantic bóc tách đẩy vào additional_information."
+  },
+  {
+    "personnel_id": "P_122",
+    "full_name": "Lâm Phương Trà",
+    "target_role": "React Native Engineer (Mini App Platform)",
+    "related_org": {
+      "org_id": "ORG_007",
+      "org_name": "PocketApp Vietnam",
+      "relationship": "Rất phù hợp để xây dựng kiến trúc Mini App Platform (WeChat-like) cho PocketApp ecosystem."
+    },
+    "core_skills_to_include": ["React Native (JSI/Fabric)", "TurboModules", "TypeScript", "Kotlin", "Swift", "Hermes Engine"],
+    "private_data_to_include": {
+      "salary_expectation": "60,000,000 VND",
+      "contact": {
+        "email": "phuongtra.rn@gmail.com",
+        "phone": "0988223344",
+        "github": "https://github.com/tra-rn-miniapp",
+        "linkedin": "https://linkedin.com/in/lamphuongtra"
+      },
+      "blacklist_orgs": ["VNG (ZaloPay)"],
+      "technical_secrets": "Xây dựng thành công một JavaScript sandbox isolation mechanism sử dụng JSI để ngăn chặn các mini-app bên thứ ba gọi lén các Native Modules nhạy cảm (camera, payment) khi chưa được cấp quyền.",
+      "interview_questions_history": [
+        {
+          "question": "JSI khác gì với cơ chế Bridge cũ của React Native?",
+          "answer": "Bridge cũ phải serialize/deserialize data qua JSON, gây nghẽn cổ chai (bottleneck). JSI cho phép JavaScript engine (như Hermes) giữ trực tiếp reference của các object C++, từ đó gọi các hàm native một cách đồng bộ (synchronous) với độ trễ gần như bằng 0.",
+          "org": "ORG_007"
+        }
+      ]
+    },
+    "full_fields_instructions": "CV cho chuyên gia Mobile Cross-platform chuyên sâu kiến trúc. Đầy đủ các trường schema. Thêm câu 'Cung hoàng đạo: Thiên Bình' vào mục sở thích để test luồng extract thông tin ẩn."
+  },
+  {
+    "personnel_id": "P_123",
+    "full_name": "Vũ Thanh Sơn",
+    "target_role": "Senior Full-stack Engineer",
+    "related_org": {
+      "org_id": "ORG_015",
+      "org_name": "NanoTech Budget Solutions",
+      "relationship": "Chấp nhận mức lương thấp hơn market để đổi lấy work-life balance tại NanoTech."
+    },
+    "core_skills_to_include": ["React", "Node.js", "PostgreSQL", "DigitalOcean", "PM2", "TypeScript"],
+    "private_data_to_include": {
+      "salary_expectation": "32,000,000 VND",
+      "contact": {
+        "email": "thanhson.fullstack@gmail.com",
+        "phone": "0909112233",
+        "github": "https://github.com/son-fullstack-sme",
+        "linkedin": "https://linkedin.com/in/vuthanhson"
+      },
+      "blacklist_orgs": ["Các dự án outsource yêu cầu OT cuối tuần"],
+      "technical_secrets": "Từng tốn công sức chia nhỏ hệ thống thành AWS Lambda (Serverless) nhưng phát hiện chi phí cloud tăng vọt so với scale của SME. Đã tự tay gộp lại và migrate toàn bộ về một Droplet trên DigitalOcean dùng PM2, tiết kiệm 70% chi phí hàng tháng mà hệ thống vẫn chạy ổn định.",
+      "interview_questions_history": [
+        {
+          "question": "Tại sao bạn ưu tiên dùng VPS truyền thống thay vì Serverless cho hệ thống SME?",
+          "answer": "Với các hệ thống SME có traffic đều đều nhưng budget hạn hẹp, Serverless (như AWS Lambda + API Gateway) có thể đẻ ra chi phí ẩn rất cao do số lượng request hoặc cold-start time. VPS kết hợp caching tốt mang lại P&L an toàn hơn nhiều.",
+          "org": "ORG_015"
+        }
+      ]
+    },
+    "full_fields_instructions": "Viết CV 100% chuẩn mực cho Fullstack Developer. Thể hiện rõ việc đánh đổi lương lấy Work-life balance. Chèn thêm đoạn 'Loài hoa yêu thích: Hoa Hướng Dương' vào cuối văn bản."
+  },
+  {
+    "personnel_id": "P_124",
+    "full_name": "Nguyễn Trọng Hiếu",
+    "target_role": "Senior ML Engineer (Medical Imaging)",
+    "related_org": {
+      "org_id": "ORG_010",
+      "org_name": "HealthAI Technologies",
+      "relationship": "Có chuyên môn sâu về xử lý ảnh y tế và bias evaluation, phù hợp với các tiêu chuẩn FDA 510(k) của HealthAI."
+    },
+    "core_skills_to_include": ["PyTorch", "MONAI", "TensorRT", "Medical Imaging", "MLOps", "Object Detection"],
+    "private_data_to_include": {
+      "salary_expectation": "3200 USD",
+      "contact": {
+        "email": "tronghieu.medai@gmail.com",
+        "phone": "0933556677",
+        "github": "https://github.com/hieu-medical-cv",
+        "linkedin": "https://linkedin.com/in/nguyentronghieu"
+      },
+      "blacklist_orgs": ["Các startup AI Crypto không có core value"],
+      "technical_secrets": "Xây dựng thành công một vòng lặp 'continuous active learning' tự động lọc các ảnh X-quang bị model dự đoán có độ tin cậy thấp (uncertainty sampling) và đẩy ngược lại cho bác sĩ dán nhãn, giúp giảm 40% chi phí annotation.",
+      "interview_questions_history": [
+        {
+          "question": "Làm thế nào để xử lý triệt để hiện tượng False Negative trong mô hình y tế?",
+          "answer": "Trong y tế, bỏ sót bệnh (False Negative) nguy hiểm hơn báo nhầm (False Positive). Ta cần điều chỉnh ngưỡng quyết định (threshold moving) hoặc sử dụng Asymmetric Loss Function để phạt nặng hơn các trường hợp model dự đoán ảnh có bệnh thành không bệnh.",
+          "org": "ORG_010"
+        }
+      ]
+    },
+    "full_fields_instructions": "CV dạng ML Engineer học thuật và y tế. Bắt buộc có link dẫn chứng arXiv hoặc GitHub trong evidence_links. Thêm 'Tình trạng hôn nhân: Độc thân' để kiểm tra tính năng parser."
+  },
+  {
+    "personnel_id": "P_125",
+    "full_name": "Trương Quỳnh Anh",
+    "target_role": "Senior DevOps Engineer",
+    "related_org": {
+      "org_id": "ORG_066",
+      "org_name": "CloudNative VN",
+      "relationship": "Triển khai hệ thống GitOps toàn diện giúp CloudNative VN tối ưu pipeline CI/CD."
+    },
+    "core_skills_to_include": ["Kubernetes", "ArgoCD", "GitOps", "Terraform", "AWS", "Prometheus"],
+    "private_data_to_include": {
+      "salary_expectation": "2500 USD",
+      "contact": {
+        "email": "quynhanh.devops@gmail.com",
+        "phone": "0977889900",
+        "github": "https://github.com/quynhanh-gitops",
+        "linkedin": "https://linkedin.com/in/truongquynhanh"
+      },
+      "blacklist_orgs": ["Công ty triển khai hệ thống thủ công không có Infrastructure as Code"],
+      "technical_secrets": "Thiết lập kịch bản Disaster Recovery hoàn toàn tự động cho cụm Kubernetes: kết hợp Velero và ArgoCD để có thể khôi phục toàn bộ workloads sang một Region AWS khác chỉ trong vòng 12 phút.",
+      "interview_questions_history": []
+    },
+    "full_fields_instructions": "Trình bày CV DevOps Engineer chuẩn mực. Cung cấp đầy đủ các trường schema cả public và private. Nhét thêm 'Size áo: M' vào phần thông tin để ép bộ lọc đẩy vào túi ba gang."
+  },
+  {
+    "personnel_id": "P_126",
+    "full_name": "Phan Nhật Minh",
+    "target_role": "Test Automation Architect",
+    "related_org": {
+      "org_id": "ORG_067",
+      "org_name": "QualityMakers",
+      "relationship": "Kiến trúc sư kiểm thử, người định hình framework E2E automation cho QualityMakers."
+    },
+    "core_skills_to_include": ["Playwright", "Cypress", "Appium", "k6 Performance", "Java", "Python"],
+    "private_data_to_include": {
+      "salary_expectation": "45,000,000 VND",
+      "contact": {
+        "email": "nhatminh.qa@gmail.com",
+        "phone": "0944112233",
+        "github": "https://github.com/nhatminh-sdet",
+        "linkedin": "https://linkedin.com/in/phannhatminh"
+      },
+      "blacklist_orgs": ["Công ty coi QA chỉ là người đi tìm bug thay vì ngăn chặn bug"],
+      "technical_secrets": "Áp dụng một thuật toán heuristic (tính điểm tương đồng DOM) để tự phát triển cơ chế 'self-healing' cho UI automation script. Kịch bản test có thể tự tìm lại Element nếu developer lỡ đổi tên class hoặc ID mà không báo.",
+      "interview_questions_history": []
+    },
+    "full_fields_instructions": "Viết CV dạng SDET / QA Architect. Cover đầy đủ 100% các trường schema cần thiết. Chèn thêm 'Thú cưng: Chim Vẹt' vào cuối CV để kiểm tra tính năng JSON parse."
+  },
+  {
+    "personnel_id": "P_127",
+    "full_name": "Hồ Bích Trâm",
+    "target_role": "Data Product Manager",
+    "related_org": {
+      "org_id": "ORG_068",
+      "org_name": "DataWorks Asia",
+      "relationship": "Đóng vai trò Product Owner định hướng chiến lược dữ liệu tại DataWorks Asia."
+    },
+    "core_skills_to_include": ["SQL Analytics", "A/B Testing", "Mixpanel", "JIRA", "Agile/Scrum", "Stakeholder Management"],
+    "private_data_to_include": {
+      "salary_expectation": "3000 USD",
+      "contact": {
+        "email": "bichtram.pm@gmail.com",
+        "phone": "0911559988",
+        "github": "",
+        "linkedin": "https://linkedin.com/in/hobichtram"
+      },
+      "blacklist_orgs": ["Môi trường waterfall làm specs dài 100 trang"],
+      "technical_secrets": "Phát hiện ra North Star Metric của công ty (Số lượt đăng ký) đang bị thao túng bởi bot. Đã định nghĩa lại metric thành 'Số active user có giao dịch trong tuần', điều chỉnh roadmap tập trung vào retention, giúp tăng thực tế 15% MRR sau 1 quý.",
+      "interview_questions_history": []
+    },
+    "full_fields_instructions": "CV thiên hướng Product Management có am hiểu Data. Đảm bảo đầy đủ 100% trường Schema. Viết thêm câu 'Món ăn ghét nhất: Hành lá' để xem LLM đẩy vào additional_information thế nào."
+  },
+  {
+    "personnel_id": "P_128",
+    "full_name": "Đinh Việt Hoàng",
+    "target_role": "Frontend Architecture Lead",
+    "related_org": {
+      "org_id": "ORG_069",
+      "org_name": "WebScale Inc",
+      "relationship": "Kiến trúc sư dẫn dắt chuyển đổi Micro-frontend cho hệ thống của WebScale."
+    },
+    "core_skills_to_include": ["Vue 3", "Nuxt.js", "Micro-frontends", "Vite", "Webpack", "TailwindCSS"],
+    "private_data_to_include": {
+      "salary_expectation": "50,000,000 VND",
+      "contact": {
+        "email": "viethoang.fe@gmail.com",
+        "phone": "0988665544",
+        "github": "https://github.com/hoang-fe-arch",
+        "linkedin": "https://linkedin.com/in/dinhviethoang"
+      },
+      "blacklist_orgs": ["Các startup giữ khư khư stack cũ không chịu upgrade"],
+      "technical_secrets": "Dẫn dắt chiến dịch chuyển đổi toàn bộ build-tool của hệ thống legacy từ Webpack sang Vite và esbuild, thành công cắt giảm thời gian cold start local server từ 15 phút xuống chỉ còn dưới 2 phút, giải phóng hiệu suất cực lớn cho team Dev.",
+      "interview_questions_history": []
+    },
+    "full_fields_instructions": "Trình bày chuẩn CV Frontend Architect. Đảm bảo có đủ mọi thông tin theo schema. Thêm thông tin 'Hãng giày thể thao yêu thích: Nike' vào một đoạn text để ép hệ thống tách vào phần dữ liệu mở rộng."
+  },
+  {
+    "personnel_id": "P_129",
+    "full_name": "Cao Thanh Vân",
+    "target_role": "Analytics Engineer",
+    "related_org": {
+      "org_id": "ORG_070",
+      "org_name": "InsightData VN",
+      "relationship": "Phụ trách làm sạch và mô hình hóa dữ liệu (Data Modeling) tại InsightData."
+    },
+    "core_skills_to_include": ["dbt Core", "BigQuery", "Apache Airflow", "Dimensional Modeling", "SQL Advanced", "Looker"],
+    "private_data_to_include": {
+      "salary_expectation": "2000 USD",
+      "contact": {
+        "email": "thanhvan.ae@gmail.com",
+        "phone": "0909554433",
+        "github": "https://github.com/van-analytics-eng",
+        "linkedin": "https://linkedin.com/in/caothanhvan"
+      },
+      "blacklist_orgs": [],
+      "technical_secrets": "Phát hiện một bảng fact table khổng lồ trên BigQuery được scan toàn bộ mỗi ngày do lỗi thiết kế schema. Tái cấu trúc lại mô hình dữ liệu và áp dụng time-partitioning chuẩn, tiết kiệm trực tiếp 5,000 USD/tháng tiền query cost.",
+      "interview_questions_history": []
+    },
+    "full_fields_instructions": "CV Analytics Engineer chuẩn mực, chú trọng vào dbt và BigQuery. 100% full fields. Hãy thêm 'Thói quen: Ngủ dậy lúc 5h sáng' vào nội dung để xem parser bóc tách thế nào."
+  },
+  {
+    "personnel_id": "P_130",
+    "full_name": "Tạ Xuân Trường",
+    "target_role": "Backend Security Engineer",
+    "related_org": {
+      "org_id": "ORG_071",
+      "org_name": "SecurePay App",
+      "relationship": "Bảo vệ các luồng xác thực và ủy quyền API backend cho SecurePay."
+    },
+    "core_skills_to_include": ["Golang", "gRPC", "OAuth2/OIDC", "Cryptography Basics", "Redis", "PostgreSQL"],
+    "private_data_to_include": {
+      "salary_expectation": "3500 USD",
+      "contact": {
+        "email": "xuantruong.secbe@gmail.com",
+        "phone": "0933112244",
+        "github": "https://github.com/truong-sec-backend",
+        "linkedin": "https://linkedin.com/in/taxuantruong"
+      },
+      "blacklist_orgs": ["Các dự án Crypto ẩn danh"],
+      "technical_secrets": "Từng phát hiện và vá một lỗ hổng Zero-day (race condition) nội bộ trong luồng cấp phát token OAuth2 của công ty. Lỗ hổng này suýt nữa cho phép attacker trộm Access Token của user khác nếu request được bắn đồng thời trong cùng 1 mili-giây.",
+      "interview_questions_history": []
+    },
+    "full_fields_instructions": "Viết CV Backend (Thiên hướng Security). Phải đủ 100% các trường schema. Thêm thông tin 'Nhãn hiệu laptop: ThinkPad' vào phần mô tả công việc hoặc kỹ năng để test khả năng thu thập additional_information."
+  },
+  {
+    "personnel_id": "P_131",
+    "full_name": "Nguyễn Tấn Sang",
+    "target_role": "Senior Graphics / Rendering Engineer",
+    "related_org": {
+      "org_id": "ORG_002",
+      "org_name": "PixelForge Interactive",
+      "relationship": "Ứng viên hoàn hảo cho vị trí Graphics Engineer, chuyên xử lý Vulkan pipeline và Render Graph."
+    },
+    "core_skills_to_include": ["C++ 20", "Vulkan API", "Render Graph", "GPU profiling", "DirectX 12", "PBR Rendering"],
+    "private_data_to_include": {
+      "salary_expectation": "3800 USD",
+      "contact": {
+        "email": "tansang.graphics@gmail.com",
+        "phone": "0911223344",
+        "github": "https://github.com/tansang-vulkan",
+        "linkedin": "https://linkedin.com/in/tansang-nguyen"
+      },
+      "blacklist_orgs": ["Các studio làm game mobile 2D đơn giản"],
+      "technical_secrets": "Tự implement một memory allocator siêu tốc trên GPU sử dụng Vulkan (VMA pattern), khắc phục triệt để tình trạng over-synchronization làm idle GPU.",
+      "interview_questions_history": [
+        {
+          "question": "Tại sao phải tự implement Render Graph thay vì hardcode passes?",
+          "answer": "Render Graph tự động phân tích dependency giữa các render passes, từ đó tự động chèn các Vulkan pipeline barriers ở mức tối ưu nhất, giúp GPU chạy song song tối đa mà không bị memory hazard.",
+          "org": "ORG_002"
+        }
+      ]
+    },
+    "full_fields_instructions": "Viết CV cho Graphics Engineer ở mức Senior. Yêu cầu đầy đủ 100% schema. Chèn câu 'Thú cưng: Mèo Anh lông ngắn' vào một góc để ép Pydantic đẩy dữ liệu này vào additional_information."
+  },
+  {
+    "personnel_id": "P_132",
+    "full_name": "Phạm Quỳnh Mai",
+    "target_role": "Compiler / Static Analysis Engineer",
+    "related_org": {
+      "org_id": "ORG_012",
+      "org_name": "CodeCraft Developer Tools",
+      "relationship": "Từng viết các custom optimization passes trên LLVM, cực kỳ match với JD của CodeCraft."
+    },
+    "core_skills_to_include": ["LLVM IR", "Clang AST", "C++ 20", "Z3 SMT Solver", "Static Analysis", "Rust"],
+    "private_data_to_include": {
+      "salary_expectation": "4000 USD",
+      "contact": {
+        "email": "quynhmai.compiler@gmail.com",
+        "phone": "0988776655",
+        "github": "https://github.com/quynhmai-llvm",
+        "linkedin": "https://linkedin.com/in/phamquynhmai"
+      },
+      "blacklist_orgs": ["Công ty outsourcing thông thường"],
+      "technical_secrets": "Đã tối ưu thuật toán points-to analysis trên nền tảng LLVM IR, áp dụng demand-driven analysis giúp giảm 40% thời gian scan cho các source code C++ trên 1 triệu dòng.",
+      "interview_questions_history": [
+        {
+          "question": "Data flow analysis thực hiện ở AST hay IR thì tốt hơn?",
+          "answer": "Thực hiện trên LLVM IR tốt hơn vì IR sử dụng dạng SSA (Static Single Assignment), giúp việc theo dõi use-def chains rõ ràng và dễ dàng hơn nhiều so với thao tác trên AST phức tạp của C++.",
+          "org": "ORG_012"
+        }
+      ]
+    },
+    "full_fields_instructions": "Tạo CV học thuật chuyên sâu. Khai báo 100% dữ liệu schema. Đưa vào dòng 'Tôn giáo: Không' để kiểm tra khả năng bóc tách thông tin cá nhân của hệ thống."
+  },
+  {
+    "personnel_id": "P_133",
+    "full_name": "Trần Trọng Đạt",
+    "target_role": "Network Platform Engineer (eBPF)",
+    "related_org": {
+      "org_id": "ORG_004",
+      "org_name": "CloudEdge Networks",
+      "relationship": "Chuyên gia về Linux kernel networking, có thể giải quyết bài toán XDP load balancer cho CloudEdge."
+    },
+    "core_skills_to_include": ["eBPF", "XDP packet processing", "Linux kernel networking", "C / Go", "Cilium", "Kubernetes"],
+    "private_data_to_include": {
+      "salary_expectation": "3500 USD",
+      "contact": {
+        "email": "trongdat.ebpf@gmail.com",
+        "phone": "0909554433",
+        "github": "https://github.com/dat-ebpf-net",
+        "linkedin": "https://linkedin.com/in/trantrongdat"
+      },
+      "blacklist_orgs": ["Các telco cũ dùng hệ thống mạng truyền thống"],
+      "technical_secrets": "Tự tay code một pipeline XDP (eXpress Data Path) drop và redirect packets ở tốc độ hàng triệu pps (packets per second) trước cả khi chúng chạm vào network stack của OS, bypass hoàn toàn iptables.",
+      "interview_questions_history": [
+        {
+          "question": "Vì sao XDP nhanh hơn iptables?",
+          "answer": "XDP chạy trực tiếp tại mức NIC driver bằng các chương trình eBPF, xử lý packet trước khi kernel cấp phát cấu trúc SKB (Socket Buffer), tiết kiệm hàng ngàn CPU cycles cho mỗi packet.",
+          "org": "ORG_004"
+        }
+      ]
+    },
+    "full_fields_instructions": "Trình bày CV rành mạch tập trung vào System/Network Programming. Điền đủ các trường JSON. Thêm thông tin 'Môn thể thao: Cầu lông' để LLM nhét vào túi ba gang."
+  },
+  {
+    "personnel_id": "P_134",
+    "full_name": "Lê Ngọc Yến",
+    "target_role": "Senior WebRTC Infrastructure Engineer",
+    "related_org": {
+      "org_id": "ORG_009",
+      "org_name": "VoiceConnect Vietnam",
+      "relationship": "Đã có kinh nghiệm vận hành media server, cực kỳ phù hợp với stack SFU của VoiceConnect."
+    },
+    "core_skills_to_include": ["Go", "WebRTC", "RTP/RTCP", "mediasoup", "Redis", "C++ (media processing)"],
+    "private_data_to_include": {
+      "salary_expectation": "55,000,000 VND",
+      "contact": {
+        "email": "ngocyen.webrtc@gmail.com",
+        "phone": "0933221100",
+        "github": "https://github.com/yen-webrtc-sfu",
+        "linkedin": "https://linkedin.com/in/lengocyen"
+      },
+      "blacklist_orgs": [],
+      "technical_secrets": "Thiết lập cụm coturn (TURN server) tối ưu hóa việc phân luồng và traversal NAT cho các kết nối 4G chập chờn tại Việt Nam, giảm tỷ lệ rớt cuộc gọi video xuống 15%.",
+      "interview_questions_history": [
+        {
+          "question": "Làm thế nào khắc phục packet loss trong cuộc gọi WebRTC?",
+          "answer": "Dựa trên RTCP feedback, áp dụng NACK để yêu cầu gửi lại packet nếu RTT thấp. Nếu mạng quá tệ, sử dụng PLI (Picture Loss Indication) ép sender gửi lại Keyframe (I-frame).",
+          "org": "ORG_009"
+        }
+      ]
+    },
+    "full_fields_instructions": "CV dạng Network/Media Engineer chuyên sâu. Đảm bảo đầy đủ cả 100% schema. Yêu cầu chèn thông tin 'Nhóm máu: A' vào để kiểm tra tính năng trích xuất dữ liệu phụ."
+  },
+  {
+    "personnel_id": "P_135",
+    "full_name": "Vũ Thanh Bình",
+    "target_role": "Analytics Engineer",
+    "related_org": {
+      "org_id": "ORG_072",
+      "org_name": "DataScale Enterprise",
+      "relationship": "Chuyên gia mô hình hóa dữ liệu và vận hành hệ thống dbt tại DataScale."
+    },
+    "core_skills_to_include": ["dbt Core", "Snowflake", "Apache Airflow", "Dimensional Modeling", "SQL Advanced", "Looker"],
+    "private_data_to_include": {
+      "salary_expectation": "2500 USD",
+      "contact": {
+        "email": "thanhbinh.analytics@gmail.com",
+        "phone": "0977665544",
+        "github": "https://github.com/binh-dbt-data",
+        "linkedin": "https://linkedin.com/in/vuthanhbinh"
+      },
+      "blacklist_orgs": ["Các dự án Data chưa có Data Warehouse chuẩn"],
+      "technical_secrets": "Lead dự án migrate toàn bộ hơn 150 stored procedures legacy (cũ kỹ) sang dbt models, kết hợp CI/CD với Great Expectations để ngăn data rác chảy vào dashboard của C-level.",
+      "interview_questions_history": []
+    },
+    "full_fields_instructions": "Viết CV Data / Analytics Engineer cực chuẩn, 100% các trường schema. Phải nhắc đến dbt và Airflow. Thêm 'Thói quen: Chạy bộ 5km mỗi sáng' vào CV để test parser."
+  },
+  {
+    "personnel_id": "P_136",
+    "full_name": "Đỗ Phương Thảo",
+    "target_role": "Lead Frontend Engineer",
+    "related_org": {
+      "org_id": "ORG_073",
+      "org_name": "SuperApp FrontTech",
+      "relationship": "Dẫn dắt kiến trúc Frontend (Micro-frontend) cho siêu ứng dụng FrontTech."
+    },
+    "core_skills_to_include": ["React", "Next.js", "Micro-frontends", "Module Federation", "TypeScript", "Webpack"],
+    "private_data_to_include": {
+      "salary_expectation": "60,000,000 VND",
+      "contact": {
+        "email": "phuongthao.fe@gmail.com",
+        "phone": "0901998877",
+        "github": "https://github.com/thao-fe-micro",
+        "linkedin": "https://linkedin.com/in/dophuongthao"
+      },
+      "blacklist_orgs": ["Công ty bắt code bằng jQuery"],
+      "technical_secrets": "Thiết kế kiến trúc Webpack Module Federation cho phép 5 product teams độc lập phát triển và deploy các tính năng của mình vào một 'host app' duy nhất mà không gây conflict.",
+      "interview_questions_history": []
+    },
+    "full_fields_instructions": "CV dạng Frontend Architect. Điền đầy đủ dữ liệu public và private. Thêm 'Cung hoàng đạo: Sư Tử' vào một góc văn bản để ép Pydantic xử lý."
+  },
+  {
+    "personnel_id": "P_137",
+    "full_name": "Hồ Việt Anh",
+    "target_role": "Senior iOS Engineer",
+    "related_org": {
+      "org_id": "ORG_074",
+      "org_name": "FinMobile Solutions",
+      "relationship": "Kỹ sư chính (Core iOS Dev) của ứng dụng tài chính cá nhân tại FinMobile."
+    },
+    "core_skills_to_include": ["Swift", "SwiftUI", "Combine", "XCTest", "Instruments Profiling", "CoreData"],
+    "private_data_to_include": {
+      "salary_expectation": "3000 USD",
+      "contact": {
+        "email": "vietanh.ios@gmail.com",
+        "phone": "0944112233",
+        "github": "https://github.com/vietanh-swift",
+        "linkedin": "https://linkedin.com/in/hovietanh"
+      },
+      "blacklist_orgs": [],
+      "technical_secrets": "Sử dụng Instruments Time Profiler để tối ưu hóa cold start time của ứng dụng từ 4s xuống 1.2s bằng cách giảm thiểu static initializers và lazy-load các SDK nặng.",
+      "interview_questions_history": []
+    },
+    "full_fields_instructions": "Viết CV iOS Developer chuyên nghiệp. Không được thiếu trường nào trong JSON schema. Cố tình đưa thông tin 'Chiều cao: 1m78' vào để kiểm tra tính năng trích xuất thông tin."
+  },
+  {
+    "personnel_id": "P_138",
+    "full_name": "Bùi Minh Châu",
+    "target_role": "Senior QA Automation Engineer",
+    "related_org": {
+      "org_id": "ORG_075",
+      "org_name": "QualityOps VN",
+      "relationship": "Phụ trách tự động hóa QA và đảm bảo chất lượng API cho các dự án tại QualityOps."
+    },
+    "core_skills_to_include": ["Cypress", "Playwright", "k6 Performance", "GitHub Actions", "TypeScript", "API Testing"],
+    "private_data_to_include": {
+      "salary_expectation": "35,000,000 VND",
+      "contact": {
+        "email": "minhchau.qa@gmail.com",
+        "phone": "0933887766",
+        "github": "https://github.com/chau-sdet-auto",
+        "linkedin": "https://linkedin.com/in/buiminhchau"
+      },
+      "blacklist_orgs": ["Các startup yêu cầu QA làm luôn việc support khách hàng"],
+      "technical_secrets": "Cấu hình chạy E2E tests song song (parallelize) trên CI/CD pipeline GitHub Actions, giảm tổng thời gian chạy regression suite từ 1 tiếng xuống còn 15 phút.",
+      "interview_questions_history": []
+    },
+    "full_fields_instructions": "CV dạng Automation QA / SDET. Cover 100% các trường dữ liệu schema. Đưa câu 'Đồ uống yêu thích: Trà sữa half-sugar' vào cuối phần mô tả kinh nghiệm để test túi ba gang."
+  },
+  {
+    "personnel_id": "P_139",
+    "full_name": "Trương Gia Huy",
+    "target_role": "Technical Product Manager",
+    "related_org": {
+      "org_id": "ORG_076",
+      "org_name": "NextGen B2C App",
+      "relationship": "Product Owner và chiến lược gia sản phẩm tại NextGen App."
+    },
+    "core_skills_to_include": ["Agile/Scrum", "JIRA", "SQL Analytics", "A/B Testing", "Mixpanel", "API Design"],
+    "private_data_to_include": {
+      "salary_expectation": "2800 USD",
+      "contact": {
+        "email": "giahuy.pm@gmail.com",
+        "phone": "0911559988",
+        "github": "",
+        "linkedin": "https://linkedin.com/in/truonggiahuy"
+      },
+      "blacklist_orgs": ["Công ty không có định hướng data-driven cho product"],
+      "technical_secrets": "Tái định nghĩa lại North Star Metric của công ty thay vì dựa vào DAU (ảo) sang 'Số lượng giao dịch thành công của người dùng quay lại', từ đó giúp tăng retention rate thực tế lên 15%.",
+      "interview_questions_history": []
+    },
+    "full_fields_instructions": "CV Product Manager có nền tảng Data và Kỹ thuật. Đảm bảo đầy đủ các trường schema cần thiết. Thêm 'Tính cách MBTI: ENTJ' để ép hệ thống tách vào phần dữ liệu mở rộng."
+  },
+  {
+    "personnel_id": "P_140",
+    "full_name": "Nguyễn Cẩm Ly",
+    "target_role": "DevSecOps Engineer",
+    "related_org": {
+      "org_id": "ORG_077",
+      "org_name": "CyberDefense Cloud",
+      "relationship": "Xây dựng các policy bảo mật và pipeline DevSecOps cho CyberDefense."
+    },
+    "core_skills_to_include": ["GitLab CI", "SonarQube", "HashiCorp Vault", "Trivy", "OPA/Gatekeeper", "Kubernetes Security"],
+    "private_data_to_include": {
+      "salary_expectation": "3200 USD",
+      "contact": {
+        "email": "camly.secops@gmail.com",
+        "phone": "0988665544",
+        "github": "https://github.com/ly-devsecops",
+        "linkedin": "https://linkedin.com/in/nguyencamly"
+      },
+      "blacklist_orgs": [],
+      "technical_secrets": "Triển khai kiến trúc Zero-trust cho các microservices nội bộ bằng việc áp dụng mTLS qua Istio, kết hợp tự động luân chuyển chứng chỉ số (certificate rotation) bằng HashiCorp Vault PKI.",
+      "interview_questions_history": []
+    },
+    "full_fields_instructions": "CV chuyên ngành DevSecOps bảo mật, 100% full fields schema. Cố tình đưa thông tin 'Dị ứng: Hải sản' vào một đoạn text để ép hệ thống Pydantic đẩy vào additional_information."
+  },
+  {
+    "personnel_id": "P_141",
+    "full_name": "Nguyễn Trọng Vũ",
+    "target_role": "Backend Engineer – Transaction Core",
+    "related_org": {
+      "org_id": "ORG_001",
+      "org_name": "NexPay Financial Technology",
+      "relationship": "Ứng viên hoàn hảo cho vị trí phát triển Transaction Engine của NexPay."
+    },
+    "core_skills_to_include": ["Go", "Java", "Distributed Transactions", "Saga Pattern", "Kafka", "PostgreSQL"],
+    "private_data_to_include": {
+      "salary_expectation": "3500 USD",
+      "contact": {
+        "email": "trongvu.backend@gmail.com",
+        "phone": "0988112233",
+        "github": "https://github.com/tvu-transaction",
+        "linkedin": "https://linkedin.com/in/nguyentrongvu"
+      },
+      "blacklist_orgs": ["Các startup Fintech không có giấy phép"],
+      "technical_secrets": "Tự tay build hệ thống Distributed Saga Orchestrator bằng Go xử lý 50,000 TPS cho hệ thống payment cross-border, đảm bảo exactly-once semantics một cách tuyệt đối.",
+      "interview_questions_history": [
+        {
+          "question": "Làm sao để đảm bảo message gửi đi không bị trùng lặp (exactly-once) trong Kafka?",
+          "answer": "Sử dụng tính năng Idempotent Producer kết hợp với Transactional API của Kafka, đồng thời ở phía Consumer áp dụng deduplication table trên cơ sở dữ liệu quan hệ.",
+          "org": "ORG_001"
+        }
+      ]
+    },
+    "full_fields_instructions": "Trình bày CV chuẩn mực tập trung vào Backend và System Design. 100% đủ các trường. Thêm thông tin 'Nhạc cụ: Guitar classic' vào phần cuối CV để hệ thống bóc tách đưa vào túi ba gang (additional_information)."
+  },
+  {
+    "personnel_id": "P_142",
+    "full_name": "Lê Hoài Nam",
+    "target_role": "Staff Backend Engineer",
+    "related_org": {
+      "org_id": "ORG_006",
+      "org_name": "LogiNext Vietnam",
+      "relationship": "Phù hợp để dẫn dắt kỹ thuật cho hệ thống Order Management và Routing của LogiNext."
+    },
+    "core_skills_to_include": ["Java 17", "Go", "Event Sourcing", "High-throughput system design", "Logistics Domain", "Redis Cluster"],
+    "private_data_to_include": {
+      "salary_expectation": "4200 USD",
+      "contact": {
+        "email": "hoainam.staff@gmail.com",
+        "phone": "0911559988",
+        "github": "https://github.com/nam-logistics-backend",
+        "linkedin": "https://linkedin.com/in/lehoainam"
+      },
+      "blacklist_orgs": ["Các công ty giao hàng không có công nghệ lõi"],
+      "technical_secrets": "Dẫn dắt thành công dự án migrate payment reconciliation service từ Java 8 monolith sang event-sourced architecture, độ chính xác đối soát COD đạt 99.9999% ở scale 2 triệu đơn/ngày.",
+      "interview_questions_history": [
+        {
+          "question": "Tại sao Event Sourcing khó bảo trì hơn CRUD thông thường?",
+          "answer": "Khó nhất là event schema evolution. Khi business rules thay đổi, các event cũ trong event store vẫn phải được process đúng cách khi replay, đòi hỏi versioning rất cẩn thận cho các event payloads.",
+          "org": "ORG_006"
+        }
+      ]
+    },
+    "full_fields_instructions": "CV cấp độ Staff Engineer chuyên mảng Logistics. Điền đầy đủ schema công khai và riêng tư. Cố ý viết thêm 'Môn võ: Kendo' vào đoạn giới thiệu bản thân để kiểm tra Pydantic parser."
+  },
+  {
+    "personnel_id": "P_143",
+    "full_name": "Trần Thanh Bình",
+    "target_role": "VP Engineering",
+    "related_org": {
+      "org_id": "ORG_020",
+      "org_name": "AgileTech Series B Vietnam",
+      "relationship": "Đủ tầm vóc để lãnh đạo team 80+ engineers và phân rã hệ thống Monolith của AgileTech."
+    },
+    "core_skills_to_include": ["Engineering Leadership", "Strangler Fig pattern", "Java Spring Boot decomposition", "Go", "RFC Culture", "Org transformation"],
+    "private_data_to_include": {
+      "salary_expectation": "6500 USD + Equity 1%",
+      "contact": {
+        "email": "thanhbinh.vpeng@gmail.com",
+        "phone": "0933445566",
+        "github": "https://github.com/binh-vpeng",
+        "linkedin": "https://linkedin.com/in/tranthanhbinh"
+      },
+      "blacklist_orgs": ["Các tổ chức có CTO không hiểu biết về tech"],
+      "technical_secrets": "Lãnh đạo team 50 người rã khối Java monolith 1 triệu LOC thành 30+ Go microservices trong 18 tháng với zero downtime, thiết lập văn hóa RFC/ADR minh bạch.",
+      "interview_questions_history": [
+        {
+          "question": "Làm thế nào để thuyết phục Board of Directors đầu tư vào việc trả nợ kỹ thuật (Tech Debt)?",
+          "answer": "Tuyệt đối không dùng thuật ngữ kỹ thuật. Trình bày Tech Debt dưới góc độ ROI: 'Chúng ta đang tốn 30% thời gian dev tương đương X ngàn USD/tháng để vá lỗi, nếu tái cấu trúc mất Y ngàn USD, ta sẽ thu hồi vốn trong Z tháng'.",
+          "org": "ORG_020"
+        }
+      ]
+    },
+    "full_fields_instructions": "Định dạng CV dạng Executive/Leadership. 100% cover schema. Bắt buộc đưa 'Sở thích đọc sách: Khoa học viễn tưởng' vào một nơi tự nhiên để xem hệ thống lọc dữ liệu phụ."
+  },
+  {
+    "personnel_id": "P_144",
+    "full_name": "Phạm Hoàng Quyên",
+    "target_role": "Analytics Engineer",
+    "related_org": {
+      "org_id": "ORG_008",
+      "org_name": "DataBridge Analytics",
+      "relationship": "Đã làm việc với Snowflake và dbt, đáp ứng hoàn hảo yêu cầu B2B data modeling của DataBridge."
+    },
+    "core_skills_to_include": ["dbt Core", "dbt Cloud", "SQL Advanced", "Snowflake", "Apache Airflow", "Business Acumen"],
+    "private_data_to_include": {
+      "salary_expectation": "55,000,000 VND",
+      "contact": {
+        "email": "hoangquyen.ae@gmail.com",
+        "phone": "0909778899",
+        "github": "https://github.com/quyen-dbt",
+        "linkedin": "https://linkedin.com/in/phamhoangquyen"
+      },
+      "blacklist_orgs": ["Công ty mà Data Engineer chỉ làm SQL queries ad-hoc"],
+      "technical_secrets": "Chuẩn hóa 300+ dbt models cho data platform multi-tenant, tích hợp Great Expectations chạy thẳng trong CI/CD pipeline để block các PR làm sai lệch logic dữ liệu.",
+      "interview_questions_history": [
+        {
+          "question": "Sự khác biệt giữa Table và Incremental materialization trong dbt?",
+          "answer": "Table drop và recreate toàn bộ data mỗi lần chạy, tốn kém nhưng an toàn. Incremental chỉ insert/update các record mới dựa trên một unique key và watermark column (như updated_at), tiết kiệm compute cost cực lớn cho dữ liệu lịch sử.",
+          "org": "ORG_008"
+        }
+      ]
+    },
+    "full_fields_instructions": "CV phong cách Data/Analytics Engineer. Điền đầy đủ mọi trường JSON. Cố ý viết câu 'Nuôi cá cảnh: Cá Koi Nhật' để ép Pydantic tách vào additional_information."
+  },
+  {
+    "personnel_id": "P_145",
+    "full_name": "Đặng Thành Luân",
+    "target_role": "3D Web / Frontend Engineer",
+    "related_org": {
+      "org_id": "ORG_080",
+      "org_name": "Metaverse VN",
+      "relationship": "Phát triển nền tảng không gian thực tế ảo 3D trên trình duyệt web."
+    },
+    "core_skills_to_include": ["Three.js", "WebGL", "React 18", "TypeScript", "React Three Fiber", "GLSL Shaders"],
+    "private_data_to_include": {
+      "salary_expectation": "2000 USD",
+      "contact": {
+        "email": "thanhluan.web3d@gmail.com",
+        "phone": "0988443322",
+        "github": "https://github.com/luan-webgl",
+        "linkedin": "https://linkedin.com/in/dangthanhluan"
+      },
+      "blacklist_orgs": [],
+      "technical_secrets": "Tối ưu hoá custom shader bằng GLSL cho web-based 3D environment, kết hợp frustum culling giúp scene nặng 2 triệu polygon chạy mượt 60fps trên trình duyệt Safari mobile.",
+      "interview_questions_history": []
+    },
+    "full_fields_instructions": "CV chuyên gia Frontend / Đồ họa Web. Có đủ thông tin public và private. Thêm 'Chiều cao: 1m82' vào phần cuối mô tả để xem hệ thống tóm gọn thông tin."
+  },
+  {
+    "personnel_id": "P_146",
+    "full_name": "Bùi Thảo My",
+    "target_role": "Senior iOS Developer",
+    "related_org": {
+      "org_id": "ORG_081",
+      "org_name": "HealthApp VN",
+      "relationship": "Xây dựng kết nối Bluetooth Low Energy (BLE) với các thiết bị đo y tế IoT."
+    },
+    "core_skills_to_include": ["Swift", "Combine", "CoreBluetooth", "HealthKit", "SwiftUI", "XCTest"],
+    "private_data_to_include": {
+      "salary_expectation": "40,000,000 VND",
+      "contact": {
+        "email": "thaomy.ios@gmail.com",
+        "phone": "0911554433",
+        "github": "https://github.com/my-ios-health",
+        "linkedin": "https://linkedin.com/in/buithaomy"
+      },
+      "blacklist_orgs": ["Các dự án maintain bằng Objective-C rác"],
+      "technical_secrets": "Xử lý triệt để lỗi mất kết nối ngầm (background disconnection) trên iOS 15+ đối với thiết bị đo nhịp tim bằng cách kết hợp background tasks và CoreBluetooth state restoration.",
+      "interview_questions_history": []
+    },
+    "full_fields_instructions": "CV dạng Mobile Developer chuyên nghiệp. Yêu cầu full fields 100%. Chèn thêm 'Ngoại ngữ 3: Tiếng Pháp DELF B1' vào phần ngôn ngữ để test túi ba gang."
+  },
+  {
+    "personnel_id": "P_147",
+    "full_name": "Vũ Tiến Hưng",
+    "target_role": "QA Automation Architect",
+    "related_org": {
+      "org_id": "ORG_082",
+      "org_name": "FinTest Solutions",
+      "relationship": "Thiết kế kiến trúc kiểm thử tự động cho toàn bộ sản phẩm tài chính nội bộ."
+    },
+    "core_skills_to_include": ["Playwright", "Appium", "Python", "k6 Performance", "Visual Regression Testing", "GitLab CI"],
+    "private_data_to_include": {
+      "salary_expectation": "3000 USD",
+      "contact": {
+        "email": "tienhung.qa@gmail.com",
+        "phone": "0977221100",
+        "github": "https://github.com/hung-sdet",
+        "linkedin": "https://linkedin.com/in/vutienhung"
+      },
+      "blacklist_orgs": ["Công ty chỉ dùng Selenium cũ không chịu nâng cấp"],
+      "technical_secrets": "Xây dựng framework E2E kết hợp visual regression test bằng thuật toán PixelMatch, phát hiện 100% UI layout shift bugs trước khi code được merge vào nhánh master.",
+      "interview_questions_history": []
+    },
+    "full_fields_instructions": "CV Kiến trúc sư QA / SDET. Đảm bảo đầy đủ 100% schema json. Thêm dòng 'Tử vi: Cung Bạch Dương' vào text để ép Pydantic tách ra."
+  },
+  {
+    "personnel_id": "P_148",
+    "full_name": "Hoàng Thu Thủy",
+    "target_role": "NLP / AI Engineer",
+    "related_org": {
+      "org_id": "ORG_083",
+      "org_name": "BotAI Services",
+      "relationship": "Phát triển các mô hình ngôn ngữ lớn tùy chỉnh phục vụ chatbot tiếng Việt."
+    },
+    "core_skills_to_include": ["PyTorch", "HuggingFace", "vLLM", "RAG Architecture", "LangChain", "LoRA Fine-tuning"],
+    "private_data_to_include": {
+      "salary_expectation": "3500 USD",
+      "contact": {
+        "email": "thuthuy.nlp@gmail.com",
+        "phone": "0909887766",
+        "github": "https://github.com/thuy-nlp-ai",
+        "linkedin": "https://linkedin.com/in/hoangthuthuy"
+      },
+      "blacklist_orgs": ["Các công ty chỉ wrap API OpenAI gọi mình là công ty AI"],
+      "technical_secrets": "Deploy model Llama-3 8B lượng tử hoá INT4 (AWQ) chạy realtime trên engine vLLM, phục vụ 10,000 users chat đồng thời với latency generation dưới 200ms/token.",
+      "interview_questions_history": []
+    },
+    "full_fields_instructions": "Viết CV chuyên gia AI/NLP. Cung cấp 100% các trường dữ liệu cần thiết. Yêu cầu chèn thông tin 'Nhóm máu: O' vào để kiểm tra tính năng trích xuất dữ liệu phụ."
+  },
+  {
+    "personnel_id": "P_149",
+    "full_name": "Ngô Quốc Đạt",
+    "target_role": "Technical Product Manager",
+    "related_org": {
+      "org_id": "ORG_084",
+      "org_name": "SaaSFlow",
+      "relationship": "Định hướng chiến lược API-first cho nền tảng quản lý luồng công việc."
+    },
+    "core_skills_to_include": ["Agile Framework", "JIRA", "Product Strategy", "API Design", "SQL Data Analytics", "Stakeholder Management"],
+    "private_data_to_include": {
+      "salary_expectation": "2500 USD",
+      "contact": {
+        "email": "quocdat.pm@gmail.com",
+        "phone": "0944556677",
+        "github": "",
+        "linkedin": "https://linkedin.com/in/ngoquocdat"
+      },
+      "blacklist_orgs": [],
+      "technical_secrets": "Thay đổi chiến lược pricing model từ flat-rate subscription sang usage-based billing dựa trên số lượng API calls, giúp công ty tăng trưởng MRR (Monthly Recurring Revenue) lên 40% chỉ trong 2 quý.",
+      "interview_questions_history": []
+    },
+    "full_fields_instructions": "CV dạng PM có am hiểu hệ thống API. 100% đầy đủ các trường schema từ public đến private. Viết thêm câu 'Cân nặng: 75kg' vào phần giới thiệu để test."
+  },
+  {
+    "personnel_id": "P_150",
+    "full_name": "Lý Hải Yến",
+    "target_role": "DevSecOps Lead",
+    "related_org": {
+      "org_id": "ORG_085",
+      "org_name": "SecureNet",
+      "relationship": "Trưởng nhóm vận hành DevSecOps, bảo vệ nền tảng cloud-native của SecureNet."
+    },
+    "core_skills_to_include": ["Kubernetes Security", "GitLab CI", "Open Policy Agent (OPA)", "HashiCorp Vault", "Trivy", "AWS IAM"],
+    "private_data_to_include": {
+      "salary_expectation": "3800 USD",
+      "contact": {
+        "email": "haiyen.devsecops@gmail.com",
+        "phone": "0911882233",
+        "github": "https://github.com/yen-secops",
+        "linkedin": "https://linkedin.com/in/lyhaiyen"
+      },
+      "blacklist_orgs": ["Môi trường development không có CI/CD"],
+      "technical_secrets": "Implement kiến trúc Zero-Trust bằng cách áp dụng mTLS qua Istio Service Mesh, đồng thời tự động hóa hoàn toàn quy trình xoay vòng secret Vault mỗi 24 giờ mà không gây gián đoạn dịch vụ.",
+      "interview_questions_history": []
+    },
+    "full_fields_instructions": "Viết CV chuyên gia DevSecOps chuẩn xác. Yêu cầu đầy đủ 100% schema. Bỏ thêm thông tin 'Thể thao: Bắn cung' vào để kiểm tra khả năng tách thông tin (additional_information) của Pydantic."
+  }	
+]

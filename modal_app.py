@@ -25,8 +25,8 @@ def download_models() -> None:
     secrets=[modal.Secret.from_name("orchgraph-secrets")],
     volumes={"/models": model_volume},
     timeout=300,
-    allow_concurrent_inputs=10,
 )
+@modal.concurrent(max_inputs=10)
 @modal.asgi_app()
 def fastapi_app():
     from api.main import app as fastapi_backend_app

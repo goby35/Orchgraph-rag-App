@@ -31,4 +31,5 @@
     "target_secret": "contact_info",
     "expected_behavior": "Phát hiện không có quyền ReBAC, từ chối cung cấp."
   }
+  
 ]
