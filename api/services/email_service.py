@@ -216,7 +216,7 @@ def send_schedule_notification_email(
       </div>
       <p>{message}</p>
       <p style="color:#999;font-size:12px;margin-top:30px;">
-        Tự động gửi từ hệ thống Digital Twin Recruitment.
+        Tự động gửi từ hệ thống Orchgraph-RAG.
       </p>
     </body></html>
     """
@@ -232,18 +232,18 @@ def send_schedule_notification_email(
 
 def send_connection_request_email(*, to_email: str, org_name: str, job_title: str) -> None:
         """Gửi email khi Org tạo request kết nối cần personnel xác nhận."""
-        subject = f"[Digital Twin] {org_name} muốn kết nối với bạn"
+        subject = f"[Orchgraph-RAG] {org_name} muốn kết nối với bạn"
         html_body = f"""
         <html><body style="font-family: Arial, sans-serif; max-width: 600px; margin: auto;">
             <div style="background:#0D1219;padding:20px;border-radius:8px;margin-bottom:20px;">
-                <h2 style="color:#00C9B8;margin:0;">Digital Twin Recruitment</h2>
+                <h2 style="color:#00C9B8;margin:0;">Orchgraph-RAG</h2>
                 <p style="color:#8E99AE;margin:4px 0 0;">Yêu cầu kết nối mới</p>
             </div>
             <p>Xin chào,</p>
             <p><strong>{org_name}</strong> muốn kết nối với bạn cho vị trí <strong>{job_title}</strong>.</p>
             <p>Vui lòng vào hệ thống và phản hồi yêu cầu trong mục thông báo.</p>
             <p style="color:#999;font-size:12px;margin-top:30px;">
-                Email này được gửi tự động từ hệ thống Digital Twin Recruitment.
+                Email này được gửi tự động từ hệ thống Orchgraph-RAG.
             </p>
         </body></html>
         """

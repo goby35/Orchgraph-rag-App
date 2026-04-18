@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "Digital Twin Recruitment",
+  title: "orchgraph-rag",
   description: "Nền tảng tuyển dụng GraphRAG",
 }
 

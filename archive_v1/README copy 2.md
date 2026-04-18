@@ -1,4 +1,4 @@
-# graphRAG - Digital Twin Recruitment (Current State)
+# graphRAG - orchgraph-rag (Current State)
 
 README nay duoc cap nhat theo code hien tai trong repository (thoi diem: 2026-03-15).
 

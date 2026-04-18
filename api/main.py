@@ -15,7 +15,7 @@ from pipeline.neo4j_client import get_neo4j_driver
 
 logger = get_logger(__name__)
 
-app = FastAPI(title="Digital Twin Recruitment API", version="2.0")
+app = FastAPI(title="orchgraph-rag API", version="2.0")
 VERCEL_ORIGIN_REGEX = re.compile(r"^https://.*\.vercel\.app$")
 
 
