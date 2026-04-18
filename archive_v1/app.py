@@ -1730,7 +1730,7 @@ def render_graph():
 
 
 def main():
-    _render_page_hero("Digital Twin Recruitment Platform", "GraphRAG / Neo4j / Vector Search")
+    _render_page_hero("Orchgraph-RAG Platform", "GraphRAG / Neo4j / Vector Search")
     tab1, tab2, tab3, tab4, tab5 = st.tabs([
         "🗂️ Nạp Dữ Liệu", "🌐 Tìm Ứng Viên",
         "💬 Phỏng Vấn Kín", "📅 Lịch Phỏng Vấn", "🕸️ Knowledge Graph",
@@ -1743,7 +1743,7 @@ def main():
 
 
 def main_personnel():
-    _render_page_hero("Digital Twin Recruitment Platform", "Personnel Workspace")
+    _render_page_hero("Orchgraph-RAG Platform", "Personnel Workspace")
     tab1, tab2, tab3, tab4 = st.tabs([
         "🗂️ Nạp Dữ Liệu", "📬 Hòm thư",
         "💬 Phỏng Vấn Kín", "🕸️ Knowledge Graph",

@@ -50,7 +50,7 @@ def _build_ics(
         return (
             "BEGIN:VCALENDAR\n"
             "VERSION:2.0\n"
-            "PRODID:-//Digital Twin Recruitment//VI\n"
+            "PRODID:-//Orchgraph-RAG//VI\n"
             "METHOD:REQUEST\n"
             "BEGIN:VEVENT\n"
             f"UID:{schedule_id}\n"
@@ -64,7 +64,7 @@ def _build_ics(
         ).encode("utf-8")
 
     cal = Calendar()
-    cal.add("prodid", "-//Digital Twin Recruitment//VI")
+    cal.add("prodid", "-//Orchgraph-RAG//VI")
     cal.add("version", "2.0")
     cal.add("method", "REQUEST")  # khiến Gmail hiển thị nút Accept/Decline
 
@@ -111,7 +111,7 @@ def _build_html_body(
     return f"""
     <html><body style="font-family: Arial, sans-serif; max-width: 600px; margin: auto;">
       <div style="background:#0D1219;padding:20px;border-radius:8px;margin-bottom:20px;">
-        <h2 style="color:#00C9B8;margin:0;">Digital Twin Recruitment</h2>
+        <h2 style="color:#00C9B8;margin:0;">Orchgraph-RAG</h2>
         <p style="color:#8E99AE;margin:4px 0 0;">Lời mời phỏng vấn</p>
       </div>
 
@@ -144,7 +144,7 @@ def _build_html_body(
       Outlook, hoặc Apple Calendar.</p>
 
       <p style="color:#999;font-size:12px;margin-top:30px;">
-        Email này được gửi tự động từ hệ thống Digital Twin Recruitment.<br>
+        Email này được gửi tự động từ hệ thống Orchgraph-RAG.<br>
         Vui lòng không reply trực tiếp email này.
       </p>
     </body></html>
@@ -211,7 +211,7 @@ def send_schedule_notification_email(
     html_body = f"""
     <html><body style="font-family: Arial, sans-serif; max-width: 600px; margin: auto;">
       <div style="background:#0D1219;padding:20px;border-radius:8px;margin-bottom:20px;">
-        <h2 style="color:#00C9B8;margin:0;">Digital Twin Recruitment</h2>
+        <h2 style="color:#00C9B8;margin:0;">Orchgraph-RAG</h2>
         <p style="color:#8E99AE;margin:4px 0 0;">{headline}</p>
       </div>
       <p>{message}</p>
