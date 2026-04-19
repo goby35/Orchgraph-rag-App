@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label"
 import { createClient } from "@/lib/supabase/client"
 import { useAuthStore } from "@/store/auth.store"
 import { cn } from "@/lib/utils"
+import { resolveApiBaseUrl } from "@/lib/api/baseUrl"
 
 type RoleChoice = "organization" | "personnel"
 
@@ -37,7 +38,7 @@ export function RegisterForm() {
   async function onSubmit(e: FormEvent) {
     e.preventDefault()
     setLoading(true)
-    const base = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") ?? ""
+    const base = resolveApiBaseUrl()
     const res = await fetch(`${base}/auth/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },

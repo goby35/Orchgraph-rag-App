@@ -392,7 +392,7 @@ def check_existing_relationship(personnel_id: str, org_id: str) -> dict[str, Any
     """Kiểm tra CONNECTED_TO hiện có giữa org và personnel."""
     cypher = """
     MATCH (o:Organization)-[r:CONNECTED_TO]->(p:Personnel)
-    WHERE (o.id = $org_id OR o.org_id = $org_id)
+        WHERE (o.id = $org_id OR o.org_id = $org_id OR o.neo4j_id = $org_id)
       AND (p.id = $personnel_id OR p.personnel_id = $personnel_id)
     RETURN r.status as status,
            r.match_score as match_score,
@@ -432,7 +432,7 @@ def create_neo4j_relationship(
     MATCH (p:Personnel)
     WHERE p.id = $personnel_id OR p.personnel_id = $personnel_id
     MATCH (o:Organization)
-    WHERE o.id = $org_id OR o.org_id = $org_id
+    WHERE o.id = $org_id OR o.org_id = $org_id OR o.neo4j_id = $org_id
     MERGE (o)-[r:CONNECTED_TO]->(p)
     SET r.status = $status,
         r.match_score = $match_score,
@@ -486,7 +486,7 @@ def respond_connection_relationship(personnel_id: str, org_id: str, action: str)
     connected_at = _iso_utc_now() if new_status == "accepted" else None
     cypher = """
     MATCH (o:Organization)-[r:CONNECTED_TO]->(p:Personnel)
-    WHERE (o.id = $org_id OR o.org_id = $org_id)
+        WHERE (o.id = $org_id OR o.org_id = $org_id OR o.neo4j_id = $org_id)
       AND (p.id = $personnel_id OR p.personnel_id = $personnel_id)
       AND r.status = 'pending'
     SET r.status = $status,

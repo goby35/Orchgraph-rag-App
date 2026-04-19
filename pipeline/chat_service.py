@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import json
+import re
 from typing import Any
 from uuid import uuid4
 
@@ -47,13 +49,23 @@ def _normalize_summary(value: Any) -> dict[str, Any] | None:
     }
 
     seen_skills: set[str] = set()
-    raw_skills = value.get("skills")
-    if isinstance(raw_skills, list):
-        for skill in raw_skills:
-            text = str(skill or "").strip()
+
+    def add_skills(raw: Any) -> None:
+        for text in _coerce_skill_items(raw):
             if text and text not in seen_skills:
                 seen_skills.add(text)
                 summary["skills"].append(text)
+
+    add_skills(value.get("skills"))
+    for extra_key in (
+        "matched_skills",
+        "public_skills",
+        "candidate_skills",
+        "top_skills",
+        "skill_overlap",
+        "keywords",
+    ):
+        add_skills(value.get(extra_key))
 
     for key in ("seniority_years", "connection_strength", "match_score"):
         numeric_value = _coerce_number(value.get(key))
@@ -79,6 +91,12 @@ def build_reasoning_summary(
 
     seen_skills = set(summary["skills"])
 
+    def add_skills(raw: Any) -> None:
+        for text in _coerce_skill_items(raw):
+            if text and text not in seen_skills:
+                seen_skills.add(text)
+                summary["skills"].append(text)
+
     def update_max(field: str, candidate: Any) -> None:
         current_value = _coerce_number(summary.get(field))
         candidate_value = _coerce_number(candidate)
@@ -92,26 +110,49 @@ def build_reasoning_summary(
         if not payload:
             continue
 
-        raw_skills = payload.get("skills")
-        if isinstance(raw_skills, list):
-            for skill in raw_skills:
-                text = str(skill or "").strip()
-                if text and text not in seen_skills:
-                    seen_skills.add(text)
-                    summary["skills"].append(text)
+        add_skills(payload.get("skills"))
+        for extra_key in (
+            "matched_skills",
+            "public_skills",
+            "candidate_skills",
+            "top_skills",
+            "skill_overlap",
+            "keywords",
+        ):
+            add_skills(payload.get(extra_key))
 
         update_max("seniority_years", payload.get("seniority_years"))
+        update_max("seniority_years", payload.get("experience_years"))
         update_max("connection_strength", payload.get("connection_strength"))
+        update_max("connection_strength", payload.get("similarity"))
         update_max("match_score", payload.get("match_score"))
+        update_max("match_score", payload.get("final_score"))
+        update_max("match_score", payload.get("score"))
+        update_max("match_score", payload.get("overall_score"))
 
         validation = _as_dict(payload.get("validation"))
         update_max("match_score", validation.get("grounding_score"))
+        update_max("match_score", validation.get("score"))
 
         debug_context = _as_dict(payload.get("debug_context"))
         update_max("connection_strength", debug_context.get("selected_similarity_max"))
         update_max("connection_strength", debug_context.get("raw_similarity_max"))
         update_max("match_score", debug_context.get("selected_similarity_max"))
         update_max("match_score", debug_context.get("raw_similarity_max"))
+
+        for nested_key in ("analysis", "fit_analysis", "match_analysis", "metrics", "candidate"):
+            nested = _as_dict(payload.get(nested_key))
+            if not nested:
+                continue
+            add_skills(nested.get("skills"))
+            add_skills(nested.get("matched_skills"))
+            update_max("seniority_years", nested.get("seniority_years"))
+            update_max("seniority_years", nested.get("experience_years"))
+            update_max("connection_strength", nested.get("connection_strength"))
+            update_max("connection_strength", nested.get("similarity"))
+            update_max("match_score", nested.get("match_score"))
+            update_max("match_score", nested.get("score"))
+            update_max("match_score", nested.get("final_score"))
 
     if not summary["skills"] and all(summary[key] is None for key in ("seniority_years", "connection_strength", "match_score")):
         return None
@@ -203,6 +244,76 @@ def _fallback_fit_explanation(
     return " ".join(clauses)
 
 
+def _coerce_skill_items(value: Any) -> list[str]:
+    def _dedupe(items: list[str]) -> list[str]:
+        seen: set[str] = set()
+        output: list[str] = []
+        for item in items:
+            normalized = str(item or "").strip()
+            if not normalized:
+                continue
+            if len(normalized) <= 1 and normalized in {"[", "]", "{", "}", '"', "'", ","}:
+                continue
+            if normalized not in seen:
+                seen.add(normalized)
+                output.append(normalized)
+        return output
+
+    if isinstance(value, list):
+        scalar_tokens = [str(item or "") for item in value if not isinstance(item, (list, dict))]
+        if scalar_tokens and len(scalar_tokens) >= 6:
+            compact_tokens = [token.strip() for token in scalar_tokens if token.strip()]
+            single_char_ratio = (
+                sum(1 for token in compact_tokens if len(token) == 1) / len(compact_tokens)
+                if compact_tokens
+                else 0.0
+            )
+            if single_char_ratio >= 0.8:
+                rebuilt = "".join(compact_tokens)
+                rebuilt_items = _coerce_skill_items(rebuilt)
+                if rebuilt_items:
+                    return _dedupe(rebuilt_items)
+
+        flattened: list[str] = []
+        for item in value:
+            flattened.extend(_coerce_skill_items(item))
+        return _dedupe(flattened)
+
+    if isinstance(value, dict):
+        candidates = [
+            value.get("name"),
+            value.get("skill"),
+            value.get("label"),
+            value.get("value"),
+        ]
+        return _dedupe([str(item).strip() for item in candidates if item is not None])
+
+    if isinstance(value, str):
+        text = value.strip()
+        if not text:
+            return []
+
+        quoted_items = [match.strip() for match in re.findall(r'"([^"\n\r]{1,120})"', text)]
+        if quoted_items:
+            return _dedupe(quoted_items)
+
+        if text.startswith("[") and text.endswith("]"):
+            try:
+                parsed = json.loads(text)
+            except Exception:
+                parsed = None
+            if parsed is not None:
+                return _coerce_skill_items(parsed)
+
+        if any(sep in text for sep in [",", ";", "|", "\n"]):
+            parts = [segment.strip() for segment in re.split(r"[,;|\n]+", text) if segment.strip()]
+            return _dedupe(parts)
+
+        return _dedupe([text])
+
+    return []
+
+
 def _generate_fit_explanation_with_llm(
     personnel_name: str,
     job_title: str,
@@ -256,6 +367,7 @@ def _generate_fit_explanation_with_llm(
 
 
 def _upsert_session_row(
+    owner_user_id: str,
     org_neo4j_id: str,
     personnel_neo4j_id: str,
     session_id: str,
@@ -264,6 +376,7 @@ def _upsert_session_row(
 ) -> None:
     payload: dict[str, Any] = {
         "session_id": session_id,
+        "owner_user_id": owner_user_id,
         "org_id": org_neo4j_id,
         "personnel_id": personnel_neo4j_id,
     }
@@ -279,6 +392,7 @@ def _upsert_session_row(
 
 
 def create_session(
+    owner_user_id: str,
     org_neo4j_id: str,
     personnel_neo4j_id: str,
     job_title: str | None = None,
@@ -287,6 +401,7 @@ def create_session(
     # Session IDs are generated application-side so the frontend can connect WS immediately.
     session_id = str(uuid4())
     _upsert_session_row(
+        owner_user_id=owner_user_id,
         org_neo4j_id=org_neo4j_id,
         personnel_neo4j_id=personnel_neo4j_id,
         session_id=session_id,
@@ -297,6 +412,7 @@ def create_session(
 
 
 def save_message(
+    owner_user_id: str,
     org_neo4j_id: str,
     personnel_neo4j_id: str,
     session_id: str,
@@ -304,6 +420,7 @@ def save_message(
     job_title: str | None = None,
 ) -> None:
     _upsert_session_row(
+        owner_user_id=owner_user_id,
         org_neo4j_id=org_neo4j_id,
         personnel_neo4j_id=personnel_neo4j_id,
         session_id=session_id,
@@ -311,6 +428,7 @@ def save_message(
     )
     get_supabase().schema("vdme").table("chat_messages").insert(
         {
+            "owner_user_id": owner_user_id,
             "org_id": org_neo4j_id,
             "personnel_neo4j_id": personnel_neo4j_id,
             "org_neo4j_id": org_neo4j_id,
@@ -325,13 +443,13 @@ def save_message(
     ).execute()
 
 
-def load_history_by_session(org_neo4j_id: str, session_id: str) -> list[dict[str, Any]]:
+def load_history_by_session(owner_user_id: str, session_id: str) -> list[dict[str, Any]]:
     rows = (
         get_supabase()
         .schema("vdme")
         .table("chat_messages")
         .select("id, role, content, reasoning, is_private_mode, created_at")
-        .or_(f"org_id.eq.{org_neo4j_id},org_neo4j_id.eq.{org_neo4j_id}")
+        .eq("owner_user_id", owner_user_id)
         .eq("session_id", session_id)
         .order("created_at")
         .execute()
@@ -357,13 +475,13 @@ def load_history_by_session(org_neo4j_id: str, session_id: str) -> list[dict[str
     return messages
 
 
-def list_sessions(org_neo4j_id: str) -> list[dict[str, Any]]:
+def list_sessions(owner_user_id: str) -> list[dict[str, Any]]:
     session_rows = (
         get_supabase()
         .schema("vdme")
         .table("chat_sessions")
         .select("session_id, org_id, personnel_id, job_title, reasoning_summary, created_at")
-        .eq("org_id", org_neo4j_id)
+        .eq("owner_user_id", owner_user_id)
         .order("created_at", desc=True)
         .execute()
     )
@@ -373,7 +491,7 @@ def list_sessions(org_neo4j_id: str) -> list[dict[str, Any]]:
         .schema("vdme")
         .table("chat_messages")
         .select("session_id, content, reasoning, created_at")
-        .or_(f"org_id.eq.{org_neo4j_id},org_neo4j_id.eq.{org_neo4j_id}")
+        .eq("owner_user_id", owner_user_id)
         .order("created_at", desc=True)
         .execute()
     )
@@ -436,7 +554,7 @@ def list_sessions(org_neo4j_id: str) -> list[dict[str, Any]]:
         .schema("vdme")
         .table("chat_messages")
         .select("session_id, personnel_neo4j_id, per_neo4j_id, job_title, reasoning, created_at")
-        .or_(f"org_id.eq.{org_neo4j_id},org_neo4j_id.eq.{org_neo4j_id}")
+        .eq("owner_user_id", owner_user_id)
         .order("created_at", desc=True)
         .execute()
     )
@@ -469,7 +587,7 @@ def list_sessions(org_neo4j_id: str) -> list[dict[str, Any]]:
     return sessions
 
 
-def get_session_fit_summary(org_neo4j_id: str, session_id: str) -> dict[str, Any]:
+def get_session_fit_summary(owner_user_id: str, session_id: str) -> dict[str, Any]:
     cleaned_session_id = str(session_id or "").strip()
     if not cleaned_session_id:
         return {"session_id": "", "fit_summary": None, "reasoning_summary": None}
@@ -479,13 +597,14 @@ def get_session_fit_summary(org_neo4j_id: str, session_id: str) -> dict[str, Any
         .schema("vdme")
         .table("chat_sessions")
         .select("session_id, org_id, personnel_id, job_title, reasoning_summary")
-        .eq("org_id", org_neo4j_id)
+        .eq("owner_user_id", owner_user_id)
         .eq("session_id", cleaned_session_id)
         .limit(1)
         .execute()
     )
 
     session_row = _as_dict((session_rows.data or [None])[0])
+    org_neo4j_id = str(session_row.get("org_id") or "").strip()
     personnel_id = str(session_row.get("personnel_id") or "").strip()
     job_title = str(session_row.get("job_title") or "").strip() or "Vị trí chưa xác định"
     existing_summary = session_row.get("reasoning_summary")
@@ -495,7 +614,7 @@ def get_session_fit_summary(org_neo4j_id: str, session_id: str) -> dict[str, Any
         .schema("vdme")
         .table("chat_messages")
         .select("personnel_neo4j_id, per_neo4j_id, job_title, reasoning")
-        .or_(f"org_id.eq.{org_neo4j_id},org_neo4j_id.eq.{org_neo4j_id}")
+        .eq("owner_user_id", owner_user_id)
         .eq("session_id", cleaned_session_id)
         .order("created_at", desc=True)
         .execute()
@@ -513,6 +632,26 @@ def get_session_fit_summary(org_neo4j_id: str, session_id: str) -> dict[str, Any
 
     reasoning_summary = build_reasoning_summary(existing_summary, reasoning_payloads)
     if not reasoning_summary:
+        personnel_name = _get_personnel_name(personnel_id) if personnel_id else "Ứng viên"
+        profile_summary = _get_personnel_public_summary(personnel_id)
+        if profile_summary:
+            minimal_summary = {
+                "skills": [],
+                "seniority_years": None,
+                "connection_strength": None,
+                "match_score": None,
+            }
+            fit_summary = _generate_fit_explanation_with_llm(
+                personnel_name=personnel_name,
+                job_title=job_title,
+                summary=minimal_summary,
+                profile_summary=profile_summary,
+            )
+            return {
+                "session_id": cleaned_session_id,
+                "fit_summary": fit_summary,
+                "reasoning_summary": None,
+            }
         return {
             "session_id": cleaned_session_id,
             "fit_summary": None,
@@ -540,15 +679,17 @@ def get_session_fit_summary(org_neo4j_id: str, session_id: str) -> dict[str, Any
     )
 
     try:
-        payload_summary = dict(reasoning_summary)
-        payload_summary["fit_explanation"] = fit_summary
-        _upsert_session_row(
-            org_neo4j_id=org_neo4j_id,
-            personnel_neo4j_id=personnel_id,
-            session_id=cleaned_session_id,
-            job_title=job_title,
-            reasoning_summary=payload_summary,
-        )
+        if org_neo4j_id and personnel_id:
+            payload_summary = dict(reasoning_summary)
+            payload_summary["fit_explanation"] = fit_summary
+            _upsert_session_row(
+                owner_user_id=owner_user_id,
+                org_neo4j_id=org_neo4j_id,
+                personnel_neo4j_id=personnel_id,
+                session_id=cleaned_session_id,
+                job_title=job_title,
+                reasoning_summary=payload_summary,
+            )
     except Exception as exc:
         logger.warning("Could not cache fit explanation for session %s: %s", cleaned_session_id, exc)
 

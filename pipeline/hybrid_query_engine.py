@@ -1,5 +1,7 @@
 """
-Agentic RAG engines for Digital Twin Recruitment on Neo4j.
+Agentic RAG engines for 
+
+ on Neo4j.
 
 This module provides two independent engines:
 1) MasterAgentEngine
@@ -45,16 +47,47 @@ RETURN
     score
 """
 
+_MASTER_AGENT_LEXICAL_FALLBACK_CYPHER = """
+MATCH (p:Personnel)
+WITH
+    p,
+    toLower(coalesce(p.public_name, p.public_full_name, "")) AS name_text,
+    toLower(coalesce(p.public_summary, p.public_professional_summary, "")) AS summary_text,
+    [skill IN coalesce(p.public_skills, []) | toLower(toString(skill))] AS skills_text
+WITH
+    p,
+    reduce(
+        score = 0.0,
+        kw IN $keywords |
+            score
+            + CASE
+                WHEN kw = "" THEN 0.0
+                WHEN name_text CONTAINS kw THEN 2.0
+                WHEN summary_text CONTAINS kw THEN 1.0
+                WHEN any(skill IN skills_text WHERE skill CONTAINS kw) THEN 1.5
+                ELSE 0.0
+            END
+    ) AS lexical_score
+RETURN
+    p.id AS id,
+    coalesce(p.public_name, p.public_full_name) AS name,
+    coalesce(p.public_summary, p.public_professional_summary) AS summary,
+    coalesce(p.public_skills, []) AS skills,
+    lexical_score AS score
+ORDER BY score DESC
+LIMIT $top_k
+"""
+
 
 _GRAPH_DISCOVERY_CYPHER = """
 MATCH (p:Personnel)
-WHERE COUNT($candidate_ids) = 0 OR p.id IN $candidate_ids
+WHERE size($candidate_ids) = 0 OR p.id IN $candidate_ids
 OPTIONAL MATCH (p)-[:HAS_EXPERIENCE]->(e:Experience)
 OPTIONAL MATCH (e)-[:USED_TECH]->(t:TechStack)
 RETURN
     p.id AS id,
     coalesce(p.public_skills_flat, p.public_skills, []) AS skills,
-    size((p)-[:HAS_EXPERIENCE]->()) AS experience_count,
+    COUNT { (p)-[:HAS_EXPERIENCE]->() } AS experience_count,
     collect(DISTINCT t.id) AS connected_tech
 """
 
@@ -217,7 +250,7 @@ ANSWER: <bat dau bang fact chinh, khong mo dau bang dinh nghia chung>
 
 STATE: NOT_FOUND
 SEARCHED: <chu de da tim kiem trong context>
-ANSWER: Ho so chua co thong tin ve [chu de].
+ANSWER: Hien trong ho so chua ghi nhan thong tin du ro ve [chu de], nen toi chua the xac nhan chinh xac o thoi diem nay.
 """
 
 _INTERVIEW_SYSTEM_PROMPT_PRIVATE = """\
@@ -818,8 +851,28 @@ def _enforce_not_found_for_topic_mismatch(
     return "\n".join([
         "STATE: NOT_FOUND",
         f"SEARCHED: {searched}",
-        "ANSWER: Ho so chua co thong tin ve [chu de].",
+        f"ANSWER: Hien trong ho so chua ghi nhan thong tin du ro ve {searched}, nen toi chua the xac nhan chinh xac o thoi diem nay.",
     ])
+
+
+def _polish_not_found_answer(answer: str, question: str) -> str:
+    text = str(answer or "").strip()
+    if not text:
+        return answer
+
+    searched_match = re.search(r"(?im)^\s*searched\s*:\s*(.+)$", text)
+    searched = searched_match.group(1).strip() if searched_match else ""
+
+    answer_match = re.search(r"(?im)^\s*answer\s*:\s*(.+)$", text)
+    if answer_match:
+        extracted = answer_match.group(1).strip()
+        if extracted:
+            return extracted
+
+    if not searched:
+        searched = str(question or "").strip() or "noi dung duoc hoi"
+
+    return f"Hien trong ho so chua ghi nhan thong tin du ro ve {searched}, nen toi chua the xac nhan chinh xac o thoi diem nay."
 
 
 def _contains_private_signal(text: str) -> bool:
@@ -1221,9 +1274,14 @@ class _BaseNeo4jEngine:
         self._driver: Optional[Driver] = None
 
     def connect(self) -> None:
+        logger.info("Connecting Neo4j engine to %s", self._uri)
         self._driver = GraphDatabase.driver(self._uri, auth=(self._user, self._password))
-        self._driver.verify_connectivity()
-        logger.info("Neo4j connected (%s).", self._uri)
+        try:
+            self._driver.verify_connectivity()
+            logger.info("Neo4j connected (%s).", self._uri)
+        except Exception:
+            logger.exception("Neo4j connectivity check failed for %s", self._uri)
+            raise
 
     def close(self) -> None:
         if self._driver is not None:
@@ -1253,6 +1311,26 @@ class MasterAgentEngine(_BaseNeo4jEngine):
             return [0.0] * 768
         return vectorize_text(text)
 
+    @staticmethod
+    def _extract_keywords(text: str, max_keywords: int = 8) -> list[str]:
+        words = re.findall(r"[a-zA-Z0-9_+#.]{2,}", str(text or "").lower())
+        stop_words = {
+            "and", "the", "for", "with", "from", "this", "that", "have", "has",
+            "cua", "va", "cho", "voi", "tren", "duoi", "mot", "nhung", "ung", "vien",
+        }
+        deduped: list[str] = []
+        seen: set[str] = set()
+        for word in words:
+            if word in stop_words:
+                continue
+            if word in seen:
+                continue
+            seen.add(word)
+            deduped.append(word)
+            if len(deduped) >= max_keywords:
+                break
+        return deduped
+
     def search_candidates(self, jd_text: str, top_k: int = 5) -> List[CandidateMatch]:
         """Search top-K matching personnel from public vectors only.
 
@@ -1263,33 +1341,54 @@ class MasterAgentEngine(_BaseNeo4jEngine):
         Returns:
             List[CandidateMatch] sorted by vector score.
         """
-        query_vector = self._embed_text(jd_text)
+        try:
+            query_vector = self._embed_text(jd_text)
+        except Exception:
+            logger.exception("Embedding failed before Neo4j search")
+            raise
 
         graph_mode = _resolve_graph_mode()
 
-        with self.driver.session() as session:
-            rows = session.run(
-                cast(Any, _MASTER_AGENT_CYPHER),
-                top_k=max(top_k * 3, top_k),
-                query_vector=query_vector,
-            )
-            vector_candidates = [
-                CandidateMatch(
-                    id=str(r.get("id") or ""),
-                    name=str(r.get("name") or ""),
-                    summary=str(r.get("summary") or ""),
-                    skills=list(r.get("skills") or []),
-                    score=float(r.get("score") or 0.0),
-                )
-                for r in rows
-                if str(r.get("id") or "")
-            ]
+        try:
+            with self.driver.session() as session:
+                try:
+                    rows = list(
+                        session.run(
+                            cast(Any, _MASTER_AGENT_CYPHER),
+                            top_k=max(top_k * 3, top_k),
+                            query_vector=query_vector,
+                        )
+                    )
+                except Exception as exc:
+                    keywords = self._extract_keywords(jd_text)
+                    logger.warning("Vector search failed, falling back to lexical retrieval: %s", exc)
+                    rows = list(
+                        session.run(
+                            cast(Any, _MASTER_AGENT_LEXICAL_FALLBACK_CYPHER),
+                            top_k=max(top_k * 3, top_k),
+                            keywords=keywords,
+                        )
+                    )
+                vector_candidates = [
+                    CandidateMatch(
+                        id=str(r.get("id") or ""),
+                        name=str(r.get("name") or ""),
+                        summary=str(r.get("summary") or ""),
+                        skills=list(r.get("skills") or []),
+                        score=float(r.get("score") or 0.0),
+                    )
+                    for r in rows
+                    if str(r.get("id") or "")
+                ]
 
-            candidate_ids = [item.id for item in vector_candidates]
-            if graph_mode == "none":
-                graph_scores = {}
-            else:
-                graph_scores = _graph_discovery(session, jd_text, candidate_ids)
+                candidate_ids = [item.id for item in vector_candidates]
+                if graph_mode == "none":
+                    graph_scores = {}
+                else:
+                    graph_scores = _graph_discovery(session, jd_text, candidate_ids)
+        except Exception:
+            logger.exception("Neo4j search execution failed")
+            raise
 
         supabase_scores = _supabase_fan_out(candidate_ids, query_vector, max_workers=8)
 
@@ -1314,7 +1413,12 @@ class MasterAgentEngine(_BaseNeo4jEngine):
             vector_score = max(item.score, supabase_scores.get(item.id, 0.0))
             graph_score_normalized  = _normalize_score(s_graph_final)   # Jaccard đã [0,1]
             vector_score_normalized = _normalize_score(vector_score)   # cosine đã [0,1]
-            final_score = (_ALPHA_GRAPH * graph_score_normalized) + (_BETA_VECTOR * vector_score_normalized)
+            # Add explicit bonus weight (e.g., tech-overlap bonus) to final fusion score.
+            final_score = _normalize_score(
+                (_ALPHA_GRAPH * graph_score_normalized)
+                + (_BETA_VECTOR * vector_score_normalized)
+                + bonus_weight
+            )
 
             fused_results.append(
                 CandidateMatch(
@@ -1631,6 +1735,10 @@ class DigitalTwinInterviewEngine(_BaseNeo4jEngine):
             labeled_facts=labeled_facts,
             context_chunks=context_chunks,
         )
+        final_answer = _polish_not_found_answer(
+            answer=final_answer,
+            question=interview_question,
+        )
 
         validation_result = validate_llm_response(final_answer, context_chunks)
         extracted_spans = extract_evidence_post_hoc(final_answer, context_chunks)
@@ -1763,15 +1871,18 @@ def get_connection_status(org_id: str, personnel_id: str) -> str | None:
             result = session.run(
                 """
                 MATCH (o:Organization)-[r:CONNECTED_TO]->(p:Personnel)
-                WHERE (o.id = $org_id OR o.org_id = $org_id)
+                WHERE (o.id = $org_id OR o.org_id = $org_id OR o.neo4j_id = $org_id)
                   AND (p.id = $personnel_id OR p.personnel_id = $personnel_id)
-                RETURN coalesce(toLower(r.status), 'accepted') AS status
+                RETURN toLower(coalesce(r.status, '')) AS status
                 """,
                 org_id=org_id,
                 personnel_id=personnel_id,
             )
             row = result.single()
-            return str(row["status"]).strip().lower() if row and row.get("status") is not None else None
+            if not row:
+                return None
+            status = str(row.get("status") or "").strip().lower()
+            return status if status in {"pending", "accepted", "cancelled", "declined"} else None
     except Exception as exc:
         logger.error("get_connection_status failed: %s", exc)
         return None

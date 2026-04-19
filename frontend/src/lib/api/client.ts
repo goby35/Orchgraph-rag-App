@@ -3,8 +3,9 @@
 import axios, { type InternalAxiosRequestConfig } from "axios"
 
 import { createClient } from "@/lib/supabase/client"
+import { resolveApiBaseUrl } from "@/lib/api/baseUrl"
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
+const API_BASE_URL = resolveApiBaseUrl()
 const supabase = createClient()
 
 type RetriableConfig = InternalAxiosRequestConfig & { _retry?: boolean }

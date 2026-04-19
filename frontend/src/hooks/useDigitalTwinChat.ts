@@ -7,6 +7,7 @@ import {
   getInterviewSessions,
   saveInterviewMessage,
 } from '@/lib/api/chat'
+import { useAuthStore } from '@/store/auth.store'
 import type { ChatMessage, ChatHistoryItem, WsStatus, WsChunk } from '@/types'
 
 interface Options {
@@ -48,7 +49,8 @@ export function useDigitalTwinChat({
   const assistantContentRef  = useRef<string>('')
   const sessionIdRef         = useRef<string | null>(null)
   const creatingSessionRef   = useRef<Promise<string> | null>(null)
-  const localStorageKey      = `dt_chat_session:${orgNeoId}:${perNeoId}`
+  const userScope            = useAuthStore((state) => state.user?.id ?? state.neoId ?? 'anonymous')
+  const localStorageKey      = `dt_chat_session:${userScope}:${orgNeoId}:${perNeoId}`
   const transcriptStorageKey = `${localStorageKey}:messages`
   const [messages,      setMessages]      = useState<ChatMessage[]>([])
   const [status,        setStatus]        = useState<WsStatus>('open')

@@ -2,9 +2,10 @@ from __future__ import annotations
 
 import os
 import re
+import time
+import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-import traceback as _traceback
 from fastapi import Request
 from fastapi.responses import JSONResponse
 from typing import Any, cast
@@ -12,6 +13,12 @@ from typing import Any, cast
 from api.routers import auth, chat, connect, graph, ingest, interview, search, availability, schedule, notification
 from pipeline.config import get_logger, settings
 from pipeline.neo4j_client import get_neo4j_driver
+
+# Ensure root logger emits to stdout/stderr in container runtimes like Modal.
+logging.basicConfig(
+    level=getattr(logging, settings.LOG_LEVEL.upper(), logging.INFO),
+    format="[%(asctime)s] %(name)s - %(levelname)s - %(message)s",
+)
 
 logger = get_logger(__name__)
 
@@ -85,13 +92,42 @@ app.include_router(schedule.router,      prefix="/schedule",      tags=["Schedul
 app.include_router(notification.router,  prefix="/notification",  tags=["Notification"])
 
 
+@app.middleware("http")
+async def _request_log_middleware(request: Request, call_next):
+    started_at = time.perf_counter()
+    try:
+        response = await call_next(request)
+    except Exception:
+        logger.exception("Unhandled error while processing %s %s", request.method, request.url.path)
+        raise
+
+    elapsed_ms = (time.perf_counter() - started_at) * 1000
+    if response.status_code >= 400:
+        logger.warning(
+            "%s %s -> %d (%.1f ms)",
+            request.method,
+            request.url.path,
+            response.status_code,
+            elapsed_ms,
+        )
+    else:
+        logger.info(
+            "%s %s -> %d (%.1f ms)",
+            request.method,
+            request.url.path,
+            response.status_code,
+            elapsed_ms,
+        )
+    return response
+
+
 @app.get("/health")
 async def health() -> dict[str, str]:
     return {"status": "ok"}
 
 @app.exception_handler(Exception)
 async def _debug_handler(request: Request, exc: Exception) -> JSONResponse:
-    print(_traceback.format_exc())
+    logger.exception("Exception on %s %s", request.method, request.url.path)
     request_origin = request.headers.get("origin", "")
     is_vercel_origin = bool(VERCEL_ORIGIN_REGEX.match(request_origin))
     allow_origin = request_origin if request_origin in CORS_ORIGINS or is_vercel_origin else "http://localhost:3000"

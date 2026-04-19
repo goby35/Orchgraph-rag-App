@@ -108,24 +108,6 @@ async def get_org_connection_status(
         org_id=org_id,
         personnel_id=per_neo4j_id,
     )
-    if status is None:
-        try:
-            sb = get_supabase()
-            resp = (
-                sb.schema("vdme")
-                .table("chat_sessions")
-                .select("session_id")
-                .eq("org_id", str(org_id))
-                .eq("personnel_id", str(per_neo4j_id))
-                .limit(1)
-                .maybe_single()
-                .execute()
-            )
-            row = getattr(resp, "data", None)
-            if row:
-                status = "accepted"
-        except Exception as exc:
-            logger.warning("Fallback chat_sessions lookup failed: %s", exc)
     return {"status": status}  # None | "pending" | "accepted" | "cancelled"
 
 
@@ -160,17 +142,19 @@ async def get_org_connection_statuses(
             rows = session.run(
                 """
                 MATCH (o:Organization)-[r:CONNECTED_TO]->(p:Personnel)
-                WHERE (o.id = $org_id OR o.org_id = $org_id)
+                                WHERE (o.id = $org_id OR o.org_id = $org_id OR o.neo4j_id = $org_id)
                   AND (p.id IN $personnel_ids OR p.personnel_id IN $personnel_ids)
                 RETURN p.id AS personnel_id,
                        p.personnel_id AS personnel_code,
-                       coalesce(toLower(r.status), 'accepted') AS status
+                       toLower(coalesce(r.status, '')) AS status
                 """,
                 org_id=org_id,
                 personnel_ids=unique_ids,
             )
             for row in rows:
-                status = str(row.get("status") or "").strip() or "accepted"
+                status = str(row.get("status") or "").strip().lower()
+                if status not in {"pending", "accepted", "cancelled", "declined"}:
+                    status = None
                 pid = str(row.get("personnel_id") or "").strip()
                 pcode = str(row.get("personnel_code") or "").strip()
                 if pid in status_map:
@@ -179,26 +163,6 @@ async def get_org_connection_statuses(
                     status_map[pcode] = status
     finally:
         driver.close()
-
-    missing_ids = [pid for pid, status in status_map.items() if status is None]
-    if missing_ids:
-        try:
-            sb = get_supabase()
-            session_rows = (
-                sb.schema("vdme")
-                .table("chat_sessions")
-                .select("personnel_id")
-                .eq("org_id", org_id)
-                .in_("personnel_id", missing_ids)
-                .execute()
-            ).data or []
-
-            for row in session_rows:
-                pid = str(row.get("personnel_id") or "").strip() if isinstance(row, dict) else ""
-                if pid and pid in status_map and status_map[pid] is None:
-                    status_map[pid] = "accepted"
-        except Exception as exc:
-            logger.warning("Batch fallback chat_sessions lookup failed: %s", exc)
 
     return {"statuses": status_map}
 

@@ -70,13 +70,37 @@ export default function InterviewPage({ params }: { params: Promise<{ per_id: st
   })
 
   const fitSummaryText = useMemo(() => {
+    const summary = fitSummaryQuery.data?.reasoning_summary
     const text = fitSummaryQuery.data?.fit_summary?.trim()
     if (text) return text
+    if (summary) {
+      const skills = Array.isArray(summary.skills)
+        ? summary.skills.filter((s: unknown) => typeof s === "string" && s.trim()).slice(0, 5)
+        : []
+      const score = typeof summary.match_score === "number"
+        ? Math.round(summary.match_score * 100)
+        : null
+      const exp = typeof summary.seniority_years === "number"
+        ? Math.round(summary.seniority_years)
+        : null
+
+      const parts: string[] = []
+      if (score !== null) parts.push(`Độ phù hợp hiện tại khoảng ${score}%`)
+      if (exp !== null) parts.push(`kinh nghiệm ước tính ${exp} năm`)
+      if (skills.length) parts.push(`kỹ năng nổi bật: ${skills.join(", ")}`)
+      if (parts.length) return `${parts.join("; ")}.`
+    }
     if (!targetSessionId) {
       return "Summary phù hợp JD sẽ xuất hiện ở đây sau khi phiên phỏng vấn được tạo."
     }
+    if (!orgNeoId) {
+      return "Đang đồng bộ thông tin tài khoản để tải diễn giải mức độ phù hợp."
+    }
+    if (fitSummaryQuery.isError) {
+      return "Không tải được diễn giải mức độ phù hợp. Vui lòng thử làm mới trang."
+    }
     return "Chưa đủ dữ liệu để tạo diễn giải mức độ phù hợp cho phiên này."
-  }, [fitSummaryQuery.data?.fit_summary, targetSessionId])
+  }, [fitSummaryQuery.data?.fit_summary, fitSummaryQuery.data?.reasoning_summary, fitSummaryQuery.isError, orgNeoId, targetSessionId])
 
   // Gửi lời mời
   const requestMut = useMutation({

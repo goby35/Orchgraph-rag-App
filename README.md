@@ -240,6 +240,8 @@ LOG_LEVEL=INFO
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
 NEXT_PUBLIC_API_URL=http://localhost:8000
+# Neu goi backend tren Modal, dung URL function ASGI:
+# NEXT_PUBLIC_API_URL=https://<username>--orchgraph-rag-fastapi-app.modal.run
 ```
 
 ## 7. Ingest du lieu

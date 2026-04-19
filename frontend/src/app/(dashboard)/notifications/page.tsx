@@ -118,12 +118,12 @@ export default function NotificationsPage() {
     action: "accept" | "decline",
   ) => {
     if (!neoId) {
-      toast.error("Khong tim thay tai khoan hien tai")
+      toast.error("Không tìm thấy tài khoản hiện tại")
       return
     }
     const orgId = String(notification.payload?.org_id ?? "")
     if (!orgId) {
-      toast.error("Thieu org_id trong notification")
+      toast.error("Thiếu org_id trong thông báo")
       return
     }
 
@@ -140,12 +140,12 @@ export default function NotificationsPage() {
       queryClient.invalidateQueries({ queryKey: ["unread-count"] })
 
       if (action === "accept") {
-        toast.success("Da chap nhan ket noi")
+        toast.success("Đã chấp nhận kết nối")
       } else {
-        toast.success("Da tu choi ket noi")
+        toast.success("Đã từ chối kết nối")
       }
     } catch {
-      toast.error("Khong the phan hoi ket noi")
+      toast.error("Không thể phản hồi kết nối")
     } finally {
       setRespondingId(null)
     }
@@ -278,7 +278,7 @@ export default function NotificationsPage() {
                           disabled={respondingId === n.id}
                           className="rounded-xl bg-primary px-3 py-1.5 text-xs text-primary-foreground transition-all duration-200 hover:scale-[1.02] hover:bg-primary/92 active:scale-[0.98] disabled:opacity-50"
                         >
-                          {respondingId === n.id ? "Dang xu ly..." : "Chap nhan"}
+                          {respondingId === n.id ? "Đang xử lý..." : "Chấp nhận"}
                         </button>
                         <button
                           type="button"
@@ -289,13 +289,13 @@ export default function NotificationsPage() {
                           disabled={respondingId === n.id}
                           className="rounded-xl border border-border/80 px-3 py-1.5 text-xs transition-all duration-200 hover:scale-[1.02] hover:bg-muted/55 active:scale-[0.98] disabled:opacity-50"
                         >
-                          {respondingId === n.id ? "Dang xu ly..." : "Tu choi"}
+                          {respondingId === n.id ? "Đang xử lý..." : "Từ chối"}
                         </button>
                       </div>
                     )}
                     {n.type === "auto_connected" && (
                       <p className="text-sm text-muted-foreground mt-1">
-                        Ket noi da duoc thiet lap tu dong dua tren do phu hop cao.
+                        Kết nối đã được thiết lập tự động dựa trên độ phù hợp cao.
                       </p>
                     )}
                   </div>

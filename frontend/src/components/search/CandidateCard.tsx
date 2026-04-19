@@ -116,7 +116,7 @@ export function CandidateCard({
           disabled
           className={buttonVariants({ variant: "outline", size: "sm" })}
         >
-          Dang cho phan hoi...
+          Đang chờ phản hồi...
         </button>
       )
     }
@@ -128,7 +128,7 @@ export function CandidateCard({
           disabled
           className={cn(buttonVariants({ variant: "ghost", size: "sm" }), "text-green-600")}
         >
-          ✓ Da ket noi
+          ✓ Đã kết nối
         </button>
       )
     }
@@ -140,7 +140,7 @@ export function CandidateCard({
           disabled
           className={cn(buttonVariants({ variant: "ghost", size: "sm" }), "text-muted-foreground")}
         >
-          Da tu choi
+          Đã từ chối
         </button>
       )
     }
@@ -152,7 +152,7 @@ export function CandidateCard({
         onClick={handleConnectClick}
         className={buttonVariants({ variant: "outline", size: "sm" })}
       >
-        {isConnecting ? "Dang ket noi..." : "Ket noi"}
+        {isConnecting ? "Đang chờ phản hồi kết nối..." : "Kết nối"}
       </button>
     )
   }
@@ -221,9 +221,9 @@ export function CandidateCard({
       <p className="text-muted-foreground mt-2 text-xs">
         Match {pct}% ·{" "}
         {matchScore > 0.6 ? (
-          <span className="text-green-600">Ket noi tu dong</span>
+          <span className="text-green-600">Kết nối tự động</span>
         ) : (
-          <span className="text-amber-600">Can ung vien xac nhan</span>
+          <span className="text-amber-600">Cần ứng viên xác nhận</span>
         )}
       </p>
       <div className="mt-4 flex items-center justify-end gap-2 border-t border-border/70 pt-3">
@@ -235,7 +235,7 @@ export function CandidateCard({
             disabled={starting}
             className={buttonVariants({ variant: "default", size: "sm" })}
           >
-            {starting ? "Dang mo..." : `Phong van ${candidateName}`}
+            {starting ? "Đang mở..." : `Phỏng vấn ${candidateName}`}
           </button>
         )}
       </div>

@@ -6,13 +6,37 @@ Sinh ra 2 vector embedding: public_embeddings và private_embeddings dựa trên
 from __future__ import annotations
 
 import json
+import hashlib
 import os
+import shutil
+from pathlib import Path
 from typing import Any, Dict, List
 import torch
 import torch.nn.functional as F
-from transformers import AutoModel, AutoTokenizer
-
 from pipeline.config import settings, get_logger
+
+
+def _runtime_hf_modules_cache_dir() -> str:
+    """Use ephemeral modules cache so stale dynamic code does not persist on shared volume."""
+    if os.path.isdir("/tmp"):
+        return "/tmp/hf_modules_stable"
+    return os.path.join(Path.home(), ".cache", "huggingface", "hf_modules_stable")
+
+
+def _configure_hf_caches() -> None:
+    """Pin Hugging Face caches to a stable, writable location before model imports."""
+    cache_root = "/models" if os.path.isdir("/models") else os.path.join(Path.home(), ".cache", "huggingface")
+    modules_cache = _runtime_hf_modules_cache_dir()
+    os.makedirs(modules_cache, exist_ok=True)
+    os.environ["HF_HOME"] = cache_root
+    os.environ["HF_HUB_CACHE"] = os.path.join(cache_root, "hub")
+    os.environ["HF_MODULES_CACHE"] = modules_cache
+
+
+_configure_hf_caches()
+
+from sentence_transformers import SentenceTransformer
+from transformers import AutoModel, AutoTokenizer
 
 logger = get_logger(__name__)
 
@@ -26,32 +50,132 @@ MODEL_FIELD_MAP = {
 class _EmbedderHub:
     def __init__(self):
         self._models = {}
+        self._gte_cache_refreshed = False
+
+    @staticmethod
+    def _is_gte_model(model_id: str) -> bool:
+        return model_id == "Alibaba-NLP/gte-multilingual-base"
 
     def _resolve_cache_dir(self) -> str | None:
         # In Modal runtime we mount model weights in /models; fallback to default HF cache locally.
         return "/models" if os.path.isdir("/models") else None
+
+    @staticmethod
+    def _set_isolated_hf_modules_cache(cache_root: str | None) -> None:
+        _ = cache_root
+        modules_cache = _runtime_hf_modules_cache_dir()
+        os.makedirs(modules_cache, exist_ok=True)
+        os.environ["HF_MODULES_CACHE"] = modules_cache
+
+    @staticmethod
+    def _purge_legacy_gte_module_cache() -> None:
+        # Remove old Alibaba dynamic module cache that can be ABI-incompatible with newer libs.
+        modules_cache = os.getenv("HF_MODULES_CACHE")
+        if not modules_cache:
+            return
+
+        base = Path(modules_cache) / "transformers_modules"
+        if not base.exists():
+            return
+
+        for candidate in base.glob("Alibaba*"):
+            if candidate.is_dir():
+                shutil.rmtree(candidate, ignore_errors=True)
+
+    @staticmethod
+    def _hash_embed(text: str, dim: int = 768) -> list[float]:
+        """Deterministic fallback embedding that does not require model loading."""
+        cleaned = str(text or "").strip().lower()
+        if not cleaned:
+            return [0.0] * dim
+
+        vector = [0.0] * dim
+        tokens = cleaned.split()
+        for index, token in enumerate(tokens):
+            digest = hashlib.sha256(f"{index}:{token}".encode("utf-8")).digest()
+            bucket = int.from_bytes(digest[:4], "big") % dim
+            sign = 1.0 if digest[4] % 2 == 0 else -1.0
+            magnitude = (int.from_bytes(digest[5:9], "big") / 0xFFFFFFFF)
+            vector[bucket] += sign * (0.5 + magnitude)
+
+        norm = sum(value * value for value in vector) ** 0.5
+        if norm <= 0.0:
+            return vector
+        return [value / norm for value in vector]
         
     def _get_or_load_embedder(self, model_id: str):
         if model_id not in self._models:
             logger.info(f"Đang tải {model_id}...")
             cache_dir = self._resolve_cache_dir()
-            tokenizer = AutoTokenizer.from_pretrained(model_id, cache_dir=cache_dir)
-            model = AutoModel.from_pretrained(model_id, trust_remote_code=True, cache_dir=cache_dir)
-            model.eval()
-            device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-            model.to(device)
-            self._models[model_id] = (tokenizer, model, device)
+            self._set_isolated_hf_modules_cache(cache_dir)
+            if self._is_gte_model(model_id):
+                if not self._gte_cache_refreshed:
+                    self._purge_legacy_gte_module_cache()
+                    self._gte_cache_refreshed = True
+                device = "cuda" if torch.cuda.is_available() else "cpu"
+                try:
+                    model = SentenceTransformer(
+                        model_id,
+                        cache_folder=cache_dir,
+                        trust_remote_code=True,
+                        device=device,
+                    )
+                except Exception as exc:
+                    logger.warning("GTE load failed, purging module cache and retrying once: %s", exc)
+                    try:
+                        self._purge_legacy_gte_module_cache()
+                        model = SentenceTransformer(
+                            model_id,
+                            cache_folder=cache_dir,
+                            trust_remote_code=True,
+                            device=device,
+                        )
+                        self._models[model_id] = ("sentence_transformer", model)
+                    except Exception as retry_exc:
+                        logger.error("GTE load failed after retry, using fallback hash embeddings: %s", retry_exc)
+                        self._models[model_id] = ("fallback_hash", 768)
+                else:
+                    self._models[model_id] = ("sentence_transformer", model)
+            else:
+                tokenizer = AutoTokenizer.from_pretrained(
+                    model_id,
+                    cache_dir=cache_dir,
+                    trust_remote_code=True,
+                )
+                model = AutoModel.from_pretrained(model_id, trust_remote_code=True, cache_dir=cache_dir)
+                model.eval()
+                device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+                model.to(device)
+                self._models[model_id] = ("transformers", tokenizer, model, device)
         return self._models[model_id]
 
     def embed(self, text: str, model_id: str) -> List[float]:
-        tokenizer, model, device = self._get_or_load_embedder(model_id)
+        model_bundle = self._get_or_load_embedder(model_id)
+
+        if model_bundle[0] == "fallback_hash":
+            return self._hash_embed(text, int(model_bundle[1]))
 
         if not text or not text.strip():
-            dim = model.config.hidden_size if hasattr(model.config, 'hidden_size') else 768
+            if model_bundle[0] == "sentence_transformer":
+                dim = int(model_bundle[1].get_sentence_embedding_dimension())
+            else:
+                _, _, model, _ = model_bundle
+                dim = model.config.hidden_size if hasattr(model.config, 'hidden_size') else 768
             return [0.0] * dim
 
         prefix = "query: " if "e5" in model_id.lower() else ""
         text_w_prefix = prefix + text
+
+        if model_bundle[0] == "sentence_transformer":
+            _, model = model_bundle
+            embeddings = model.encode(
+                [text_w_prefix],
+                normalize_embeddings=True,
+                convert_to_numpy=True,
+            )
+            return embeddings[0].astype(float).tolist()
+
+        _, tokenizer, model, device = model_bundle
 
         inputs = tokenizer(
             text_w_prefix, return_tensors="pt", max_length=settings.EMBEDDING_MAX_TOKENS,

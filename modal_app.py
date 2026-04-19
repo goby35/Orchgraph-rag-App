@@ -15,9 +15,26 @@ model_volume = modal.Volume.from_name("orchgraph-models", create_if_missing=True
 
 @app.function(volumes={"/models": model_volume})
 def download_models() -> None:
+    import os
+    import shutil
+    from pathlib import Path
     from sentence_transformers import SentenceTransformer
 
-    SentenceTransformer("Alibaba-NLP/gte-multilingual-base", cache_folder="/models")
+    modules_cache = "/tmp/hf_modules_stable"
+    os.makedirs(modules_cache, exist_ok=True)
+    os.environ["HF_MODULES_CACHE"] = modules_cache
+
+    legacy_modules = Path(modules_cache) / "transformers_modules"
+    if legacy_modules.exists():
+        for candidate in legacy_modules.glob("Alibaba*"):
+            if candidate.is_dir():
+                shutil.rmtree(candidate, ignore_errors=True)
+
+    SentenceTransformer(
+        "Alibaba-NLP/gte-multilingual-base",
+        cache_folder="/models",
+        trust_remote_code=True,
+    )
     model_volume.commit()
 
 
@@ -36,6 +53,8 @@ def fastapi_app():
     @fastapi_backend_app.on_event("startup")
     async def warmup_models():
         import os
+        import shutil
+        from pathlib import Path
         from sentence_transformers import SentenceTransformer
         from pipeline.config import get_logger
         
@@ -44,7 +63,21 @@ def fastapi_app():
         
         try:
             cache_dir = "/models" if os.path.isdir("/models") else None
-            SentenceTransformer("Alibaba-NLP/gte-multilingual-base", cache_folder=cache_dir)
+            modules_cache = "/tmp/hf_modules_stable"
+            os.makedirs(modules_cache, exist_ok=True)
+            os.environ["HF_MODULES_CACHE"] = modules_cache
+
+            legacy_modules = Path(modules_cache) / "transformers_modules"
+            if legacy_modules.exists():
+                for candidate in legacy_modules.glob("Alibaba*"):
+                    if candidate.is_dir():
+                        shutil.rmtree(candidate, ignore_errors=True)
+
+            SentenceTransformer(
+                "Alibaba-NLP/gte-multilingual-base",
+                cache_folder=cache_dir,
+                trust_remote_code=True,
+            )
             logger.info("✓ GTE-multilingual model loaded successfully")
         except Exception as e:
             logger.warning(f"Model preload warning (non-fatal): {e}")

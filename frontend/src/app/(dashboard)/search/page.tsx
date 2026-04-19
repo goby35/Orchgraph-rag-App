@@ -1,6 +1,7 @@
 "use client"
 
 import { useMutation } from "@tanstack/react-query"
+import axios from "axios"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
@@ -25,7 +26,7 @@ interface SearchHistoryEntry {
   results:   CandidateResult[]
 }
 
-const HISTORY_KEY = "org_search_history"
+const HISTORY_KEY_PREFIX = "org_search_history"
 const MAX_HISTORY = 5
 
 function extractJobTitleFromJd(jdText: string): string {
@@ -61,9 +62,14 @@ function extractJobTitleFromJd(jdText: string): string {
     : normalized
 }
 
-function loadHistory(): SearchHistoryEntry[] {
+function buildHistoryKey(scope: string): string {
+  const normalized = scope.trim() || "anonymous"
+  return `${HISTORY_KEY_PREFIX}:${normalized}`
+}
+
+function loadHistory(historyKey: string): SearchHistoryEntry[] {
   try {
-    const raw = typeof window !== "undefined" ? localStorage.getItem(HISTORY_KEY) : null
+    const raw = typeof window !== "undefined" ? localStorage.getItem(historyKey) : null
     const parsed = raw ? (JSON.parse(raw) as Partial<SearchHistoryEntry>[]) : []
     return parsed
       .filter((entry): entry is SearchHistoryEntry => Boolean(entry?.id && entry.query && entry.timestamp && entry.results))
@@ -76,10 +82,10 @@ function loadHistory(): SearchHistoryEntry[] {
   }
 }
 
-function saveHistory(entry: SearchHistoryEntry): void {
+function saveHistory(historyKey: string, entry: SearchHistoryEntry): void {
   try {
-    const prev = loadHistory().filter(e => e.query !== entry.query)
-    localStorage.setItem(HISTORY_KEY, JSON.stringify([entry, ...prev].slice(0, MAX_HISTORY)))
+    const prev = loadHistory(historyKey).filter(e => e.query !== entry.query)
+    localStorage.setItem(historyKey, JSON.stringify([entry, ...prev].slice(0, MAX_HISTORY)))
   } catch { /* noop */ }
 }
 
@@ -185,6 +191,7 @@ function RecentSearchHistory({ history }: { history: SearchHistoryEntry[] }) {
 
 export default function OrgSearchPage() {
   const router = useRouter()
+  const userId = useAuthStore((state) => state.user?.id ?? null)
   const orgNeoId = useAuthStore((state) => state.neoId)
   const [results,   setResults]   = useState<CandidateResult[]>([])
   const [searched,  setSearched]  = useState(false)
@@ -192,10 +199,11 @@ export default function OrgSearchPage() {
   const [submittedJobTitle, setSubmittedJobTitle] = useState("")
   const [lastForm, setLastForm] = useState<SearchFormValues | null>(null)
   const [connectingId, setConnectingId] = useState<string | null>(null)
+  const historyKey = buildHistoryKey(userId ?? orgNeoId ?? "anonymous")
 
   useEffect(() => {
-    setHistory(loadHistory())
-  }, [])
+    setHistory(loadHistory(historyKey))
+  }, [historyKey])
 
   const mutation = useMutation({
     mutationFn: (form: SearchFormValues) =>
@@ -214,8 +222,8 @@ export default function OrgSearchPage() {
           timestamp: Date.now(),
           results:   candidates,
         }
-        saveHistory(entry)
-        setHistory(loadHistory())
+        saveHistory(historyKey, entry)
+        setHistory(loadHistory(historyKey))
       }
     },
   })
@@ -294,14 +302,14 @@ export default function OrgSearchPage() {
 
   async function handleConnect(candidate: CandidateResult) {
     if (!orgNeoId) {
-      toast.error("Khong tim thay to chuc hien tai.")
+      toast.error("Không tìm thấy tổ chức hiện tại.")
       return
     }
 
     const personnelId = candidate.personnel_id || candidate.id
     const matchScore =
       typeof candidate.match_score === "number" ? candidate.match_score : candidate.score
-    const jobTitle = submittedJobTitle || "Vi tri chua xac dinh"
+    const jobTitle = submittedJobTitle || "Vị trí chưa xác định"
 
     setConnectingId(personnelId)
     try {
@@ -319,8 +327,17 @@ export default function OrgSearchPage() {
         toast.info(result.message)
         updateCandidateStatus(personnelId, "pending_sent")
       }
-    } catch {
-      toast.error("Khong the ket noi. Vui long thu lai.")
+    } catch (error: unknown) {
+      let message = "Không thể kết nối. Vui lòng thử lại."
+      if (axios.isAxiosError(error)) {
+        const detail = error.response?.data?.detail
+        if (typeof detail === "string" && detail.trim()) {
+          message = detail.trim()
+        }
+      } else if (error instanceof Error && error.message.trim()) {
+        message = error.message.trim()
+      }
+      toast.error(message)
     } finally {
       setConnectingId(null)
     }

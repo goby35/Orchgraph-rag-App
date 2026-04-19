@@ -27,7 +27,7 @@ async def get_current_user(
     except Exception as exc:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Token khong hop le hoac da het han",
+            detail="Token không hợp lệ hoặc đã hết hạn",
         ) from exc
 
     row = (
@@ -42,14 +42,14 @@ async def get_current_user(
     if not row.data:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="User chua co profile",
+            detail="User chưa có profile",
         )
 
     profile = _as_dict(row.data)
     if not profile:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="User chua co profile",
+            detail="User chưa có profile",
         )
 
     return {

@@ -272,7 +272,7 @@ def run_worker(model_alias: str, batch_size: int) -> None:
     LOGGER.info("Device: %s", device)
     LOGGER.info("Batch size: %d", batch_size)
 
-    model = SentenceTransformer(cfg.hf_model, device=device)
+    model = SentenceTransformer(cfg.hf_model, device=device, trust_remote_code=True)
 
     driver = GraphDatabase.driver(
         settings.NEO4J_URI,
