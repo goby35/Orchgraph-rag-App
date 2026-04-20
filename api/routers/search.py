@@ -59,6 +59,14 @@ async def search_candidates(
                 "match_score": item.score,
                 "skills": item.skills,
                 "summary": item.summary,
+                "reasoning_summary": {
+                    "skills": item.skills,
+                    "seniority_years": None,
+                    "connection_strength": None,
+                    "match_score": item.score,
+                    "graph_score": getattr(item, "graph_score", None),
+                    "vector_score": getattr(item, "vector_score", None),
+                },
                 "fit_explanation": fit_explanation,
                 "connection_status": connection_statuses.get(str(item.id), "not_connected"),
             }

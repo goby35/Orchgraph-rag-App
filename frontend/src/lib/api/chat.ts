@@ -6,6 +6,8 @@ export interface ReasoningSummary {
   seniority_years: number | null
   connection_strength: number | null
   match_score: number | null
+  graph_score?: number | null
+  vector_score?: number | null
 }
 
 export interface InterviewSession {
@@ -97,6 +99,8 @@ function normalizeReasoningSummary(raw: unknown): ReasoningSummary | null {
     seniority_years: toFiniteNumber(o.seniority_years),
     connection_strength: toFiniteNumber(o.connection_strength),
     match_score: toFiniteNumber(o.match_score),
+    graph_score: toFiniteNumber(o.graph_score),
+    vector_score: toFiniteNumber(o.vector_score),
   }
 
   if (
@@ -104,6 +108,8 @@ function normalizeReasoningSummary(raw: unknown): ReasoningSummary | null {
     && normalized.seniority_years === null
     && normalized.connection_strength === null
     && normalized.match_score === null
+    && normalized.graph_score === null
+    && normalized.vector_score === null
   ) {
     return null
   }

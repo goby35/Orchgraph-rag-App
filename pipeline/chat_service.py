@@ -46,6 +46,8 @@ def _normalize_summary(value: Any) -> dict[str, Any] | None:
         "seniority_years": None,
         "connection_strength": None,
         "match_score": None,
+        "graph_score": None,
+        "vector_score": None,
     }
 
     seen_skills: set[str] = set()
@@ -67,12 +69,12 @@ def _normalize_summary(value: Any) -> dict[str, Any] | None:
     ):
         add_skills(value.get(extra_key))
 
-    for key in ("seniority_years", "connection_strength", "match_score"):
+    for key in ("seniority_years", "connection_strength", "match_score", "graph_score", "vector_score"):
         numeric_value = _coerce_number(value.get(key))
         if numeric_value is not None:
             summary[key] = numeric_value
 
-    if not summary["skills"] and all(summary[key] is None for key in ("seniority_years", "connection_strength", "match_score")):
+    if not summary["skills"] and all(summary[key] is None for key in ("seniority_years", "connection_strength", "match_score", "graph_score", "vector_score")):
         return None
 
     return summary
@@ -87,6 +89,8 @@ def build_reasoning_summary(
         "seniority_years": None,
         "connection_strength": None,
         "match_score": None,
+        "graph_score": None,
+        "vector_score": None,
     }
 
     seen_skills = set(summary["skills"])
@@ -129,6 +133,10 @@ def build_reasoning_summary(
         update_max("match_score", payload.get("final_score"))
         update_max("match_score", payload.get("score"))
         update_max("match_score", payload.get("overall_score"))
+        update_max("graph_score", payload.get("graph_score"))
+        update_max("graph_score", payload.get("graph_component"))
+        update_max("vector_score", payload.get("vector_score"))
+        update_max("vector_score", payload.get("vector_component"))
 
         validation = _as_dict(payload.get("validation"))
         update_max("match_score", validation.get("grounding_score"))
@@ -139,6 +147,8 @@ def build_reasoning_summary(
         update_max("connection_strength", debug_context.get("raw_similarity_max"))
         update_max("match_score", debug_context.get("selected_similarity_max"))
         update_max("match_score", debug_context.get("raw_similarity_max"))
+        update_max("graph_score", debug_context.get("graph_score"))
+        update_max("vector_score", debug_context.get("vector_score"))
 
         for nested_key in ("analysis", "fit_analysis", "match_analysis", "metrics", "candidate"):
             nested = _as_dict(payload.get(nested_key))
@@ -153,8 +163,10 @@ def build_reasoning_summary(
             update_max("match_score", nested.get("match_score"))
             update_max("match_score", nested.get("score"))
             update_max("match_score", nested.get("final_score"))
+            update_max("graph_score", nested.get("graph_score"))
+            update_max("vector_score", nested.get("vector_score"))
 
-    if not summary["skills"] and all(summary[key] is None for key in ("seniority_years", "connection_strength", "match_score")):
+    if not summary["skills"] and all(summary[key] is None for key in ("seniority_years", "connection_strength", "match_score", "graph_score", "vector_score")):
         return None
 
     return summary
@@ -662,6 +674,8 @@ def get_session_fit_summary(owner_user_id: str, session_id: str) -> dict[str, An
                 "seniority_years": None,
                 "connection_strength": None,
                 "match_score": None,
+                "graph_score": None,
+                "vector_score": None,
             }
             fit_summary = _generate_fit_explanation_with_llm(
                 personnel_name=personnel_name,

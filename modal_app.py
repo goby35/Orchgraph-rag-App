@@ -43,6 +43,7 @@ def download_models() -> None:
     secrets=[modal.Secret.from_name("orchgraph-secrets")],
     volumes={"/models": model_volume},
     timeout=300,
+    gpu="L4"
 )
 @modal.concurrent(max_inputs=10)
 @modal.asgi_app()

@@ -250,7 +250,7 @@ ANSWER: <bat dau bang fact chinh, khong mo dau bang dinh nghia chung>
 
 STATE: NOT_FOUND
 SEARCHED: <chu de da tim kiem trong context>
-ANSWER: Hien trong ho so chua ghi nhan thong tin du ro ve [chu de], nen toi chua the xac nhan chinh xac o thoi diem nay.
+ANSWER: Ho so chua co thong tin ve [chu de].
 """
 
 _INTERVIEW_SYSTEM_PROMPT_PRIVATE = """\
@@ -851,28 +851,8 @@ def _enforce_not_found_for_topic_mismatch(
     return "\n".join([
         "STATE: NOT_FOUND",
         f"SEARCHED: {searched}",
-        f"ANSWER: Hien trong ho so chua ghi nhan thong tin du ro ve {searched}, nen toi chua the xac nhan chinh xac o thoi diem nay.",
+        "ANSWER: Ho so chua co thong tin ve [chu de].",
     ])
-
-
-def _polish_not_found_answer(answer: str, question: str) -> str:
-    text = str(answer or "").strip()
-    if not text:
-        return answer
-
-    searched_match = re.search(r"(?im)^\s*searched\s*:\s*(.+)$", text)
-    searched = searched_match.group(1).strip() if searched_match else ""
-
-    answer_match = re.search(r"(?im)^\s*answer\s*:\s*(.+)$", text)
-    if answer_match:
-        extracted = answer_match.group(1).strip()
-        if extracted:
-            return extracted
-
-    if not searched:
-        searched = str(question or "").strip() or "noi dung duoc hoi"
-
-    return f"Hien trong ho so chua ghi nhan thong tin du ro ve {searched}, nen toi chua the xac nhan chinh xac o thoi diem nay."
 
 
 def _contains_private_signal(text: str) -> bool:
@@ -1734,10 +1714,6 @@ class DigitalTwinInterviewEngine(_BaseNeo4jEngine):
             question=interview_question,
             labeled_facts=labeled_facts,
             context_chunks=context_chunks,
-        )
-        final_answer = _polish_not_found_answer(
-            answer=final_answer,
-            question=interview_question,
         )
 
         validation_result = validate_llm_response(final_answer, context_chunks)

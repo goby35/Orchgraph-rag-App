@@ -61,6 +61,7 @@ export function SessionSidebar({
   className,
 }: SessionSidebarProps) {
   const [searchValue, setSearchValue] = useState("")
+  const [deletingSessionId, setDeletingSessionId] = useState<string | null>(null)
 
   const sessionsQuery = useQuery({
     queryKey: ["interview-sessions", currentOrgId],
@@ -122,7 +123,14 @@ export function SessionSidebar({
     const confirmed = window.confirm(`Xóa phiên phỏng vấn của ${session.personnel_name}?`)
     if (!confirmed) return
 
-    await onSessionDelete(session)
+    try {
+      setDeletingSessionId(session.session_id)
+      await onSessionDelete(session)
+    } catch {
+      window.alert("Không thể xóa phiên lúc này. Vui lòng thử lại.")
+    } finally {
+      setDeletingSessionId((current) => (current === session.session_id ? null : current))
+    }
   }
 
   const renderSessionCard = (session: InterviewSession) => {
@@ -180,11 +188,12 @@ export function SessionSidebar({
                   <button
                     type="button"
                     onClick={(event) => { void handleDeleteClick(event, session) }}
+                    disabled={deletingSessionId === session.session_id}
                     className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-[11px] text-red-600 transition-colors hover:bg-red-50"
                     aria-label={`Xóa phiên của ${session.personnel_name}`}
                   >
                     <Trash2 className="size-3.5" />
-                    Xóa phiên
+                    {deletingSessionId === session.session_id ? "Đang xóa..." : "Xóa phiên"}
                   </button>
                 </div>
               ) : null}

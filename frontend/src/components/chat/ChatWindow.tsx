@@ -2,13 +2,14 @@
 import { useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
 import { useAuthStore } from '@/store/auth.store'
 import { useDigitalTwinChat } from '@/hooks/useDigitalTwinChat'
 import ChatBubble from './ChatBubble'
 import ChatInput  from './ChatInput'
 import { PageSkeleton } from '@/components/shared/PageSkeleton'
 import { SessionSidebar } from '@/components/interview/SessionSidebar'
-import { deleteInterviewSession } from '@/lib/api/chat'
+import { deleteInterviewSession, type InterviewSession } from '@/lib/api/chat'
 
 interface ChatWindowProps {
   perNeoId:          string
@@ -69,24 +70,50 @@ export default function ChatWindow({
 
   const hasStreamingBubble = messages.some((msg) => msg.role === 'assistant' && msg.streaming)
 
-    const deleteSessionMutation = useMutation({
-      mutationFn: async (sessionId: string) => deleteInterviewSession(sessionId, neoId),
-      onSuccess: async (_data, deletedSessionId) => {
-        await queryClient.invalidateQueries({ queryKey: ["interview-sessions", neoId] })
+  const deleteSessionMutation = useMutation({
+    mutationFn: async (sessionId: string) => {
+      if (!neoId) {
+        throw new Error('Thiếu org_id để xóa phiên')
+      }
+      return deleteInterviewSession(sessionId, neoId)
+    },
+    onMutate: async (deletedSessionId) => {
+      await queryClient.cancelQueries({ queryKey: ['interview-sessions', neoId] })
+      const previousSessions = queryClient.getQueryData<InterviewSession[]>(['interview-sessions', neoId])
 
-        if (deletedSessionId === sessionId) {
-          const params = new URLSearchParams({
-            sessionId: "new",
-            jobTitle: initialJobTitle || "Vị trí chưa xác định",
-          })
-          router.replace(`/interview/${encodeURIComponent(perNeoId)}?${params.toString()}`, { scroll: false })
-        }
-      },
-    })
+      queryClient.setQueryData<InterviewSession[]>(['interview-sessions', neoId], (current) =>
+        (current ?? []).filter((session) => session.session_id !== deletedSessionId),
+      )
 
-    const handleSessionDelete = async (session: { session_id: string }) => {
-      await deleteSessionMutation.mutateAsync(session.session_id)
-    }
+      return { previousSessions }
+    },
+    onError: (error, _deletedSessionId, context) => {
+      if (context?.previousSessions) {
+        queryClient.setQueryData(['interview-sessions', neoId], context.previousSessions)
+      }
+
+      const message = error instanceof Error ? error.message : 'Không thể xóa phiên. Vui lòng thử lại.'
+      toast.error(message)
+    },
+    onSuccess: (_data, deletedSessionId) => {
+      toast.success('Đã xóa phiên phỏng vấn')
+
+      if (deletedSessionId === sessionId) {
+        const params = new URLSearchParams({
+          sessionId: 'new',
+          jobTitle: initialJobTitle || 'Vị trí chưa xác định',
+        })
+        router.replace(`/interview/${encodeURIComponent(perNeoId)}?${params.toString()}`, { scroll: false })
+      }
+    },
+    onSettled: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['interview-sessions', neoId] })
+    },
+  })
+
+  const handleSessionDelete = async (session: { session_id: string }) => {
+    await deleteSessionMutation.mutateAsync(session.session_id)
+  }
 
   return (
     <div className="flex h-full min-h-0 flex-col lg:flex-row">

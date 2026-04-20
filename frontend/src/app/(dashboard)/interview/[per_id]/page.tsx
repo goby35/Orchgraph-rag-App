@@ -80,12 +80,20 @@ export default function InterviewPage({ params }: { params: Promise<{ per_id: st
       const score = typeof summary.match_score === "number"
         ? Math.round(summary.match_score * 100)
         : null
+      const graphScore = typeof summary.graph_score === "number"
+        ? Math.round(summary.graph_score * 100)
+        : null
+      const vectorScore = typeof summary.vector_score === "number"
+        ? Math.round(summary.vector_score * 100)
+        : null
       const exp = typeof summary.seniority_years === "number"
         ? Math.round(summary.seniority_years)
         : null
 
       const parts: string[] = []
       if (score !== null) parts.push(`Độ phù hợp hiện tại khoảng ${score}%`)
+      if (graphScore !== null) parts.push(`điểm Graph khoảng ${graphScore}%`)
+      if (vectorScore !== null) parts.push(`điểm Vector khoảng ${vectorScore}%`)
       if (exp !== null) parts.push(`kinh nghiệm ước tính ${exp} năm`)
       if (skills.length) parts.push(`kỹ năng nổi bật: ${skills.join(", ")}`)
       if (parts.length) return `${parts.join("; ")}.`
@@ -130,7 +138,7 @@ export default function InterviewPage({ params }: { params: Promise<{ per_id: st
 
         <div className="rounded-xl border border-border/70 bg-muted/30 p-3">
           <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-            LLM Fit Summary
+            Lý do:
           </p>
           <p className="mt-1 text-xs leading-5 text-foreground/90">
             {fitSummaryQuery.isLoading ? "Đang phân tích mức độ phù hợp..." : fitSummaryText}
