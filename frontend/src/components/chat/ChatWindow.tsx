@@ -1,12 +1,14 @@
 'use client'
 import { useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAuthStore } from '@/store/auth.store'
 import { useDigitalTwinChat } from '@/hooks/useDigitalTwinChat'
 import ChatBubble from './ChatBubble'
 import ChatInput  from './ChatInput'
 import { PageSkeleton } from '@/components/shared/PageSkeleton'
 import { SessionSidebar } from '@/components/interview/SessionSidebar'
+import { deleteInterviewSession } from '@/lib/api/chat'
 
 interface ChatWindowProps {
   perNeoId:          string
@@ -31,6 +33,7 @@ export default function ChatWindow({
 }: ChatWindowProps) {
   const neoId  = useAuthStore(s => s.neoId) ?? ''
   const router = useRouter()
+  const queryClient = useQueryClient()
   const endRef = useRef<HTMLDivElement>(null)
 
   const { messages, status, historyLoaded, isStreaming, send, sessionId } =
@@ -66,12 +69,32 @@ export default function ChatWindow({
 
   const hasStreamingBubble = messages.some((msg) => msg.role === 'assistant' && msg.streaming)
 
+    const deleteSessionMutation = useMutation({
+      mutationFn: async (sessionId: string) => deleteInterviewSession(sessionId, neoId),
+      onSuccess: async (_data, deletedSessionId) => {
+        await queryClient.invalidateQueries({ queryKey: ["interview-sessions", neoId] })
+
+        if (deletedSessionId === sessionId) {
+          const params = new URLSearchParams({
+            sessionId: "new",
+            jobTitle: initialJobTitle || "Vị trí chưa xác định",
+          })
+          router.replace(`/interview/${encodeURIComponent(perNeoId)}?${params.toString()}`, { scroll: false })
+        }
+      },
+    })
+
+    const handleSessionDelete = async (session: { session_id: string }) => {
+      await deleteSessionMutation.mutateAsync(session.session_id)
+    }
+
   return (
     <div className="flex h-full min-h-0 flex-col lg:flex-row">
       <SessionSidebar
         activeSessionId={sessionId}
         currentOrgId={neoId}
         onSessionSelect={handleSessionSelect}
+        onSessionDelete={handleSessionDelete}
       />
 
       <div className="flex min-h-0 flex-1 flex-col">

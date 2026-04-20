@@ -29,6 +29,10 @@ export interface SessionFitSummaryResponse {
   reasoning_summary: ReasoningSummary | null
 }
 
+export interface DeleteInterviewSessionResponse {
+  status: string
+}
+
 export interface SaveChatMessagePayload {
   personnel_id: string
   session_id: string
@@ -127,6 +131,16 @@ export async function createInterviewSession(
 export async function getInterviewHistory(sessionId: string): Promise<ChatHistoryResponse> {
   const response = await apiClient.get<ChatHistoryResponse>(
     `/chat/history/${encodeURIComponent(sessionId)}`,
+  )
+  return response.data
+}
+
+export async function deleteInterviewSession(
+  sessionId: string,
+  orgId: string,
+): Promise<DeleteInterviewSessionResponse> {
+  const response = await apiClient.delete<DeleteInterviewSessionResponse>(
+    `/chat/sessions/${encodeURIComponent(sessionId)}?org_id=${encodeURIComponent(orgId)}`,
   )
   return response.data
 }

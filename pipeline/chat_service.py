@@ -475,6 +475,28 @@ def load_history_by_session(owner_user_id: str, session_id: str) -> list[dict[st
     return messages
 
 
+def delete_session(owner_user_id: str, session_id: str) -> bool:
+    cleaned_session_id = str(session_id or "").strip()
+    if not cleaned_session_id:
+        return False
+
+    sb = get_supabase()
+    try:
+        sb.schema("vdme").table("chat_messages").delete().eq("owner_user_id", owner_user_id).eq("session_id", cleaned_session_id).execute()
+        session_result = (
+            sb.schema("vdme")
+            .table("chat_sessions")
+            .delete()
+            .eq("owner_user_id", owner_user_id)
+            .eq("session_id", cleaned_session_id)
+            .execute()
+        )
+        return bool(getattr(session_result, "data", None) or [])
+    except Exception as exc:
+        logger.warning("Failed to delete interview session %s for owner %s: %s", cleaned_session_id, owner_user_id, exc)
+        return False
+
+
 def list_sessions(owner_user_id: str) -> list[dict[str, Any]]:
     session_rows = (
         get_supabase()

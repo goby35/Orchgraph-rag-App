@@ -4,7 +4,6 @@ import { createClient } from '@/lib/supabase/client'
 import {
   createInterviewSession,
   getInterviewHistory,
-  getInterviewSessions,
   saveInterviewMessage,
 } from '@/lib/api/chat'
 import { useAuthStore } from '@/store/auth.store'
@@ -246,40 +245,8 @@ export function useDigitalTwinChat({
           return
         }
 
-        // Fallback: load newest session from backend for this org/personnel pair.
-        const sessions = await getInterviewSessions(orgNeoId)
-        if (cancelled) return
-
-        const matched = (sessions || [])
-          .filter(s => s.personnel_id === perNeoId)
-          .sort((a, b) => +new Date(b.created_at) - +new Date(a.created_at))[0]
-
-        if (matched?.session_id) {
-          const history = await getInterviewHistory(matched.session_id)
-          if (cancelled) return
-
-          setSessionId(matched.session_id)
-          sessionIdRef.current = matched.session_id
-          localStorage.setItem(localStorageKey, matched.session_id)
-          localStorage.setItem(
-            transcriptStorageKey,
-            JSON.stringify({
-              sessionId: matched.session_id,
-              messages: (history?.messages ?? []).map(h => ({
-                id:      h.id ?? crypto.randomUUID(),
-                role:    h.role,
-                content: h.content,
-              })),
-            }),
-          )
-          setMessages(
-            (history?.messages ?? []).map(h => ({
-              id:      h.id ?? crypto.randomUUID(),
-              role:    h.role,
-              content: h.role === 'assistant' ? formatAssistantText(h.content) : h.content,
-            }))
-          )
-        }
+        // Do not fetch every session here. The UI should only load a session when it is
+        // explicitly selected, stored locally, or created on mount.
       } catch {
       } finally {
         if (!cancelled) setHistoryLoaded(true)
@@ -338,6 +305,7 @@ export function useDigitalTwinChat({
     wsRef.current = ws
 
     const assistantId = crypto.randomUUID()
+    let hasReceivedDone = false  // Track nếu đã nhận response xong
 
     ws.onopen = () => {
       setStatus('open')
@@ -380,6 +348,7 @@ export function useDigitalTwinChat({
       }
 
       if ('done' in data) {
+        hasReceivedDone = true
         const assistantContent  = formatAssistantText(assistantContentRef.current)
         const isPrivate         = data.is_private_mode
         assistantContentRef.current = ''
@@ -389,6 +358,11 @@ export function useDigitalTwinChat({
         ))
         setIsStreaming(false)
         setStatus('open')
+
+        // Đóng WS ngay sau khi done để tránh late error
+        try {
+          ws.close()
+        } catch {}
 
         // Persist assistant response (the missing piece)
         if (assistantContent) {
@@ -416,18 +390,24 @@ export function useDigitalTwinChat({
     }
 
     ws.onerror = () => {
-      assistantContentRef.current = ''
-      setStatus('error')
-      setIsStreaming(false)
-      setMessages(prev => [...prev, {
-        id:      crypto.randomUUID(),
-        role:    'assistant' as const,
-        content: 'Không thể kết nối. Vui lòng thử lại.',
-      }])
+      // Chỉ add error message nếu chưa nhận done từ backend
+      if (!hasReceivedDone) {
+        assistantContentRef.current = ''
+        setStatus('error')
+        setIsStreaming(false)
+        setMessages(prev => [...prev, {
+          id:      crypto.randomUUID(),
+          role:    'assistant' as const,
+          content: 'Không thể kết nối. Vui lòng thử lại.',
+        }])
+      }
     }
 
     ws.onclose = () => {
-      if (status !== 'error') setStatus('open')
+      // Không cần set error nếu đã received done thành công
+      if (!hasReceivedDone && status !== 'error') {
+        setStatus('open')
+      }
     }
 
   }, [ensureSessionId, initialJobTitle, isStreaming, perNeoId, status])

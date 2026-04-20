@@ -1,8 +1,8 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useMemo, useState, type MouseEvent } from "react"
 import { useQuery } from "@tanstack/react-query"
-import { Search } from "lucide-react"
+import { Search, Trash2 } from "lucide-react"
 import Link from "next/link"
 
 import { Skeleton } from "@/components/ui/skeleton"
@@ -15,6 +15,7 @@ interface SessionSidebarProps {
   activeSessionId: string | null
   currentOrgId: string
   onSessionSelect: (session: InterviewSession) => void | Promise<void>
+  onSessionDelete?: (session: InterviewSession) => void | Promise<void>
   className?: string
 }
 
@@ -56,6 +57,7 @@ export function SessionSidebar({
   activeSessionId,
   currentOrgId,
   onSessionSelect,
+  onSessionDelete,
   className,
 }: SessionSidebarProps) {
   const [searchValue, setSearchValue] = useState("")
@@ -112,6 +114,17 @@ export function SessionSidebar({
     await onSessionSelect(session)
   }
 
+  const handleDeleteClick = async (event: MouseEvent<HTMLButtonElement>, session: InterviewSession) => {
+    event.preventDefault()
+    event.stopPropagation()
+
+    if (!onSessionDelete) return
+    const confirmed = window.confirm(`Xóa phiên phỏng vấn của ${session.personnel_name}?`)
+    if (!confirmed) return
+
+    await onSessionDelete(session)
+  }
+
   const renderSessionCard = (session: InterviewSession) => {
     const active = session.session_id === activeSessionId
     const connectionStatus = connectionByPersonId.get(session.personnel_id) ?? null
@@ -120,13 +133,21 @@ export function SessionSidebar({
     const sessionTime = timeAgo(session.created_at)
 
     return (
-      <button
+      <div
         key={session.session_id}
-        type="button"
+        role="button"
+        tabIndex={0}
         onClick={() => { void handleSessionClick(session) }}
+        onKeyDown={(event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault()
+            void handleSessionClick(session)
+          }
+        }}
         className={cn(
           "block w-full rounded-xl border bg-background px-3 py-2 text-left transition-colors hover:bg-accent/60",
           active && "border-l-4 border-l-primary bg-primary/5",
+          "cursor-pointer",
         )}
       >
         <div className="flex items-start gap-3">
@@ -154,6 +175,19 @@ export function SessionSidebar({
                 {connectionStatus === "accepted" ? "● Đã kết nối" : "○ Chưa kết nối"}
               </span>
             </div>
+              {onSessionDelete ? (
+                <div className="mt-1 flex justify-end">
+                  <button
+                    type="button"
+                    onClick={(event) => { void handleDeleteClick(event, session) }}
+                    className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-[11px] text-red-600 transition-colors hover:bg-red-50"
+                    aria-label={`Xóa phiên của ${session.personnel_name}`}
+                  >
+                    <Trash2 className="size-3.5" />
+                    Xóa phiên
+                  </button>
+                </div>
+              ) : null}
             <p className="mt-2 line-clamp-2 text-xs text-muted-foreground">
               {session.message_count > 0
                 ? `${session.message_count} tin nhắn${sessionTime ? ` · ${sessionTime}` : ""}`
@@ -166,7 +200,7 @@ export function SessionSidebar({
             ) : null}
           </div>
         </div>
-      </button>
+      </div>
     )
   }
 

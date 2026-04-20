@@ -8,6 +8,7 @@ from pydantic import BaseModel
 from api.deps import get_current_user
 from pipeline.chat_service import (
     create_session,
+    delete_session,
     get_session_fit_summary,
     list_sessions,
     load_history_by_session,
@@ -153,3 +154,26 @@ async def get_history(
         session_id=session_id,
     )
     return {"messages": messages}
+
+
+@router.delete("/sessions/{session_id}")
+async def remove_session(
+    session_id: str,
+    org_id: str,
+    user: dict = Depends(get_current_user),
+) -> dict[str, str]:
+    org_neo4j_id = _require_org_neo4j_id(user)
+    owner_user_id = _require_owner_user_id(user)
+    if org_id != org_neo4j_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="org_id khong hop le",
+        )
+
+    deleted = delete_session(owner_user_id=owner_user_id, session_id=session_id)
+    if not deleted:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Khong tim thay session de xoa",
+        )
+    return {"status": "deleted"}
