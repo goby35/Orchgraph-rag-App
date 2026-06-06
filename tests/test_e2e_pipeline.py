@@ -2,8 +2,13 @@ from __future__ import annotations
 
 import json
 import logging
+import sys
 from pathlib import Path
 from typing import Any
+
+_ROOT = Path(__file__).resolve().parents[1]
+if str(_ROOT) not in sys.path:
+    sys.path.insert(0, str(_ROOT))
 
 from pipeline.hybrid_query_engine import DigitalTwinInterviewEngine, MasterAgentEngine
 from pipeline.main import delete_account, process_file, update_partial_info

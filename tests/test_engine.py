@@ -6,9 +6,9 @@ Không ingest file, không test vector search, không side-effects.
 
 Flow:
   TC-1  Public mode  (chưa có CONNECTED_TO)   → engine chỉ dùng public_data
-  TC-2  Pending mode (status = 'pending')      → vẫn bị chặn private_data
-  TC-3  Private mode (status = 'accepted')     → engine truy cập private_data_blob
-  TC-4  Revoke       (xóa relationship)        → rơi về public mode
+  TC-2  Pending mode (status = 'pending')     → vẫn bị chặn private_data
+  TC-3  Private mode (status = 'accepted')    → engine truy cập private_data_blob
+  TC-4  Revoke       (xóa relationship)       → rơi về public mode
   FINAL Cleanup toàn bộ test nodes
 """
 
@@ -25,7 +25,7 @@ from typing import Any
 
 from dotenv import load_dotenv
 
-_ROOT = Path(__file__).resolve().parent
+_ROOT = Path(__file__).resolve().parents[1]
 if str(_ROOT) not in sys.path:
     sys.path.insert(0, str(_ROOT))
 

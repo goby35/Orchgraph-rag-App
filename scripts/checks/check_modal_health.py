@@ -4,14 +4,13 @@ Quick health check script for Modal-deployed backend.
 Tests /health endpoint and WebSocket connectivity.
 
 Usage:
-  python check_modal_health.py <modal_url>
-  python check_modal_health.py https://username--orchgraph-rag.modal.run
+  python scripts/checks/check_modal_health.py <modal_url>
+  python scripts/checks/check_modal_health.py https://username--orchgraph-rag.modal.run
 """
 
 import asyncio
 import sys
 import time
-from typing import Optional
 
 import httpx
 import websockets
@@ -37,7 +36,7 @@ async def check_websocket(base_url: str) -> bool:
     """Test WebSocket connectivity on /interview/ws."""
     ws_url = base_url.replace("https://", "wss://").replace("http://", "ws://")
     ws_url = f"{ws_url}/interview/ws"
-    
+
     try:
         async with websockets.connect(ws_url, ping_interval=20, ping_timeout=20) as websocket:
             # Send a simple test frame (in practice, would be actual interview data)
@@ -58,18 +57,18 @@ async def main(base_url: str) -> None:
     base_url = base_url.rstrip("/")
     print(f"Checking Modal deployment at {base_url}")
     print("-" * 60)
-    
+
     start = time.time()
-    
+
     # Test HTTP health
     http_ok = await check_http_health(base_url)
-    
+
     # Test WebSocket
     ws_ok = await check_websocket(base_url)
-    
+
     elapsed = time.time() - start
     print("-" * 60)
-    
+
     if http_ok:
         print(f"✓ Health check passed in {elapsed:.2f}s")
         sys.exit(0)
@@ -82,6 +81,6 @@ if __name__ == "__main__":
     if len(sys.argv) < 2:
         print(__doc__)
         sys.exit(1)
-    
+
     url = sys.argv[1]
     asyncio.run(main(url))

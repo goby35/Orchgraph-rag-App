@@ -1,10 +1,16 @@
 from __future__ import annotations
 
+import sys
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Callable, Iterator
 
 import pytest
 from fastapi.testclient import TestClient
+
+_ROOT = Path(__file__).resolve().parents[1]
+if str(_ROOT) not in sys.path:
+    sys.path.insert(0, str(_ROOT))
 
 from api.deps import get_current_user
 from api.main import app
@@ -120,6 +126,7 @@ def _create_test_graph(driver) -> None:
             org_b_id=ORG_B_ID,
             personnel_x_id=PERSONNEL_X_ID,
         )
+
 
 @pytest.fixture(scope="module")
 def rebac_neo4j_setup() -> Iterator[None]:

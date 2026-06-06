@@ -5,9 +5,7 @@
     "pipeline",
     "api",
     "scripts",
-    "test_engine.py",
-    "app.py",
-    "batch_runner.py",
+    "tests"
   ],
   "extraPaths": ["."]
 }

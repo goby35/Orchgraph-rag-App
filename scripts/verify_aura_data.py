@@ -4,7 +4,7 @@ import sys
 import os
 from dotenv import load_dotenv
 
-_ROOT = Path(__file__).resolve().parent
+_ROOT = Path(__file__).resolve().parents[1]
 if str(_ROOT) not in sys.path:
     sys.path.insert(0, str(_ROOT))
 load_dotenv(_ROOT / ".env", override=False)
