@@ -1,129 +1,154 @@
 # ORCHGRAPH-RAG
 
-Nen tang tuyen dung thong minh su dung GraphRAG + AI Digital Twin cho CV tieng Viet, voi mo hinh dual-database:
-- Neo4j luu do thi tri thuc public + relationship Organization-Personnel + vector index.
-- Supabase luu private vault, lich chat, lich hen, notification, va chunk embeddings.
+A smart recruitment platform utilizing GraphRAG + AI Digital Twin for Vietnamese CVs, operating on a dual-database model:
 
-## 1. Tong quan kien truc
+* **Neo4j:** Stores the public knowledge graph + Organization-Personnel relationships + vector indexes.
+* **Supabase:** Stores the private vault, chat histories, appointment schedules, notifications, and chunk embeddings.
+
+## 1. Architecture Overview
 
 ```text
 graphRAG/
 |- api/                # FastAPI backend (REST + WebSocket)
 |- pipeline/           # Ingestion + hybrid retrieval + interview engine
 |- frontend/           # Next.js 16 (App Router)
-|- scripts/            # Migration, backfill, eval utilities
-|- data_eval/          # Dataset danh gia
-|- results/            # Ket qua danh gia
+|- scripts/            # Migration, backfill, and evaluation utilities
+|- data_eval/          # Evaluation datasets
+|- results/            # Evaluation results
 |- neo4j/              # Neo4j docker volumes/plugins
-`- docker-compose.yml  # Neo4j local
+`- docker-compose.yml  # Local Neo4j setup
+
 ```
 
-## 2. Tech stack (thuc te trong code)
+## 2. Tech Stack (Actual Implementation)
 
 ### Backend / Pipeline
-- Python, FastAPI, Uvicorn
-- Neo4j 5.x (co vector index)
-- Supabase (Auth + Postgres + Realtime)
-- Multi-embedding:
-  - vinai/phobert-base-v2
-  - Alibaba-NLP/gte-multilingual-base (active mac dinh)
-  - intfloat/multilingual-e5-base
-  - BAAI/bge-base-en-v1.5
-- LLM extraction: OpenAI `gpt-4o-mini` (fallback Cerebras)
-- Parser fallback chain: LlamaParse -> unstructured -> Nutrient API
+
+* Python, FastAPI, Uvicorn
+* Neo4j 5.x (with vector index support)
+* Supabase (Auth + Postgres + Realtime)
+* Multi-embedding:
+* `vinai/phobert-base-v2`
+* `Alibaba-NLP/gte-multilingual-base` (default active)
+* `intfloat/multilingual-e5-base`
+* `BAAI/bge-base-en-v1.5`
+
+
+* LLM Extraction: OpenAI `gpt-4o-mini` (fallback Cerebras)
+* Parser Fallback Chain: LlamaParse -> unstructured -> Nutrient API
 
 ### Frontend
-- Next.js `16.2.1`, React `19.2.4`, TypeScript 5
-- Tailwind CSS v4 + shadcn/ui
-- Zustand + TanStack Query
-- React Flow + react-force-graph-2d
 
-## 3. Cac module chinh
+* Next.js `16.2.1`, React `19.2.4`, TypeScript 5
+* Tailwind CSS v4 + shadcn/ui
+* Zustand + TanStack Query
+* React Flow + react-force-graph-2d
+
+## 3. Core Modules
 
 ### API (`api/main.py`)
-- Tu dong ensure Neo4j vector indexes khi startup:
-  - `public_embeddings_phobert_idx`
-  - `public_embeddings_gte_idx`
-  - `public_embeddings_e5_idx`
-  - `public_embeddings_bge_idx`
-- Router dang mount:
-  - `auth`, `ingest`, `search`, `interview`, `connect`, `graph`, `chat`, `availability`, `schedule`, `notification`
-- Co `/health` va global exception handler.
 
-### Ingestion pipeline (`pipeline/main.py`)
-- File `.json`: bypass extraction, ingest truc tiep.
-- File tai lieu (`.pdf`, `.docx`, `.txt`, `.md`):
-  - Parse -> clean -> chunk -> extract theo chunk -> merge map-reduce -> vectorize -> ingest Neo4j -> dual-ingest Supabase (best effort).
+* Automatically ensures Neo4j vector indexes on startup:
+* `public_embeddings_phobert_idx`
+* `public_embeddings_gte_idx`
+* `public_embeddings_e5_idx`
+* `public_embeddings_bge_idx`
 
-### Hybrid + Interview engine (`pipeline/hybrid_query_engine.py`)
-- Hybrid score hien tai:
+
+* Mounted routers:
+* `auth`, `ingest`, `search`, `interview`, `connect`, `graph`, `chat`, `availability`, `schedule`, `notification`
+
+
+* Includes `/health` and a global exception handler.
+
+### Ingestion Pipeline (`pipeline/main.py`)
+
+* `.json` files: Bypass extraction and are ingested directly.
+* Document files (`.pdf`, `.docx`, `.txt`, `.md`):
+* Parse -> clean -> chunk -> extract by chunk -> merge map-reduce -> vectorize -> ingest into Neo4j -> dual-ingest into Supabase (best effort).
+
+
+
+### Hybrid + Interview Engine (`pipeline/hybrid_query_engine.py`)
+
+* Current hybrid score formula:
 
 ```text
 score = 0.2 * graph_score + 0.8 * vector_score + bonus
-bonus = 0.15 (neu co overlap connected tech)
+bonus = 0.15 (if there is overlapping connected tech)
+
 ```
 
-- Co co che private/public mode theo trang thai ket noi Organization-Personnel.
+* Features a private/public mode mechanism based on the Organization-Personnel connection status.
 
-## 4. API endpoints hien tai
+## 4. Current API Endpoints
 
 ### Auth
-- `POST /auth/register`
 
-Luu y: backend dung Supabase JWT qua `Authorization: Bearer <token>` cho cac route bao ve.
+* `POST /auth/register`
+
+> **Note:** The backend uses Supabase JWT via `Authorization: Bearer <token>` for protected routes.
 
 ### Core
-- `POST /ingest`
-- `POST /search`
-- `POST /interview`
-- `WS /interview/ws`
-- `GET /graph`
-- `GET /health`
+
+* `POST /ingest`
+* `POST /search`
+* `POST /interview`
+* `WS /interview/ws`
+* `GET /graph`
+* `GET /health`
 
 ### Connect
-- `POST /connect`
-- `PATCH /connect/{personnel_id}/respond`
 
-### Interview utility
-- `GET /interview/connection-status/{per_neo4j_id}`
-- `POST /interview/connection-statuses`
-- `POST /interview/request/{per_neo4j_id}`
-- `PATCH /interview/request/{per_neo4j_id}/accept`
-- `PATCH /interview/request/{per_neo4j_id}/reject`
-- `GET /interview/profile/{per_neo4j_id}`
+* `POST /connect`
+* `PATCH /connect/{personnel_id}/respond`
+
+### Interview Utility
+
+* `GET /interview/connection-status/{per_neo4j_id}`
+* `POST /interview/connection-statuses`
+* `POST /interview/request/{per_neo4j_id}`
+* `PATCH /interview/request/{per_neo4j_id}/accept`
+* `PATCH /interview/request/{per_neo4j_id}/reject`
+* `GET /interview/profile/{per_neo4j_id}`
 
 ### Chat
-- `POST /chat/sessions`
-- `GET /chat/sessions?org_id=...`
-- `GET /chat/sessions/{session_id}/fit-summary?org_id=...`
-- `POST /chat/message`
-- `GET /chat/history/{session_id}`
+
+* `POST /chat/sessions`
+* `GET /chat/sessions?org_id=...`
+* `GET /chat/sessions/{session_id}/fit-summary?org_id=...`
+* `POST /chat/message`
+* `GET /chat/history/{session_id}`
 
 ### Availability
-- `PUT /availability`
-- `GET /availability/{per_neo4j_id}/slots`
+
+* `PUT /availability`
+* `GET /availability/{per_neo4j_id}/slots`
 
 ### Schedule
-- `POST /schedule`
-- `GET /schedule`
-- `PATCH /schedule/{schedule_id}/status`
-- `PATCH /schedule/{schedule_id}/reschedule`
-- `PATCH /schedule/{schedule_id}/counter-propose`
+
+* `POST /schedule`
+* `GET /schedule`
+* `PATCH /schedule/{schedule_id}/status`
+* `PATCH /schedule/{schedule_id}/reschedule`
+* `PATCH /schedule/{schedule_id}/counter-propose`
 
 ### Notification
-- `GET /notification`
-- `GET /notification/unread-count`
-- `PATCH /notification/{notification_id}/read`
-- `PATCH /notification/read-all`
 
-## 5. Cai dat va chay local
+* `GET /notification`
+* `GET /notification/unread-count`
+* `PATCH /notification/{notification_id}/read`
+* `PATCH /notification/read-all`
 
-## Yeu cau
-- Python 3.10+
-- Node.js 20+
-- Docker
+## 5. Local Setup and Installation
 
-## 5.1 Clone va cai dat backend
+### Prerequisites
+
+* Python 3.10+
+* Node.js 20+
+* Docker
+
+### 5.1 Clone and Setup Backend
 
 ```bash
 git clone <repo_url>
@@ -132,60 +157,67 @@ python -m venv .venv
 .venv\Scripts\activate
 pip install -r requirements.txt
 copy .env.example .env
+
 ```
 
-Neu dung PowerShell, co the can:
+If using PowerShell, you might need to run:
 
 ```powershell
 .\.venv\Scripts\Activate.ps1
+
 ```
 
-## 5.2 Chay Neo4j
+### 5.2 Run Neo4j
 
 ```bash
 docker-compose up -d
+
 ```
 
-- Neo4j Browser: http://localhost:7474
-- Bolt: bolt://localhost:7687
+* Neo4j Browser: http://localhost:7474
+* Bolt: bolt://localhost:7687
 
-## 5.3 Chay backend
+### 5.3 Run Backend
 
 ```bash
 uvicorn api.main:app --reload --port 8000
+
 ```
 
-- Swagger: http://localhost:8000/docs
+* Swagger UI: http://localhost:8000/docs
 
-## 5.4 Chay frontend
+### 5.4 Run Frontend
 
 ```bash
 cd frontend
 npm install
 npm run gen:types
 npm run dev
+
 ```
 
-- Frontend: http://localhost:3000
+* Frontend UI: http://localhost:3000
 
-## 5.5 Chay full stack bang root scripts
+### 5.5 Run Full Stack via Root Scripts
 
-Project root co `package.json` de chay ca backend + frontend:
+The project root contains a `package.json` to run both the backend and frontend simultaneously:
 
 ```bash
 npm install
 npm run dev
+
 ```
 
-Cac script root:
-- `npm run dev` -> concurrently backend reload + frontend dev
-- `npm run prod` -> concurrently backend non-reload + frontend build/start
-- `npm run prod:backend`
-- `npm run prod:frontend`
-- `npm run build:frontend`
-- `npm run start:frontend`
+Available root scripts:
 
-## 6. Bien moi truong quan trong
+* `npm run dev` -> Runs backend with reload + frontend in dev mode concurrently.
+* `npm run prod` -> Runs backend without reload + frontend build/start concurrently.
+* `npm run prod:backend`
+* `npm run prod:frontend`
+* `npm run build:frontend`
+* `npm run start:frontend`
+
+## 6. Crucial Environment Variables
 
 ### Backend `.env`
 
@@ -232,6 +264,7 @@ DEMO_RECIPIENT_EMAIL=
 
 # Logging
 LOG_LEVEL=INFO
+
 ```
 
 ### Frontend `frontend/.env.local`
@@ -240,11 +273,12 @@ LOG_LEVEL=INFO
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
 NEXT_PUBLIC_API_URL=http://localhost:8000
-# Neu goi backend tren Modal, dung URL function ASGI:
+# If calling the backend on Modal, use the ASGI function URL:
 # NEXT_PUBLIC_API_URL=https://<username>--orchgraph-rag-fastapi-app.modal.run
+
 ```
 
-## 7. Ingest du lieu
+## 7. Data Ingestion
 
 ```bash
 # personnel
@@ -252,43 +286,47 @@ python scripts/reextract_and_ingest.py --type personnel
 
 # organization
 python scripts/reextract_and_ingest.py --type org
+
 ```
 
-File JSON duoc bypass extraction de tiet kiem chi phi.
+JSON files bypass the extraction phase to save processing costs.
 
-## 8. SQL migration va scripts hien co
+## 8. SQL Migrations and Existing Scripts
 
-### SQL migration (`scripts/sql/`)
-- `phase_0_25_vdme_bridge_upgrade.sql`
-- `phase_0_26_chat_sessions.sql`
-- `phase_0_26_chunk_gte_bge_backfill.sql`
-- `phase_0_27_chunk_e5_column.sql`
-- `phase_0_28_dynamic_embedding_rpc.sql`
-- `phase_0_29_phobert_chunk_backfill.sql`
-- `phase_0_31_schedule_reschedule_flow.sql`
-- `phase_X_session_reasoning.sql`
+### SQL Migrations (`scripts/sql/`)
 
-### Utility scripts (`scripts/`)
-- `reextract_and_ingest.py`
-- `clean_all_data.py`
-- `reembed_supabase.py`
-- `backfill_embeddings.py`
-- `backfill_graph_nodes.py`
-- `backfill_phobert_chunks.py`
-- `backfill_session_reasoning.py`
-- `migrate_users_to_supabase.py`
-- `neo4j_export.py`
-- `neo4j_import.py`
+* `phase_0_25_vdme_bridge_upgrade.sql`
+* `phase_0_26_chat_sessions.sql`
+* `phase_0_26_chunk_gte_bge_backfill.sql`
+* `phase_0_27_chunk_e5_column.sql`
+* `phase_0_28_dynamic_embedding_rpc.sql`
+* `phase_0_29_phobert_chunk_backfill.sql`
+* `phase_0_31_schedule_reschedule_flow.sql`
+* `phase_X_session_reasoning.sql`
+
+### Utility Scripts (`scripts/`)
+
+* `reextract_and_ingest.py`
+* `clean_all_data.py`
+* `reembed_supabase.py`
+* `backfill_embeddings.py`
+* `backfill_graph_nodes.py`
+* `backfill_phobert_chunks.py`
+* `backfill_session_reasoning.py`
+* `migrate_users_to_supabase.py`
+* `neo4j_export.py`
+* `neo4j_import.py`
 
 ## 9. Evaluation
 
-Chay toan bo:
+Run the full evaluation suite:
 
 ```bash
 python scripts/eval/run_all.py
+
 ```
 
-Chay theo tung step:
+Run specific evaluation steps:
 
 ```bash
 python scripts/eval/run_all.py cleaner
@@ -297,15 +335,17 @@ python scripts/eval/run_all.py embedding
 python scripts/eval/run_all.py graph
 python scripts/eval/run_all.py ragas
 python scripts/eval/run_all.py privacy
+
 ```
 
-Xem danh sach step:
+View the list of available steps:
 
 ```bash
 python scripts/eval/run_all.py --list
+
 ```
 
-## 10. WebSocket interview test (payload dung theo code hien tai)
+## 10. WebSocket Interview Test (Payload mapping to current code)
 
 ```python
 import asyncio
@@ -320,7 +360,7 @@ async def test_interview_ws(base_url: str, token: str):
             "token": token,
             "session_id": "demo-session-001",
             "personnel_id": "p001",
-            "question": "Ung vien co ky nang Python nao noi bat?",
+            "question": "What outstanding Python skills does the candidate have?",
         }
         await websocket.send(json.dumps(payload))
 
@@ -333,11 +373,12 @@ async def test_interview_ws(base_url: str, token: str):
 
 if __name__ == "__main__":
     asyncio.run(test_interview_ws("http://localhost:8000", "<SUPABASE_ACCESS_TOKEN>"))
+
 ```
 
-## 11. Ghi chu nhanh
+## 11. Quick Notes
 
-- API route hien tai khong co `POST /auth/login`.
-- Chat history route dung `session_id`: `GET /chat/history/{session_id}`.
-- Cong thuc hybrid hien tai la `0.2 graph + 0.8 vector + bonus`, khong phai `0.4/0.6`.
-- Neu frontend can OpenAPI type moi, chay lai `npm run gen:types` trong `frontend/`.
+* The current API routes do not include `POST /auth/login`.
+* The chat history route requires a `session_id`: `GET /chat/history/{session_id}`.
+* The current hybrid score formula is `0.2 graph + 0.8 vector + bonus`, not `0.4/0.6`.
+* If the frontend requires new OpenAPI types, run `npm run gen:types` inside the `frontend/` directory to regenerate them.
